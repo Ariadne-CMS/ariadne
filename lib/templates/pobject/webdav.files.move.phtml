@@ -1,7 +1,7 @@
 <?php
 	require_once($this->store->get_config("code")."modules/mod_webdav.php");
 
-	$this->call('system.rename.phtml', Array('target' => $dest));
+	$this->call('system.rename.phtml', array('target' => $dest));
 	if ($this->error) {
 		// FIXME: find a better error description check
 		$arResult = "409 Conflict";
@@ -10,10 +10,10 @@
 
 		$filename = Ariadne_WebDAV_Server::path_unescape($filename);
 
-		$properties = Array( "name" => Array() );
+		$properties = array( "name" => Array() );
 		foreach($this->data->nls->list as $nls => $value) {
 			$this->setValue("name", $filename, $nls);
-			$properties["name"][]=Array(
+			$properties["name"][]=array(
 				"value" => $filename,
 				"nls"   => nls
 			);

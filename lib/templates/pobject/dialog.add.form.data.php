@@ -64,7 +64,7 @@
 		}
 
 		// call user overridable new flow
-		$wgWizFlow = $wgWizCallObject->call("user.wizard.new.html", Array("wgWizFlow" => $wgWizFlow));
+		$wgWizFlow = $wgWizCallObject->call("user.wizard.new.html", array("wgWizFlow" => $wgWizFlow));
 
 		$showLanguageSelect = false;
 		foreach ($wgWizFlow as $step) {

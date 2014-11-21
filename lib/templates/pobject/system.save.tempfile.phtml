@@ -10,14 +10,14 @@
 		}
 
 		if ($this->error) {
-			return Array();
+			return array();
 		}
 
 		// for backwards compatibility we will first try to
 		// register the file without nls
 		$info = ldRegisterFile("file", $this->error);
 		if ($this->error) {
-			return Array();
+			return array();
 		}
 
 		if (count($info)) {
@@ -31,7 +31,7 @@
 				$info = ldRegisterFile($language."[file]", $this->error);
 				if (!$this->error && count($info)) {
 					if (!is_array($_POST[$language])) {
-						$_POST[$language] = Array();
+						$_POST[$language] = array();
 					}
 					$_POST[$language] = array_merge($_POST[$language], $info);
 					if (!$_POST[$language]['mimetype'] && $info['file_type']) {

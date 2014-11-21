@@ -2,7 +2,7 @@
 
 	include_once($this->store->get_config("code")."modules/mod_yui.php");
 
-	$grants = Array();
+	$grants = array();
 
 	$userPath = $this->getvar('selecteduser');
 	if ($this->exists($userPath)) {
@@ -12,10 +12,10 @@
 				foreach ($user->data->config->usergrants as $grantsPath => $grantsArray) {
 					if (sizeof($grantsArray) && $this->exists($grantsPath)) {
 						$object = current($this->get($grantsPath, 'system.get.phtml'));
-						$grants[$grantsPath] = Array(
+						$grants[$grantsPath] = array(
 							'name'		=> $object->nlsdata->name,
 							'type'		=> $object->type,
-							'grants'	=> Array(
+							'grants'	=> array(
 								'array'		=> $grantsArray,
 								'string'	=> grantsArrayToString($grantsArray)
 							)

@@ -67,7 +67,7 @@
 						$profileDir,
 						"object.implements = 'pprofile'",
 						"show.option.phtml",
-						Array(
+						array(
 							"selected" => $this->getdata("profile", "none")
 						)
 					);
@@ -82,7 +82,7 @@
 		if (!isset($disabled)) {
 			$disabled = $this->data->config->disabled;
 		}
-		if (!in_array($this->data->login, Array("admin", "public")) && $this->CheckSilent('config')) {
+		if (!in_array($this->data->login, array("admin", "public")) && $this->CheckSilent('config')) {
 			if ($disabled) {
 				$checked = "checked ";
 			} else {

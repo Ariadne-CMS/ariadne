@@ -38,7 +38,7 @@
 		<select id="editor" name="editor">
 		<?php
 			$editor = $this->getdata("editor", "none");
-			$editorList = Array(
+			$editorList = array(
 				"wysiwyg"	=> $ARnls["wysiwyg"],
 				"toolbar"	=> $ARnls["toolbar_editor"],
 			);

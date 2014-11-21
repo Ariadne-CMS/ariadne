@@ -255,7 +255,7 @@
 
 										$ARCurrent->importStore->call(
 												"system.export.update.phtml", 
-												Array("newObject" => $object),
+												array("newObject" => $object),
 												$ARCurrent->importStore->get($newpath));
 
 
@@ -356,7 +356,7 @@
 								if( ! is_null($group) ) {
 									display("	$newpath\n");
 									$result=current($group->get($newpath, "system.import.grants.phtml", 
-															Array(
+															array(
 																"importDestPath" => $destpath,
 																"importRootPath" => $rootpath,
 																"grants" => &$grants,
@@ -401,7 +401,7 @@
 								if( ! is_null($user) ) {
 									display("	$newpath\n");
 									$result=current($user->get($newpath, "system.import.grants.phtml", 
-															Array(
+															array(
 																"importDestPath" => $destpath,
 																"importRootPath" => $rootpath,
 																"grants" => &$grants,
@@ -424,7 +424,7 @@
 			if ($ARCurrent->AXAction == "import") {
 				display("clearing cache on $clearcachePath.\n");
 				$ARCurrent->importStore->call("system.cache.clear.phtml", 
-						Array(
+						array(
 							"private" => true,
 							"recurse" => true
 						) , $ARCurrent->importStore->get($clearcachePath));

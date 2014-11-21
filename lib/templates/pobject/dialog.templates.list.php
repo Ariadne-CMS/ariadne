@@ -149,7 +149,7 @@
 		if( $search != "" ) {
 			$templates_path = $filestore->make_path($this->id);
 			$esc_search = escapeshellarg($search);
-			$greps = Array();
+			$greps = array();
 
 			$result = exec($AR->Grep->path." ".$AR->Grep->options." $esc_search $templates_path*.pinp", $greps);
 			$grepresults = array();

@@ -31,7 +31,7 @@
 			<?php
 				// FIXME: country names must be added for all available languages, currently ordered by english value
 				$query="object.parent='/system/addressbook/countries/' and name.nls='en' order by name.value";
-				$this->find("/system/addressbook/countries/", $query, "show.option.value.phtml",Array( "selected" => $this->getdata("country","none")),0);
+				$this->find("/system/addressbook/countries/", $query, "show.option.value.phtml",array( "selected" => $this->getdata("country","none")),0);
 			?>
 		</select>
 	</div>

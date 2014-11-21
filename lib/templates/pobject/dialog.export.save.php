@@ -106,7 +106,7 @@
 			}
 
 			if (!$importStore->error) {
-				$callArgs=Array("srcpath" => $srcpath, "destpath" => $destpath);
+				$callArgs=array("srcpath" => $srcpath, "destpath" => $destpath);
 				$error = $this->call("system.export.phtml", $callArgs);
 			} else {
 				$error="ax error: ".$importStore->error;

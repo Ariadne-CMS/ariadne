@@ -19,14 +19,14 @@
 								$query = "object.implements = '$type' and login.value = '$login'";
 								if ($clone->store->AR_implements($type, 'pgroup')) {
 									foreach ($authconfig['groupdirs'] as $groupdirpath) {
-										$clone->find($groupdirpath, $query, "system.update.grants.phtml", Array(
+										$clone->find($groupdirpath, $query, "system.update.grants.phtml", array(
 											"action" => "delete",
 											"path" => $clone->path
 										));
 									}
 								} else {
 									foreach ($authconfig['userdirs'] as $userdirpath) {
-										$clone->find($userdirpath, $query, "system.update.grants.phtml", Array(
+										$clone->find($userdirpath, $query, "system.update.grants.phtml", array(
 											"action" => "delete",
 											"path" => $clone->path
 										));

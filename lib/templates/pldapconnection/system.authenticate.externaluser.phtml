@@ -16,7 +16,7 @@ if ($this->data->mappeduser) {
 	// Fetch the user's LDAP data, if not already cached in the
 	// session data
 	if (!is_array($ldapdata)) {
-		$criteria=Array();
+		$criteria=array();
 		$criteria["login"]["value"]["="]=$ARLogin;
 		$this->get_ldap_data($criteria, $limit, $offset);
 		$ldapdata=$this->ldapdata[0];

@@ -68,7 +68,7 @@
 
 					$ARCurrent->importStore=&$this->store;
 					// srcpath and destpath may be empty
-					$callArgs=Array("srcpath" => $srcpath,
+					$callArgs=array("srcpath" => $srcpath,
 									"destpath" => $this->path);
 
 					$store->call("system.export.phtml", $callArgs,

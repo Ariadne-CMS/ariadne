@@ -8,10 +8,10 @@
 				$arCallArgs["arRequestedPath"] = $arRequestedPath;
 				$subpath = substr($arRequestedPath, strlen($this->path));
 				if (!is_array($ARCurrent->shortcut_redirect)) {
-					$ARCurrent->shortcut_redirect = Array();
+					$ARCurrent->shortcut_redirect = array();
 				}
 				if ($this->exists($this->data->path.$subpath)) {
-					array_push($ARCurrent->shortcut_redirect, Array("src" => $this->path, "dest" => $this->data->path, "keepurl" => $this->data->keepurl));
+					array_push($ARCurrent->shortcut_redirect, array("src" => $this->path, "dest" => $this->data->path, "keepurl" => $this->data->keepurl));
 						$arResult = $this->get($this->data->path.$subpath, $arRequestedTemplate, $arCallArgs['arRequestedArgs']);
 					array_pop($ARCurrent->shortcut_redirect);
 				} else {
@@ -21,7 +21,7 @@
 					} while ($subshortcut != $this->data->path && !$this->exists($subshortcut));
 					if ($subshortcut != $this->data->path) {
 						$arCallArgs['arRequestedPath'] = $this->data->path.$subpath;
-						array_push($ARCurrent->shortcut_redirect, Array("src" => $this->path, "dest" => $this->data->path, "keepurl" => $this->data->keepurl));
+						array_push($ARCurrent->shortcut_redirect, array("src" => $this->path, "dest" => $this->data->path, "keepurl" => $this->data->keepurl));
 							$arResult = $this->get($subshortcut, 'user.notfound.html', $arCallArgs);
 						array_pop($ARCurrent->shortcut_redirect);
 					} else {

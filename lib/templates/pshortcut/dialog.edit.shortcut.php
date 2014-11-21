@@ -46,7 +46,7 @@
 			$ARCurrent->arLanguage=$arLanguage;
 		}
 		// call user overridable flow -- Removed, this breaks things
-		$wgWizFlow = $this->call("user.wizard.edit.shortcut.html", Array("wgWizFlow" => $wgWizFlow));
+		$wgWizFlow = $this->call("user.wizard.edit.shortcut.html", array("wgWizFlow" => $wgWizFlow));
 
 		$this->call("typetree.ini");
 		$name=$ARCurrent->arTypeNames[$this->type];

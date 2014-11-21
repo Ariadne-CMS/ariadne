@@ -21,7 +21,7 @@
 		}
 
 		// unset the properties array, so no properties can be passed to this template.
-		$properties = Array();
+		$properties = array();
 
 		if (!$this->getdata("name", $ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
@@ -32,7 +32,7 @@
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
 			$count=0;
-			$nlslist = Array();
+			$nlslist = array();
 			while (list($key, $value)=each($AR->nls->list)) {
 				if ($this->getdata("name",$key)) {
 					array_push($nlslist, $key);
@@ -75,7 +75,7 @@
 			if (!$this->error) {
 				$this->ClearCache();
 				// keep only the fulltext properties.
-				$properties = Array('fulltext' => $properties['fulltext']);
+				$properties = array('fulltext' => $properties['fulltext']);
 
 				$this->arIsNewObject = false;
 				foreach ($nlslist as $nlskey) {
@@ -113,7 +113,7 @@
 						$this->data->$nlskey->mime["type"] = $armime[0];
 						$this->data->$nlskey->mime["subtype"] = $armime[1];
 
-						$properties["mimetype"][] = Array(
+						$properties["mimetype"][] = array(
 							"type"    => $armime[0],
 							"subtype" => $armime[1],
 						);

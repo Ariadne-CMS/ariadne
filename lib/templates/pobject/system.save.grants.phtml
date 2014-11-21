@@ -86,7 +86,7 @@
 			}
 			if ($delete) {
 				arDelGrant($this->data->config->grants[$type], $id, $grant, $modifier);
-				$result=current($this->get($path, "system.save.grants.user.phtml", Array(
+				$result=current($this->get($path, "system.save.grants.user.phtml", array(
 								"action"	=> "delete",
 								"path"		=> $this->path,
 								"grant"		=> $grant,
@@ -113,7 +113,7 @@
 							$newgrants=preg_replace("/[[:space:]]/"," ",$newgrants);
 							$firstgrant=strtok($newgrants, " ");
 							if ($firstgrant=="{}") {
-								if ($result=current($this->get($path, "system.get.grants.phtml", Array("path" => $this->path)))) {
+								if ($result=current($this->get($path, "system.get.grants.phtml", array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
 									$newgrants=preg_replace('/ ?\{\} ?/',AddSlashes($current),$newgrants);
 								}
@@ -137,7 +137,7 @@
 							$g_comp = new mod_grant;
 							$grants = $this->data->config->grants[$type][$id];
 							if (!is_array($grants)) {
-								$grants = Array();
+								$grants = array();
 							}
 							$g_comp->compile($newgrants, $grants);
 
@@ -154,7 +154,7 @@
 								$this->save($properties);
 								$grants = $this->data->config->grants[$type][$id];
 
-								$result=current($this->get($path, "system.save.grants.user.phtml", Array(
+								$result=current($this->get($path, "system.save.grants.user.phtml", array(
 												"action"	=> "set",
 												"path"		=> $this->path,
 												"grants"	=> $grants)));

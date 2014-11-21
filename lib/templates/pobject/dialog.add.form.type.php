@@ -6,7 +6,7 @@
 		}
 		$locationOb = current($this->get($location, "system.get.phtml"));
 		$typeslist = yui::getTypes($locationOb, $showall);
-		$itemlist = Array();
+		$itemlist = array();
 		if($typeslist && is_array($typeslist) && count($typeslist)) {
 			$itemlist = yui::getItems($locationOb, $typeslist, $location, "dialog.add.php");
 			foreach ($itemlist as $item) {

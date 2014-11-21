@@ -29,7 +29,7 @@
 					$file=$templates->read($this->id, $template);
 					/* now we have to save our template */
 					debug("templates.rename to: $tdefault, $ttype, $tfunction, $tlanguage");
-					$this->get($target, "system.save.layout.phtml", Array(
+					$this->get($target, "system.save.layout.phtml", array(
 														"template"	=> $file,
 														"default"	=> $tdefault,
 														"type"		=> $ttype,
@@ -39,7 +39,7 @@
 					/* if everything went ok, we are going to delete the source template */
 					if (!$this->error) {
 						$this->get($source, "system.delete.layout.phtml", 
-											Array(
+											array(
 												"type"		=> $type,
 												"function"	=> $function,
 												"language"	=> $language 

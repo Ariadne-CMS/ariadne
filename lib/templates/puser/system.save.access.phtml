@@ -14,7 +14,7 @@
 
 	******************************************************************/
 	if ($this->CheckSilent("config") && $this->CheckConfig()) {
-		if (in_array($this->data->login, Array("admin", "public"))) {
+		if (in_array($this->data->login, array("admin", "public"))) {
 			$this->error = $ARnls["err:cannotdisablesystemusers"];
 		} else {
 			$this->data = current($this->get($this->path, "system.get.data.phtml"));

@@ -22,7 +22,7 @@
 			} else {
 				$relativepath=substr($this->path, strlen($source));
 				$absolutepath=$source.$relativepath;
-				$this->error=$this->call("system.copyto.phtml", Array (
+				$this->error=$this->call("system.copyto.phtml", array (
 					"target" 	=> $target.$relativepath, 
 					"search"	=> $source,
 					"replace"	=> $target,

@@ -1,7 +1,7 @@
 <?php
 
 	if( $this->CheckLogin("layout") && $this->CheckConfig() ) {
-		$this->call("system.delete.template.php", Array(
+		$this->call("system.delete.template.php", array(
 			"type"		=> $this->getvar("newtype"),
 			"function"	=> $this->getvar("newfunction"),
 			"language"	=> $this->getvar("newlanguage"),

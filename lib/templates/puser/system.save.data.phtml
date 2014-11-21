@@ -26,7 +26,7 @@
 		$authConfig = $userConfig['authentication'];
 
 		// unset the properties array, so no properties can be passed to this template.
-		$properties = Array();
+		$properties = array();
 
 
 		$pass1=$this->getdata("newpass1","none");
@@ -141,7 +141,7 @@
 			/* now for backwards compatibility use the key if $val is not a path, 
 			   in that case the key will be a path. */
 			$selected = $this->getdata("groups", "none");
-			$groups = Array();
+			$groups = array();
 			if (is_array($selected)) {
 				reset($selected);
 				while (list($key, $val)=each($selected)) {
@@ -213,7 +213,7 @@
 					reset($oldgroups);
 					while (list($key, $val)=each($oldgroups)) {
 						if (!$groups[$key]) {
-							$this->get($key, "system.set.user.phtml", Array(
+							$this->get($key, "system.set.user.phtml", array(
 										"action" => "remove",
 										"path" => $this->path));
 						}
@@ -223,21 +223,21 @@
 				if (is_object($pdata)) {
 					// Make sure that permission to add this user to the groups set in the loaded profile
 					// will be granted.
-					$this->pushContext(Array("addProfileSettings" => true));
+					$this->pushContext(array("addProfileSettings" => true));
 				}
 
 
 				if (is_object($pdata)) {
 					// Make sure that permission to add this user to the groups set in the loaded profile
 					// will be granted.
-					$this->pushContext(Array("addGroupFromProfile" => true));
+					$this->pushContext(array("addGroupFromProfile" => true));
 				}
 
 				if (is_array($groups)) {
 					reset($groups);
 					while (list($key, $val)=each($groups)) {
 						if (!$oldgroups[$key]) {
-							$this->get($key, "system.set.user.phtml", Array(
+							$this->get($key, "system.set.user.phtml", array(
 										"action" => "add",
 										"path" => $this->path));
 						}
@@ -254,13 +254,13 @@
 					$skeletonpath=$this->data->profile.'static/';
 					if ($this->data->profile && $this->exists($skeletonpath)) {
 						$this->find($skeletonpath,"object.path!='".$skeletonpath."'",'system.copy.multiple.phtml',
-							Array('source'=>$skeletonpath, 
+							array('source'=>$skeletonpath, 
 								'target'=>$newpath));
 					}
 					/* check whether the owner of the user (and skeleton) should be set to the new user */
 					if ($this->getdata('setowner')) {
 						/* again the skeleton shouldn't be too big, so this is allowed: */ 
-						$this->find($newpath, '', 'system.save.owner.phtml', Array('owner' => $this->path));
+						$this->find($newpath, '', 'system.save.owner.phtml', array('owner' => $this->path));
 					}
 				}
 

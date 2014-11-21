@@ -51,7 +51,7 @@
 		}
 		// call user overridable flow
 		$ARCurrent->allnls = true;
-		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
+		$wgWizFlow = $this->call("user.wizard.edit.html", array("wgWizFlow" => $wgWizFlow));
 
 		$this->call("typetree.ini");
 		$name=$ARCurrent->arTypeNames[$this->type];

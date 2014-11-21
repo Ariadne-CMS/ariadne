@@ -22,7 +22,7 @@
 		$authconfig = $userConfig['authentication'];
 
 		// unset the properties array, so no properties can be passed to this template.
-		$properties = Array();
+		$properties = array();
 
 		$properties["value"][]["value"]=$value;
 		$this->data->name=$this->getdata("name","none");
@@ -72,7 +72,7 @@
 		$this->data->email = $this->getdata("email","none");
 		$this->data->telephone = $this->getdata("telephone","none");
 
-		$this->data->groups = Array();
+		$this->data->groups = array();
 		$groups = $this->getdata("groups", "none");
 		if (is_array($groups)) {
 			reset($groups);

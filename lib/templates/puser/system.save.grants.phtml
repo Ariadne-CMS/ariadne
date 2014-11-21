@@ -87,7 +87,7 @@
 				if ($id==$this->data->login && $type==$this->type) {
 					arDelGrant($this->data->config->usergrants, $this->path, $grant, $modifier);
 				} else {
-					$result=current($this->get($path, "system.save.grants.user.phtml", Array(
+					$result=current($this->get($path, "system.save.grants.user.phtml", array(
 										"action"	=> "delete",
 										"path"		=> $this->path,
 										"grant"		=> $grant,
@@ -115,7 +115,7 @@
 							$newgrants=preg_replace("/[[:space:]]/"," ",$newgrants);
 							$newgrant=strtok($newgrants, " ");
 							if ($newgrant=="{}") {
-								if ($result=current($this->get($path,"system.get.grants.phtml",Array("path" => $this->path)))) {
+								if ($result=current($this->get($path,"system.get.grants.phtml",array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
 									$newgrants=preg_replace('/ ?\{\} ?/',AddSlashes($current),$newgrants);
 								}
@@ -161,7 +161,7 @@
 										if ($id==$this->data->login && $type==$this->type) {
 											arDelGrant($this->data->config->usergrants, $this->path, $delgrant, $modifier);
 										} else {
-											$result=current($this->get($path, "system.save.grants.user.phtml", Array(
+											$result=current($this->get($path, "system.save.grants.user.phtml", array(
 														"action"	=> "delete",
 														"path"		=> $this->path,
 														"grant"		=> $delgrant,
@@ -203,7 +203,7 @@
 											// they match, so make the changes here, otherwise they will be overwritten
 											$this->data->config->usergrants[$this->path][$newgrant]=$this->data->config->grants[$type][$id][$newgrant];
 										} else {
-											$result=current($this->get($path, "system.save.grants.user.phtml", Array(
+											$result=current($this->get($path, "system.save.grants.user.phtml", array(
 													"action"	=> "add",
 													"path"		=> $this->path,
 													"grant"		=> $newgrant,

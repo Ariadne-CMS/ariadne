@@ -1,6 +1,6 @@
 <?php
 	debug("ftp::files.rename to ($target)");
-	$this->call("system.rename.phtml", Array("target" => $target));
+	$this->call("system.rename.phtml", array("target" => $target));
 	if ($this->error) {
 		debug("ERROR: ".$this->error);
 		$ARCurrent->ftp_error=$this->error;

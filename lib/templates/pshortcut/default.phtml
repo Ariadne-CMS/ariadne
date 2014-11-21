@@ -8,9 +8,9 @@
 			if ($path && $this->store->exists($path)) {
 				$arCallArgs["arShortCut"] = $this->path;
 				if (!is_array($ARCurrent->shortcut_redirect)) {
-					$ARCurrent->shortcut_redirect = Array();
+					$ARCurrent->shortcut_redirect = array();
 				}
-				array_push($ARCurrent->shortcut_redirect, Array("src" => $this->path, "dest" => $path, "keepurl" => $this->data->keepurl));
+				array_push($ARCurrent->shortcut_redirect, array("src" => $this->path, "dest" => $path, "keepurl" => $this->data->keepurl));
 					$arResult=current($this->get($path, $arCallFunction, $arCallArgs));
 				array_pop($ARCurrent->shortcut_redirect);
 			} else {

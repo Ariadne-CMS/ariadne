@@ -21,7 +21,7 @@
 				$tfunction	= (isset($regs[3])) ? $regs[3] : $target_template;
 				$tlanguage	= (isset($regs[4])) ? $regs[4] : $language;
 
-				$this->get($target, "system.save.layout.phtml", Array(
+				$this->get($target, "system.save.layout.phtml", array(
 														"template"	=> $file,
 														"default"	=> $tdefault,
 														"type"		=> $ttype,
@@ -29,7 +29,7 @@
 														"language"	=> $tlanguage ));
 				if (!$this->error) {
 					$this->get($source, "system.delete.layout.phtml", 
-										Array(
+										array(
 											"type"		=> $type,
 											"function"	=> $function,
 											"language"	=> $language 

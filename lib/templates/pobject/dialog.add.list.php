@@ -20,7 +20,7 @@
 		}
 
 		$typeslist = yui::getTypes($this, $showall);
-		$itemlist = Array();
+		$itemlist = array();
 		if ( $typeslist && is_array($typeslist) && count($typeslist) ) {
 			$itemlist = yui::getItems($this, $typeslist, $currentpath, $arReturnTemplate);
 		} else {

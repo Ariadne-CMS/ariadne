@@ -19,7 +19,7 @@
 					$realuser=current($this->get($userpath,"system.get.phtml"));
 					if ($realuser && $realuser->path) {
 						$realpath=$realuser->path;
-						$parentobject->call("system.set.user.phtml", Array("path" => $realpath, "action" => "delete"));
+						$parentobject->call("system.set.user.phtml", array("path" => $realpath, "action" => "delete"));
 					}
 				}
 			}
@@ -52,7 +52,7 @@
 						while (list($path) = each($this->data->groups)) {
 							$this->get($path,
 									"system.set.user.phtml",
-									Array(
+									array(
 										"action" => "delete",
 										"path" => $this->path
 									));
@@ -65,7 +65,7 @@
 					if (is_array($this->data->config->usergrants)) {
 						// remove usergrants
 						while (list($key, $value)=each($this->data->config->usergrants)) {
-							$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => $this->type));
+							$this->get($key, "system.save.grants.phtml", array("delete" => true, "id" => $this->data->login, "type" => $this->type));
 						}
 					}
 
@@ -80,7 +80,7 @@
 							while (list($path) = each($this->data->groups)) {
 								$this->get($path,
 										"system.set.user.phtml",
-										Array(
+										array(
 											"action" => "add",
 											"path" => $this->path
 										));
@@ -130,7 +130,7 @@
 								}
 								$this->get( $path,
 											"system.save.grants.phtml",
-											Array(
+											array(
 												"path" => $this->path,
 												"newgrants" => $grantstring
 											));

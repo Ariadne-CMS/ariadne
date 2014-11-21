@@ -24,7 +24,7 @@
 
 	// first check whether the user has the config grant on the given path
 	debug("puser/system.save.grants.user.phtml: $this->path","class");
-	if ($AR->user && current($this->get($path, "system.check.grant.phtml", Array( "grant" => "config" )))) { // can not be called directly from loader
+	if ($AR->user && current($this->get($path, "system.check.grant.phtml", array( "grant" => "config" )))) { // can not be called directly from loader
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=current($this->get(".","system.get.data.phtml"));

@@ -22,7 +22,7 @@
 					while (list($key, $path) = each($users)) {
 						$this->get(	$path,
 									"system.set.group.phtml",
-									Array(
+									array(
 										"action" => "remove",
 										"path" => $this->path
 									));
@@ -33,7 +33,7 @@
 				if (is_array($this->data->config->usergrants)) {
 					// remove usergrants
 					while (list($key, $value)=each($this->data->config->usergrants)) {
-						$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => $this->type));
+						$this->get($key, "system.save.grants.phtml", array("delete" => true, "id" => $this->data->login, "type" => $this->type));
 					}
 				}
 
@@ -48,7 +48,7 @@
 						while (list($key, $path) = each($users)) {
 							$this->get(	$path,
 										"system.set.group.phtml",
-										Array(
+										array(
 											"action" => "add",
 											"path" => $this->path,
 											"id" => $this->data->login
@@ -97,7 +97,7 @@
 							}
 							$this->get( $path,
 										"system.save.grants.phtml",
-										Array(
+										array(
 											"path" => $this->path,
 											"newgrants" => $grantstring
 										));

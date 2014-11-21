@@ -38,7 +38,7 @@
 				//echo "ar:function [" . $meta['ar:function'] . "]\n";
 				//echo "ar:language [" . $meta['ar:language'] . "]\n";
 
-				$this->call("system.save.layout.phtml", Array(
+				$this->call("system.save.layout.phtml", array(
 							"template" 	=> $template,
 							"default"	=> $meta['ar:default'],
 							"type"		=> $meta['ar:type'],

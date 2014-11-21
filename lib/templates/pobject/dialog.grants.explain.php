@@ -2,20 +2,20 @@
 
 	include_once($this->store->get_config("code")."modules/mod_yui.php");
 
-	$grantsList = Array();
+	$grantsList = array();
 
 	$userPath = $this->getvar('selecteduser');
 	if ($this->exists($userPath)) {
 		$user = current($this->get($userPath, 'system.get.phtml'));
 		$userName = $user->data->name;
 		$userGroupPaths = $user->data->groups;
-		if (!is_Array($userGroupPaths)) {
-			$userGroupPaths = Array();
+		if (!is_array($userGroupPaths)) {
+			$userGroupPaths = array();
 		}
 		if (!$userGroupPaths['/system/groups/public/'] && !$user->implements('pgroup')) {
 			$userGroupPaths['/system/groups/public'] = '/system/groups/public/';
 		}
-		$userGroups = Array();
+		$userGroups = array();
 		foreach ($userGroupPaths as $userGroupPath) {
 			$group = current($this->get($userGroupPath, 'system.get.phtml'));
 			$group->active = true;
@@ -25,24 +25,24 @@
 		$allInactive = false;
 		$grantsPathPrev = '';
 		$grantsPath = $this->getvar('selectedpath');
-		$grantsList = Array();
+		$grantsList = array();
 		do {
 			$object = current($this->get($grantsPath, 'system.get.phtml'));
 			if ($user->data->config->usergrants[$grantsPath]) {
 				array_unshift(
 					$grantsList,
-					Array(
+					array(
 						'active'	=> !$allInactive,
-						'object'	=> Array(
+						'object'	=> array(
 							'path'		=> $object->path,
 							'type'		=> $object->type
 						),
-						'owner'		=> Array(
+						'owner'		=> array(
 							'name'		=> $user->data->name,
 							'path'		=> $user->path,
 							'type'		=> $user->type
 						),
-						'grants'	=> Array(
+						'grants'	=> array(
 							'array'		=> $user->data->config->usergrants[$grantsPath],
 							'string'	=> grantsArrayToString($user->data->config->usergrants[$grantsPath])
 						)
@@ -55,18 +55,18 @@
 				if ($group->data->config->usergrants[$grantsPath]) {
 					array_unshift(
 						$grantsList,
-						Array(
+						array(
 							'active'	=> $group->active & !$allInactive,
-							'object'	=> Array(
+							'object'	=> array(
 								'path'		=> $object->path,
 								'type'		=> $object->type
 							),
-							'owner'		=> Array(
+							'owner'		=> array(
 								'name'		=> $group->data->name,
 								'path'		=> $group->path,
 								'type'		=> $group->type
 							),
-							'grants'	=> Array(
+							'grants'	=> array(
 								'array'		=> $group->data->config->usergrants[$grantsPath],
 								'string'	=> grantsArrayToString($group->data->config->usergrants[$grantsPath])
 							)

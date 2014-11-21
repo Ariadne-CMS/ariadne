@@ -39,7 +39,7 @@
 		<div class="field">
 			<select name="scenario" size="6" onChange="updatedescription(this.form)" class="inputline wgWizAutoFocus">
 			<?php
-				$this->ls($scenarioDir,"show.option.phtml", Array("selected" => $this->getdata("scenario", "none")));
+				$this->ls($scenarioDir,"show.option.phtml", array("selected" => $this->getdata("scenario", "none")));
 			?>
 			</select>
 		</div>

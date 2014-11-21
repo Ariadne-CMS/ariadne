@@ -41,7 +41,7 @@
 					$groupdir,
 					"object.implements = 'pgroup' and login.value != 'owner' order by name.value",
 					"show.option.multiple.phtml",
-					Array(
+					array(
 						"selected"	=> $selected,
 						"grant"		=> "edit"
 					),

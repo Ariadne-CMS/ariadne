@@ -13,9 +13,9 @@
 		$this->call("pdir::system.save.data.phtml",$arCallArgs);
 
 		// unset the properties array, so no properties can be passed to this template.
-		$properties = Array();
-		$this->data->config->url_list = Array( 'host' => array() , 'nls' => array());
-		$this->data->config->workspaceurl_list = Array();
+		$properties = array();
+		$this->data->config->url_list = array( 'host' => array() , 'nls' => array());
+		$this->data->config->workspaceurl_list = array();
 
 		foreach ( $AR->nls->list as $key => $value) {
 			// $name is the variable that must be set for a language to be available.

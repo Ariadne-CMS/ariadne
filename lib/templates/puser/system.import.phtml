@@ -34,7 +34,7 @@
 							if ($this->exists($key)) {
 								$target = $key.substr($this->path, strlen($this->parent));
 								display("		adding (".$this->path." to $target)\n");
-								$this->get($key, "system.set.user.phtml", Array("path" => $this->path, "action" => "add"));
+								$this->get($key, "system.set.user.phtml", array("path" => $this->path, "action" => "add"));
 							}
 						}
 					}

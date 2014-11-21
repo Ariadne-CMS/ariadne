@@ -70,7 +70,7 @@
 			$ARCurrent->arLanguage=$arLanguage;
 		}
 		// call user overridable new flow
-		$wgWizFlow = $wgWizCallObject->call("user.wizard.new.html", Array("wgWizFlow" => $wgWizFlow));
+		$wgWizFlow = $wgWizCallObject->call("user.wizard.new.html", array("wgWizFlow" => $wgWizFlow));
 
 		$this->call("typetree.ini");
 		$name=$ARCurrent->arTypeNames[$wgWizCallObject->type];

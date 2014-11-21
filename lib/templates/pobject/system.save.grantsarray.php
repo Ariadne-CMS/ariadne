@@ -44,7 +44,7 @@
 							unset( $this->data->config->grants[$type][$id] );
 						}
 						$this->save();
-						$result=current($this->get($userpath, "system.save.grants.user.phtml", Array(
+						$result=current($this->get($userpath, "system.save.grants.user.phtml", array(
 							"action"	=> "set",
 							"path"		=> $this->path,
 							"grants"	=> $grants

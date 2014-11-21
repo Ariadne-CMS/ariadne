@@ -16,13 +16,13 @@
 					if (is_array($this->data->config->usergrants)) {
 						// remove usergrants
 						while (list($key, $value)=each($this->data->config->usergrants)) {
-							$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => $this->type));
+							$this->get($key, "system.save.grants.phtml", array("delete" => true, "id" => $this->data->login, "type" => $this->type));
 						}
 					}
 					if (is_array($this->data->groups)) {
 						// remove user object from groups
 						while (list($key, $value)=each($this->data->groups)) {
-							$this->get($key, "system.set.user.phtml", Array("path" => $this->path, "action" => "delete"));
+							$this->get($key, "system.set.user.phtml", array("path" => $this->path, "action" => "delete"));
 						}
 					}
 				}
@@ -37,7 +37,7 @@
 					$realuser=current($this->find("/system/users/",$crit,"system.get.phtml"));
 					if ($realuser && $realuser->path) {
 						$realpath=$realuser->path;
-						$parentobject->call("system.set.user.phtml", Array("path" => $realpath, "action" => "delete"));
+						$parentobject->call("system.set.user.phtml", array("path" => $realpath, "action" => "delete"));
 					}
 				}
 			}

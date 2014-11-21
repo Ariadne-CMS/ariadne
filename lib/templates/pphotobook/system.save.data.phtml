@@ -21,7 +21,7 @@
 		}
 
 		// unset the properties array, so no properties can be passed to this template.
-		$properties = Array();
+		$properties = array();
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
@@ -122,7 +122,7 @@
 		reset($AR->nls->list);
 		while (list($key, $value)=each($AR->nls->list)) {
 			if ($page=$this->getdata("page",$key)) {
-				$this->call("system.save.page.phtml",Array("ContentLanguage" => $key, "page" => $page));
+				$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
 			}
 		}
 		$this->ClearCache();

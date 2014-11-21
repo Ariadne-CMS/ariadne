@@ -7,15 +7,15 @@
 
 		if (($user=current($this->get($path, "system.get.phtml")))
 			&& $user->AR_implements("puser")) {
-			$user->call("system.set.group.phtml", Array(
+			$user->call("system.set.group.phtml", array(
 							"action"	=> $action,
 							"path"		=> $this->path,
 							"id"		=> $this->data->login));
 
 			if ($action=="add") {
 				$this->sgBegin('add(pshortcut)');
-					$this->call('system.new.phtml', Array(
-							$ARConfig->nls->default  => Array(
+					$this->call('system.new.phtml', array(
+							$ARConfig->nls->default  => array(
 								'name' => $user->data->name
 							),
 							'arNewType'     => 'pshortcut',

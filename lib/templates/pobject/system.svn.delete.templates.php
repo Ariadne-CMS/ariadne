@@ -40,7 +40,7 @@
 					if (!$templatestore->exists($this->id, $filename)) {
 						echo "<span class='svn_deletetemplateline'>Deleted ".$this->path.$function." (".$type.") [".$language."]</span>\n";
 
-						$this->call("system.delete.layout.phtml", Array(
+						$this->call("system.delete.layout.phtml", array(
 							"type"		=> $type,
 							"function"	=> $function,
 							"language"	=> $language

@@ -8,7 +8,7 @@
 
 		$collection_name = Ariadne_WebDAV_Server::path_unescape($collection);
 
-		$newData = Array();
+		$newData = array();
 		foreach ($ARConfig->nls->list as $key => $val) {
 			debug("collection nls: $key:$val");
 			$newData[$key]["name"] = $collection_name;
