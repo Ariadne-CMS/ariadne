@@ -3,17 +3,17 @@
 
 	class selectorParser {
 
-		function __construct($string) {
+		public function __construct($string) {
 			$this->scanner = new selectorScanner($string);
 			$this->scanner->next();
 		}
 
-		function parse($greedyMatching = '!', $stack = Array()) {
+		public function parse($greedyMatching = '!', $stack = Array()) {
 			$node = $this->parseOr($greedyMatching, $stack);
 			return $node;
 		}
 
-		function parseOr($greedyMatching = '!', $stack) {
+		public function parseOr($greedyMatching = '!', $stack) {
 			$node = $this->parseAnd($greedyMatching, $stack);
 			while ($this->scanner->token_ahead == T_OR) {
 				$this->scanner->next();
@@ -29,7 +29,7 @@
 			return $node;
 		}
 
-		function parseAnd($greedyMatching = '!', $stack) {
+		public function parseAnd($greedyMatching = '!', $stack) {
 			$prevNode = null;
 			while ($node = $this->parseIdent($greedyMatching, $stack)) {
 					$node = $this->parseRepeat($node, $stack);
@@ -48,7 +48,7 @@
 			return $prevNode;
 		}
 
-		function parseIdent($greedyMatching = '!', $stack) {
+		public function parseIdent($greedyMatching = '!', $stack) {
 				$greedyMatching = $this->parseGreedyness($greedyMatching);
 				switch ($this->scanner->token_ahead) {
 					case T_RECURSE_DEF:
@@ -89,7 +89,7 @@
 				return $node;
 		}
 
-		function parseGreedyness($greedyMatching) {
+		public function parseGreedyness($greedyMatching) {
 			if ($this->scanner->token_ahead == T_NON_GREEDY) {
 				$this->scanner->next();
 				$greedyMatching = '?';
@@ -103,7 +103,7 @@
 			return $greedyMatching;
 		}
 
-		function parseRepeat(&$prevNode, $stack) {
+		public function parseRepeat(&$prevNode, $stack) {
 			switch($this->scanner->token_ahead) {
 				case T_REP_ZERO_ONE:
 					$this->scanner->next();

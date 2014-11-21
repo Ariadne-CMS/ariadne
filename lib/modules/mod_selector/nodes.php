@@ -1,7 +1,7 @@
 <?php
 	class nodeFactory {
 
-		function &createNode($type, $data = array()) {
+		public static function createNode($type, $data = array()) {
 			switch ($type) {
 				case N_OR:
 					return new nodeOr($data);
@@ -31,14 +31,14 @@
 		protected $size;
 		protected $greedy;
 
-		abstract function __construct($data);
-		abstract function run($count, $offset);
+		abstract public function __construct($data);
+		abstract public function run($count, $offset);
 
 	}
 
 	class nodeOr extends node {
 
-		function __construct($data) {
+		public function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
 			if ($nodeLeft || $nodeRight) {
 				if ($nodeRight && $nodeRight->type == N_OR) {
@@ -67,7 +67,7 @@
 
 		}
 
-		function run($count, $offset) {
+		public function run($count, $offset) {
 //			echo "OR(count: $count; offset: $offset;)\n";
 			if ($this->left->min <= $count) {
 				return $this->left->run($count, $offset);
@@ -80,7 +80,7 @@
 
 	class nodeAnd extends node {
 
-		function __construct($data) {
+		public function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
 			$this->greedy		= $data['greedy'];
 			$this->size			= $nodeLeft->size + $nodeRight->size;
@@ -97,7 +97,7 @@
 			$this->right		= $nodeRight;
 		}
 
-		function run($count, $offset) {
+		public function run($count, $offset) {
 //			echo "AND(count: $count; offset: $offset;)\n";
 			$require = (($this->right->req) ? $this->right->min : 0) + (($this->left->req) ? $this->left->min : 0);
 			if ($count < $require) {
@@ -134,7 +134,7 @@
 
 	class nodeIdent extends node {
 
-		function __construct($data) {
+		public function __construct($data) {
 			$this->greedy		= $data['greedy'];
 			$this->value		= $data['value'];
 			$this->req			= true;
@@ -143,7 +143,7 @@
 			$this->size			= 1;
 		}
 
-		function run($count, $offset) {
+		public function run($count, $offset) {
 //		echo "(<b>".$this->value."</b>: count: $count; offset: $offset;)\n";
 			if ($offset == 0) {
 				return $this->value;
@@ -156,7 +156,7 @@
 
 	class nodeRepeat extends node {
 
-		function __construct($data) {
+		public function __construct($data) {
 			$nodeLeft			= $data['nodeLeft'];
 			$this->greedy		= $data['greedy'];
 			$this->req			= $data['req'];
@@ -168,7 +168,7 @@
 			$this->left			= $nodeLeft;
 		}
 
-		function run($count, $offset) {
+		public function run($count, $offset) {
 			if ($count < $this->minRep * $this->left->min) {
 				return $count;
 			}
@@ -204,13 +204,13 @@
 
 	class nodeRecurse extends node {
 
-		function __construct($data) {
+		public function __construct($data) {
 			$this->size		= 1;
 			$this->min		= 1;
 			$this->req		= 1;
 		}
 
-		function setNode(&$node) {
+		public function setNode(&$node) {
 			$this->left		= $node;
 			$this->min		= $this->left->min;
 			$this->max		= $this->left->max;
@@ -219,7 +219,7 @@
 			$this->req		= $this->left->req;
 		}
 
-		function run($count, $offset) {
+		public function run($count, $offset) {
 			static $frop;
 			if (!$frop) {
 				$frop = 0;

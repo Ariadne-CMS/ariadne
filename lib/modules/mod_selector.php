@@ -3,13 +3,14 @@
 	require_once("mod_selector/parser.php");
 
 	class selector {
+		protected $nodes;
 
-		function selector($string) {
+		public function __construct($string) {
 			$parser = new selectorParser($string);
 			$this->nodes = $parser->parse();
 		}
 
-		function run($count, $offset = 0, $definitions = Array()) {
+		public function run($count, $offset = 0, $definitions = Array()) {
 			if (!$this->nodes) {
 				return false;
 			}
@@ -25,7 +26,7 @@
 			return $result;
 		}
 
-		function &getIterator($count, $definitions = Array()) {
+		public function getIterator($count, $definitions = Array()) {
 			return new selectorIterator($this, $count, $definitions);
 		}
 
@@ -33,30 +34,30 @@
 
 	class selectorIterator implements Iterator {
 
-		function __construct($selector, $count, $definitions = Array()) {
+		public function __construct($selector, $count, $definitions = Array()) {
 			$this->selector		= $selector;
 			$this->count		= $count;
 			$this->offset		= 0;
 			$this->definitions	= $definitions;
 		}
 
-		function current() {
+		public function current() {
 			return $this->selector->run($this->count, $this->offset, $this->definitions);
 		}
 
-		function key() {
+		public function key() {
 			return $this->offset;
 		}
 
-		function next() {
+		public function next() {
 			$this->offset = $this->offset + 1;
 		}
 
-		function rewind() {
+		public function rewind() {
 			$this->offset = 0;
 		}
 
-		function valid() {
+		public function valid() {
 			return ($this->offset >= 0);
 		}
 
@@ -64,15 +65,15 @@
 
 	class pinp_selector extends selector {
 
-		function _create($string) {
+		public function _create($string) {
 			return new pinp_selector($string);
 		}
 
-		function _run($count, $offset = 0, $definitions = Array()) {
+		public function _run($count, $offset = 0, $definitions = Array()) {
 			return $this->run($count, $offset, $definitions);
 		}
 
-		function &_getIterator($count, $definitions = Array()) {
+		public function _getIterator($count, $definitions = Array()) {
 			return new pinp_selectorIterator($count, $definitions);
 		}
 
@@ -81,27 +82,27 @@
 
 	class pinp_selectorIterator extends selectorIterator {
 
-		function pinp_selectorIterator($selector, $count, $definitions = Array()) {
-			return selectorIterator::selectorIterator($selector, $count, $definitions);
+		public function pinp_selectorIterator($selector, $count, $definitions = Array()) {
+			return parent::__construct($selector, $count, $definitions);
 		}
 
-		function _current() {
+		public function _current() {
 			return $this->current();
 		}
 
-		function _key() {
+		public function _key() {
 			return $this->key();
 		}
 
-		function _next() {
+		public function _next() {
 			return $this->next();
 		}
 
-		function _rewind() {
+		public function _rewind() {
 			return $this->rewind();
 		}
 
-		function _valid() {
+		public function _valid() {
 			return $this->valid();
 		}
 
