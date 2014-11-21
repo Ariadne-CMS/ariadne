@@ -565,7 +565,7 @@
 		public $min;
 		public $max;
 
-		abstract public function run($count, $offset, $modifiers = Array());
+		abstract public function run($count, $offset, $modifiers = array());
 
 		public function setModifiers($modifiers) {
 			$this->modifiers = $modifiers;
