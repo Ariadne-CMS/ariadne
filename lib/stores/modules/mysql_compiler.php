@@ -198,7 +198,7 @@ class mysql_compiler extends sql_compiler {
 					case '=*':
 					case '=**':
 						if ($node["left"]["id"]!=="implements" && $this->store->is_supported("fulltext")) {
-							$left=$this->compile_tree($node["left"], Array("no_context_join" => true));
+							$left=$this->compile_tree($node["left"], array("no_context_join" => true));
 							$right=$this->compile_tree($node["right"]);
 							/* fulltext search operators: =*, !*, =**, !** */
 							$operator = $node["operator"];
@@ -225,7 +225,7 @@ class mysql_compiler extends sql_compiler {
 				if ($node["left"]["id"]!=="implements") {
 					$left=$this->compile_tree($node["left"]);
 					if ($likeOp) {
-						$right=$this->compile_tree($node["right"], Array('escape_chars' => true));
+						$right=$this->compile_tree($node["right"], array('escape_chars' => true));
 					} else {
 						$right=$this->compile_tree($node["right"]);
 					}
@@ -303,8 +303,12 @@ class mysql_compiler extends sql_compiler {
 	protected function priv_sql_compile($tree) {
 		$this->custom_ref = 0;
 		$this->custom_id = 0;
-		$this->used_tables="";
+		$this->used_tables = array();
 		$this->compile_tree($tree);
+
+		$prop_dep = '';
+		$query = '';
+		$orderby = '';
 
 		if ( $this->error ) {
 			return null;
@@ -367,7 +371,7 @@ class mysql_compiler extends sql_compiler {
 		$select_query .= $orderby . " $this->limit_s ";
 		$count_query = "select count(distinct($nodes.path)) as count from $tables ".$query;
 
-		return Array("select_query" => $select_query, "count_query" => $count_query);
+		return array("select_query" => $select_query, "count_query" => $count_query);
 	}
 
   }
