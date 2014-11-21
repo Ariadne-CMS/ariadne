@@ -114,44 +114,33 @@ define('SERVICES_JSON_SUPPRESS_ERRORS', 32);
  */
 
 class pinp_JSON {
-	function _encode($var, $use=0) {
+	public static function _encode($var, $use=0) {
 		return JSON::encode($var, $use);
 	}
-	function _decode($str, $use=0) {
+	public static function _decode($str, $use=0) {
 		return JSON::decode($str, $use);
 	}
-	function _indent($str, $newLine="\n", $indentStr="\t") {
+	public static function _indent($str, $newLine="\n", $indentStr="\t") {
 		return JSON::indent($str, $newLine, $indentStr);
 	}
 }
 
 class JSON {
-	function getInstance($use) {
+	public static function getInstance($use) {
 		return new Services_JSON($use);
 	}
 
-/*
-	Dit werkt niet...
-
-	function getInstance($use) {
-		if (!JSON::json) {
-			JSON::json = new Services_JSON($use);
-		}
-		return JSON::json;
-	}
-*/
-
-	function encode($var, $use=0) {
+	public static function encode($var, $use=0) {
 		$json = JSON::getInstance($use);
 		return $json->encode($var);
 	}
 
-	function decode($str, $use=0) {
+	public static function decode($str, $use=0) {
 		$json = JSON::getInstance($use);
 		return $json->decode($str);
 	}
 
-	function indent($json, $newLine="\n", $indentStr="\t") {
+	public static function indent($json, $newLine="\n", $indentStr="\t") {
 	/**
 	 * Indents a flat JSON string to make it more human-readable
 	 *
@@ -214,7 +203,7 @@ class Services_JSON
     *                                   bubble up with an error, so all return values
     *                                   from encode() should be checked with isError()
     */
-    function Services_JSON($use = 0)
+    public function __construct($use = 0)
     {
         $this->use = $use;
     }
@@ -230,7 +219,7 @@ class Services_JSON
     * @return   string  UTF-8 character
     * @access   private
     */
-    function utf162utf8($utf16)
+    protected function utf162utf8($utf16)
     {
         // oh please oh please oh please oh please oh please
         if(function_exists('mb_convert_encoding')) {
@@ -274,7 +263,7 @@ class Services_JSON
     * @return   string  UTF-16 character
     * @access   private
     */
-    function utf82utf16($utf8)
+    protected function utf82utf16($utf8)
     {
         // oh please oh please oh please oh please oh please
         if(function_exists('mb_convert_encoding')) {
@@ -318,7 +307,7 @@ class Services_JSON
     * @return   mixed   JSON string representation of input var or an error if a problem occurs
     * @access   public
     */
-    function encode($var)
+    public function encode($var)
     {
         switch (gettype($var)) {
             case 'boolean':
@@ -515,7 +504,7 @@ class Services_JSON
     * @return   string  JSON-formatted name-value pair, like '"name":value'
     * @access   private
     */
-    function name_value($name, $value)
+    protected function name_value($name, $value)
     {
         $encoded_value = $this->encode($value);
 
@@ -534,7 +523,7 @@ class Services_JSON
     * @return   string  string value stripped of comments and whitespace
     * @access   private
     */
-    function reduce_string($str)
+    protected function reduce_string($str)
     {
         $str = preg_replace(array(
 
@@ -565,7 +554,7 @@ class Services_JSON
     *                   in ASCII or UTF-8 format!
     * @access   public
     */
-    function decode($str)
+    public function decode($str)
     {
         $str = $this->reduce_string($str);
 
@@ -847,7 +836,7 @@ class Services_JSON
     /**
      * @todo Ultimately, this should just call PEAR::isError()
      */
-    function isError($data, $code = null)
+    public function isError($data, $code = null)
     {
         if (class_exists('pear')) {
             return PEAR::isError($data, $code);
@@ -864,7 +853,7 @@ if (class_exists('PEAR_Error')) {
 
     class Services_JSON_Error extends PEAR_Error
     {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
+        function __construct($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
             parent::PEAR_Error($message, $code, $mode, $options, $userinfo);
@@ -878,7 +867,7 @@ if (class_exists('PEAR_Error')) {
      */
     class Services_JSON_Error
     {
-        function Services_JSON_Error($message = 'unknown error', $code = null,
+        function __construct($message = 'unknown error', $code = null,
                                      $mode = null, $options = null, $userinfo = null)
         {
 
