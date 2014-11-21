@@ -285,8 +285,7 @@ class mysql_compiler extends sql_compiler {
 				$this->where_s=$this->compile_tree($node["left"]);
 				if ($node["limit"]) {
 					$this->limit_s=" limit ".(int)$node["offset"].", ".$node["limit"]." ";
-				} else
-				if ($node["offset"]) {
+				} else if ($node["offset"]) {
 					$this->limit_s=" limit ".(int)$node["offset"]." ";
 				} else {
 					if ($this->limit) {
