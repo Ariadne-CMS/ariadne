@@ -12,6 +12,8 @@
 	}
 
 	class ar_connect_multigateClient extends arBase {
+		private $host, $port;
+		public $errorNr, $errorStr;
 
 		public function __construct( $host, $port ) {
 			$this->host = $host;
