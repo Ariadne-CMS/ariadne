@@ -12,13 +12,14 @@ class ar_connect_twitter extends arBase {
 	public static function parse( $text, $parseTwitterLinks = true ) {
 		// FIXME: allow normal links and mailto links to be specified like the user and argument links
 		// link URLs
-		$text = " ".preg_replace( "/(([[:alnum:]]+:\/\/)|www\.)([^[:space:]]*)".
-			"([[:alnum:]#?\/&=])/i", "<a href=\"\\1\\3\\4\" target=\"_blank\">".
-			"\\1\\3\\4</a>", $text);
+		$text = " ".preg_replace(
+			"/(([[:alnum:]]+:\/\/)|www\.)([^[:space:]]*)([[:alnum:]#?\/&=])/i",
+			"<a href=\"\\1\\3\\4\" target=\"_blank\">\\1\\3\\4</a>", $text);
 
 		// link mailtos
-		$text = preg_replace( "/(([a-z0-9_]|\\-|\\.)+@([^[:space:]]*)".
-			"([[:alnum:]-]))/i", "<a href=\"mailto:\\1\">\\1</a>", $text);
+		$text = preg_replace(
+			"/(([a-z0-9_]|\\-|\\.)+@([^[:space:]]*)([[:alnum:]-]))/i",
+			"<a href=\"mailto:\\1\">\\1</a>", $text);
 
 		if ( $parseTwitterLinks ) {
 			if ( is_array($parseTwitterLinks) ) {
