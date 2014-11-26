@@ -313,6 +313,8 @@
 
 		protected $file = null;
 		protected $fileContainsHeaders = true;
+		protected $currentLine;
+		protected $currentIndex;
 
 		public function __construct( $file, $configuration = array() ) {
 			$this->configuration = $configuration + $this->configuration;
