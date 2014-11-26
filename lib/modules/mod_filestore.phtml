@@ -167,25 +167,7 @@
 
 		public function templateCodeFunction($fsId, $fsName) {
 				$template = 
-				' $local = new object(); '.
-				' $local->data = $AR_this->data; '.
-				' $local->customdata = $AR_this->customdata; '.
-				' $local->nlsdata = $AR_this->nlsdata; '.
-				' $local->customnlsdata = $AR_this->customnlsdata; '.
-				' $local->path = $AR_this->path; '.
-				' $local->parent = $AR_this->parent; '.
-				' $local->type = $AR_this->type; '.
-				' $local->vtype = $AR_this->vtype; '.
-				' $local->priority = $AR_this->priority; '.
-				' $local->id = $AR_this->id; '.
-				' $local->lastchanged = $AR_this->lastchanged; '.
-				' $local->size = $AR_this->size; '.
-				' $local->nls = $AR_this->nls; '.
-				' $local->reqnls = $AR_this->reqnls; '.
-				' $local->arIsNewObject = $AR_this->arIsNewObject; '.
-				' $local->this = $AR_this; '.
-				' $local->store = $AR_this->store; '.
-				' $local->ARnls = &$AR_this->ARnls; '.
+				' $local = new ar_core_pinpSandbox($AR_this); '.
 				' ?'.'>'.
 				$this->read($fsId, $fsName).
 				'<'.'?php ';

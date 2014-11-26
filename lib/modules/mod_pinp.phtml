@@ -865,6 +865,38 @@ class pinp {
 		$this->token_ahead_value = $token_value;
 	}
 
+	function parse_argument_list() {
+		$result = array (
+			'arguments' => array(),
+			'parsed' => ''
+		);
+		do {
+			if ($this->token_ahead == PT_COMMA ) {
+				// next statement
+				$result['parsed'] .= ', ';
+				$this->next_token();
+			}
+			// parse variable
+			if($this->token_ahead == PT_VAR_REFERENCE ) {
+
+				$this->next_token();
+
+				if ($this->token_ahead != PT_IDENT) {
+					$this->error = "Expected variable name at line ".$this->scanner->YYLINE;
+					$result = false;
+				} else {
+					$this->next_token();
+					$result['parsed'].= '$'.$this->token_value;
+					$result['arguments'][] = trim($this->token_value);
+				}
+
+			} else {
+					$this->error = "Unexpected token ".$this->token_ahead." at line ".$this->scanner->YYLINE;
+					$result = false;
+			}
+		} while (!$this->error && ($this->token_ahead == PT_COMMA));
+		return $result;
+	}
 
 	function parse_func_call_args() {
 		do {
@@ -1341,6 +1373,61 @@ class pinp {
 				case PT_USE:
 				case PT_AS:
 					$this->error = "Aliasing/Importing is not supported yet. Error at line: ".$this->scanner->YYLINE;
+				break;
+				case PT_FUNCTION:
+					$result .= $this->token_ahead_value;
+					$this->next_token();
+					if ($this->token_ahead != PT_PAR_OPEN) {
+						$this->error = "Expected '(' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;
+						return false;
+					} else {
+						$result .= $this->token_ahead_value;
+						$this->next_token();
+						if( $this->token_ahead != PT_PAR_CLOSE ) {
+							$arguments = $this->parse_argument_list();
+						} else {
+							$arguments = array(
+								'arguments' => array()
+							);
+						}
+						$result .= $arguments['parsed'];
+						if (!$this->error) {
+							if ($this->token_ahead != PT_PAR_CLOSE) {
+								$this->error = "Expected ')' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;
+								return false;
+							}
+
+							$result .= $this->token_ahead_value;
+							$this->next_token();
+
+							$result .= ' use ('.substr($this->var_prefix,0,-2).') ';
+
+							if ( $this->token_ahead !=  PT_CBRACE_OPEN ) {
+								$this->error = "Expected '{' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;
+								return false;
+							}
+
+							$result .= $this->token_ahead_value;
+							$this->next_token();
+
+							$functionPreable = ' '.substr($this->var_prefix,0,-2).' = new ar_core_pinpSandbox('.$this->var_prefix.'this);';
+							foreach($arguments['arguments'] as $arg ) {
+								$functionPreable .= ' '.$this->var_prefix.'{'.$arg .'} = ${'.$arg.'}; ';
+							}
+							$result .= $functionPreable;
+
+							// statement list
+							$result .= $this->parse_statement_list();
+
+							if ($this->token_ahead !=  PT_CBRACE_CLOSE ) {
+								$this->error = "Expected '{' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;
+								return false;
+							}
+							$result .= $this->token_ahead_value;
+							$this->next_token();
+						}
+					}
+					return $result;
 				break;
 				case PT_NAMESPACE:
 				case PT_NAMESPACE_SEPERATOR:

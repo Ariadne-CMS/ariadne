@@ -226,7 +226,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
-		$ret = eval(' $object = new object(); ?'.'>'.$res);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
 		$this->assertEquals(5,$ret);
 	}
 
@@ -241,7 +241,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
-		$ret = eval(' $object = new object(); ?'.'>'.$res);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
 		$this->assertEquals('test',$ret);
 	}
 
@@ -257,11 +257,133 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
-		$ret = eval(' $object = new object(); ?'.'>'.$res);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
 		$this->assertEquals(42,$ret);
 	}
 
+	public function testClosuresCallback() {
+		$template = <<<'EOD'
+<pinp>
+	$test = array(1,2,3,4,5,6,7,8,9,10);
+	$var = function ($a) {
+		return $a*2;
+	};
 
+	return array_map($var, $test);
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertEquals(20,end($ret));
+	}
+
+	public function testClosures() {
+		$template = <<<'EOD'
+<pinp>
+	$test = 'outside';
+	$var = function () {
+		return $test;
+	};
+
+	return $var($test);
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertNull($ret);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testClosuresThisReadonly() {
+		$template = <<<'EOD'
+<pinp>
+	return ($this = null);
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertNull($ret);
+	}
+
+
+	public function testClosuresThisAvailable() {
+		$template = <<<'EOD'
+<pinp>
+	$var = function ($outsidethis) {
+		return ($outsidethis == $this);
+	};
+
+	return $var($this);
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertTrue($ret);
+	}
+
+	public function testClosuresIlligalCallString() {
+		$template = <<<'EOD'
+<pinp>
+	$call1 = 'rand';
+	return $call1();
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertInstanceOf('ar_error',$ret);
+	}
+
+	public function testClosuresIlligalCallArray() {
+		$template = <<<'EOD'
+<pinp>
+	$call2 = array ('pobject','make_path');
+	return $call2();
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertInstanceOf('ar_error',$ret);
+	}
+
+	public function testClosuresNesting() {
+		$template = <<<'EOD'
+<pinp>
+	$func = function ($a) {
+		$b = function ($a) {
+			return 2*$a;
+		};
+		return $b($a)+1;
+	};
+
+	return $func(3);
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertEquals(7,$ret);
+	}
 
 }
-?>
