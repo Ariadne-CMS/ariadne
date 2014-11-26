@@ -214,7 +214,7 @@
 
 		public static function acquire( $varname, $options = array() ) {
 			$context = self::context();
-			return $context->acquire( $varname, $options = array() );
+			return $context->acquire( $varname, $options);
 		}
 
 	}
@@ -307,7 +307,7 @@
 
 
 	class ar_error extends ar_exceptionDefault {
-		static $throwExceptions = false;
+		protected static $throwExceptions = false;
 
 		public function __call($name, $arguments) {
 			if (($name[0]==='_')) {
@@ -423,7 +423,7 @@
 		}
 
 		public static function _acquire( $varname, $options = array() ) {
-			return ar::acquire( $varname, $options = array() );
+			return ar::acquire( $varname, $options );
 		}
 	}
 
@@ -533,9 +533,9 @@
 
 	interface arKeyValueStoreInterface {
 
-		function getvar( $name );
+		public function getvar( $name );
 
-		function putvar( $name, $value );
+		public function putvar( $name, $value );
 
 	}
 
