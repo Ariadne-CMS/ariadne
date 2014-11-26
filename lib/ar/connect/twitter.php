@@ -38,20 +38,18 @@ class ar_connect_twitter extends arBase {
 			if ($userLink) {
 				//link twitter users
 				$text = preg_replace_callback( '/([\b ])@([a-z0-9_]*)\b/i',
-					create_function(
-						'$matches',
-						'return $matches[1].str_replace( "{user}", $matches[2], "'.AddCSlashes( (string) $userLink, '"' ).'" );'
-					),
+					function ( $matches ) use ( $userLink )  {
+						return $matches[1].str_replace( "{user}", $matches[2], $userLink );
+					},
 					$text
 				);
 			}
 			if ($argumentLink) {
 				//link twitter arguments
 				$text = preg_replace_callback( '/([\b ])#([a-z0-9_]*)\b/i',
-					create_function(
-						'$matches',
-						'return $matches[1].str_replace( "{argument}", $matches[2], "'.AddCSlashes( (string) $argumentLink, '"' ).'" );'
-					),
+					function ( $matches ) use ( $argumentLink )  {
+						return $matches[1].str_replace( "{argument}", $matches[2], $argumentLink );
+					},
 					$text
 				);
 			}
