@@ -353,16 +353,16 @@
 	class ar_html_formButton {
 
 		protected $form;
-		public $type, $name, $value, $class, $id;
+		public $type, $name, $value, $class, $id, $title;
 
 		public function __construct($button, $form) {
-			$this->form 	= $form;
-			$this->type	= isset($button->type) ? $button->type : null;
-			$this->name	= isset($button->name) ? $button->name : null;
-			$this->value	= isset($button->value) ? $button->value : null;
-			$this->class	= isset($button->class) ? $button->class : null;
-			$this->id	= isset($button->id) ? $button->id : null;
-			$this->title    = isset($button->title) ? $button->title : null;
+			$this->form   = $form;
+			$this->type   = isset($button->type) ? $button->type : null;
+			$this->name   = isset($button->name) ? $button->name : null;
+			$this->value  = isset($button->value) ? $button->value : null;
+			$this->class  = isset($button->class) ? $button->class : null;
+			$this->id     = isset($button->id) ? $button->id : null;
+			$this->title  = isset($button->title) ? $button->title : null;
 		}
 
 		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $title=null, $extra=null) {
@@ -385,9 +385,9 @@
 				$title = $this->title;
 			}
 			$attributes = array(
-				'type'	=> $type,
-				'name'	=> $name,
-				'value'	=> $value
+				'type'  => $type,
+				'name'  => $name,
+				'value' => $value
 			);
 			if (isset($class)) {
 				$attributes['class'] = $class;
@@ -410,7 +410,7 @@
 	}
 
 	class ar_html_formButtonImage extends ar_html_formButton {
-		public $src;
+		public $src, $alt;
 
 		public function __construct($button, $form) {
 			parent::__construct($button, $form);
@@ -432,7 +432,7 @@
 	class ar_html_formInput {
 
 		protected $form;
-		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value;
+		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value, $title, $help;
 
 		public function __construct($field, $form) {
 			$this->form		= $form;
@@ -733,7 +733,7 @@
 	}
 
 	class ar_html_formInputButton extends ar_html_formInput {
-		public $buttontype, $buttonlabel;
+		public $buttonType, $buttonLabel;
 
 		public function __construct( $field, $form ) {
 			parent::__construct( $field, $form );
@@ -776,7 +776,7 @@
 	}
 
 	class ar_html_formInputText extends ar_html_formInput {
-		var $maxlength, $size;
+		public $maxlength, $size;
 
 		public function __construct( $field, $form ) {
 			parent::__construct( $field, $form );
@@ -846,7 +846,7 @@
 
 	class ar_html_formInputFile extends ar_html_formInput {
 
-		var $multiple = false;
+		public $multiple = false;
 
 		public function __construct( $field, $form ) {
 			parent::__construct( $field, $form );
@@ -883,7 +883,7 @@
 
 	class ar_html_formInputTextarea extends ar_html_formInputText {
 
-		var $maxlength, $rows, $cols;
+		public $rows, $cols;
 
 		public function __construct( $field, $form ) {
 			parent::__construct( $field, $form );
@@ -942,6 +942,7 @@
 	}
 
 	class ar_html_formInputSelect extends ar_html_formInput {
+		public $options;
 
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
@@ -1111,6 +1112,7 @@
 	}
 
 	class ar_html_formInputCheckbox extends ar_html_formInput {
+		public $checkedValue, $uncheckedValue;
 
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
@@ -1340,6 +1342,7 @@
 	}
 
 	class ar_html_formInputFieldList extends ar_html_formInputFieldset {
+		public $defaultField, $newField;
 
 		protected function normalizeChildren( $value ) {
 			// make sure the children are a simple array, with numeric keys and that the name of the field
