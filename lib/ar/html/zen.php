@@ -22,6 +22,12 @@
 		const T_OP_SIBLINGS         = 15;
 		const T_OP_SETTING          = 16;
 
+		protected $YYLINE, $YYBUFFER, $YYCURSOR, $YYSTATE;
+		protected $class_ident = array();
+		protected $class_ident_next = array();
+		protected $class_number = array();
+		protected $class_whitespace = array();
+
 		public function __construct( $string ) {
 			$parser = new ar_html_zenParser($string);
 			$nodes = $parser->run();
