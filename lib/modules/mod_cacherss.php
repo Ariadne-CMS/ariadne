@@ -30,7 +30,7 @@ class cacherss {
 
 		$rssfeed->parseString( $this->xmldata);
 		$rss_channel = $rssfeed->info();
-		return Array("title" => $rss_channel['title'], "link" => $rss_channel['link']);
+		return array("title" => $rss_channel['title'], "link" => $rss_channel['link']);
 	}
 }
 
@@ -68,10 +68,10 @@ class cacherssfeed {
 	public function parseString( $xmldata ) {
 		// reset namestack
 		$this->xmldata = $xmldata;
-		$this->ns = Array();
-		$this->elements = Array();
-		$this->rss_items = Array();
-		$this->rss_channel = Array();
+		$this->ns = array();
+		$this->elements = array();
+		$this->rss_items = array();
+		$this->rss_channel = array();
 
 		// Finding the RSS feed source encoding - thanks to the pointers on
 		// http://minutillo.com/steve/weblog/2004/6/17/php-xml-and-character-encodings-a-tale-of-sadness-rage-and-data-loss
@@ -119,7 +119,7 @@ class cacherssfeed {
 	}
 
 	protected function startElement($parser, $name, $attribs) {
-		$newElement = Array();
+		$newElement = array();
 		$element = &$this->elements;
 		foreach ($this->ns as $n) {
 			$parentElement = $element;
@@ -220,7 +220,7 @@ class cacherssfeed {
 	}
 
 	public function getArray() {
-		$result=Array();
+		$result=array();
 		do {
 			$result[]=$this->current();
 		} while ($this->next());
