@@ -44,7 +44,7 @@
 		}
 
 		public function getvar( $name ) {
-			return $this->value[ $name ];
+			return $this->values[ $name ];
 		}
 
 		public function configure( $name, $value = null ) {
@@ -61,7 +61,7 @@
 				$name = 'ARUserCookie';
 			}
 			$this->name = $name;
-			return setcookie( $this->name, serialize( $this->value ), $this->configuration['expire'],
+			return setcookie( $this->name, serialize( $this->values ), $this->configuration['expire'],
 				$this->configuration['path'], $this->configuration['domain'], $this->configuration['secure'] );
 		}
 
