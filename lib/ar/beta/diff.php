@@ -38,7 +38,7 @@
 					$rows[] = ar_html::tag("tr", $cells);
 				}
 
-				if (sizeof($rows)) {
+				if (count($rows)) {
 					$table = ar_html::tag("table", array("class" => "diff"), $rows);
 					$table->insertBefore(ar_html::tag("col", array("class" => "content")), $table->firstChild);
 					$table->insertBefore(ar_html::tag("col"), $table->firstChild);

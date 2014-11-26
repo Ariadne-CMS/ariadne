@@ -1291,7 +1291,7 @@
 		}
 
 		public function hasChildren() {
-			return sizeof($this->children)>0;
+			return count($this->children)>0;
 		}
 
 		public function getField($content=null) {
