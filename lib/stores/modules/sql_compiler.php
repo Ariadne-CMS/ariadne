@@ -9,12 +9,12 @@ abstract class sql_compiler {
 	protected $limit;
 	protected $cache;
 	protected $path;
-	protected $_SCAN_WS        = Array(" " => true, "\t" => true, "\n" => true ,"\r" => true);
-	protected $_SCAN_AZ        = Array("a" => true, "A" => true, "b" => true, "B" => true, "c" => true, "C" => true, "d" => true, "D" => true, "e" => true, "E" => true, "f" => true, "F" => true, "g" => true, "G" => true, "h" => true, "H" => true, "i" => true, "I" => true, "j" => true, "J" => true, "k" => true, "K" => true, "l" => true, "L" => true, "m" => true, "M" => true, "n" => true, "N" => true, "o" => true, "O" => true, "p" => true, "P" => true, "q" => true, "Q" => true, "r" => true, "R" => true, "s" => true, "S" => true, "t" => true, "T" => true, "u" => true, "U" => true, "v" => true, "V" => true, "w" => true, "W" => true, "x" => true, "X" => true, "y" => true, "Y" => true, "z" => true, "Z" => true);
-	protected $_SCAN_AZ_09     = Array("a" => true, "A" => true, "b" => true, "B" => true, "c" => true, "C" => true, "d" => true, "D" => true, "e" => true, "E" => true, "f" => true, "F" => true, "g" => true, "G" => true, "h" => true, "H" => true, "i" => true, "I" => true, "j" => true, "J" => true, "k" => true, "K" => true, "l" => true, "L" => true, "m" => true, "M" => true, "n" => true, "N" => true, "o" => true, "O" => true, "p" => true, "P" => true, "q" => true, "Q" => true, "r" => true, "R" => true, "s" => true, "S" => true, "t" => true, "T" => true, "u" => true, "U" => true, "v" => true, "V" => true, "w" => true, "W" => true, "x" => true, "X" => true, "y" => true, "Y" => true, "z" => true, "Z" => true, "_" => true, "0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true);
-	protected $_SCAN_NUM       = Array("0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true);
-	protected $_SCAN_NUM_START = Array("0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true, "-" => true);
-	protected $_SCAN_CMP       = Array("~" => Array("=" => Array("FIN" => true)), "=" => Array("=" => Array("FIN" => true), "FIN" => true, "~" => Array("FIN" => true, "~" => Array("FIN" => true)), "*" => Array("FIN" => true, "*" => Array("FIN" => true)), "/" => Array("FIN" => true)), "!" => Array("=" => Array("FIN" => true), "~" => Array("FIN" => true, "~" => Array("FIN" => true)), "*" => Array("FIN" => true, "*" => Array("FIN" => true)), "/" => Array("FIN" => true, "/" => Array("FIN" => true))), "<" => Array("=" => Array("FIN" => true), "FIN" => true), ">" => Array("=" => Array("FIN" => true), "FIN" => true), "/" => Array("=" => Array("=" => Array("FIN" => true))));
+	protected $_SCAN_WS        = array(" " => true, "\t" => true, "\n" => true ,"\r" => true);
+	protected $_SCAN_AZ        = array("a" => true, "A" => true, "b" => true, "B" => true, "c" => true, "C" => true, "d" => true, "D" => true, "e" => true, "E" => true, "f" => true, "F" => true, "g" => true, "G" => true, "h" => true, "H" => true, "i" => true, "I" => true, "j" => true, "J" => true, "k" => true, "K" => true, "l" => true, "L" => true, "m" => true, "M" => true, "n" => true, "N" => true, "o" => true, "O" => true, "p" => true, "P" => true, "q" => true, "Q" => true, "r" => true, "R" => true, "s" => true, "S" => true, "t" => true, "T" => true, "u" => true, "U" => true, "v" => true, "V" => true, "w" => true, "W" => true, "x" => true, "X" => true, "y" => true, "Y" => true, "z" => true, "Z" => true);
+	protected $_SCAN_AZ_09     = array("a" => true, "A" => true, "b" => true, "B" => true, "c" => true, "C" => true, "d" => true, "D" => true, "e" => true, "E" => true, "f" => true, "F" => true, "g" => true, "G" => true, "h" => true, "H" => true, "i" => true, "I" => true, "j" => true, "J" => true, "k" => true, "K" => true, "l" => true, "L" => true, "m" => true, "M" => true, "n" => true, "N" => true, "o" => true, "O" => true, "p" => true, "P" => true, "q" => true, "Q" => true, "r" => true, "R" => true, "s" => true, "S" => true, "t" => true, "T" => true, "u" => true, "U" => true, "v" => true, "V" => true, "w" => true, "W" => true, "x" => true, "X" => true, "y" => true, "Y" => true, "z" => true, "Z" => true, "_" => true, "0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true);
+	protected $_SCAN_NUM       = array("0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true);
+	protected $_SCAN_NUM_START = array("0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true, "-" => true);
+	protected $_SCAN_CMP       = array("~" => array("=" => array("FIN" => true)), "=" => array("=" => array("FIN" => true), "FIN" => true, "~" => array("FIN" => true, "~" => array("FIN" => true)), "*" => array("FIN" => true, "*" => array("FIN" => true)), "/" => array("FIN" => true)), "!" => array("=" => array("FIN" => true), "~" => array("FIN" => true, "~" => array("FIN" => true)), "*" => array("FIN" => true, "*" => array("FIN" => true)), "/" => array("FIN" => true, "/" => array("FIN" => true))), "<" => array("=" => array("FIN" => true), "FIN" => true), ">" => array("=" => array("FIN" => true), "FIN" => true), "/" => array("=" => array("=" => array("FIN" => true))));
 
 
 	protected function parse_const(&$YYBUFFER) {
@@ -256,7 +256,7 @@ abstract class sql_compiler {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 3);
 				$right = $this->parse_group_expr($YYBUFFER);
 				if (is_array($right)) {
-					$result = Array(
+					$result = array(
 						'id' => $ident,
 						'left' => $result,
 						'right' => $right
@@ -283,7 +283,7 @@ abstract class sql_compiler {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 2);
 				$right = $this->parse_and_expr($YYBUFFER);
 				if (is_array($right)) {
-					$result = Array(
+					$result = array(
 						'id' => $ident,
 						'left' => $result,
 						'right' => $right
@@ -324,7 +324,7 @@ abstract class sql_compiler {
 			$sort_type = 'ASC';
 		}
 		while (is_array($field)) {
-			$result = Array(
+			$result = array(
 				'id' => 'orderbyfield',
 				'type' => $sort_type,
 				'right' => $field,
@@ -436,7 +436,7 @@ abstract class sql_compiler {
 */
 
 		if (preg_match('|^[[:space:]]*join[[:space:]]*target[[:space:]]*on[[:space:]]*|i', $query, $regs)) {
-			$this->join_target_properties = Array();
+			$this->join_target_properties = array();
 			$query = substr($query, strlen($regs[0]));
 			$this->parse_join_target_properties($query);
 		}
