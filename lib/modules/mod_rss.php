@@ -39,6 +39,25 @@
 	}
 
 	class rssFeed {
+		public $object;
+		public $rss_url;
+		public $rss_user;
+		public $rss_password;
+		public $error;
+		public $feedstring;
+		public $ns;
+		public $elements;
+		public $rss_items;
+		public $rss_fp;
+		public $xmldata;
+		public $encoding;
+		public $parser;
+		public $attribs;
+		public $newElement;
+		public $n;
+		public $rss_data;
+		public $eof;
+		public $result;
 
 		public function __construct($object) {
 			$this->object = $object;
