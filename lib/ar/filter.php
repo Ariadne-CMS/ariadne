@@ -3,13 +3,13 @@
 ar_pinp::allow('ar_filter');
 
 /*
-	'/foo/'      
+	'/foo/'
 	-> matches a message with root entry 'foo'
 	'/foo/,/bar/'
 	-> matches a message with both /foo/ and /bar/
-	'/foo:bar/'  
+	'/foo:bar/'
 	-> matches a message with root entry 'foo' with string value 'bar'
-	'/foo/bar/'  
+	'/foo/bar/'
 	-> matches a message with root entry 'foo' with a child entry 'bar'
 	'/foo/.../bar/'
 	-> matches a message with root entry 'foo' with a descendant entry
@@ -22,7 +22,7 @@ ar_pinp::allow('ar_filter');
 	'!/.../foo/'
 	-> matches a message that has no entry 'foo' at any level
 	'/foo:"[a-z][a-z0-9]*"/'
-	-> matches a message that has a root entry foo with a value that 
+	-> matches a message that has a root entry foo with a value that
 	   matches the regular expression / [a-z][a-z0-9]* /i
 */
 class ar_filter {
@@ -33,14 +33,14 @@ class ar_filter {
 		}
 		$quotedRe = '"(?:[^"\\\\]|\\\\.)*"';
 		$searchPathRe = "([^\",]|$quotedRe)+";
-		$firstSearchPathRe = "/^($searchPathRe)(,|$)/";	
+		$firstSearchPathRe = "/^($searchPathRe)(,|$)/";
 		$searchPath = false;
 		while ( preg_match( $firstSearchPathRe, $filter, $matches ) ) {
 			$searchPath = $matches[1];
 			$filter = substr( $filter, strlen( $searchPath ) + 1 );
-			if ( !self::matchSearchPath( 
-				$message, 
-				trim( $searchPath ) ) ) 
+			if ( !self::matchSearchPath(
+				$message,
+				trim( $searchPath ) ) )
 			{
 				return false;
 			}
@@ -50,7 +50,7 @@ class ar_filter {
 		}
 		return true;
 	}
-	
+
 	static private function hasValue( $data, $name ) {
 		if ( is_array( $data ) || $data instanceof \ArrayObject ) {
 			if ( array_key_exists( $name, (array) $data ) ) {
@@ -116,7 +116,7 @@ class ar_filter {
 				} else {
 					$searchPath = substr( $searchPath, strlen( $matches[0] ) - 1 );
 					if ( $searchPath != '/' ) {
-						$result = self::matchSearchPath( 
+						$result = self::matchSearchPath(
 							$messageValue, $searchPath );
 					} else {
 						$result = true;
@@ -127,11 +127,11 @@ class ar_filter {
 				return !$negate ;
 			}
 		} else {
-			
+
 		}
 		return $negate;
 	}
-	
+
 	static private function matchDeepSearchPath( $message, $searchPath, $negate = false ) {
 		$result = self::matchSearchpath( $message, $searchPath );
 		if ( $result ) {
@@ -141,7 +141,7 @@ class ar_filter {
 			$message = get_object_vars($message);
 		}
 		foreach ( (array) $message as $key => $subMessage ) {
-			$result = self::matchDeepSearchPath( 
+			$result = self::matchDeepSearchPath(
 				$subMessage, $searchPath );
 			if ( $result ) {
 				return !$negate;
@@ -149,7 +149,7 @@ class ar_filter {
 		}
 		return $negate;
 	}
-	
+
 }
 
 ?>

@@ -83,7 +83,7 @@
 						if ( !isset($listener['type']) ||
 							 ( $listener['type'] == $strObjectType ) ||
 							 ( $listener['type'] == $objectTypeStripped ) ||
-							 ( is_a( $strObjectType, $listener['type'] ) ) ) 
+							 ( is_a( $strObjectType, $listener['type'] ) ) )
 						{
 							$continue = true;
 							if ( count($listener['filters']) ) {
