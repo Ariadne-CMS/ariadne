@@ -8,15 +8,16 @@
  * @author Auke van Slooten <auke@muze.nl>
 */
 
-require_once($this->store->get_config('code')."/modules/mod_json.php");
 require_once($this->store->get_config('code')."/modules/mod_error.php");
 
 /**
  * This is the Google Maps geo helper/getter class
  */
 class geo_gmap {
-	function getRawData($address, $output='php') {
-		$address	= urlencode($address);
+	public $api_key;
+
+	public function getRawData($address, $output='php') {
+		$address = urlencode($address);
 		if ($output=='php') {
 			$send_output = 'json';
 		} else {
@@ -25,13 +26,13 @@ class geo_gmap {
 		$url="http://maps.google.com/maps/geo?q=".$address."&output=".$send_output."&key=".$this->api_key;
 		$res = file_get_contents($url);
 		if ($output=='php') {
-			return JSON::decode($res);
+			return json_decode($res, true);
 		} else {
 			return $res;
 		}
 	}
 
-	function getLatLong($address) {
+	public function getLatLong($address) {
 		$data=$this->getRawData($address, 'php');
 		if ($data->Status->code!=200) {
 			return error::raiseError('MOD_GEO: connection to Google Maps failed: '.$data->Status->code, 'geo_4');
@@ -46,13 +47,17 @@ class geo_gmap {
  * This is the main mod_geo class
  */
 class geo {
+	protected $output;
+	protected $api;
+	protected $api_key;
+	protected $getter;
 
 	/**
 	*  init configures the geo module to use the given API and any necessary extra parameters for that API
 	*
 	* @param 	hash	$config	hash containing at least 'API', default is 'GMap' for Google Maps.
 	*/
-	function init($config) {
+	public function init($config) {
 		if (!$config['API'] || $config['API']=='GMap') {
 			$this->api = 'GMap';
 			$this->api_key = $config['KEY'];
@@ -80,7 +85,7 @@ class geo {
 	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable.
 	* @param	string	$output	type of output to return, possible values are 'xml','kml','cvs' and 'json'. Default is 'json'. In the case of 'json' the result will automatically be converted to PHP arrays
 	*/
-	function getRawData($address, $output = null) {
+	public function getRawData($address, $output = null) {
 		if (!$output) {
 			$output = $this->output;
 		}
@@ -99,7 +104,7 @@ class geo {
 	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable.
 	*/
 
-	function getLatLong($address) {
+	public function getLatLong($address) {
 		if (!$address) {
 			return error::raiseError('MOD_GEO: No address given to getLatLong', 'geo_5');
 		} else if ($this->getter) {
@@ -115,7 +120,7 @@ class geo {
 	* @param	array	$exif	An exif block as returned by exif_read_data() and pphoto::getExif(). Make sure the GPS part is included.
 	*/
 
-	function parseNumber($number) {
+	public function parseNumber($number) {
 		$parts = explode("/", $number);
 		if ($parts[1] != 0) {
 			return $parts[0] / $parts[1];
@@ -123,7 +128,7 @@ class geo {
 		return false;
 	}
 
-	function exifToLatLong($exif) {
+	public function exifToLatLong($exif) {
 		if ($exif['GPS'] && is_array($exif['GPS']['GPSLatitude']) && is_array($exif['GPS']['GPSLongitude']) ) {
 			$lat_degree = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][0]);
 			$lat_mins   = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][1]);
@@ -131,7 +136,7 @@ class geo {
 			$result = array();
 			$result['lat'] = $lat_degree + ( $lat_mins / 60 ) + ( $lat_secs / 3600 );
 			if( $exif['GPS']['GPSLatitudeRef'] == 'S' ) {
-				  $result['lat'] = (-1) * $result['lat'];
+				$result['lat'] = (-1) * $result['lat'];
 			}
 
 			$lng_degree = (float)self::parseNumber($exif["GPS"]["GPSLongitude"][0]);
@@ -151,37 +156,37 @@ class geo {
 	// Convert Rijksdriehoekscodinaten to latitude/longitude
 	// http://nl.wikipedia.org/wiki/Rijksdriehoeksco%C3%B6rdinaten
 	//
-	function rd2wgs ($x, $y) {
-	    // Calculate WGS84 coördinates
-	    $dX = ($x - 155000) * pow(10, - 5);
-	    $dY = ($y - 463000) * pow(10, - 5);
-	    $SomN = (3235.65389 * $dY) + (- 32.58297 * pow($dX, 2)) + (- 0.2475 *
-	         pow($dY, 2)) + (- 0.84978 * pow($dX, 2) *
-	         $dY) + (- 0.0655 * pow($dY, 3)) + (- 0.01709 *
-	         pow($dX, 2) * pow($dY, 2)) + (- 0.00738 *
-	         $dX) + (0.0053 * pow($dX, 4)) + (- 0.00039 *
-	         $dX ^ 2 * pow($dY, 3)) + (0.00033 * pow(
-	            $dX, 4) * $dY) + (- 0.00012 *
-	         $dX * $dY);
-	    $SomE = (5260.52916 * $dX) + (105.94684 * $dX * $dY) + (2.45656 *
-	         $dX * pow($dY, 2)) + (- 0.81885 * pow(
-	            $dX, 3)) + (0.05594 *
-	         $dX * pow($dY, 3)) + (- 0.05607 * pow(
-	            $dX, 3) * $dY) + (0.01199 *
-	         $dY) + (- 0.00256 * pow($dX, 3) * pow(
-	            $dY, 2)) + (0.00128 *
-	         $dX * pow($dY, 4)) + (0.00022 * pow($dY,
-	            2)) + (- 0.00022 * pow(
-	            $dX, 2)) + (0.00026 *
-	         pow($dX, 5));
+	public function rd2wgs ($x, $y) {
+		// Calculate WGS84 coördinates
+		$dX = ($x - 155000) * pow(10, - 5);
+		$dY = ($y - 463000) * pow(10, - 5);
+		$SomN = (3235.65389 * $dY) + (- 32.58297 * pow($dX, 2)) + (- 0.2475 *
+			pow($dY, 2)) + (- 0.84978 * pow($dX, 2) *
+			$dY) + (- 0.0655 * pow($dY, 3)) + (- 0.01709 *
+			pow($dX, 2) * pow($dY, 2)) + (- 0.00738 *
+			$dX) + (0.0053 * pow($dX, 4)) + (- 0.00039 *
+			$dX ^ 2 * pow($dY, 3)) + (0.00033 * pow(
+				$dX, 4) * $dY) + (- 0.00012 *
+			$dX * $dY);
+		$SomE = (5260.52916 * $dX) + (105.94684 * $dX * $dY) + (2.45656 *
+			$dX * pow($dY, 2)) + (- 0.81885 * pow(
+				$dX, 3)) + (0.05594 *
+			$dX * pow($dY, 3)) + (- 0.05607 * pow(
+				$dX, 3) * $dY) + (0.01199 *
+			$dY) + (- 0.00256 * pow($dX, 3) * pow(
+				$dY, 2)) + (0.00128 *
+			$dX * pow($dY, 4)) + (0.00022 * pow($dY,
+				2)) + (- 0.00022 * pow(
+				$dX, 2)) + (0.00026 *
+			pow($dX, 5));
 
-	    $Latitude = 52.15517 + ($SomN / 3600);
-	    $Longitude = 5.387206 + ($SomE / 3600);
+		$Latitude = 52.15517 + ($SomN / 3600);
+		$Longitude = 5.387206 + ($SomE / 3600);
 
-	    return array(
-	        'latitude' => $Latitude ,
-	        'longitude' => $Longitude);
-	    }
+		return array(
+			'latitude' => $Latitude ,
+			'longitude' => $Longitude);
+		}
 	}
 
 
@@ -190,7 +195,7 @@ class geo {
  */
 class pinp_geo extends geo {
 
-	function _init($config) {
+	public function _init($config) {
 		$geo = new pinp_geo();
 		$result = $geo->init($config);
 		if (!error::isError($result)) {
@@ -200,18 +205,20 @@ class pinp_geo extends geo {
 		}
 	}
 
-	function _getRawData($address, $output = null) {
+	public function _getRawData($address, $output = null) {
 		return parent::getRawData($address, $output);
 	}
 
-	function _getLatLong($address) {
+	public function _getLatLong($address) {
 		return parent::getLatLong($address);
 	}
 
-	function _exifToLatLong($exif) {
+	public function _exifToLatLong($exif) {
 		return parent::exifToLatLong($exif);
 	}
 
-	function _rd2wgs($x,$y) { return parent::rd2wgs($x,$y); }
+	public function _rd2wgs($x,$y) {
+		return parent::rd2wgs($x,$y);
+	}
 
 }
