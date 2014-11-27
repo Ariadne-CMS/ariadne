@@ -38,7 +38,7 @@
 			} else if ( !$objectType ) { // when set to false to prevent automatic filling of the objectType, reset it to null
 				$objectType = null;
 			}
-			self::$event = new ar_eventsEvent( $eventName, $eventData );
+			self::$event = new ar_eventsEvent( $eventName, $eventData, $objectType );
 			if ( self::walkListeners( self::$listeners['capture'][$eventName], $path, $objectType, true ) ) {
 				self::walkListeners( self::$listeners['listen'][$eventName], $path, $objectType, false );
 			}
@@ -55,10 +55,11 @@
 		}
 
 		protected static function walkListeners( $listeners, $path, $objectType, $capture ) {
-			$objectTypeStripped = $objectType;
-			$pos = strpos('.', $objectType);
+			$strObjectType = (string) $objectType;
+			$objectTypeStripped = $strObjectType;
+			$pos = strpos('.', $strObjectType);
 			if ( $pos !== false ) {
-				$objectTypeStripped = substr($objectType, 0, $pos);
+				$objectTypeStripped = substr($strObjectType, 0, $pos);
 			}
 			$pathticles = explode( '/', $path );
 			$pathlist = array( '/' );
@@ -80,13 +81,25 @@
 				if ( is_array( $listeners[$currentPath] ) ) {
 					foreach ( $listeners[$currentPath] as $listener ) {
 						if ( !isset($listener['type']) ||
-							 ( $listener['type'] == $objectType ) ||
+							 ( $listener['type'] == $strObjectType ) ||
 							 ( $listener['type'] == $objectTypeStripped ) ||
-							 ( is_a( $objectType, $listener['type'] ) ) )
+							 ( is_a( $strObjectType, $listener['type'] ) ) ) 
 						{
-							$result = call_user_func_array( $listener['method'], $listener['args'] );
-							if ( $result === false ) {
-								return false;
+							$continue = true;
+							if ( count($listener['filters']) ) {
+								$continue = false;
+								foreach( $listener['filters'] as $filter ) {
+									if ( ar_filter::match(self::$event, $filter) ) {
+										$continue = true;
+										continue;
+									}
+								}
+							}
+							if ( $continue ) {
+								$result = call_user_func_array( $listener['method'], $listener['args'] );
+								if ( $result === false ) {
+									return false;
+								}
 							}
 						}
 					}
@@ -103,12 +116,13 @@
 			return new ar_eventsInstance( $path );
 		}
 
-		public static function addListener( $path, $eventName, $objectType, $method, $args, $capture = false ) {
+		public static function addListener( $path, $eventName, $objectType, $method, $args, $capture = false, $filters = array() ) {
 			$when = ($capture) ? 'capture' : 'listen';
 			self::$listeners[$when][$eventName][$path][] = array(
 				'type' => $objectType,
 				'method' => $method,
-				'args' => $args
+				'args' => $args,
+				'filters' => $filters
 			);
 			return new ar_eventsListener( $eventName, $path, $capture, count(self::$listeners[$when][$eventName][$path])-1 );
 		}
@@ -146,6 +160,7 @@
 		private $eventName = null;
 		private $objectType = null;
 		private $capture = false;
+		private $filters = array();
 
 		public function __construct( $path, $eventName = null, $objectType = null, $capture = false ) {
 			$this->path = $path;
@@ -154,9 +169,12 @@
 
 		public function call( $method, $args = array() ) {
 			if ( is_string($method) ) {
-				$method = ar_pinp::getCallBack( $method, array_keys($args) );
+				$method = ar_pinp::getCallback( $method, array_keys($args) );
 			}
-			return ar_events::addListener( $this->path, $this->eventName, $this->objectType, $method, $args, $this->capture);
+			if ( !( $method instanceof \Closure ) ) {
+				return ar_error::raiseError('Illegal event listener method', 500);
+			}
+			return ar_events::addListener( $this->path, $this->eventName, $this->objectType, $method, $args, $this->capture, $this->filters );
 		}
 
 		public function listen( $eventName, $objectType = null ) {
@@ -166,6 +184,11 @@
 
 		public function capture( $eventName, $objectType = null ) {
 			$this->setEventProperties( $eventName, $objectType, true);
+			return $this;
+		}
+
+		public function match( $filter ) {
+			$this->filters[] = $filter;
 			return $this;
 		}
 
@@ -183,11 +206,13 @@
 	class ar_eventsEvent extends arBase {
 		public $data = null;
 		private $name = '';
+		private $type = null;
 		private $preventDefault = false;
 
-		public function __construct( $name, $data = null ) {
+		public function __construct( $name, $data = null, $type = null ) {
 			$this->name = $name;
 			$this->data = $data;
+			$this->type = $type;
 		}
 
 		public function preventDefault() {
@@ -201,6 +226,9 @@
 			}
 			if ( $name == 'name' ) {
 				return $this->name;
+			}
+			if ( $name == 'type' ) {
+				return $this->type;
 			}
 		}
 

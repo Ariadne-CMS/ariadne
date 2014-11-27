@@ -45,18 +45,9 @@
 
 		public static function getCallback( $method, $params = array() ) {
 			if (is_string($method)) {
-				if (is_array($params) && count($params)) {
-					$paramsString = '"'.join('","', $params).'"';
-				} else {
-					$paramsString = '';
-				}
-				return create_function( '', '
+				return function() use ( $params, $method ) {
 					$me = ar::context()->getObject();
-					if ( $me ) {
-						$me->resetloopcheck();
-					}
 					$args_in = func_get_args();
-					$params = array( '.$paramsString.' );
 					if (count($params)) {
 						$args = array();
 						foreach($params as $key => $arg) {
@@ -65,8 +56,8 @@
 					} else {
 						$args = $args_in;
 					}
-					return call_user_func_array( array( "ar", "call" ), array( "'.$method.'", $args ) );'
-				);
+					return ar::call($method, $args);
+				};
 			} else {
 				return false;
 			}

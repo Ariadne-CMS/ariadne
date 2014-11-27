@@ -309,7 +309,7 @@
 				if ( isset( $method ) && $method ) {
 					if ( !is_callable($method) ) {
 						if ( is_string($method) ) {
-							$method = ar_pinp::getCallBack($method, array('field') );
+							$method = ar_pinp::getCallback($method, array('field') );
 						} else {
 							$method = null;
 						}
@@ -323,7 +323,7 @@
 
 		public static function registerValidateCheck( $name, $check, $message ) {
 			if ( !is_string( $check ) || ( $check[0] != '/' && !is_callable( $check ) ) ) {
-				$check = ar_pinp::getCallBack( $check, array( 'value' ) );
+				$check = ar_pinp::getCallback( $check, array( 'value' ) );
 			}
 			self::$checks[ $name ] = array(
 				'check' => $check,
