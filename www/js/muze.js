@@ -395,7 +395,7 @@ muze.url = (function() {
 		return loader;
 	};
 	
-	muze.load = function(url, waitforme, cached) {
+	muze.load = function(url, waitforme, cached, method, arguments) {
 		var _isCorsURL = function(url) {
 			var urlHelper = document.createElement('a');
 			urlHelper.href = url;
@@ -418,7 +418,23 @@ muze.url = (function() {
 		}
 
 		var http = _getHTTPObject(_isCorsURL(url));
-		http.open( 'GET', url + timestamp, !waitforme );
+		var params = null;
+		if ( method == 'POST' || method == 'post' ) {
+			method = 'POST';
+			if ( arguments ) {
+				params = [];
+				for ( var i in arguments ) {
+					params.push( encodeURIComponent( i) + '=' + encodeURIComponent( arguments[i]) )
+				}
+				params = params.join('&');
+				http.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
+				http.setRequestHeader( 'Content-length', params.length );
+				http.setRequestHeader( 'Connection', 'close' );
+			}
+		} else {
+			method = 'GET';
+		}
+		http.open( method, url + timestamp, !waitforme );
 		if ( !waitforme ) {
 			http.onreadystatechange = function() {
 				if (http.readyState == 4) {
@@ -426,7 +442,7 @@ muze.url = (function() {
 				}
 			};
 		}
-		http.send( null );
+		http.send( params );
 		if ( waitforme ) {
 			return http.responseText;
 		} else {
@@ -603,7 +619,7 @@ muze.url = (function() {
 		}else{
 			return false;
 		}
-    };
+	};
 	
 	//Is the object a node of any kind (document, comment node, element, etc...)
 	Env.isNode = function(o){
