@@ -83,7 +83,7 @@
 
 				if (is_array($item['language'])) {
 					foreach( $item['language'] as $key => $value ) {
-						$datarow['language'] .= "<a href='#' onClick=\"muze.ariadne.registry.set('store_root', muze.ariadne.registry.get('root') + '/-' + muze.ariadne.registry.get('SessionID') + '-/" . $key . "'); muze.ariadne.explore.objectadded(); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
+						$datarow['language'] .= "<img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"> ";
 					}
 				}
 				array_push($datalist, $datarow);
@@ -139,7 +139,14 @@ This adds filter options to the browse dialog, unfinished code so removed for no
 <script type="text/javascript">
 	YAHOO.util.Event.onDOMReady(
 		function() {
-			YAHOO.util.Event.addListener('archildren', 'click', muze.ariadne.explore.viewpane.onClick);
+			//YAHOO.util.Event.addListener('archildren', 'click', muze.ariadne.explore.viewpane.onClick);
+			muze.event.attach( document.body, 'click', function(evt) {
+				evt = muze.event.get(evt);
+				var target = muze.event.target(evt);
+				if ( target.tagName != 'A' && target.tagName!='IMG' ) {
+					muze.ariadne.explore.viewpane.onClick(evt);
+				}
+			});
 			YAHOO.util.Event.addListener('archildren', 'selected', muze.ariadne.explore.viewpane.onSelected);
 			YAHOO.util.Event.addListener('archildren', 'clearselection', muze.ariadne.explore.viewpane.unselectItem);
 		}
