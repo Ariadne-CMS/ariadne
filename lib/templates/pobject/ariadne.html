@@ -1,6 +1,10 @@
 <?php
 	$AR->arSessionRespawn = false;
-	if ($this->CheckLogin("read")) {
+	if ( !$AR->user || $AR->user->data->login=='public' ) {
+		// public user has read grants, so checklogin actually hasn't forced a login form, so force it now
+		$ARCurrent->arLoginSilent = 0; // make sure the login prompt is shown
+		ldAccessDenied($this->path, '', array(), 'ariadne.html');
+	} else {
 		// AR->user should now be available so:
 		ldRedirect($this->store->get_config("root").$AR->user->path."explore.html");
 	}
