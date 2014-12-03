@@ -6,6 +6,6 @@
 		ldAccessDenied($this->path, '', array(), 'ariadne.html');
 	} else {
 		// AR->user should now be available so:
-		ldRedirect($this->store->get_config("root").$AR->user->path."explore.html");
+		ldRedirect( $this->make_local_url($AR->user->path)."explore.html" );
 	}
 ?>
