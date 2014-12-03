@@ -82,7 +82,7 @@
 		public static function touch( $name, $time=null, $nls=null ) {
 			list( $ob, $fstore ) = static::getStore();
 			$fname = static::compileName($name, $nls);
-			return $fstore->exists( $ob->id, $fname, $time );
+			return $fstore->touch( $ob->id, $fname, $time );
 		}
 
 		public static function temp( $contents=null ) {
