@@ -14,7 +14,8 @@
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		$arNewData=new object;
 		$arNewPath=$this->make_path($arNewFilename);
-		$arNewCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
+		$arNewParent=$this->make_path($arNewPath.'../');
+		$arNewCallObject=$this->store->newobject($arNewPath, $arNewParent, $arNewType, $arNewData);
 		$arNewCallObject->arIsNewObject=true;
 
 		$type = current(explode(".", $arNewType));
