@@ -16,7 +16,8 @@
 
 		$locks=$this->store->mod_lock->get_locks($this->data->login);
 		if (!count($locks)) {
-			$wgWizAction = "save";
+			// no locks, lets return where we came from
+			ldRedirect($arReturnPage);
 		}
 
 
