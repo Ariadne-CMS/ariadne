@@ -171,7 +171,7 @@
 		if (is_array($right)) {
 			foreach ($right as $key => $value) {
 				if (!is_numeric($key)) {
-					$left[$key] = arrayMergeCorrect($left[$key], $value);
+					$left[$key] = isset($left[$key]) ? arrayMergeCorrect($left[$key], $value) : $value;
 				} else {
 					$left[] = arrayMergeCorrect($left[$key], $value);
 				}
