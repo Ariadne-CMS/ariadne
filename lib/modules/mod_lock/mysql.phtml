@@ -30,32 +30,29 @@ class mysqllock {
 		  debug("mysqllock::mysqllock end","all");
 	}
 
-	function connect($host="localhost",$user="root",$password="") {
+	function connect($host="localhost",$user="root",$password="", $database) {
 		debug("mysqllock::connect($host, $user, [password])","store");
-		$this->mayClose=true;
-//		$this->host=$host;
-//		$this->user=$user;
-//		$this->password=$password;
-		$this->connectid=mysql_pconnect($host,$user,$password);
-		debug("mysqllock::connect end","all");
-	}
-
-	function select_db($database="modules", $connectid=false) {
-		debug("mysqllock::select_db($database, $connectid)");
-		$this->database=$database;
-		if ($connectid!==false) {
-			$this->connectid=$connectid;
+		$this->dbh = new mysqli('p:'.$host, $user, $password, $database);
+		if ($this->dbh->connect_errno) {
+			die("Error " . $this->dbh->connect_error);
 		}
-		debug("mysqllock::select_db end");
+
+		if( !$this->dbh->ping() ){
+			$this->dbh->close();
+			$this->dbh = new mysqli('p:'.$config['host'], $config["user"], $config["password"], $config["database"]);
+			if ($this->dbh->connect_errno) {
+				die("Error " . $this->dbh->connect_error);
+			}
+		}
+		debug("mysqllock::connect end","all");
 	}
 
 	function get_locks($identity) {
 		debug("mysqllock:get_locks($identity)","store");
 		$query_string="select `path`,`release`, `type`, `identity` from ".$this->tbl_prefix."locks where 
 		`release` >=".time()." and `identity`='".AddSlashes($identity)."'";
-		mysql_select_db($this->database,$this->connectid);
-		$query=@mysql_query($query_string,$this->connectid);
-		while ($temp=@mysql_fetch_array($query)) {
+		$query=@$this->dbh->query($query);
+		while ($temp=@$query->fetch_array()) {
 			$result[$temp["path"]]=$temp;
 		}
 		debug("mysqllock:get_locks end","all");
@@ -81,8 +78,7 @@ class mysqllock {
 
 		// lock table first
 		$query_string="lock tables ".$this->tbl_prefix."locks ".$tablelock;
-		mysql_select_db($this->database,$this->connectid);
-		@mysql_query($query_string,$this->connectid);
+		$this->dbh->query($query_string);
 
 		// check if the path is not already locked by a parent
 		$query_string="
@@ -101,9 +97,8 @@ class mysqllock {
 		$alreadylocked=false;
 		// see if this lock is still alive
 		$query_string.=") AND `release`>=".time();
-		mysql_select_db($this->database,$this->connectid);
-		$query=@mysql_query($query_string, $this->connectid);
-		while ($lock=@mysql_fetch_array($query)) {
+		$query=@$this->dbh->query($query_string);
+		while ($lock=@$query->fetch_array()) {
 			if ($lock["identity"]!=$identity) {
 				// this is a lock with another identity, so fail the current lock attempt
 				$alreadylocked=true;
@@ -118,21 +113,19 @@ class mysqllock {
 				$query_string="
 					delete from ".$this->tbl_prefix."locks where `path`='".AddSlashes($path)."'";
 
-				mysql_select_db($this->database,$this->connectid);
-				mysql_query($query_string, $this->connectid);
+				$this->dbh->query($query_string);
 
 				$query_string="
 					insert into ".$this->tbl_prefix."locks (`path`, `release`, `type`, `identity`) values (
 					'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
 					'".AddSlashes($identity)."')";
 
-				mysql_select_db($this->database,$this->connectid);
-				mysql_query($query_string, $this->connectid);
-				if (!mysql_errno()) {
+				$this->dbh->query($query_string);
+				if (!$this->dbh->errno) {
 					$result=true;
 				} else {
 					$this->error=2;
-					$this->error_message="MOD_LOCK: ERROR 2: ".mysql_error();
+					$this->error_message="MOD_LOCK: ERROR 2: ".$this->dbh->error;
 				}
 			} else {
 				$result = true;
@@ -142,8 +135,7 @@ class mysqllock {
 			$this->error_message="MOD_LOCK: ERROR 1: $path already locked.";
 		}
 		$query_string="unlock tables";
-		mysql_select_db($this->database,$this->connectid);
-		mysql_query($query_string,$this->connectid);
+		$this->dbh->query($query_string);
 
 		return ($result);
 	}
@@ -154,15 +146,11 @@ class mysqllock {
 		if ($path) {
 			$query_string.=" and `path`='".AddSlashes($path)."'";
 		}
-		mysql_select_db($this->database,$this->connectid);
-		mysql_query($query_string, $this->connectid);
+		$this->dbh->query($query_string);
 
 	}
 
 	function close() {
-		if ($this->mayClose) {
-			mysql_close($this->connectid);
-		}
 	}
 
 	function init() {
@@ -177,7 +165,6 @@ CREATE TABLE ".$this->tbl_prefix."locks (
   key (`identity`),
   key (`path`)
 )";
-		mysql_select_db($this->database,$this->connectid);
-		mysql_query($query_string, $this->connectid);
+		$this->dbh->query($query_string);
 	}
 }

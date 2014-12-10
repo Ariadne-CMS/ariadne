@@ -34,7 +34,7 @@ require_once($ariadne."/stores/store.php");
 
 class mysqlstore extends store{
 
-	protected $connect_id;
+	protected $dbh;
 	protected $tbl_prefix;
 	protected $database;
 	protected $cachedQueries;
@@ -55,27 +55,25 @@ class mysqlstore extends store{
 		types.
 
 	 **********************************************************************************/
-		if (!function_exists("mysql_pconnect")) {
-			dl("mysql.so");
-		}
 		$this->error="";
-		$this->connect_id=mysql_pconnect($config["host"], $config["user"], $config["password"]) or die ("Could not connect to MySQL");
-
 		// test if the connection is still viable, and if not reconnect
-		if( !mysql_ping($this->connect_id) ){
-			mysql_close($this->connect_id);
-			$this->connect_id=mysql_pconnect($config["host"], $config["user"], $config["password"]) or die ("Could not reconnect to MySQL");
+		$this->dbh = new mysqli('p:'.$config['host'], $config["user"], $config["password"], $config["database"]);
+		if ($this->dbh->connect_errno) {
+			die("Error " . $this->dbh->connect_error);
 		}
 
-		mysql_select_db($config["database"],$this->connect_id) or die ("Could not access database '".$config["database"]."'. Please create this database manually.");
+		if( !$this->dbh->ping() ){
+			$this->dbh->close();
+			$this->dbh = new mysqli('p:'.$config['host'], $config["user"], $config["password"], $config["database"]);
+			if ($this->dbh->connect_errno) {
+				die("Error " . $this->dbh->connect_error);
+			}
+		}
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
 		$this->tbl_prefix=$config["prefix"];
 
-		// necessary to avoid the 'mysql_select_db' bug, it will select
-		// a database for all open connect_id's
-		// so we have to supply the database name wheenever a query is run
 		$this->database=$config["database"];
 
 		$config["password"]="";
@@ -89,7 +87,7 @@ class mysqlstore extends store{
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
 		$this->mod_lock=new mysqllock($config["prefix"]);
-		$this->mod_lock->select_db($config["database"], $this->connect_id);
+		$this->mod_lock->connect($config['host'], $config["user"], $config["password"], $config['database']);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 
 		if (isset($config['filestores']) && is_array($config['filestores'])) {
@@ -116,10 +114,14 @@ class mysqlstore extends store{
 
 	 **********************************************************************************/ 
 
-		$result = Array();
+		$result = array();
 		$this->error="";
-		$count = @mysql_num_rows($objects["list"]);
-		while ( $row = @mysql_fetch_array($objects["list"]) ) {
+		// if list is not set, don't do anythink
+		if(!$objects["list"]) {
+			return $result;
+		}
+		$count = $objects["list"]->num_rows;
+		while ( $row = $objects["list"]->fetch_array(MYSQLI_ASSOC) ) {
 			$multiCall = false;
 			$object = $this->newobject( 
 				$row["path"], $row["parent"], $row["type"], 
@@ -161,13 +163,15 @@ class mysqlstore extends store{
 	}
 
 	function count($objects) {
-		return @mysql_num_rows($objects["list"]);
+		return $objects["list"]->num_rows;
 	}
 
 	function info($objects) {
-		while ($row=@mysql_fetch_array($objects["list"])) {
-			unset($row["object"]);
-			$result[]=$row;
+		if($objects["list"]) {
+			while ($row=$objects["list"]->fetch_array(MYSQLI_ASSOC)) {
+				unset($row["object"]);
+				$result[]=$row;
+			}
 		}
 		return $result;
 	}
@@ -216,7 +220,7 @@ class mysqlstore extends store{
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = mysql_fetch_array($qresult);
+				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
 				$id = $temp["object"];
 			}
 		}
@@ -260,7 +264,7 @@ class mysqlstore extends store{
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = mysql_fetch_array($qresult);
+				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
 				$id = $temp["object"];
 			}
 		}
@@ -271,7 +275,7 @@ class mysqlstore extends store{
 			$etimestamp = AddSlashes($timestamp);
 			$query_string = "update $objects_tbl set lastchanged=FROM_UNIXTIME($etimestamp) where id = $eid";
 			$qresult = $this->store_run_query($query_string);
-			$result = mysql_affected_rows($this->connect_id);
+			$result = $this->dbh->affected_rows;
 		}
 		return $result;
 	}
@@ -342,7 +346,7 @@ class mysqlstore extends store{
 			} else {
 				$qresult = $this->store_run_query($query["count_query"]);
 				if ($qresult) {
-					$result = mysql_fetch_array($qresult);
+					$result = $qresult->fetch_array(MYSQLI_ASSOC);
 					$count  = (int)$result["count"];
 				}
 			}
@@ -478,8 +482,7 @@ class mysqlstore extends store{
 	}
 
 	public function close() {
-		parent::close();
-		return @mysql_close($this->connect_id);
+		return parent::close();
 	}
 
 
@@ -616,7 +619,7 @@ class mysqlstore extends store{
 						$query_string ="select path from $nodes_tbl where path = '$eparent'";
 						$qresult = $this->store_run_query( $query_string );
 						if ($qresult !== false) {
-							$row = mysql_fetch_array( $qresult );
+							$row = $qresult->fetch_array(MYSQLI_ASSOC);
 							if ($row['path']) {
 								$parent  = $row['path'];
 								$eparent = AddSlashes( $parent );
@@ -637,7 +640,7 @@ class mysqlstore extends store{
 					if (!$this->error) {
 						$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
 						$qresult = $this->store_run_query($query_string);
-						$id=mysql_insert_id($this->connect_id);
+						$id=$this->dbh->insert_id;
 						if ($qresult !== false && $id) {
 							$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath', '$eparent', $id, $epriority)";
 							$qresult = $this->store_run_query($query_string);
@@ -704,7 +707,7 @@ class mysqlstore extends store{
 			$query_string="delete from $nodes_tbl where object=$object";
 			$temp=$this->store_run_query($query_string);
 			if ($temp) {
-				$result=mysql_affected_rows($this->connect_id);
+				$result=$this->dbh->affected_rows;
 			}
 			$this->del_property($object);
 
@@ -749,7 +752,7 @@ class mysqlstore extends store{
 			} else { // only delete the given path
 				$query_string="delete from $nodes_tbl where path='$epath'";
 				$this->store_run_query($query_string);
-				if (mysql_affected_rows($this->connect_id)) {
+				if ($this->dbh->affected_rows) {
 					$result=1;
 				} else {
 					$result=0;
@@ -783,7 +786,7 @@ class mysqlstore extends store{
 		$query_string="select object from $nodes_tbl where path='$epath'";
 		$temp=$this->store_run_query($query_string);
 
-		if ($temp && ($row=mysql_fetch_array($temp))) {
+		if ($temp && ($row=$temp->fetch_array(MYSQLI_ASSOC))) {
 			$object=intval($row["object"]);
 		}
 		return $object;
@@ -817,7 +820,7 @@ class mysqlstore extends store{
 
 		$query_string = "select path from $nodes_tbl where path = '$eparent'";
 		$qresult = $this->store_run_query($query_string);
-		if ($qresult && ($row = mysql_fetch_array($qresult))) {
+		if ($qresult && ($row = $qresult->fetch_array(MYSQLI_ASSOC))) {
 			$eparent = AddSlashes($row['path']);
 			$edestination = AddSlashes($eparent.$filename);
 
@@ -872,17 +875,14 @@ class mysqlstore extends store{
 
 	protected function store_run_query($query) {
 		/* private function, do not use this outside this class */
-		mysql_select_db($this->database,$this->connect_id);
-		$result=mysql_query( $query, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		$error=mysql_error($this->connect_id);
+		$result=$this->dbh->query($query);
+		$errno=$this->dbh->errno;
+		$error=$this->dbh->error;
 		if ($errno) {
 			$this->error="ERROR: Mysql: $errno: $error";
 			debug("run_query: ".$this->error,"store");
 			debug("run_query: query=$query","store");
 			$result=false;
-		} else if (!isset($result)) {
-			$result=true;
 		}
 		return $result;
 	}
@@ -907,7 +907,7 @@ class mysqlstore extends store{
 
 		$query_string = "select path from $nodes_tbl where path = '$eparent'";
 		$qresult = $this->store_run_query($query_string);
-		if ($qresult && ($row = mysql_fetch_array($qresult))) {
+		if ($qresult && ($row = $qresult->fetch_array(MYSQLI_ASSOC))) {
 			$destination = $row['path'] . $filename; // Update the destination returnvalue with the case from the database instead of what the user entered;
 
 			$eparent = AddSlashes($row['path']);
@@ -929,7 +929,6 @@ class mysqlstore extends store{
 				$mask = substr($destination, strlen($parent));
 				if (preg_match("/(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) {
 					$query_string="lock tables ".$this->tbl_prefix."nodes write";
-					mysql_select_db($this->database,$this->connect_id);
 					$qresult = $this->store_run_query($query_string);
 					if ($qresult){
 						$needunlocking = true;
@@ -997,7 +996,7 @@ class mysqlstore extends store{
 		if($object !== false) {
 			$query_string="select path from $nodes_tbl where object=$object";
 			$qresult = $this->store_run_query($query_string);
-			while ($row=@mysql_fetch_array($qresult)) {
+			while ($qresult && ($row=@$qresult->fetch_array(MYSQLI_ASSOC))) {
 				$result[]=$row["path"];
 			}
 		}
@@ -1021,7 +1020,7 @@ class mysqlstore extends store{
 		$this->error="";
 		$qresult = $this->store_run_query($query_string);
 		if ($qresult) {
-			$row=mysql_fetch_array($qresult);
+			$row=$qresult->fetch_array(MYSQLI_ASSOC);
 		}
 		if ($row) {
 			$result=1;
@@ -1052,7 +1051,7 @@ class mysqlstore extends store{
 		if ($object) {
 			$query_string="select name from ".$this->tbl_prefix."properties";
 			$qresult = $this->store_run_query($query_string);
-			while ($prop=@mysql_fetch_array($qresult)) {
+			while ($qresult && ($prop=@$qresult->fetch_array(MYSQLI_ASSOC))) {
 				if ($value=$this->load_property($object,$prop["name"],$values)) {
 					$result[$prop["name"]]=$value;
 				}
@@ -1078,7 +1077,7 @@ class mysqlstore extends store{
 			$query_string.="object=$object";
 			$qresult = $this->store_run_query($query_string);
 			$currProp=0;
-			while ($prop=@mysql_fetch_array($qresult)) {
+			while ($qresult && ($prop=@$qresult->fetch_array(MYSQLI_ASSOC))) {
 				reset($prop);
 				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
 					if (($name!="object")&&(!is_int($name))) {
@@ -1107,9 +1106,8 @@ class mysqlstore extends store{
 				}
 				$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 										$query_names."object ) values ( ".$query_values."$object )";
-
 				$this->store_run_query($query_string);
-				$result=mysql_affected_rows($this->connect_id);
+				$result=$this->dbh->affected_rows;
 			}
 		}
 		return $result;
@@ -1125,11 +1123,11 @@ class mysqlstore extends store{
 			if (!$property) { // remove all properties for $object
 				$query_string="select name from ".$this->tbl_prefix."properties";
 				$temp = $this->store_run_query($query_string);
-				while ($row=@mysql_fetch_array($temp)) {
+				while ($temp && ($row=@$temp->fetch_array(MYSQLI_ASSOC))) {
 					$query_string="delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
 					$qresult = $this->store_run_query($query_string);
 					if($qresult) {
-						$result+=mysql_affected_rows($this->connect_id);
+						$result+=$this->dbh->affected_rows;
 					}
 				}
 			} else {
@@ -1143,7 +1141,7 @@ class mysqlstore extends store{
 				$query_string.="object=$object";
 				$qresult = $this->store_run_query($query_string);
 				if($qresult ){
-					$result=mysql_affected_rows($this->connect_id);
+					$result=$this->dbh->affected_rows;
 				}
 			}
 		}
@@ -1193,7 +1191,7 @@ class mysqlstore extends store{
 
 			$result = $this->store_run_query($query_string);
 			if ($result) {
-				$row = mysql_fetch_array($result);
+				$row = $result->fetch_array(MYSQLI_ASSOC);
 				$subid = intval( $row['id'] );
 			}
 			$subid=$subid+1;
@@ -1219,11 +1217,11 @@ class mysqlstore extends store{
 		$query = "select type from $types_tbl where $types_tbl.implements = $type";
 		$qresult = $this->store_run_query($query);
 
-		while ($iresult = mysql_fetch_array($qresult)) {
+		while ($qresult && ($iresult = $qresult->fetch_array(MYSQLI_ASSOC))) {
 			$returnValue[] = $iresult['type'];
 		}
 
-		mysql_free_result($qresult);
+		$qresult->free();
 
 		return $returnValue;
 	}

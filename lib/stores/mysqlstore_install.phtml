@@ -52,7 +52,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			$qresult = $this->store_run_query($query["query_string"]);
 
 			if (!$qresult) {
-				$error=mysql_error($this->connect_id);
+				$error=$this->dbh->errno;
 				error("Mysql: $errno: $error");
 			}
 		}

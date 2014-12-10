@@ -1,31 +1,24 @@
 <?php
 
 include_once($ariadne."/stores/mysql_workspacesstore.phtml");
+include_once($ariadne."/stores/mysqlstore_install.phtml");
 
 class mysql_workspacesstore_install extends mysql_workspacesstore {
 
-
 	function upgrade() {
+		$result = true;
 		echo "upgrading mysql store for workspace support.\n";
 		$queries = Array(
-				array("query_string" => "alter table store_nodes drop primary key"),
-				array("query_string" => "alter table store_nodes add id int(11) NOT NULL AUTO_INCREMENT KEY"),
-				array("query_string" => "alter table store_nodes add layer int(11) NOT NULL DEFAULT '0'"),
-				array("query_string" => "alter table store_nodes drop primary key, add primary key(id, layer)"),
-				array("query_string" => "alter table store_nodes add UNIQUE KEY layer (layer,path)"),
-				array("query_string" => "alter table store_nodes add key path (path)"),
-				array("query_string" => "alter table store_objects add layer int(11) NOT NULL DEFAULT '0'"),
-				array("query_string" => "alter table store_objects add key layer (layer)"),
+				array("query_string" => "alter table ".$this->tbl_prefix."nodes drop primary key"),
+				array("query_string" => "alter table ".$this->tbl_prefix."nodes add id int(11) NOT NULL AUTO_INCREMENT KEY"),
+				array("query_string" => "alter table ".$this->tbl_prefix."nodes add layer int(11) NOT NULL DEFAULT '0'"),
+				array("query_string" => "alter table ".$this->tbl_prefix."nodes drop primary key, add primary key(id, layer)"),
+				array("query_string" => "alter table ".$this->tbl_prefix."nodes add UNIQUE KEY layer (layer,path)"),
+				array("query_string" => "alter table ".$this->tbl_prefix."nodes add key path (path)"),
+				array("query_string" => "alter table ".$this->tbl_prefix."objects add layer int(11) NOT NULL DEFAULT '0'"),
+				array("query_string" => "alter table ".$this->tbl_prefix."objects add key layer (layer)"),
+			);
 
-				array("query_string" => "alter table session_nodes drop primary key"),
-				array("query_string" => "alter table session_nodes add id int(11) NOT NULL AUTO_INCREMENT KEY"),
-				array("query_string" => "alter table session_nodes add layer int(11) NOT NULL DEFAULT '0'"),
-				array("query_string" => "alter table session_nodes drop primary key, add primary key(id, layer)"),
-				array("query_string" => "alter table session_nodes add UNIQUE KEY layer (layer,path)"),
-				array("query_string" => "alter table session_nodes add key path (path)"),
-				array("query_string" => "alter table session_objects add layer int(11) NOT NULL DEFAULT '0'"),
-				array("query_string" => "alter table session_objects add key layer (layer)")
-		);
 		while ((list($key, $query)=each($queries)) && (!$error)) {
 			if ($query["query_string"]) {
 				echo "Executing: ".$query["query_string"]."\n";
@@ -33,330 +26,39 @@ class mysql_workspacesstore_install extends mysql_workspacesstore {
 			$qresult = $this->store_run_query($query["query_string"]);
 
 			if (!$qresult) {
-				$error=mysql_error($this->connect_id);
+				$result = false;
+				$error=$this->dbh->error;
+				$errno=$this->dbh->errno;
 				error("Mysql: $errno: $error");
 			}
 		}
+		return $result;
 
 	}
 
 	function initialize() {
-		echo "initializing mysql store.\n";
-		$queries[0]["msg"]="creating nodes table.";
-		$queries[0]["query_string"]="
-CREATE TABLE ".$this->tbl_prefix."nodes (
-	path varchar(127) DEFAULT '' NOT NULL,
-	parent varchar(127) DEFAULT '' NOT NULL,
-	object int(11) DEFAULT '0' NOT NULL,
-	priority int(11) DEFAULT '0' NOT NULL,
-	layer int(11) NOT NULL DEFAULT '0',
-	id int(11) NOT NULL AUTO_INCREMENT,
-	PRIMARY KEY (id, layer),
-	UNIQUE KEY layer (layer,path),
-	KEY object (object),
-	KEY parent (parent),
-	KEY (priority),
-	KEY (path)
-)";
-
-		$queries[1]["msg"]="creating objects table.";
-		$queries[1]["query_string"]="
-CREATE TABLE ".$this->tbl_prefix."objects (
-	id int(11)  NOT NULL auto_increment,
-	type varchar(32) DEFAULT '' NOT NULL,
-	object mediumtext,
-	vtype varchar(32) DEFAULT '' NOT NULL,
-	lastchanged TIMESTAMP,
-	layer int(11) NOT NULL DEFAULT '0',
-	PRIMARY KEY (id),
-	KEY lastchanged (lastchanged),
-	KEY layer (layer)
-)";
-		$queries[2]["msg"]="creating properties table.";
-		$queries[2]["query_string"]="
-CREATE TABLE ".$this->tbl_prefix."properties (
-	name varchar(21) DEFAULT '' NOT NULL,
-	PRIMARY KEY (name)
-)";
-		$queries[4]["msg"]="creating types table.";
-		$queries[4]["query_string"]="
-CREATE TABLE ".$this->tbl_prefix."types (
-	type varchar(32) DEFAULT '' NOT NULL,
-	implements varchar(32) DEFAULT '' NOT NULL,
-	KEY type (type),
-	KEY implements (implements)
-)";
-
-		while ((list($key, $query)=each($queries)) && (!$error)) {
-			if ($query["msg"]) {
-				echo $query["msg"]."\n";
-			}
-			$qresult = $this->store_run_query($query["query_string"]);
-
-			if (!$qresult) {
-				$error=mysql_error($this->connect_id);
-				error("Mysql: $errno: $error");
-			}
-		}
-
-
-		if (!$error) {
-			$return=true;
-			// initialize locking tables
-			$this->mod_lock->init($this->tbl_prefix);
-
-			echo "mysql store initialized.\n\n";
+		print("Init clasic mylsqstore\n");
+		$result = $this->mysqlstore->initialize();
+		if ($result) {
+			print "Upgrade to workspace\n";
+			$result = $this->upgrade();
 		} else {
-			$return=false;
-		}
-		return $return;
-	}
-
-	function _generate_column_def($type, $size, $default = null) {
-		switch($type) {
-			case "string": 
-				if ($size>0 && $size<256) {
-					$indexstring.="AR_$name,";
-					if (!isset($default)) {
-						$default = "";
-					}
-					$result="varchar($size) default '$default' not null\n";
-				} else {
-					$result=0;
-					$this->error="Wrong format for typedefinition $name: incorrect size."; 
-				}
-				break;
-			case "number":
-				if (!isset($default)) {
-					$default = 0;
-				}
-				$indexstring.="AR_$name,";
-				$result="int default $default not null\n";
-				break;
-			case "boolean":
-				if (!isset($default)) {
-					$default = 0;
-				}
-				$indexstring.="AR_$name,";
-				$result="bool default $default not null\n";
-				break;
-			case "text":
-				$result="mediumtext not null\n";
-				$ftindexstring.="AR_$name,";
-				break;
-		}
-		return $result;
-	}
-	
-	function alter_property($property, $definition) {
-		foreach ($definition['fields'] as $name => $typedef) {
-			$alter_string="alter table ".$this->tbl_prefix."prop_".AddSlashes($property)." \n";
-			if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
-				$result=0;
-				$this->error="Wrong format for type: $name";
-				error($this->error);
-				break;
-			}	 
-			$alter_string.= " modify AR_".$name."	";
-			$alter_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
-
-			$qresult = $this->store_run_query($alter_string);
-
-			if (!$qresult ) {
-				error($this->error);
-			}
-		}	
-	}
-
-
-	function create_property($property, $definition) {
-	/**********************************************************************
-
-		This function creates a new property type. This property can then be
-	used by objects to set special information on which to quickly search
-	using find.
-
-	$name must be a string of at most 16 characters from the set [a-zA-Z0-9_] 
-	or '-', starting with a letter (a-zA-Z).
-
-	$definition describes which name value pairs this property contains and
-	which type (and size) each value is.
-	$definition is defined as: $definition[{name}][{type}]={size}
-		{name} is defined like $name above
-		(type} can be 'number', 'string', 'text' or 'boolean'
-		{size} is only used for the string type and can not be more than 255. 
-	$indexes describes which indexes the storage layer should consider
-		for the property. Default behaviour is to create one index for the
-		complete set of name-value pairs. If you want you can create a smaller
-		index, or more than one index.
-	$indexes is defined as: $indexes[][]={name} || $indexes="none"
-		e.g. $indexes[0][0]="name1";
-	 $indexes[1][0]="name2"
-				 $indexes[1][1]="name3";
-		this would create two indexes, one on "name1" and one on "name2" and
-		"name3".
-		{name} is defined like $name above. 
-	if $indexes is set to "none", no user indexes will be created on this 
-	property. This is usually not a good thing to do. 
-	 
-	**********************************************************************/
-		$result=1;
-		$this->error="";
-		$ftindexstring="";
-		if (preg_match("/^[a-z][a-z0-9_-]*$/i",$property) && strlen($property)<=16) {
-			$create_string="create table ".$this->tbl_prefix."prop_".AddSlashes($property)." (\n";
-			foreach ($definition['fields'] as $name => $typedef) {
-				if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
-					$result=0;
-					$this->error="Wrong format for type: $name";
-					break;
-				}	 
-				$create_string.= "	AR_".$name."	";
-				$create_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
-				$create_string.= ",";
-				if ($typedef['type'] != 'text') {
-					$indexstring .= "AR_$name,";
-				} else {
-					$ftindexstring.="AR_$name,";
-				}
-			}
-			if ($result) {
-				// now add the 'object' field.
-				$create_string.="object int not null,\n";
-				// now add the correct indexes.
-				if ($indexes=="none") {
-					$indexstring="";
-				} else {
-					if ($definition['indexes'] && is_array($definition['indexes'])) {
-						$indexstring="";
-						foreach ($definition['indexes'] as $key => $values) {
-							$indexstring.="index id".$key."(";
-							$comma="";
-							foreach ($values as $key2 => $name) {
-								if (preg_match("/^[a-z][a-z0-9_-]*$/i",$name) && strlen($name)<=16) {
-									$indexstring.=$comma."AR_".$name;
-								} else {
-									$result=0;
-									$this->error="Wrong format for index ".$key." in: ".$name;
-									break;
-								}
-								$comma=",";
-							}
-							$indexstring.="),\n";
-						}
-					} else {
-						$indexstring="index id0(".substr($indexstring,0,-1)."), ";
-					}
-					if ($ftindexstring) {
-						// create the full text index
-						$indexstring.="fulltext fti(".substr($ftindexstring,0,-1)."), ";
-					}
-				}
-				if ($result) {
-					// add the indexes to the create_string
-					$create_string.=$indexstring;
-					// finally add the index on the object field and close the query.
-					$create_string.="index object(object) )\n";
-					if ($ftindexstring) {
-						$create_string .= " ENGINE = MyISAM";
-					}
-					$this->store_run_query($create_string);
-
-					$query_string="insert into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
-					$qresult = $this->store_run_query($query_string);
-
-					if (!$qresult ) {
-						error($this->error);
-					}
-					//FIXME: check for succes first, how?
-				}
-			}
-		} else {
-			$result=0;
-			$this->error="Wrong format for property name: $property";
-		}
-		debug("create_property: $create_string","store");
-		return $result;
-	}
-
-	function remove_property($property) {
-	/**********************************************************************
-
-		This function removes the property with the given name. It does not
-	check whether there are types left which use this property. It returns
-	true when the named property is succesfully removed. This means it also
-	returns true if the property didn't exist in the first place.
-	Otherwise it will return false.
-
-	**********************************************************************/
-
-		$this->error="";
-		$eproperty=AddSlashes($property);
-		$remove_string="drop table ".$this->tbl_prefix."prop_$eproperty";
-		debug($remove_string,"store");
-		$this->store_run_query($remove_string);
-
-		$query_string="delete from ".$this->tbl_prefix."properties where name='$eproperty'";
-		$qresult = $this->store_run_query($query_string);
-		if (!$qresult) {
-			error($this->error);
-		}
-		//FIXME: check for succes first, check whether table no longer exists.
-		return 1;
-	}
-	
-	function add_type($type, $implements) {
-	/**********************************************************************
-	
-		This function does not actually create a type, it only serves to
-	notify to the system that $type exists and that it implements the
-	type or interface given in $implements.
-	$type and $implements must be strings of at most 16 characters.
-
-	**********************************************************************/
-
-		$this->error="";
-		if ($type && $implements && (strlen($type)<33) && (strlen($implements)<33)) {
-			$etype=AddSlashes($type);
-			$eimplements=AddSlashes($implements);
-			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";
-			$qresult = $this->store_run_query($query_string);
-			if (!$qresult) {
-				error($this->error);
-			} else {
-				$result=1;
-			}	
-		} else {
-			$this->error="Wrong format for type or implements";
+			print "Init failed\n";
+			return false;
 		}
 		return $result;
 	}
 
-	function del_type($type, $implements="") {
-	/**********************************************************************
-
-		This function notifies the system that either:
-	1) A type no longer implements a certain type or interface, or
-	2) a type no longer exists.
-
-	**********************************************************************/
-
-		$this->error="";
-		$etype=AddSlashes($type);
-		if (!$implements) {
-			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' or implements='$etype'";
-		} else {
-			$eimplements=AddSlashes($implements);
-			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' and implements='$etype'";
-		}
-		$qresult = $this->store_run_query($query_string);
-		if (!$qresult) {
-			error($this->error);
-			$result=0;
-		} else {
-			$result=1;
-		}
-		return $result;
+	public function __construct($path, $config) {
+		parent::__construct($path, $config);
+		$this->mysqlstore = new mysqlstore_install($path, $config);
 	}
 
+	public function add_type($type, $implements){
+		return $this->mysqlstore->add_type($type, $implements);
+	}
+
+	public function create_property($property, $definition) {
+		return $this->mysqlstore->create_property($property, $definition);
+	}
 }

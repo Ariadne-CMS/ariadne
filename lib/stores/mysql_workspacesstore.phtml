@@ -91,7 +91,7 @@ class mysql_workspacesstore extends mysqlstore {
 			";
 			$query_result = $this->store_run_query($query_string);
 			if ($query_result) {
-				while ($row =  mysql_fetch_array($query_result)) {
+				while ( $row = $objects["list"]->fetch_array(MYSQLI_ASSOC) ) {
 					$record = array();
 					foreach ($row as $key => $value) {
 						if (!is_numeric($key)) {
@@ -145,8 +145,8 @@ class mysql_workspacesstore extends mysqlstore {
 		$query_string = "select distinct(parent) from $nodes_tbl nodes1 where exists ( select 1 from $nodes_tbl nodes2 where nodes1.object = nodes2.object and layer = 0 limit 1,1) and (('$epath' like concat(parent,'%')) or (parent like '$epath%'))";
 
 		$query_result = $this->store_run_query($query_string);
-        if ($query_result) {
-			while ($row = mysql_fetch_array($query_result)) {
+		if ($query_result) {
+			while ( $row = $objects["list"]->fetch_array(MYSQLI_ASSOC) ) {
 				if ($row['parent']) {
 					return true;
 				}
@@ -176,7 +176,7 @@ class mysql_workspacesstore extends mysqlstore {
 						$query_string = "select count(object) as count from $nodes_tbl where object = ".((int)$status['old']['id']);
 						$result = $this->store_run_query($query_string);
 						if ($result) {
-							$objects = mysql_fetch_array($result);
+							$objects = $result->fetch_array(MYSQLI_ASSOC);
 							if ($objects['count'] == 0) {
 
 								$this->del_property($status['old']['object']);
@@ -215,7 +215,7 @@ class mysql_workspacesstore extends mysqlstore {
 						$query_string = "select count(object) as count from $nodes_tbl where object = ".((int)$status['new']['id']);
 						$result = $this->store_run_query($query_string);
 						if ($result) {
-							$objects = mysql_fetch_array($result);
+							$objects = $result->fetch_array(MYSQLI_ASSOC);
 							if ($objects['count'] == 0) {
 
 								$this->del_property(((int)$status['new']['object']));
@@ -290,7 +290,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = mysql_fetch_array($qresult);
+				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
 				$id = $this->addObjectToLayer($temp["path"]);
@@ -302,7 +302,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = mysql_fetch_array($qresult);
+				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
 				$id = $this->addObjectToLayer($temp["path"]);
@@ -354,7 +354,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = mysql_fetch_array($qresult);
+				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
 				$id = $this->addObjectToLayer($temp["path"]);
@@ -366,7 +366,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = mysql_fetch_array($qresult);
+				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
 				$id = $this->addObjectToLayer($temp["path"]);
@@ -379,7 +379,7 @@ class mysql_workspacesstore extends mysqlstore {
 			$etimestamp = AddSlashes($timestamp);
 			$query_string = "update $objects_tbl set lastchanged=FROM_UNIXTIME($etimestamp) where id = $eid";
 			$qresult = $this->store_run_query($query_string);
-			$result = mysql_affected_rows($this->connect_id);
+			$result = $this->dbh->affected_rows;
 		}
 		return $result;
 	}
@@ -452,7 +452,7 @@ class mysql_workspacesstore extends mysqlstore {
 		unset($sqlcompiler);
 		$qresult = $this->store_run_query($query["count_query"]);
 		if ($qresult) {
-			$result = mysql_fetch_array($qresult);
+			$result = $qresult->fetch_array(MYSQLI_ASSOC);
 			$count  = $result["count"];
 		}
 		return $count;
@@ -707,7 +707,7 @@ class mysql_workspacesstore extends mysqlstore {
 				} else {
 					$query_string="insert into $objects_tbl (layer, id,type,object,vtype) values ($layer, 0,'$etype','$edata','$evtype')";
 					$qresult = $this->store_run_query($query_string);
-					$id=mysql_insert_id($this->connect_id);
+					$id=$this->dbh->insert_id;
 					if ($qresult !== false && $id) {
 						if ($layer) {
 							$query_string = "delete from $nodes_tbl where path = '$epath' and layer = $layer";
@@ -764,12 +764,12 @@ class mysql_workspacesstore extends mysqlstore {
 			return false;
 		}
 
-		$numRows = mysql_num_rows($result);
+		$numRows = $result->num_rows;
 		if (!$numRows) {
 			return false;
 		}
 
-		$node = mysql_fetch_array($result);
+		$node = $result->fetch_array(MYSQLI_ASSOC);
 		if (!$node['layer']) {
 			if ( $query_string_layers ) {
 				$part = "and ($query_string_layers)";
@@ -782,7 +782,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$result) {
 				return false;
 			}
-			$layeredNode = mysql_fetch_array($result);
+			$layeredNode = $result->fetch_array(MYSQLI_ASSOC);
 			if ($layeredNode) {
 				return $layeredNode;
 			}
@@ -820,7 +820,7 @@ class mysql_workspacesstore extends mysqlstore {
 		if (!$result) {
 			return false;
 		}
-		$node = mysql_fetch_array($result);
+		$node = $result->fetch_array(MYSQLI_ASSOC);
 		if (!$layer) {
 			return $node['object'];
 		}
@@ -830,7 +830,7 @@ class mysql_workspacesstore extends mysqlstore {
 		if (!$result) {
 			return false;
 		}
-		$newNode = mysql_fetch_array($result);
+		$newNode = $result->fetch_array(MYSQLI_ASSOC);
 
 		
 		if (!$node && $newNode) { // check if newNode has been moved 
@@ -839,7 +839,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$result) {
 				return false;
 			}
-			$node = mysql_fetch_array($result);
+			$node = $result->fetch_array(MYSQLI_ASSOC);
 			if (!$node['id']) {
 				return $newNode['object'];
 			}
@@ -851,7 +851,7 @@ class mysql_workspacesstore extends mysqlstore {
 			return false;
 		}
 
-		$object = mysql_fetch_array($result);
+		$object = $result->fetch_array(MYSQLI_ASSOC);
 		if (!$newNode['object'] || $newNode['object'] == $object['id']) {
 			$insert_object_string = "insert into $objects_tbl (layer, type, vtype, object, lastchanged)
 				values ($layer, '".AddSlashes($object['type'])."',
@@ -863,7 +863,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$result) {
 				return false;
 			}
-			$id = mysql_insert_id($this->connect_id);
+			$id = $this->dbh->insert_id;
 		} else {
 			$id = $newNode['object'];
 		}
@@ -932,7 +932,7 @@ class mysql_workspacesstore extends mysqlstore {
 				$query_string = "select count(object) as count from $nodes_tbl where object = $object";
 				$result = $this->store_run_query($query_string);
 				if ($result) {
-					$objects = mysql_fetch_array($result);
+					$objects = $result->fetch_array(MYSQLI_ASSOC);
 					if ($objects['count'] == 0) {
 
 						$this->del_property($object);
@@ -952,13 +952,13 @@ class mysql_workspacesstore extends mysqlstore {
 				$query_string="select id from $nodes_tbl where path = '$epath' and layer = 0";
 				$result = $this->store_run_query($query_string);
 				if ($result) {
-					$tmp = mysql_fetch_array($result);
+					$tmp = $result->fetch_array(MYSQLI_ASSOC);
 					$nodeId = $tmp['id'];
 					if ($nodeId) {
 						$query_string="replace into $nodes_tbl (path, parent, object, id, layer) values ('$epath', '$eparent', 0, $nodeId, $layer)";
 						$temp=$this->store_run_query($query_string);
 						if ($temp) {
-							$result=mysql_affected_rows($this->connect_id);
+							$result=$this->dbh->affected_rows;
 						}
 					}
 				}
@@ -1014,7 +1014,7 @@ class mysql_workspacesstore extends mysqlstore {
 		}
 		$temp=$this->store_run_query($query_string);
 
-		if ($temp && ($row=mysql_fetch_array($temp))) {
+		if ($temp && ($row=$temp->fetch_array(MYSQLI_ASSOC))) {
 			$object=intval($row["object"]);
 		}
 		return $object;
@@ -1047,7 +1047,7 @@ class mysql_workspacesstore extends mysqlstore {
 
 		$query_string = "select path from $nodes_tbl where path = '$eparent'";
 		$qresult = $this->store_run_query($query_string);
-		if ($qresult && ($row = mysql_fetch_array($qresult))) {
+		if ($qresult && ($row = $qresult->fetch_array(MYSQLI_ASSOC))){
 			$eparent = AddSlashes($row['path']);
 			$edestination = AddSlashes($eparent.$filename);
 
@@ -1067,7 +1067,6 @@ class mysql_workspacesstore extends mysqlstore {
 				$mask = substr($destination, strlen($parent));
 				if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
 					$query_string="lock tables ".$this->tbl_prefix."nodes write";
-					mysql_select_db($this->database,$this->connect_id);
 					$qresult = $this->store_run_query($query_string);
 					if ($qresult){
 						$needunlocking = true;
@@ -1193,7 +1192,7 @@ class mysql_workspacesstore extends mysqlstore {
 			}
 			$result = $this->store_run_query($query_string);
 			if ($result) {
-				$row = mysql_fetch_array($result);
+				$row = $result->fetch_array(MYSQLI_ASSOC);
 				$subid  = (int)$row["id"];
 			}
 			$subid=$subid+1;
