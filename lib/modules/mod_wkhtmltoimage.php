@@ -1,7 +1,11 @@
 <?php
 	class wkhtmltoimage {
+		protected $config;
+		protected $headers;
+		protected $cookies;
+		protected $options;
 
-		function __construct( $config = array() ) {
+		public function __construct( $config = array() ) {
 			if (!$config['cmd']) {
 				$config['cmd'] = '/usr/local/bin/wkhtmltoimage --disable-local-file-access ';
 			}
@@ -21,7 +25,7 @@
 		}
 
 
-		function generateFromURL( $url ) {
+		public function generateFromURL( $url ) {
 			if ( !preg_match( '|^https?://|', $url ) ) {
 				return ar_error::raiseError( "wkhtmltoimage: '$url' is not a valid URL", 201 );
 			}
@@ -63,7 +67,7 @@
 			unlink( $tempFile );
 		}
 
-		function setCookieList( $cookieList = array() ) {
+		public function setCookieList( $cookieList = array() ) {
 			if ( is_array($cookieList) ) {
 				foreach( $cookieList as $name => $value) {
 					$this->setOption( $name, $value );
@@ -71,11 +75,11 @@
 			}
 		}
 
-		function setCookie($name, $value = null) {
+		public function setCookie($name, $value = null) {
 			$this->cookies[ $name ] = $value;
 		}
 
-		function setHeaderList( $headerList = array() ) {
+		public function setHeaderList( $headerList = array() ) {
 			if ( is_array($headerList) ) {
 				foreach( $headerList as $name => $value) {
 					$this->setHeader( $name, $value );
@@ -84,12 +88,12 @@
 		}
 
 
-		function setHeader($name, $value = null) {
+		public function setHeader($name, $value = null) {
 			$this->headers[ $name ] = $value;
 		}
 
 
-		function setOptionList( $optionList = array() ) {
+		public function setOptionList( $optionList = array() ) {
 			if ( is_array($optionList) ) {
 				foreach( $optionList as $name => $value) {
 					$this->setOption( $name, $value );
@@ -97,7 +101,7 @@
 			}
 		}
 
-		function setOption($name, $value = null) {
+		public function setOption($name, $value = null) {
 			if ($value === null) {
 				unset( $this->options[ $name ] );
 				return true;
@@ -128,12 +132,12 @@
 	class pinp_wkhtmltoimage {
 		private $instance;
 
-		function __construct( $options = array() ) {
+		public function __construct( $options = array() ) {
 			$this->instance = new wkhtmltoimage();
 			$this->instance->setOptionList( $options );
 		}
 
-		function _generateFromURL( $url ) {
+		public function _generateFromURL( $url ) {
 			return $this->instance->generateFromURL( $url );
 		}
 
