@@ -259,11 +259,12 @@ html {
 }
 
 #login_panel #centered {
-	width: 500px;
+	max-width: 500px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 50px; /* FIXME: properly vertical center this instead of using a margin to position it somewhere from the top */
 	position: relative;
+	width: 100%;
 }
 #login_panel .bd #centered {
 	margin: 0px;
@@ -319,4 +320,41 @@ html {
 
 #login_panel .highlight {
 	color: #FF0000;
+}
+
+@media only screen  and (max-width : 480px) {
+	#login_panel #centered {
+		margin-top: 0px;
+	}
+	#login_panel #header {
+		height: 60px;
+		text-align: center;
+		border-left: 0px;
+		border-right: 0px;
+	}
+	#login_panel #header .logo {
+		float: none;
+		width: 100%;
+	}
+	#login_panel #header .typeicon {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+	}
+
+	#login_panel #tabsdata input {
+		padding: 10px;
+		border: 1px solid #888;
+		border-radius: 5px;
+		box-sizing: content-box;
+	}
+	#login_panel #tabsdata input[type=submit] {
+		margin-top: 30px;
+	}
+	#login_panel #tabsdata,
+	#login_panel .notfixed #tabsdata {
+		position: fixed;
+		top: 75px;
+		margin-top: 0px;
+	}
 }
