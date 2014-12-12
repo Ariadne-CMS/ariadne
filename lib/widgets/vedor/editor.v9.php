@@ -3633,12 +3633,11 @@
 		});
 
 		muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
-			console.log("editpane keydown");
 			var key = event.keyCode || event.which;
 			if (key == 66 && event.ctrlKey) { // Ctrl-B
 				VD_BOLD_onclick();
 				muze.event.cancel(event);
-			} else if (key == 72 && event.ctrlKey) { // Ctrl-I
+			} else if (key == 73 && event.ctrlKey) { // Ctrl-I
 				VD_ITALIC_onclick();
 				muze.event.cancel(event);
 			} else if (key == 83 && event.ctrlKey) { // Ctrl-S
@@ -3650,7 +3649,6 @@
 				var activeToolbar = document.querySelectorAll(".vedor-section.active")[0];
 				if (activeToolbar) {
 					var firstButton = activeToolbar.querySelectorAll("button")[0];
-					console.log(firstButton);
 					if (firstButton) {
 						firstButton.focus();
 					}
