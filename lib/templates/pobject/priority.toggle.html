@@ -1,0 +1,14 @@
+<?php 
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
+
+	$new_prio = - $this->priority;
+	$this->call("system.save.priority.phtml", Array("priority" => $new_prio));
+	$this->arReturnPage=$this->getvar('arReturnPage');
+	if (!$this->arReturnPage) {
+		$this->arReturnPage=$this->make_local_url().'user.edit.html';
+	}
+	ldRedirect($this->arReturnPage);
+?><a href="<?php  echo $this->arReturnPage;  ?>">Continue</a>
