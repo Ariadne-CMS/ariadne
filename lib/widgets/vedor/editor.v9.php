@@ -2541,9 +2541,11 @@
 		if (showTagBoundaries) {
 			showTagBoundaries = false;
 			vdEditDoc.body.className = vdEditDoc.body.className.replace(/\bvdShowTags\b/, '');
+			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").className = document.getElementById("vdShowTagBoundaries").className.replace(/\bvedor-selected\b/, '') : '';
 		} else {
 			showTagBoundaries = true;
 			vdEditDoc.body.className += " vdShowTags";
+			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").className += " vedor-selected" : '';
 		}
 
 		cssSetStyle( myStyleSheet, 'body.vdShowTags .editable br', 'display: block; right: 0px; margin: 0px; padding: 0px; font-size: 9px; content: "BR"; position: relative; height: 1em; margin-left: 100%;');
