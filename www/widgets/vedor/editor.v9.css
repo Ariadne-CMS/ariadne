@@ -535,6 +535,10 @@ a:hover span.deltag {
 			opacity: 0.3;
 		}
 
+		.vedor-toolbar button:focus {
+			border-bottom: 2px solid orange !important;
+		}
+
 		button.vedor-selected::first-child {
 			border-left: 0px;
 		}

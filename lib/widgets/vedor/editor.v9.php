@@ -2715,12 +2715,14 @@
 				vdHideToolbars = false;
 				initTextProperties();
 			case "vedor-image" :
+				vdHideToolbars = false;
 			// 	FIXME: Deze wordt nu nog in updateHtmlContext gedaan;
 			//	initImageProperties();
 			break;
 			case "vedor-no-context" :
 			break;
 			case "vedor-hyperlink" :
+				vdHideToolbars = false;
 				initHyperlinkProperties();
 			break;
 			default:
@@ -3631,6 +3633,7 @@
 		});
 
 		muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
+			console.log("editpane keydown");
 			var key = event.keyCode || event.which;
 			if (key == 66 && event.ctrlKey) { // Ctrl-B
 				VD_BOLD_onclick();
@@ -3641,8 +3644,103 @@
 			} else if (key == 83 && event.ctrlKey) { // Ctrl-S
 				SAVE_onclick();
 				muze.event.cancel(event);
+			} else if (key == 9) { // TAB key
+				vdHideToolbars = false;
+				updateHtmlContext();
+				var activeToolbar = document.querySelectorAll(".vedor-section.active")[0];
+				if (activeToolbar) {
+					var firstButton = activeToolbar.querySelectorAll("button")[0];
+					console.log(firstButton);
+					if (firstButton) {
+						firstButton.focus();
+					}
+				}
+
+				var toolbarTarget = document.querySelectorAll(".vedor-section.active .vedor-buttons > li")[0];
+				
+				if (toolbarTarget) {
+					toolbarTarget.focus();
+				}
+				muze.event.cancel(event);
+			} else if (key == 77 && event.ctrlKey) { // Ctrl-M
+				document.querySelector("#vedor-main-toolbar button").focus();
+				muze.event.cancel(event);
+			} else {
+				vdHideToolbars = true;
 			}
 		});
+
+		muze.event.attach(window, "keydown", function(event) {
+			var key = event.keyCode || event.which;
+			if (key == 27) { // ESC
+				vdHideToolbars = true;
+				updateHtmlContext();
+				muze.event.cancel(event);
+			} else if (key == '77' && event.ctrlKey) { // ctrl-M
+				document.querySelector("#vedor-main-toolbar button").focus(); 
+				muze.event.cancel(event);
+			}
+		});
+
+		var vedorSections = document.querySelectorAll(".vedor-section");
+		for (var i=0; i<vedorSections.length; i++) {
+			muze.event.attach(vedorSections[i], "keydown", function(event) {
+				var key = event.keyCode || event.which;
+				if (key == 27) { // ESC
+					vdHideToolbars = true;
+					updateHtmlContext();
+					muze.event.cancel(event);
+				} else if (key == 37) { // left
+					var target = this.querySelectorAll(":focus")[0]; 
+					var previousSibling = target.parentNode.previousSibling;
+					while (previousSibling) {
+						if (previousSibling.nodeType == 1) {
+							if (
+								previousSibling.childNodes[0] && 
+								previousSibling.offsetWidth > 0 
+							) {
+								break;
+							}
+						}
+						previousSibling = previousSibling.previousSibling;
+					}
+
+					if (previousSibling) {
+						previousSibling.querySelector("*").focus();
+					}
+					muze.event.cancel(event);
+				} else if (key == 38) { // up
+					// close current toolbar section;
+					var targets = this.querySelectorAll('.vedor-selected');
+					for (var i=0; i<targets.length; i++) {
+						targets[i].classList.remove("vedor-selected");
+					}
+					targets[0].focus();
+					muze.event.cancel(event);
+				} else if (key == 39) {
+					var target = this.querySelectorAll(":focus")[0]; 
+					var nextSibling = target.parentNode.nextSibling;
+					while (nextSibling) {
+						if (nextSibling.nodeType == 1) {
+							if (nextSibling.childNodes[0] && nextSibling.offsetWidth > 0) {
+								break;
+							}
+						}
+						nextSibling = nextSibling.nextSibling;
+					}
+
+					if (nextSibling) {
+						nextSibling.querySelector("*").focus();
+					}
+					muze.event.cancel(event);
+				} else if (key == 40) { // down
+					// close current toolbar section;
+					var target = this.querySelector(':focus');
+					muze.event.fire(target, "click");
+					muze.event.cancel(event);
+				}
+			});
+		}
 
 		document.getElementById("vdImageAlt") ? muze.event.attach(document.getElementById("vdImageAlt"), "change", vdSetImage) : false;
 		document.getElementById("vdImageTitle") ? muze.event.attach(document.getElementById("vdImageTitle"), "change", vdSetImage) : false;
@@ -3672,9 +3770,6 @@
 		}
 
 		muze.event.attach(vdEditPane.contentWindow, "load", function() {
-			muze.event.attach(vdEditPane.contentWindow.document, "keydown", function() {
-				vdHideToolbars = true;
-			});
 			muze.event.attach(vdEditPane.contentWindow.document, "click", function() {
 				if (vdHideToolbars) {
 					vdHideToolbars = false;
@@ -3747,6 +3842,7 @@
 							if ( target && target[0] ) {
 								target[0].className += ' vedor-selected';
 								lastSection = target[0];
+								lastSection.querySelectorAll("LI > *")[0].focus();
 							}
 						}
 					} else {
