@@ -1,0 +1,118 @@
+<?php
+	if ($this->CheckSilent("edit") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<section id="vedor-main-toolbar" class="vedor-section">
+	<div class="vedor-toolbar" data-vedor-section="vedor-page-management">
+		<ul class="vedor-buttons">
+			<li class="vedor-logo">
+				<img class="vedor-logo" src="http://www.vedor.nl/graphics/vedor.small.png">
+			</li>
+			<li>
+				<button data-vedor-action="vedor-save">
+					<i class="fa fa-save"></i><?php echo $ARnls['vd.editor:save']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-section="vedor-manage" class="vedor-expands">
+					<i class="fa fa-folder"></i><?php echo $ARnls['vd.editor:manage_page']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-section="vedor-view" class="vedor-expands">
+					<i class="fa fa-ellipsis-v"></i><?php echo $ARnls['vd.editor:show_more']; ?>
+				</button>
+			</li>
+			<li class="vedor-seperator"></li>
+			<li>
+				<button data-vedor-action="vedor-undo" id="VD_UNDO">
+					<i class="fa fa-undo"></i><?php echo $ARnls['vd.editor:undo']; ?>
+				</button>
+				<button data-vedor-action="vedor-redo" id="VD_REDO">
+					<i class="fa fa-repeat"></i><?php echo $ARnls['vd.editor:redo']; ?>
+				</button>
+			</li>
+			<li class="vedor-seperator"></li>
+			<li>
+				<button data-vedor-action="vedor-help">
+					<i class="fa fa-question-circle"></i><?php echo $ARnls['vd.editor:help']; ?>
+				</button>
+			</li>
+			<li class="vedor-seperator"></li>
+			<li id="vedorLanguage" style="display: none !important;">
+				<div class="vedor-list">
+					<button class="vedor-expands" data-vedor-action="vedor-language">
+						<i class="fa fa-flag"></i><?php echo $ARnls['vd.editor:language']; ?>
+					</button>
+					<ul id="VD_NLS_SELECT" class="vedor-list-items">
+					</ul>
+				</div>
+			</li>
+		</ul>
+		<div class="vedor-toolbar-section vedor-manage">
+			<ul>
+			<li>
+				<button data-vedor-action="vedor-new" id="NEW">
+					<i class="fa fa-plus-square-o"></i><?php echo $ARnls['vd.editor:new']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-sitemap">
+					<i class="fa fa-sitemap"></i><?php echo $ARnls['vd.editor:sitemap']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-copy">
+					<i class="fa fa-copy"></i><?php echo $ARnls['vd.editor:copy']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-rename">
+					<i class="fa fa-pencil"></i><?php echo $ARnls['vd.editor:rename']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-move">
+					<i class="fa fa-sign-in"></i><?php echo $ARnls['vd.editor:move']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-delete" id="DELETE">
+					<i class="fa fa-trash-o"></i><?php echo $ARnls['vd.editor:delete']; ?>
+				</button>
+			</li>
+			</ul>
+		</div>
+		<div class="vedor-toolbar-section vedor-view">
+			<ul>
+			<li>
+				<button data-vedor-action="vedor-borders" id="VD_DETAILS">
+					<i class="fa fa-ellipsis-h"></i><?php echo $ARnls['vd.editor:show_borders']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-show-tags" id="vdShowTagBoundaries">
+					<i class="fa fa-paragraph"></i><?php echo $ARnls['vd.editor:show_boundaries']; ?>
+				</button>
+			</li>
+			<li class="vedor-seperator"></li>
+			<li style="display: none !important;">
+				<button data-vedor-action="vedor-properties" id="VD_META">
+					<i class="fa fa-info-circle"></i><?php echo $ARnls['vd.editor:show_metadata']; ?>
+				</button>
+			</li>
+			<li style="display: none !important;">
+				<button data-vedor-action="vedor-context">
+					<i class="fa fa-gears"></i><?php echo $ARnls['vd.editor:context_menu']; ?>
+				</button>
+			</li>
+			</ul>
+		</div>
+		<div class="vedor-toolbar-section vedor-toolbar-status vedor-selected">
+			<div class="vedor-context-html">
+			</div>
+		</div>
+	</div>
+</section>
+<?php
+	}
+?>

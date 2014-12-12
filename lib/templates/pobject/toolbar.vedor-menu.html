@@ -1,0 +1,30 @@
+<?php
+	if ($this->CheckSilent("edit") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<section id="vedor-menu" class="vedor-section">
+	<h1>*Menu Toolbar*</h1>
+	<div class="vedor-toolbar">
+		<ul class="vedor-buttons">
+			<li><button class="vedor-upload" data-vedor-action="vedor-menu-hide"><i class="fa fa-eye-slash"></i><?php echo $ARnls['vd.editor:hide']; ?></button></li>
+			<li><button class="vedor-browse" data-vedor-action="vedor-menu-sort"><i class="fa fa-sort"></i><?php echo $ARnls['vd.editor:sort']; ?></button></li>
+		</ul>
+		<div class="vedor-toolbar-section vedor-toolbar-status vedor-selected">
+			<div class="vedor-context-html">
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+	vedor.editor.addContextFilter("vedor-menu", {
+		"selector" : "*[data-vedor-path]",
+		"parent" : {
+			"selector" : "A[ondblclick]",
+			"parent" : {
+				"selector" : ".menu"
+			}
+		}
+	});
+</script>
+<?php
+	}
+?>
