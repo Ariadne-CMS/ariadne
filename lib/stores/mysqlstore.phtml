@@ -76,6 +76,7 @@ class mysqlstore extends store{
 
 		$this->database=$config["database"];
 
+		$password = $config["password"];
 		$config["password"]="";
 		$this->config=$config;
 
@@ -87,7 +88,7 @@ class mysqlstore extends store{
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
 		$this->mod_lock=new mysqllock($config["prefix"]);
-		$this->mod_lock->connect($config['host'], $config["user"], $config["password"], $config['database']);
+		$this->mod_lock->connect($config['host'], $config["user"], $password, $config['database']);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 
 		if (isset($config['filestores']) && is_array($config['filestores'])) {
