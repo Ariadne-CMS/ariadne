@@ -309,6 +309,13 @@
 	class ar_error extends ar_exceptionDefault {
 		protected static $throwExceptions = false;
 
+		public function __construct( $message = '', $code = 0, $previous = null ) {
+			parent::__construct( (string) $message, (int) $code, $previous );
+			$this->code = $code;
+			$this->message = $message;
+			$this->previous = $previous;
+		}
+
 		public function __call($name, $arguments) {
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
