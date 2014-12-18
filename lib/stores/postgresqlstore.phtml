@@ -98,7 +98,12 @@ class postgresqlstore extends store {
 
 	 **********************************************************************************/ 
 
-		debug("call($template, ".debug_serialize($args).", [list])", "store");
+	 	if ( $template instanceof \Closure ) {
+	 		$templateName = 'Closure';
+	 	} else {
+	 		$templateName = (string) $template;
+	 	}
+		debug("call($templateName, ".debug_serialize($args).", [list])", "store");
 		$result = Array();
 		$this->error = "";
 		$this->count = @pg_numrows($objects["list"]);
@@ -136,7 +141,7 @@ class postgresqlstore extends store {
 	}
 
 	public function info($objects) {
-		debug("call($template, $args, [list])","store");
+		debug("info([list])","store");
 		$i = 0;
 		while ($row=@pg_fetch_array($objects["list"], $i++)) {
 			unset($row["object"]);
