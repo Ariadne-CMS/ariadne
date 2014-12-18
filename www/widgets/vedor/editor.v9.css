@@ -923,3 +923,6 @@ a:hover span.deltag {
 #vedor-main-toolbar .vedor-logo {
 	margin: 5px 10px;
 }
+.vedor-hidden {
+	display: none !important;
+}

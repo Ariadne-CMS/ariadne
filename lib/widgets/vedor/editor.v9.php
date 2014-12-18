@@ -3475,6 +3475,50 @@
 		"vedor-insert-image" : function(el) {
 			VD_IMAGE_onclick();
 		},
+		"vedor-image-upload" : function(el) {
+			if (currentImage) {
+				var input, path, form;
+				form = muze.html.el(
+					'form', 
+					{
+						'method' : 'post',
+						'action' : objectURL + 'vedor.upload.image.html',
+						'target' : '_blank' // temp
+					}, 
+					input = muze.html.el(
+						'input', 
+						{
+							'type' : 'file',
+							'name' : 'file'
+						}
+					),
+					path = muze.html.el('input', { 'type' : 'hidden', 'name' : 'path' } )
+				);
+				
+				path.value = currentImage.dataset.vedorPath;
+				// now upload the file using ajax?
+				alert('ajax upload here');
+
+				var onImageLoad = function() {
+					var imgsrc = currentImage.src;
+					var query = imgsrc.indexOf('?');
+					if ( query ) {
+						imgsrc += '&'+Math.random();
+					} else {
+						imgsrc += '?'+Math.random();
+					}
+					currentImage.src = imgsrc;
+				};
+
+				var inputChange = muze.event.attach(input, 'change', function() {
+					muze.event.detach(input, 'change', inputChange);
+					if ( input.value ) {
+						form.submit();
+					}
+				});
+				muze.event.fire(input, 'click');
+			}
+		},
 		"vedor-image-browse" : function(el) {
 			VD_IMAGE_onclick();
 		},
