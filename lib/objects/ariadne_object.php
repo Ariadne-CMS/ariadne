@@ -67,7 +67,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	***********************************************************************/
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
-		debug("pobject: ".$this->path.": call($arCallFunction, ".debug_serialize($arCallArgs).")","object","all","IN");
+		if ( $arCallFunction instanceof \Closure ) {
+			$arCallFunctionName = 'Closure';
+		} else {
+			$arCallFunctionName = (string) $arCallFunction;
+		}
+		debug("pobject: ".$this->path.": call($arCallFunctionName, ".debug_serialize($arCallArgs).")","object","all","IN");
 
 		// default to view.html
 		if (!$arCallFunction) {
@@ -133,10 +138,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (isset($this->data->custom[$nls])) {
 			$customnlsdata=$this->data->custom[$nls];
 		}
+
 		$arCallFunctionOrig = $arCallFunction;
-		if (strpos($arCallFunction,"::")!==false) {
+		if (strpos($arCallFunctionName,"::")!==false) {
 			// template of a specific class defined via call("class::template");
-			list($arType, $arCallFunction)=explode("::",$arCallFunction);
+			list($arType, $arCallFunction)=explode("::",$arCallFunctionName);
 			$temp = explode(":", $arType );
 			if( count($temp) > 1 ) {
 				$libname = $temp[0];
@@ -147,54 +153,58 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arType=$this->type;
 		}
 
-		if ($arCallFunction[0] === "#") {
-			$ARCurrent->arCallClassTemplate = true;
-			$arCallFunction = substr($arCallFunction, 1);
+		if ( $arCallFunction instanceof \Closure ) {
+			$arResult = $arCallFunction($this );
 		} else {
-			$ARCurrent->arCallClassTemplate = false;
-		}
+			if ($arCallFunction[0] === "#") {
+				$ARCurrent->arCallClassTemplate = true;
+				$arCallFunction = substr($arCallFunction, 1);
+			} else {
+				$ARCurrent->arCallClassTemplate = false;
+			}
 
-		if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
-			$arResult = $this;
-		} else {
-			while ($arType != "ariadne_object") {
-				// search for the template, stop at the root class ('ariadne_object')
-				// (this should not happen, as pobject must have a 'default.phtml')
-				$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
-				if (file_exists($arCallTemplate)) {
-					//debug('found '.$arCallTemplate, 'all');
-					// template found
-					$arCallFunction = $arCallFunctionOrig;
-					include($arCallTemplate);
-					break;
-				} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
-					//debug('found default.phtml', 'all');
-					// template not found, but we did find a 'default.phtml'
-					include($this->store->get_config("code")."templates/".$arType."/default.phtml");
-					break;
-				} else {
-					if (!($arSuper=$AR->superClass[$arType])) {
-						// no template found, no default.phtml found, try superclass.
+			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
+				$arResult = $this;
+			} else {
+				while ($arType != "ariadne_object") {
+					// search for the template, stop at the root class ('ariadne_object')
+					// (this should not happen, as pobject must have a 'default.phtml')
+					$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
+					if (file_exists($arCallTemplate)) {
+						//debug('found '.$arCallTemplate, 'all');
+						// template found
+						$arCallFunction = $arCallFunctionOrig;
+						include($arCallTemplate);
+						break;
+					} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
+						//debug('found default.phtml', 'all');
+						// template not found, but we did find a 'default.phtml'
+						include($this->store->get_config("code")."templates/".$arType."/default.phtml");
+						break;
+					} else {
+						if (!($arSuper=$AR->superClass[$arType])) {
+							// no template found, no default.phtml found, try superclass.
 
-						if ($subcpos = strpos($arType, '.')) {
-							$arSuper = substr($arType, 0, $subcpos);
-							if (!class_exists($arType)) {
-								// the super class was not yet loaded, so do that now
-								$this->store->newobject('', '', $arSuper, new object);
+							if ($subcpos = strpos($arType, '.')) {
+								$arSuper = substr($arType, 0, $subcpos);
+								if (!class_exists($arType)) {
+									// the super class was not yet loaded, so do that now
+									$this->store->newobject('', '', $arSuper, new object);
+								}
+							} else {
+								if (!class_exists($arType)) {
+									// the given class was not yet loaded, so do that now
+									$this->store->newobject('','',$arType,new object);
+									// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
+
+								}
+								$arTemp=new $arType();
+								$arSuper=get_parent_class($arTemp);
 							}
-						} else {
-							if (!class_exists($arType)) {
-								// the given class was not yet loaded, so do that now
-								$this->store->newobject('','',$arType,new object);
-								// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
-
-							}
-							$arTemp=new $arType();
-							$arSuper=get_parent_class($arTemp);
+							$AR->superClass[$arType]=$arSuper;
 						}
-						$AR->superClass[$arType]=$arSuper;
+						$arType=$arSuper;
 					}
-					$arType=$arSuper;
 				}
 			}
 		}
@@ -2525,7 +2535,9 @@ debug("loadLibrary: loading cache for $this->path");
 
 	public function _call($function, $args="") {
 		// remove possible path information (greedy match)
-		$function=basename($function);
+		if ( !( $function instanceof \Closure ) ) {
+			$function = basename( (string) $function );
+		}
 		return $this->call($function, $args);
 	}
 
@@ -2618,7 +2630,9 @@ debug("loadLibrary: loading cache for $this->path");
 
 	public function _get($path, $function="view.html", $args="") {
 		// remove possible path information (greedy match)
-		$function=basename($function);
+		if ( !($function instanceof \Closure) ) {
+			$function = basename( (string) $function);
+		}
 		return $this->store->call($function, $args,
 			$this->store->get(
 				$this->make_path($path)));
@@ -2630,20 +2644,26 @@ debug("loadLibrary: loading cache for $this->path");
 
 	public function _ls($function="list.html", $args="") {
 		// remove possible path information (greedy match)
-		$function=basename($function);
+		if ( ! ( $function instanceof \Closure ) ) {
+			$function = basename( (string) $function );
+		}
 		return $this->store->call($function, $args,
 			$this->store->ls($this->path));
 	}
 
 	public function _parents($function="list.html", $args="", $top="") {
 		// remove possible path information (greedy match)
-		$function=basename($function);
+		if ( !($function instanceof \Closure ) ) {
+			$function = basename( (string) $function);
+		}
 		return $this->parents($this->path, $function, $args, $top);
 	}
 
 	public function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		// remove possible path information (greedy match)
-		$function=basename($function);
+		if ( !($function instanceof \Closure ) ) {
+			$function = basename( (string) $function);
+		}
 		$result = $this->store->call($function, $args,
 			$this->store->find($this->path, $criteria, $limit, $offset));
 		if ($this->store->error) {

@@ -148,7 +148,7 @@ class mysqlstore extends store{
 							$templateArgs = array_merge( (array) $templateArgs, $singleCall['params'] );
 						}
 					} else {
-						$templateName = (string) $singleCall;
+						$templateName = $singleCall;
 					}
 					if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
 						$result[$row['path']] = $object->call( $templateName, $templateArgs );
