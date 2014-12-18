@@ -6,7 +6,6 @@ vedor.dom.selection = ( function() {
 	var w3c = window.getSelection ? true : false;
 
 	var self = { // lets name ourselves self to not conflict that easy with range or selection
-
 		get : function( useWin ) {
 			if( !useWin ) {
 				useWin = win;
@@ -21,7 +20,27 @@ vedor.dom.selection = ( function() {
 				return useWin.document.selection.createRange();
 			}
 		},
-
+		backwards : function( useWin ) {
+			if ( !useWin ) {
+				useWin = win;
+			}
+			if (w3c) {
+				var sel = useWin.getSelection();
+				console.log(sel);
+				var position = sel.anchorNode.compareDocumentPosition(sel.focusNode);
+				console.log("pos " + position);
+				if (position == 0) {
+					return (sel.anchorOffset > sel.focusOffset);
+				} else if (position == 4) { // Node.DOCUMENT_POSITION_PRECEDING) {
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				// FIXME: Old IE compat goes here;
+				return false;
+			}
+		},
 		collapse : function(range, left) {
 			if (left!==false) {
 				left=true;

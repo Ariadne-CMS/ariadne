@@ -9,12 +9,12 @@ vedor.editor.bookmarks = ( function() {
 	var doc = window.document;
 	var selection = vedor.dom.selection;
 	var nesting = vedor.dom.nesting;
-	
+
 	var TEXT_NODE = 3;
 	var ELEMENT_NODE = 1;
 	
 	var bookmarks = {
-	
+		backwards : false,
 		init : function( useWin ) {
 			win = useWin;
 			doc = useWin.document;
@@ -84,6 +84,8 @@ vedor.editor.bookmarks = ( function() {
 			}
 		},
 		set : function(sel) {
+			bookmarks.backwards = selection.backwards(win);
+
 			// this method inserts the left and right bookmarks based on the given selection.
 			var left = selection.clone(sel);
 			var right = selection.clone(sel);
@@ -99,13 +101,14 @@ vedor.editor.bookmarks = ( function() {
 			selection.replace(left, leftTag);
 
 			//FIXME: this is an IE only fix, check behaviour of other browsers, we may need to add extra cases
-			if( !window.getSelection ) {		
+			if( !win.getSelection ) {		
 				bookmarks.normalize(leftTag, 'left');
 				bookmarks.normalize(rightTag, 'right');
 			}
 		},
 		select : function(el) {
 			// this method turns the bookmarks back into a selection
+			// FIXME: When returning the bookmarks to a selection, the selection 'direction' always goes from left to right; It should return the selection in the original direction.
 			if (!el) {
 				el = doc;
 			}
@@ -116,9 +119,14 @@ vedor.editor.bookmarks = ( function() {
 			var leftRange = selection.collapse(selection.selectNode(leftSel, leftTag, true));
 			var rightRange = selection.collapse(selection.selectNode(rightSel, rightTag, true), true);
 			var totalSel = selection.clone(selection.get(win));
-			return selection.selectRange(totalSel, leftRange, rightRange, true);
+			if (bookmarks.backwards) {
+				return selection.selectRange(totalSel, rightRange, leftRange, true);
+			} else {
+				return selection.selectRange(totalSel, leftRange, rightRange, true);
+			}
 		},
 		remove : function() {
+			bookmarks.backwards = false;
 			var leftTag = bookmarks.findTag('left');
 			while (leftTag) {
 				while (leftTag.firstChild) {
