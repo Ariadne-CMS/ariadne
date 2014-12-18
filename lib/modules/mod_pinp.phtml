@@ -716,7 +716,7 @@ class pinp {
 		$this->function_prefix = $function_prefix;
 
 		// warning: don't remove the first | in the first list of functions
-		$array_funcs="|array|array_map|array_change_key_case|array_chunk|array_combine|array_count_values|".
+		$array_funcs="|array|array_change_key_case|array_chunk|array_combine|array_count_values|".
 		  "array_diff_assoc|array_diff_key|array_diff|array_flip|array_fill|array_fill_keys|".
 		  "array_flip|array_intersect|array_intersect_assoc|array_intersect_key|array_key_exists|array_keys|".
 		  "array_merge|array_merge_recursive|array_multisort|array_pad|array_pop|".
@@ -1150,7 +1150,7 @@ class pinp {
 					// we don't have to prefix the function identifier if we already have done that.
 					if (!$identSet) {
 						if (!$this->allowed_functions[$iname]) {
-								$result = $this->function_prefix.ltrim($this->token_value, '_');
+								$result = $this->var_prefix.ltrim($this->token_value, '_');
 						} else {
 								$result = $this->token_value;
 						}

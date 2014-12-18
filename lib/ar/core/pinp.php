@@ -40,15 +40,31 @@ class ar_core_pinpSandbox extends arBase {
 
 	public function __call($function, $args){
 		if ( $function[0] === '_' ) {
+			// variable called as a function
 			$function = substr($function,1);
+			if( isset($this->{$function}) && $this->{$function} instanceof \Closure ) {
+				return call_user_func_array($this->{$function}, $args);
+			} else {
+				return ar_error::raiseError("Function is not a closure",500);
+			}
+		} else {
+			//function not in whitelist
+			$function = '_'.$function;
+			if(is_callable( [ $this->this,$function ])) {
+				return call_user_func_array( [ $this->this, $function], $args);
+			} else {
+				return ar_error::raiseError("Function is not a method",500);
+			}
 		}
+	}
 
-		if( isset($this->{$function}) && $this->{$function} instanceof \Closure ) {
-			return call_user_func_array($this->{$function}, $args);
+	public function array_map($function, $a) {
+		$args = func_get_args();
+		if( isset($function) && $function instanceof \Closure ) {
+			return call_user_func_array('array_map', $args);
 		} else {
 			return ar_error::raiseError("Function is not a closure",500);
 		}
 	}
-
 
 }
