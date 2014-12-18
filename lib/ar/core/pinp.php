@@ -38,6 +38,10 @@ class ar_core_pinpSandbox extends arBase {
 		$this->{$name} = $value;
 	}
 
+	private function isSafeCallable( $callable ) {
+		return ( !isset($callable) || $callable instanceof \Closure );
+	}
+
 	public function __call($function, $args){
 		if ( $function[0] === '_' ) {
 			// variable called as a function
@@ -49,21 +53,48 @@ class ar_core_pinpSandbox extends arBase {
 			}
 		} else {
 			//function not in whitelist
-			$function = '_'.$function;
-			if(is_callable( [ $this->this,$function ])) {
-				return call_user_func_array( [ $this->this, $function], $args);
-			} else {
-				return ar_error::raiseError("Function is not a method",500);
+			switch($function) {
+				// first arg must be a closure
+				case 'array_map':
+					if ( $this->isSafeCallable($args[0])) {
+						return call_user_func_array( $function, $args );
+					}
+				break;
+				// second arg must be a closure
+				case 'array_filter':
+				case 'array_reduce':
+				case 'array_walk':
+				case 'array_walk_recursive':
+				case 'usort':
+				case 'uasort':
+				case 'uksort':
+				case 'preg_replace_callback':
+					if ( $this->isSafeCallable($args[1])) {
+						return call_user_func_array( $function, $args );
+					}
+				break;
+				// last arg must be a closure
+				case 'array_diff_uassoc':
+				case 'array_diff_ukey':
+				case 'array_intersect_uassoc':
+				case 'array_intersect_ukey':
+				case 'array_udiff':
+				case 'array_udiff_assoc':
+					$l = count($args);
+					if ( $this->isSafeCallable($args[$l-1]) ) {
+						return call_user_func_array( $function, $args );
+					}
+				break;
+				// last two args must be a closure
+				case 'array_udiff_uassoc':
+				case 'array_uintersect_uassoc':
+					$l = count($args);
+					if ( $this->isSafeCallable($args[$l-1]) && $this->isSafeCallable( $args[$l-2] ) ) {
+						return call_user_func_array( $function, $args );
+					}
+				break;
 			}
-		}
-	}
-
-	public function array_map($function, $a) {
-		$args = func_get_args();
-		if( isset($function) && $function instanceof \Closure ) {
-			return call_user_func_array('array_map', $args);
-		} else {
-			return ar_error::raiseError("Function is not a closure",500);
+			return ar_error::raiseError("Function is not a method",500);
 		}
 	}
 
