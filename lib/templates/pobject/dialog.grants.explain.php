@@ -18,8 +18,10 @@
 		$userGroups = array();
 		foreach ($userGroupPaths as $userGroupPath) {
 			$group = current($this->get($userGroupPath, 'system.get.phtml'));
-			$group->active = true;
-			$userGroups[$userGroupPath] = $group;
+			if ($group) {
+				$group->active = true;
+				$userGroups[$userGroupPath] = $group;
+			}
 		}
 
 		$allInactive = false;
