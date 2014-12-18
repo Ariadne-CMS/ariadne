@@ -2954,7 +2954,7 @@
 //				// restore selection triggers contextupdate, which triggers restore selection - this hopefully prevents that loop.
 				skipContextUpdate = true;
 				if (!sel.collapsed) {
-					vdSelectionState.restore(sel);
+				//	vdSelectionState.restore(sel); // // FIXME: This reverses the current selection, which causes problems selecting from right to left; Is it used at all?
 				}
 				window.setTimeout(function() { skipContextUpdate = false;}, 20);
 		}
@@ -3681,13 +3681,17 @@
 			if (key == 66 && event.ctrlKey) { // Ctrl-B
 				VD_BOLD_onclick();
 				muze.event.cancel(event);
+			} else if (key == 27) { // ESC
+				vdHideToolbars = true;
+				updateHtmlContext();
+				muze.event.cancel(event);
 			} else if (key == 73 && event.ctrlKey) { // Ctrl-I
 				VD_ITALIC_onclick();
 				muze.event.cancel(event);
 			} else if (key == 83 && event.ctrlKey) { // Ctrl-S
 				SAVE_onclick();
 				muze.event.cancel(event);
-			} else if (key == 9) { // TAB key
+			} else if (key == 32 && event.ctrlKey) { // Ctrl-space
 				vdHideToolbars = false;
 				updateHtmlContext();
 				var activeToolbar = document.querySelectorAll(".vedor-section.active")[0];
@@ -3778,8 +3782,10 @@
 				} else if (key == 40) { // down
 					// close current toolbar section;
 					var target = this.querySelector(':focus');
-					muze.event.fire(target, "click");
-					muze.event.cancel(event);
+					if (target.classList.contains("vedor-expands")) {
+						muze.event.fire(target, "click");
+						muze.event.cancel(event);
+					}
 				}
 			});
 		}
