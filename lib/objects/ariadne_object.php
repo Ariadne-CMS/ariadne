@@ -154,7 +154,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		if ( $arCallFunction instanceof \Closure ) {
-			$arResult = $arCallFunction($this );
+			$context = $this->getContext(ARCALLINGCONTEXT);
+			if ( $context["scope"] != "pinp" ) {
+				$arResult = $arCallFunction($this );
+			} else {
+				if ( $this->CheckSilent('read') ) {
+					$arResult = $arCallFunction($this);
+				}
+			}
 		} else {
 			if ($arCallFunction[0] === "#") {
 				$ARCurrent->arCallClassTemplate = true;
@@ -249,7 +256,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$parents = array_reverse($parents);
 		$result = array();
 		foreach ($parents as $parent) {
-			$result[] = $parent->call($function, $args);
+			if ( $parent ) { // might not have read access to this object
+				$result[] = $parent->call($function, $args);
+			}
 		}
 
 		return $result;

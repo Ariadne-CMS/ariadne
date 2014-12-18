@@ -94,6 +94,12 @@ class ar_core_pinpSandbox extends arBase {
 					}
 				break;
 			}
+
+			$function = '_'.$function;
+			if ( is_callable( [ $this->this, $function ] ) ) {
+				return call_user_func_array( [ $this->this, $function ], $args );
+			}
+ 
 			return ar_error::raiseError("Function is not a method",500);
 		}
 	}
