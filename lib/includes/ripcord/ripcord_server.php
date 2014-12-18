@@ -142,18 +142,18 @@ class Ripcord_Server
 	 */
 	public function addService($service, $serviceName = 0)
 	{
-		if ( is_object( $service ) )
+		if ( is_callable( $service ) ) // method passed directly
+		{
+			$this->addMethod( $serviceName, $service );
+			return;
+		} 
+		else if ( is_object( $service ) )
 		{
 			$reflection = new ReflectionObject( $service );
 		}
 		else if ( is_string( $service ) && class_exists( $service ) )
 		{
 			$reflection = new ReflectionClass( $service );
-		}
-		else if ( is_callable( $service ) ) // method passed directly
-		{
-			$this->addMethod( $serviceName, $service );
-			return;
 		}
 		else
 		{
