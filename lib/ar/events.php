@@ -89,7 +89,12 @@
 							if ( count($listener['filters']) ) {
 								$continue = false;
 								foreach( $listener['filters'] as $filter ) {
-									if ( ar_filter::match(self::$event, $filter) ) {
+									if ( $filter instanceof \Closure ) {
+										$continue = $filter( self::$event );
+										if ( $continue ) {
+											continue;
+										}
+									} else if ( ar_filter::match(self::$event, $filter) ) {
 										$continue = true;
 										continue;
 									}
