@@ -26,8 +26,9 @@
 							'path' : '<?php echo $this->path; ?>',
 							'url'  : '<?php echo $this->make_url($this->path); ?>'
 						} );
-					} else if (top.window.opener.objectadded && top.window.opener.muze && top.window.opener.muze.ariadne ) {
+					} else if (top.window.opener.objectadded && top.window.opener.muze && top.window.opener.muze.ariadne  && top.window.opener.muze.ariadne.registry ) {
 						currentpath = window.opener.muze.ariadne.registry.get('path');
+						
 						if (currentpath == '<?php echo $this->parent; ?>') {
 							window.opener.muze.ariadne.explore.objectadded();
 						} else if (currentpath == '<?php echo $this->path; ?>') {
@@ -40,8 +41,10 @@
 						}
 					}
 					<?php	if ($this->path == $AR->user->path) {  ?>
-							window.opener.muze.ariadne.explore.viewpane.view('<?php echo $this->path; ?>');
-							window.opener.muze.ariadne.explore.toolbar.load('<?php echo $this->path; ?>');
+							if (window.opener && window.opener.muze && window.opener.muze.ariadne && window.opener.muze.ariadne.explore && window.opener.muze.ariadne.explore.viewpane && window.opener.muze.ariadne.explore.toolbar) {
+								window.opener.muze.ariadne.explore.viewpane.view('<?php echo $this->path; ?>');
+								window.opener.muze.ariadne.explore.toolbar.load('<?php echo $this->path; ?>');
+							}
 					<?php	}	?>
 
 					<?php

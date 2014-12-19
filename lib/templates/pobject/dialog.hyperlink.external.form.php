@@ -41,6 +41,8 @@
 				?>
 			</select>
 		</div>
+		<div class="field">
+		</div>
 		<?php if ($arEditorSettings['link']['types']['external']['options']['nofollow']) { ?>
 			<div class="field">
 				<label for="arnofollow"><?php echo $ARnls["ariadne:editor:nofollow"]; ?></label>

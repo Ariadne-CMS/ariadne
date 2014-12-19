@@ -363,11 +363,18 @@ abstract class store {
 
 		if ($properties && (is_array($properties)) && (is_int($id))) {
 			foreach ( $properties as $property => $property_set ) {
-				$this->del_property($id, $property);
-				if (is_array($property_set)) {
-					foreach ( $property_set as $values ) {
-						$this->add_property($id, $property, $values);
+				$oldProperties = $this->load_property($id, $property);
+				// debug("Old props " . print_r($oldProperties, true) . "; new props " . print_r($property_set, true), "store");
+				
+				if ($oldProperties != $property_set) {
+					$this->del_property($id, $property);
+					if (is_array($property_set)) {
+						foreach ( $property_set as $values ) {
+							$this->add_property($id, $property, $values);
+						}
 					}
+				} else {
+					debug("skipping property save for unchanged properties","store");
 				}
 			}
 		}

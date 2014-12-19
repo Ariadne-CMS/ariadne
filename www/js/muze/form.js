@@ -183,12 +183,17 @@ muze.namespace( 'muze.form.subselection', function() {
 					inputelm = inputs[i].getElementsByTagName("SELECT")[0];
 					if (inputelm) {
 						muze.event.attach(inputelm, "change", muze.form.subselection.execute);
+						inputelm.execute = muze.form.subselection.execute;
+						inputelm.execute();
 					}
 					radiooptions = inputs[i].getElementsByTagName("INPUT");
 					for (j=0; j<radiooptions.length; j++) {
 						if (radiooptions[j]) {
 							muze.event.attach(radiooptions[j], "click", muze.form.subselection.execute);
 							muze.event.attach(radiooptions[j], "change", muze.form.subselection.execute);
+
+							radiooptions[j].execute = muze.form.subselection.execute;
+							radiooptions[j].execute();
 						}
 					}
 				}
