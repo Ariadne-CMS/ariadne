@@ -26,9 +26,7 @@ vedor.dom.selection = ( function() {
 			}
 			if (w3c) {
 				var sel = useWin.getSelection();
-				console.log(sel);
 				var position = sel.anchorNode.compareDocumentPosition(sel.focusNode);
-				console.log("pos " + position);
 				if (position == 0) {
 					return (sel.anchorOffset > sel.focusOffset);
 				} else if (position == 4) { // Node.DOCUMENT_POSITION_PRECEDING) {
