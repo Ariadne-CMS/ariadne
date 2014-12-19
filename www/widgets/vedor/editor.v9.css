@@ -151,7 +151,8 @@ a:hover span.deltag {
 	}
 
 
-	#vdSavePopup {
+	#vdSavePopup,
+	#vdProgressPopup {
 		border: 1px solid #aaa;
 		border-top: 5px solid #ea5922;
 		max-width: 300px;
@@ -164,7 +165,12 @@ a:hover span.deltag {
 		padding-left: 60px;
 		padding-right: 20px;
 	}
-	#vdSaveImage {
+	#vdProgressPopup {
+		left: 50%;
+		margin-left: -150px;
+	}
+	#vdSaveImage,
+	#vdProgressPopup i.fa-spinner {
 		position: absolute;
 		top: 50%;
 		margin-top: -15px;
@@ -172,7 +178,12 @@ a:hover span.deltag {
 		font-size: 30px;
 		color: #333;
 	}
-	#vdSavePopup #vdSaveHeader {
+	#vdProgress {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	#vdSavePopup #vdSaveHeader,
+	#vdProgressPopup #vdProgressHeader {
 		margin-top: 15px;
 		font-size: 18px;
 		font-weight: bold;

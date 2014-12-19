@@ -2950,8 +2950,13 @@
 				// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
 				var fullHeight = vdEditPane.contentWindow.document.documentElement.clientHeight ? vdEditPane.contentWindow.document.documentElement.clientHeight : vdEditPane.contentWindow.document.body.clientHeight
 				if (top > (fullHeight - (activeSection.scrollHeight * 2))) {
-					top = Math.min(ltop, rtop);
-					top -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
+					mintop = Math.min(ltop, rtop);
+					mintop -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
+
+					top = fullHeight - (activeSection.scrollHeight * 2);
+					if (top < mintop) {
+						top = mintop;
+					}
 				}
 				activeSection.style.top = top  + 30 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
 				activeSection.style.left = newleft;
@@ -3356,6 +3361,11 @@
 	<div id="vdSaveHeader"><?php echo $ARnls['vd.editor:saving_header']; ?></div>
 	<div id="vdSaveMessage"><?php echo $ARnls['vd.editor:saving_message']; ?></div>
 </div>
+<div id="vdProgressPopup">
+	<i class="fa fa-spinner fa-spin"></i>
+	<div id="vdProgressHeader"><?php echo $ARnls['vd.editor:uploading_header']; ?></div>
+	<progress id="vdProgress" class="uploadprogress" min="0" max="100" value="0">0</progress>
+</div>
 <div id="vdComposePopup" style="display: none;" unselectable="on"></div>
 <div id="vdInsertPopup" style="display: none;" unselectable="on">
 </div>
@@ -3489,7 +3499,7 @@
 					'form', 
 					{
 						'method' : 'post',
-						'action' : objectURL + 'vedor.upload.image.html',
+						'action' : objectURL + '',
 						'target' : '_blank' // temp
 					}, 
 					input = muze.html.el(
@@ -3502,9 +3512,12 @@
 					path = muze.html.el('input', { 'type' : 'hidden', 'name' : 'path' } )
 				);
 				
-				path.value = currentImage.dataset.vedorPath;
-				// now upload the file using ajax?
-				alert('ajax upload here');
+				var imagePath = currentImage.getAttribute("data-vedor-path");
+				if (!imagePath) {
+					imagePath = currentImage.getAttribute("ar:path");
+				}
+
+				path.value = imagePath;
 
 				var onImageLoad = function() {
 					var imgsrc = currentImage.src;
@@ -3520,7 +3533,34 @@
 				var inputChange = muze.event.attach(input, 'change', function() {
 					muze.event.detach(input, 'change', inputChange);
 					if ( input.value ) {
-						form.submit();
+						var formData = new FormData();
+						for (var i = 0; i < this.files.length; i++) {
+							formData.append('file[]', this.files[i]);
+						}
+						formData.append("filecount", this.files.length);
+						formData.append("overwrite", true);
+						formData.append("replace", true);
+
+						var progress = document.getElementById("vdProgress");
+						document.getElementById("vdProgressPopup").style.display = "block";
+						var xhr = new XMLHttpRequest();
+						xhr.open('POST', rootURL + imagePath + "mfu.save.html");
+						xhr.onload = function() {
+							progress.value = progress.innerHTML = 100;
+							// progress.style.display = "none";
+							document.getElementById("vdProgressPopup").style.display = "none";
+
+							window.setTimeout(onImageLoad, 50);
+						};
+
+						xhr.upload.onprogress = function (event) {
+							if (event.lengthComputable) {
+								var complete = (event.loaded / event.total * 100 | 0);
+								progress.value = progress.innerHTML = complete;
+							}
+						}
+
+						xhr.send(formData);
 					}
 				});
 				muze.event.fire(input, 'click');

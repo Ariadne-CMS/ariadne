@@ -4,6 +4,7 @@ if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 	$ARCurrent->nolangcheck=true;
 
 	$overwrite = ar::getvar("overwrite");
+	$replace = ar::getvar("replace");
 
 	$continue = true;
 	$i = 0;
@@ -42,6 +43,10 @@ if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 			
 			// FIXME: Fire event to allow newtype to be configured another way.
 			// FIXME: Check if newType is allowed here by the typetree.
+
+			if ($replace) {
+				$filename = $this->path;
+			}
 
 			if ($this->exists($filename)) {
 				if ($overwrite === "true") {
