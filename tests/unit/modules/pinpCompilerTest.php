@@ -314,6 +314,23 @@ EOD;
 		$this->assertEquals('bar',$ret);
 	}
 
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testClosuresThisReadonly() {
+		$template = <<<'EOD'
+<pinp>
+	return ($this = null);
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertNull($ret);
+	}
+
 
 	public function testClosuresThisAvailable() {
 		$template = <<<'EOD'
