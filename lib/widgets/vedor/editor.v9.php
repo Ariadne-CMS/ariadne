@@ -3520,12 +3520,12 @@
 				path.value = imagePath;
 
 				var onImageLoad = function() {
-					var imgsrc = currentImage.src;
+					var imgsrc = currentImage.src.replace(/[\?\&]t=.*$/, '');
 					var query = imgsrc.indexOf('?');
 					if ( query>=0 ) {
-						imgsrc += '&'+Math.random();
+						imgsrc += '&t='+Math.random();
 					} else {
-						imgsrc += '?'+Math.random();
+						imgsrc += '?t='+Math.random();
 					}
 					currentImage.src = imgsrc;
 				};
