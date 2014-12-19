@@ -173,8 +173,7 @@
 					$title = $wgWizFlow[$i]['title'];
 					$link_id = "link_" . $i;
 					$current = '';
-					if (($i == $wgWizNextStep && !$wgWizAction) || 
-						($i == $wgWizCurrent && $wgWizAction)) {
+					if ($i == $wgWizNextStep && !$wgWizAction) {
 						$current = " current";
 					}
 ?>

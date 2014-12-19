@@ -67,13 +67,6 @@ class URL {
 			//$repl[] = "{arSession}";
 		}
 
-		$find[] = "%https?:{arCurrentPage}%";
-		$repl[] = "{arCurrentPage}";
-		$find[] = "%https?:{arBase}%";
-		$repl[] = "{arBase}";
-		$find[] = "%https?:{arSite}%";
-		$repl[] = "{arSite}";
-
 		return preg_replace($find, $repl, $page);
 	}
 
@@ -95,13 +88,6 @@ class URL {
 		if (substr($root, -3) == "/$me->nls") {
 			$root = substr($root, 0, -3);
 		}
-		$find[] = "%https?:{arCurrentPage}%";
-		$repl[] = "{arCurrentPage}";
-		$find[] = "%https?:{arBase}%";
-		$repl[] = "{arBase}";
-		$find[] = "%https?:{arSite}%";
-		$repl[] = "{arSite}";
-
 		if ($site && $site !== '/') {
 			$find[] = "%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%e";
 			$repl[] = "\$me->make_url('$site', '\\1')";
