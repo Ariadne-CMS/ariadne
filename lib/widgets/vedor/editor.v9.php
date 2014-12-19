@@ -3522,7 +3522,7 @@
 				var onImageLoad = function() {
 					var imgsrc = currentImage.src;
 					var query = imgsrc.indexOf('?');
-					if ( query ) {
+					if ( query>=0 ) {
 						imgsrc += '&'+Math.random();
 					} else {
 						imgsrc += '?'+Math.random();
