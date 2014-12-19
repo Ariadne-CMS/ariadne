@@ -439,7 +439,8 @@ a:hover span.deltag {
 		}
 
 		.vedor-logo {
-			padding: 0px 10px !important;
+			margin: 5px 0px !important;
+			padding: 0px 0px 0px 10px !important;
 			line-height: 52px;
 		}
 		.vedor-toolbar {
@@ -487,6 +488,9 @@ a:hover span.deltag {
 			border: 0px;
 			list-style: none;
 			white-space: nowrap;
+		}
+		.vedor-toolbar-section > ul > li.vedor-text-format {
+			margin-right: 4px;
 		}
 		.vedor-toolbar li {
 			xdisplay: inline-block;
@@ -597,12 +601,12 @@ a:hover span.deltag {
 		.vedor-toolbar-section button > i,
 		.vedor-toolbar-section button > span.fa-stack {
 			font-size: 14px;
-			line-height: 20px;
+			line-height: 16px;
 			width: 23px;
-			margin: -9px auto 4px;
+			margin: 0px auto 4px;
 		}
 		.vedor-toolbar-section button.vedor-selected {
-			background-color: #CCC;
+			background-color: #D7D7D7;
 			border: 1px solid #EEE;
 			border-left: 1px solid #888;
 			border-top: 1px solid #888;
@@ -916,7 +920,6 @@ a:hover span.deltag {
 }
 
 #vedor-main-toolbar .vedor-selected {
-	background: linear-gradient(to bottom, #eee 0%, #eee 95%, #DDD 100%);
 	border: 0px;
 }
 #vdToolbars {
