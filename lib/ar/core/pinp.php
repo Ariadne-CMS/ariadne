@@ -1,6 +1,5 @@
 <?php
 class ar_core_pinpSandbox extends arBase {
-	private $this;
 
 	public function __construct($scope) {
 		$this->this = $scope;
@@ -19,23 +18,7 @@ class ar_core_pinpSandbox extends arBase {
 		$this->nls = $scope->nls;
 		$this->reqnls = $scope->reqnls;
 		$this->arIsNewObject = $scope->arIsNewObject;
-		$this->store = $scope->store;
 		$this->ARnls = $scope->ARnls;
-	}
-
-	public function __get($name) {
-		return $this->{$name};
-	}
-
-	public function __set($name, $value) {
-		if( $name === 'this' ) {
-			throw new \InvalidArgumentException("can't assign value to \$this");
-		}
-		if( $value instanceof \Closure ) {
-			$value = \Closure::bind($value, $this);
-		}
-
-		$this->{$name} = $value;
 	}
 
 	private function isSafeCallable( $callable ) {
