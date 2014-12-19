@@ -299,6 +299,21 @@ EOD;
 		$this->assertNull($ret);
 	}
 
+	public function testSandboxArrayAccess() {
+		$template = <<<'EOD'
+<pinp>
+	$result['foo'] = 'bar';
+	return $result['foo'];
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertEquals('bar',$ret);
+	}
+
 
 	public function testClosuresThisAvailable() {
 		$template = <<<'EOD'
