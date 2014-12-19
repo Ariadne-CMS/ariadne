@@ -2946,6 +2946,13 @@
 				} else {
 					activeToolbar.getElementsByClassName("marker")[0].style.left = "50%";
 				}
+
+				// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
+				var fullHeight = vdEditPane.contentWindow.document.documentElement.clientHeight ? vdEditPane.contentWindow.document.documentElement.clientHeight : vdEditPane.contentWindow.document.body.clientHeight
+				if (top > (fullHeight - (activeSection.scrollHeight * 2))) {
+					top = Math.min(ltop, rtop);
+					top -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
+				}
 				activeSection.style.top = top  + 30 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
 				activeSection.style.left = newleft;
 
