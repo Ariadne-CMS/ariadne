@@ -25,9 +25,11 @@ $ARnls['vd.editor:toolbar']			=	'Toolbar';
 $ARnls['vd.editor:help']			=	'Help';
 $ARnls['vd.editor:language']			=	'Taal';
 $ARnls['vd.editor:sitemap']			=	'Sitemap';
-$ARnls['vd.editor:show_borders']		=	'Toon hulplijnen';
-$ARnls['vd.editor:show_boundaries']		=	'Toon HTML tags';
-$ARnls['vd.editor:show_metadata']		=	'Toon metadata';
+$ARnls['vd.editor:show_borders']		=	'Hulplijnen';
+$ARnls['vd.editor:show_boundaries']		=	'HTML tags';
+$ARnls['vd.editor:show_metadata']		=	'Metadata';
+$ARnls['vd.editor:show_tags_stack'] =	'HTML context';
+$ARnls['vd.editor:htmlcontext']     =	'HTML context:';
 
 $ARnls['vd.editor:show']			=	'Toon';
 $ARnls['vd.editor:show_more']			=	'Toon meer';

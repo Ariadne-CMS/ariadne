@@ -2364,6 +2364,7 @@
 	}
 
 	var showBorders=true; //false;
+	var showTagStack=true;
 
 	function cssSetStyle( styleSheet, style, value ) {
 		if( styleSheet.insertRule ) {
@@ -2541,11 +2542,11 @@
 		if (showTagBoundaries) {
 			showTagBoundaries = false;
 			vdEditDoc.body.className = vdEditDoc.body.className.replace(/\bvdShowTags\b/, '');
-			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").className = document.getElementById("vdShowTagBoundaries").className.replace(/\bvedor-selected\b/, '') : '';
+			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").classList.remove('vedor-selected') : '';
 		} else {
 			showTagBoundaries = true;
 			vdEditDoc.body.className += " vdShowTags";
-			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").className += " vedor-selected" : '';
+			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").classList.add("vedor-selected") : '';
 		}
 
 		cssSetStyle( myStyleSheet, 'body.vdShowTags .editable br', 'display: block; right: 0px; margin: 0px; padding: 0px; font-size: 9px; content: "BR"; position: relative; height: 1em; margin-left: 100%;');
@@ -2581,12 +2582,12 @@
 			document.getElementById('vdMetaDataSlide').style.display='none';
 			document.getElementById('vdMetaDataSlider').style.display='none';
 			vdMetaDataSlideEnabled = false;
-			document.getElementById('VD_META').className = document.getElementById('VD_META').className.replace(/\bvedor-selected\b/, "");
+			document.getElementById('VD_META').classList.remove('vedor-selected');
 		} else {
 			document.getElementById('vdMetaDataSlide').style.display='';
 			document.getElementById('vdMetaDataSlider').style.display='';
 			vdMetaDataSlideEnabled = true;
-			document.getElementById('VD_META').className += ' vedor-selected';
+			document.getElementById('VD_META').classList.add('vedor-selected');
 		}
 		window_onresize();
 	}
@@ -2764,20 +2765,12 @@
 			if (parent || parent.getAttribute || parent.getAttribute("contenteditable")) {
 				var hyperlinkNofollow = document.querySelectorAll("button.vedor-hyperlink-nofollow");
 				for (var i=0; i<hyperlinkNofollow.length; i++) {
-					hyperlinkNofollow[i].className = hyperlinkNofollow[i].className.replace(/\bvedor-selected\b/, '');
 					if (parent.getAttribute("rel") && parent.getAttribute("rel").match(/nofollow/)) {
-						hyperlinkNofollow[i].className += " vedor-selected";
+						hyperlinkNofollow[i].classList.add("vedor-selected");
+					} else {
+						hyperlinkNofollow[i].classList.remove("vedor-selected");
 					}
 				}
-				/* Whoops - hyperlinks do not have noindex;
-				var hyperlinkNoindex = document.querySelectorAll("button.vedor-hyperlink-noindex");
-				for (var i=0; i<hyperlinkNoindex.length; i++) {
-					hyperlinkNoindex[i].className = hyperlinkNoindex[i].className.replace(/\bvedor-selected\b/, '');
-					if (parent.getAttribute("rel") parent.getAttribute("rel").match(/noindex/)) {
-						hyperlinkNoindex[i].className += " vedor-selected";
-					}
-				}
-				*/
 				var hyperlinkTitle = document.getElementById("vdHyperlinkTitle");
 				hyperlinkTitle.value = parent.getAttribute("title");
 			}
@@ -2822,27 +2815,30 @@
 				// Check "Bold"
 				var textBold = document.querySelectorAll(".vedor-text-bold button");
 				for (var i=0; i<textBold.length; i++) {
-					textBold[i].className = textBold[i].className.replace(/\bvedor-selected\b/, '');
 					if (parentStyles["font-weight"] == "bold") {
-						textBold[i].className += " vedor-selected";
+						textBold[i].classList.add("vedor-selected");
+					} else {
+						textBold[i].classList.remove("vedor-selected");
 					}
 				}
 
 				// Check "Italic"
 				var textItalic = document.querySelectorAll(".vedor-text-italic button");
 				for (var i=0; i<textItalic.length; i++) {
-					textItalic[i].className = textItalic[i].className.replace(/\bvedor-selected\b/, '');
 					if (parentStyles["font-style"] == "italic") {
-						textItalic[i].className += " vedor-selected";
+						textItalic[i].classList.add("vedor-selected");
+					} else {
+						textItalic[i].classList.remove("vedor-selected");
 					}
 				}
 
 				// Check "Underline"
 				var textUnderline = document.querySelectorAll(".vedor-text-underline button");
 				for (var i=0; i<textUnderline.length; i++) {
-					textUnderline[i].className = textUnderline[i].className.replace(/\bvedor-selected\b/, '');
 					if (parentStyles["text-decoration"].match(/underline/)) {
-						textUnderline[i].className += " vedor-selected";
+						textUnderline[i].classList.add("vedor-selected");
+					} else {
+						textUnderline[i].classList.remove("vedor-selected");
 					}
 				}
 			}
@@ -2878,7 +2874,7 @@
 		if (activeSection && !vdHideToolbars) {
 				var htmlContext = activeSection.querySelectorAll("div.vedor-toolbar-status")[0];
 				if ( htmlContext ) {
-					htmlContext.className += " vedor-selected";
+					htmlContext.classList.add("vedor-selected");
 				}
 				// activeSection.style.display = "block";
 				activeSection.className += " active";
@@ -2973,17 +2969,25 @@
 
 		if (document.getElementById("VD_DETAILS")) {
 			if (showBorders) {
-				document.getElementById('VD_DETAILS').className += ' vedor-selected';
+				document.getElementById('VD_DETAILS').classList.add('vedor-selected');
 			} else {
-				document.getElementById('VD_DETAILS').className = document.getElementById('VD_DETAILS').className.replace(/\bvedor-selected\b/, '');
+				document.getElementById('VD_DETAILS').classList.remove('vedor-selected');
 			}
 		}
 
 		if (document.getElementById('vdShowTagBoundaries')) {
 			if (showTagBoundaries) {
-				document.getElementById('vdShowTagBoundaries').className += ' vedor-selected';
+				document.getElementById('vdShowTagBoundaries').classList.add('vedor-selected');
 			} else {
-				document.getElementById('vdShowTagBoundaries').className = document.getElementById('vdShowTagBoundaries').className.replace(/\bvedor-selected\b/, '');
+				document.getElementById('vdShowTagBoundaries').classList.remove('vedor-selected');
+			}
+		}
+
+		if (document.getElementById('vdShowTagStack')) {
+			if (showTagStack) {
+				document.getElementById('vdShowTagStack').classList.add('vedor-selected');
+			} else {
+				document.getElementById('vdShowTagStack').classList.remove('vedor-selected');
 			}
 		}
 	}
@@ -3087,7 +3091,7 @@
 			}
 		}
 
-		setHtmlTagsContext('<ul class="tagStack" unselectable="on">'+contextString+'</ul>');
+		setHtmlTagsContext('<ul class="tagStack" unselectable="on"><li class="vedor-label"><?php echo $ARnls['vd.editor:htmlcontext']; ?></li>'+contextString+'</ul>');
 		vdHtmlContextStack=newContextStack;
 
 		if (htmlblockOptions) {
@@ -3584,6 +3588,19 @@
 		"vedor-show-tags" : function(el) {
 			showTagBoundariesToggle();
 			return false;
+		},
+		"vedor-show-tags-stack" : function(el) {
+			var tagStackToolbars = document.querySelectorAll('.vedor-toolbar-status');
+			showTagStack = !showTagStack;
+			for ( var i=0,l=tagStackToolbars.length; i<l; i++ ) {
+				if ( showTagStack ) {
+					tagStackToolbars[i].classList.remove('vedor-hidden');
+					el.classList.add('vedor-selected');
+				} else {
+					tagStackToolbars[i].classList.add('vedor-hidden');
+					el.classList.remove('vedor-selected');
+				}
+			}
 		},
 		"vedor-properties" : function(el) {
 			VD_META_onclick();

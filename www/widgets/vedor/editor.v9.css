@@ -88,6 +88,10 @@ UL.tagStack {
 	height: 20px;
 	margin: 0px;
 }
+.tagStack LI.vedor-label {
+	background: transparent;
+	line-height: 19px;
+}
 .tagStack LI A {
 	position: relative;
 	text-decoration: none;
