@@ -32,7 +32,7 @@ $ARnls['vd.editor:show_tags_stack'] =	'HTML context';
 $ARnls['vd.editor:htmlcontext']     =	'HTML context:';
 
 $ARnls['vd.editor:show']			=	'Toon';
-$ARnls['vd.editor:show_more']			=	'Toon meer';
+$ARnls['vd.editor:show_more']			=	'Toon&hellip;';
 $ARnls['vd.editor:hide']			=	'Verberg';
 $ARnls['vd.editor:sort']			=	'Sorteer';
 $ARnls['vd.editor:more']			=	'Meer';
@@ -55,10 +55,10 @@ $ARnls['vd.editor:new']				=	'Nieuw';
 $ARnls['vd.editor:rename']			=	'Hernoem';
 $ARnls['vd.editor:move']			=	'Verplaats';
 $ARnls['vd.editor:manage']			=	'Beheer';
-$ARnls['vd.editor:manage_page']			=	'Beheer pagina';
+$ARnls['vd.editor:manage_page']			=	'Pagina&quot;s';
 $ARnls['vd.editor:save']			=	'Opslaan';
-$ARnls['vd.editor:undo']			=	'Ongedaan maken';
-$ARnls['vd.editor:redo']			=	'Opnieuw doen';
+$ARnls['vd.editor:undo']			=	'Herstel';
+$ARnls['vd.editor:redo']			=	'Opnieuw';
 $ARnls['vd.editor:cancel']			=	'Annuleren';
 
 //text style

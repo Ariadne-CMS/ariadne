@@ -33,7 +33,7 @@ $ARnls['vd.editor:show_tags_stack'] =	'HTML Context';
 $ARnls['vd.editor:htmlcontext']     =	'HTML Context:';
 
 $ARnls['vd.editor:show']			=	'Show';
-$ARnls['vd.editor:show_more']			=	'Show More';
+$ARnls['vd.editor:show_more']			=	'Show&hellip;';
 $ARnls['vd.editor:hide']			=	'Hide';
 $ARnls['vd.editor:sort']			=	'Sort';
 $ARnls['vd.editor:more']			=	'More';
@@ -56,7 +56,7 @@ $ARnls['vd.editor:new']				=	'New';
 $ARnls['vd.editor:rename']			=	'Rename';
 $ARnls['vd.editor:move']			=	'Move';
 $ARnls['vd.editor:manage']			=	'Manage';
-$ARnls['vd.editor:manage_page']			=	'Manage Page';
+$ARnls['vd.editor:manage_page']			=	'Pages';
 $ARnls['vd.editor:save']			=	'Save';
 $ARnls['vd.editor:undo']			=	'Undo';
 $ARnls['vd.editor:redo']			=	'Redo';

@@ -438,10 +438,11 @@ a:hover span.deltag {
 			font-size: 11px;
 		}
 
-		.vedor-logo {
-			margin: 5px 0px !important;
-			padding: 0px 0px 0px 10px !important;
-			line-height: 52px;
+		i.vedor-logo {
+			background-image: url('../../images/vedor/vedor.png');
+			background-size: contain;
+			background-repeat: no-repeat;
+			height: 25px;
 		}
 		.vedor-toolbar {
 			color: #666;
@@ -939,7 +940,7 @@ a:hover span.deltag {
 	vertical-align: top;
 }
 #vedor-main-toolbar .vedor-logo {
-	margin: 5px 10px;
+	margin: -4px 10px 0px;
 }
 .vedor-hidden {
 	display: none !important;

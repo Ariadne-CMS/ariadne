@@ -104,7 +104,7 @@
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/widgets/properties.js"></script>
 
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor.js"></script>
-	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/compose.js"></script>
+	<!-- script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/compose.js"></script -->
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/selection.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/bookmarks.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/styles.js"></script>
@@ -496,7 +496,7 @@
 				}
 			});
 
-			vedor.editor.compose.init( vdEditDoc, document.getElementById('vdComposePopup'), vdComposeComplete);
+			//vedor.editor.compose.init( vdEditDoc, document.getElementById('vdComposePopup'), vdComposeComplete);
 			muze.event.attach( vdEditDoc, 'Blur', function() { vdSelectionState.save(); return true; } ); // YES, blur is written with a capital B, intentional! Firefox does not support 'blur' on documents, only 'Blur'
 			muze.event.attach( vdEditDoc, 'keydown', vdEditor_keydown);
 			// muze.event.attach( vdEditDoc, 'mouseup', vdEditPane_DisplayChanged); // already handled by selectionchange, so removed;
@@ -3827,7 +3827,7 @@
 					}
 					targets[0].focus();
 					muze.event.cancel(event);
-				} else if (key == 39) {
+				} else if (key == 39) { // right
 					var target = this.querySelectorAll(":focus")[0]; 
 					var nextSibling = target.parentNode.nextSibling;
 					while (nextSibling) {
@@ -3847,6 +3847,9 @@
 					// close current toolbar section;
 					var target = this.querySelector(':focus');
 					if (target.classList.contains("vedor-expands")) {
+						if (target.classList.contains("vedor-selected")) {
+							muze.event.fire(target, "click");
+						}
 						muze.event.fire(target, "click");
 						muze.event.cancel(event);
 					}
