@@ -154,4 +154,6 @@ $ARnls['vd.editor:add_article']			=	'Artikel toevoegen';
 $ARnls['vd.editor:selecttag']			=	'Selecteer HTML element';
 $ARnls['vd.editor:removetag']			=	'Verwijder HTML element';
 $ARnls['vd.editor:confirm_removetag']		=	'Wilt u dit HTML element (%s) verwijderen?';
+
+$ARnls['vd.editor:uploading_header']		=	'Uploaden...';
 ?>
