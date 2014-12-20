@@ -1,25 +1,41 @@
 <?php
 class ar_core_pinpSandbox extends arBase {
 	private $this;
+	public $data;
+	public $customdata;
+	public $nlsdata;
+	public $customnlsdata;
+	public $path;
+	public $parent;
+	public $type;
+	public $vtype;
+	public $priority;
+	public $id;
+	public $lastchanged;
+	public $size;
+	public $nls;
+	public $reqnls;
+	public $arIsNewObject;
+	public $ARnls;
 
 	public function __construct($scope) {
-		$this->this = $scope;
-		$this->data = $scope->data;
-		$this->customdata = $scope->customdata;
-		$this->nlsdata = $scope->nlsdata;
+		$this->this          = $scope;
+		$this->data          = $scope->data;
+		$this->customdata    = $scope->customdata;
+		$this->nlsdata       = $scope->nlsdata;
 		$this->customnlsdata = $scope->customnlsdata;
-		$this->path = $scope->path;
-		$this->parent = $scope->parent;
-		$this->type = $scope->type;
-		$this->vtype = $scope->vtype;
-		$this->priority = $scope->priority;
-		$this->id = $scope->id;
-		$this->lastchanged = $scope->lastchanged;
-		$this->size = $scope->size;
-		$this->nls = $scope->nls;
-		$this->reqnls = $scope->reqnls;
+		$this->path          = $scope->path;
+		$this->parent        = $scope->parent;
+		$this->type          = $scope->type;
+		$this->vtype         = $scope->vtype;
+		$this->priority      = $scope->priority;
+		$this->id            = $scope->id;
+		$this->lastchanged   = $scope->lastchanged;
+		$this->size          = $scope->size;
+		$this->nls           = $scope->nls;
+		$this->reqnls        = $scope->reqnls;
 		$this->arIsNewObject = $scope->arIsNewObject;
-		$this->ARnls = $scope->ARnls;
+		$this->ARnls         = $scope->ARnls;
 	}
 
 	public function &__get($name) {
