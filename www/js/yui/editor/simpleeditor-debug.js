@@ -6758,14 +6758,14 @@ var Dom = YAHOO.util.Dom,
             html = html.replace(/{/gi, 'RIGHT_BRACKET');
             html = html.replace(/}/gi, 'LEFT_BRACKET');
 
-            html = html.replace(/<strong([^>]*)>/gi, '<b$1>');
+            html = html.replace(/<strong\b([^>]*)>/gi, '<b$1>');
             html = html.replace(/<\/strong>/gi, '</b>');   
 
             //replace embed before em check
-            html = html.replace(/<embed([^>]*)>/gi, '<YUI_EMBED$1>');
+            html = html.replace(/<embed\b([^>]*)>/gi, '<YUI_EMBED$1>');
             html = html.replace(/<\/embed>/gi, '</YUI_EMBED>');
 
-            html = html.replace(/<em([^>]*)>/gi, '<i$1>');
+            html = html.replace(/<em\b([^>]*)>/gi, '<i$1>');
             html = html.replace(/<\/em>/gi, '</i>');
             html = html.replace(/_moz_dirty=""/gi, '');
             
@@ -6779,9 +6779,9 @@ var Dom = YAHOO.util.Dom,
                 html = html.replace(/\t/gi, '&nbsp;&nbsp;&nbsp;&nbsp;'); //Replace all tabs
             }
             //Removing Script Tags from the Editor
-            html = html.replace(/<script([^>]*)>/gi, '<bad>');
+            html = html.replace(/<script\b([^>]*)>/gi, '<bad>');
             html = html.replace(/<\/script([^>]*)>/gi, '</bad>');
-            html = html.replace(/&lt;script([^>]*)&gt;/gi, '<bad>');
+            html = html.replace(/&lt;script\b([^>]*)&gt;/gi, '<bad>');
             html = html.replace(/&lt;\/script([^>]*)&gt;/gi, '</bad>');
             //Replace the line feeds
             html = html.replace(/\r\n/g, '<YUI_LF>').replace(/\n/g, '<YUI_LF>').replace(/\r/g, '<YUI_LF>');
@@ -6811,34 +6811,34 @@ var Dom = YAHOO.util.Dom,
             //Filter MS Word
             html = this.filter_msword(html);
 
-		    html = html.replace(/<img([^>]*)\/>/gi, '<YUI_IMG$1>');
-		    html = html.replace(/<img([^>]*)>/gi, '<YUI_IMG$1>');
+		    html = html.replace(/<img\b([^>]*)\/>/gi, '<YUI_IMG$1>');
+		    html = html.replace(/<img\b([^>]*)>/gi, '<YUI_IMG$1>');
 
-		    html = html.replace(/<input([^>]*)\/>/gi, '<YUI_INPUT$1>');
-		    html = html.replace(/<input([^>]*)>/gi, '<YUI_INPUT$1>');
+		    html = html.replace(/<input\b([^>]*)\/>/gi, '<YUI_INPUT$1>');
+		    html = html.replace(/<input\b([^>]*)>/gi, '<YUI_INPUT$1>');
 
-		    html = html.replace(/<ul([^>]*)>/gi, '<YUI_UL$1>');
+		    html = html.replace(/<ul\b([^>]*)>/gi, '<YUI_UL$1>');
 		    html = html.replace(/<\/ul>/gi, '<\/YUI_UL>');
-		    html = html.replace(/<blockquote([^>]*)>/gi, '<YUI_BQ$1>');
+		    html = html.replace(/<blockquote\b([^>]*)>/gi, '<YUI_BQ$1>');
 		    html = html.replace(/<\/blockquote>/gi, '<\/YUI_BQ>');
 
-		    html = html.replace(/<embed([^>]*)>/gi, '<YUI_EMBED$1>');
+		    html = html.replace(/<embed\b([^>]*)>/gi, '<YUI_EMBED$1>');
 		    html = html.replace(/<\/embed>/gi, '<\/YUI_EMBED>');
 
             //Convert b and i tags to strong and em tags
             if ((markup == 'semantic') || (markup == 'xhtml')) {
                 //html = html.replace(/<i(\s+[^>]*)?>/gi, "<em$1>");
-                html = html.replace(/<i([^>]*)>/gi, "<em$1>");
+                html = html.replace(/<i\b([^>]*)>/gi, "<em$1>");
                 html = html.replace(/<\/i>/gi, '</em>');
                 //html = html.replace(/<b(\s+[^>]*)?>/gi, "<strong$1>");
-                html = html.replace(/<b([^>]*)>/gi, "<strong$1>");
+                html = html.replace(/<b\b([^>]*)>/gi, "<strong$1>");
                 html = html.replace(/<\/b>/gi, '</strong>');
             }
 
             html = html.replace(/_moz_dirty=""/gi, '');
 
             //normalize strikethrough
-            html = html.replace(/<strike/gi, '<span style="text-decoration: line-through;"');
+            html = html.replace(/<strike\b/gi, '<span style="text-decoration: line-through;"');
             html = html.replace(/\/strike>/gi, '/span>');
             
             
@@ -6853,12 +6853,12 @@ var Dom = YAHOO.util.Dom,
                     re = new RegExp('src="' + url, 'gi');
                 html = html.replace(re, 'src="');
             }
-		    html = html.replace(/<font/gi, '<font');
+		    html = html.replace(/<font\b/gi, '<font');
 		    html = html.replace(/<\/font>/gi, '</font>');
-		    html = html.replace(/<span/gi, '<span');
+		    html = html.replace(/<span\b/gi, '<span');
 		    html = html.replace(/<\/span>/gi, '</span>');
             if ((markup == 'semantic') || (markup == 'xhtml') || (markup == 'css')) {
-                html = html.replace(new RegExp('<font([^>]*)face="([^>]*)">(.*?)<\/font>', 'gi'), '<span $1 style="font-family: $2;">$3</span>');
+                html = html.replace(new RegExp('<font\b([^>]*)face="([^>]*)">(.*?)<\/font>', 'gi'), '<span $1 style="font-family: $2;">$3</span>');
                 html = html.replace(/<u/gi, '<span style="text-decoration: underline;"');
                 if (this.browser.webkit) {
                     html = html.replace(new RegExp('<span class="Apple-style-span" style="font-weight: bold;">([^>]*)<\/span>', 'gi'), '<strong>$1</strong>');
@@ -6866,23 +6866,23 @@ var Dom = YAHOO.util.Dom,
                 }
                 html = html.replace(/\/u>/gi, '/span>');
                 if (markup == 'css') {
-                    html = html.replace(/<em([^>]*)>/gi, '<i$1>');
+                    html = html.replace(/<em\b([^>]*)>/gi, '<i$1>');
                     html = html.replace(/<\/em>/gi, '</i>');
-                    html = html.replace(/<strong([^>]*)>/gi, '<b$1>');
+                    html = html.replace(/<strong\b([^>]*)>/gi, '<b$1>');
                     html = html.replace(/<\/strong>/gi, '</b>');
-                    html = html.replace(/<b/gi, '<span style="font-weight: bold;"');
+                    html = html.replace(/<b\b/gi, '<span style="font-weight: bold;"');
                     html = html.replace(/\/b>/gi, '/span>');
-                    html = html.replace(/<i/gi, '<span style="font-style: italic;"');
+                    html = html.replace(/<i\b/gi, '<span style="font-style: italic;"');
                     html = html.replace(/\/i>/gi, '/span>');
                 }
                 html = html.replace(/  /gi, ' '); //Replace all double spaces and replace with a single
             } else {
-		        html = html.replace(/<u/gi, '<u');
+		        html = html.replace(/<u\b/gi, '<u');
 		        html = html.replace(/\/u>/gi, '/u>');
             }
-		    html = html.replace(/<ol([^>]*)>/gi, '<ol$1>');
+		    html = html.replace(/<ol\b([^>]*)>/gi, '<ol$1>');
 		    html = html.replace(/\/ol>/gi, '/ol>');
-		    html = html.replace(/<li/gi, '<li');
+		    html = html.replace(/<li\b/gi, '<li');
 		    html = html.replace(/\/li>/gi, '/li>');
             html = this.filter_safari(html);
 
@@ -6931,9 +6931,9 @@ var Dom = YAHOO.util.Dom,
             for (var v in this.invalidHTML) {
                 if (YAHOO.lang.hasOwnProperty(this.invalidHTML, v)) {
                     if (Lang.isObject(v) && v.keepContents) {
-                        html = html.replace(new RegExp('<' + v + '([^>]*)>(.*?)<\/' + v + '>', 'gi'), '$1');
+                        html = html.replace(new RegExp('<' + v + '\b([^>]*)>(.*?)<\/' + v + '>', 'gi'), '$1');
                     } else {
-                        html = html.replace(new RegExp('<' + v + '([^>]*)>(.*?)<\/' + v + '>', 'gi'), '');
+                        html = html.replace(new RegExp('<' + v + '\b([^>]*)>(.*?)<\/' + v + '>', 'gi'), '');
                     }
                 }
             }
@@ -7048,11 +7048,11 @@ var Dom = YAHOO.util.Dom,
                 html = html.replace(/<li>  <\/li>/gi, '');
                 //Remove bogus DIV's - updated from just removing the div's to replacing /div with a break
                 if (this.get('ptags')) {
-		            html = html.replace(/<div([^>]*)>/g, '<p$1>');
+		            html = html.replace(/<div\b([^>]*)>/g, '<p$1>');
 				    html = html.replace(/<\/div>/gi, '</p>');
                 } else {
                     //html = html.replace(/<div>/gi, '<br>');
-                    html = html.replace(/<div([^>]*)>([ tnr]*)<\/div>/gi, '<br>');
+                    html = html.replace(/<div\b([^>]*)>([ tnr]*)<\/div>/gi, '<br>');
 				    html = html.replace(/<\/div>/gi, '');
                 }
             }
