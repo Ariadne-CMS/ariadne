@@ -939,8 +939,12 @@ a:hover span.deltag {
 	height: 58px;
 	vertical-align: top;
 }
-#vedor-main-toolbar .vedor-logo {
-	margin: -4px 10px 0px;
+#vedor-main-toolbar i.vedor-logo {
+	margin-bottom: 10px;
+	position: relative;
+	top: 4px;
+	width: 24px;
+	box-sizing: border-box;
 }
 .vedor-hidden {
 	display: none !important;

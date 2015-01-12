@@ -4,9 +4,12 @@
 <section id="vedor-main-toolbar" class="vedor-section">
 	<div class="vedor-toolbar" data-vedor-section="vedor-page-management">
 		<ul class="vedor-buttons">
-			<li class="vedor-logo">
-				<img class="vedor-logo" src="http://www.vedor.nl/graphics/vedor.small.png">
+			<li>
+				<button data-vedor-action="vedor">
+					<i class="vedor-logo"></i>Vedor
+				</button>
 			</li>
+			<li class="vedor-seperator"></li>
 			<li>
 				<button data-vedor-action="vedor-save">
 					<i class="fa fa-save"></i><?php echo $ARnls['vd.editor:save']; ?>
@@ -95,6 +98,11 @@
 				<button data-vedor-action="vedor-show-tags" id="vdShowTagBoundaries">
 					<i class="fa fa-paragraph"></i><?php echo $ARnls['vd.editor:show_boundaries']; ?>
 				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-show-tags-stack" id="vdShowTagStack">
+					<i class="fa fa-tags"></i><?php echo $ARnls['vd.editor:show_tags_stack']; ?>
+				</button>				
 			</li>
 			<li class="vedor-seperator"></li>
 			<li style="display: none !important;">
