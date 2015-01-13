@@ -314,24 +314,6 @@ EOD;
 		$this->assertEquals('bar',$ret);
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
-	public function testClosuresThisReadonly() {
-		$template = <<<'EOD'
-<pinp>
-	return ($this = null);
-</pinp>
-EOD;
-
-		$compiler = new pinp("header", "object->", "\$object->_");
-		$res = $compiler->compile($template);
-		$this->assertNull($compiler->error);
-		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
-		$this->assertNull($ret);
-	}
-
-
 	public function testClosuresThisAvailable() {
 		$template = <<<'EOD'
 <pinp>
@@ -400,5 +382,25 @@ EOD;
 		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
 		$this->assertEquals(7,$ret);
 	}
+
+	public function testReferences() {
+		$template = <<<'EOD'
+<pinp>
+	$frop = 'frop';
+	$foo = &$frop;
+	$bar =& $frop;
+	$frop = 'frml';	
+	return array( $foo, $bar );
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertEquals(['frml','frml'], $ret);
+	}
+
+		
 
 }
