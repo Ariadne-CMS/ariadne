@@ -128,6 +128,7 @@ a.button img {
 #tabsdata #template_editor {
 	padding: 0px;
 	position: fixed;
+	z-index: 1;
 	top: 125px;
 	bottom: 50px;
 	left: 60px;
