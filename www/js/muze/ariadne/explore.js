@@ -121,7 +121,8 @@ muze.namespace("muze.ariadne.explore", function() {
 				muze.ariadne.explore.authenticate_panel.render(document.body);
 
 				var form = muze.ariadne.explore.authenticate_panel.body.getElementsByTagName('FORM')[0];
-				form.onsubmit = function() {
+				muze.event.attach( form, 'submit', function(evt) {
+					evt = muze.event.get(evt);
 					var ARLogin = document.getElementById("ARLogin").value;
 					var ARPassword = document.getElementById("ARPassword").value;
 					muze.ariadne.explore.authenticate_panel.hide();
@@ -134,8 +135,8 @@ muze.namespace("muze.ariadne.explore", function() {
 					ARLogin = '';
 					ARPassword = '';
 					muze.ariadne.explore.authenticate_loaders = Array();
-					return false;
-				}
+					return muze.event.cancel( evt );
+				});
 				muze.ariadne.explore.authenticate_panel.show();
 				document.getElementById("ARLogin").focus();
 			}
