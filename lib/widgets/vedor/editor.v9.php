@@ -77,16 +77,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 	<script type="text/javascript" src="ariadne.load.js?muze+muze.event+muze.form+muze.html+muze.dialog+muze.ariadne.cookie+muze.util.pngfix+muze.util.splitpane+muze.ariadne.registry+muze.ariadne.explore.js"></script>
-<!--	<script type="text/javascript" src="<?php echo $js_root; ?>muze/event.js"></script>
-
-	<script type="text/javascript" src="<?php echo $js_root; ?>muze/form.js"></script>
-	<script type="text/javascript" src="<?php echo $js_root; ?>muze/dialog.js"></script>
-	<script type="text/javascript" src="<?php echo $js_root; ?>muze/ariadne/cookie.js"></script>
-	<script type="text/javascript" src="<?php echo $js_root; ?>muze/util/pngfix.js"></script>
-	<script type="text/javascript" src="<?php echo $js_root; ?>muze/util/splitpane.js"></script>
-	<script type="text/javascript" src="<?php echo $js_root; ?>muze/ariadne/registry.js"></script>
-	<script type="text/javascript" src="<?php echo $js_root; ?>muze/ariadne/explore.js"></script>
--->
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor.js"></script>
 
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/dom.js"></script>
@@ -105,6 +95,7 @@
 
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor.js"></script>
 	<!-- script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/compose.js"></script -->
+	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/polyfill.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/selection.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/bookmarks.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/styles.js"></script>
@@ -2260,7 +2251,7 @@
 		}
 */
 
-		vedor.editor.compose.stop();
+		//vedor.editor.compose.stop();
 		checkChangeEndEl(el);
 	}
 
@@ -2639,8 +2630,8 @@
 			tempNode.appendChild(target.cloneNode(false));
 			var result = 0;
 			if (
-				(typeof filter["selector"] !== 'undefined' ? tempNode.querySelectorAll(":scope > " + filter["selector"]).length : true) && 
-				(typeof filter["sel-collapsed"] !== 'undefined' ? (sel.collapsed == filter["sel-collapsed"]) : true)
+				( (typeof filter["selector"] !== 'undefined') ? tempNode.querySelectorAll(":scope > " + filter["selector"]).length : true) && 
+				( (typeof filter["sel-collapsed"] !== 'undefined') ? (sel.collapsed == filter["sel-collapsed"]) : true)
 			) {
 				if (typeof filter["selector"] !== 'undefined') {
 					result += 50 * (targets.length+1); // tagName weight
@@ -3330,11 +3321,11 @@
 
 	function vdHelp(item) {
 		var items = {
-			'meta' : 'http://help.vedor.nl/vedor_wysiwyg_editor/meta/',
-			'languages' : 'http://help.vedor.nl/vedor_wysiwyg_editor/languages/',
-			'scripts' : 'http://help.vedor.nl/vedor_wysiwyg_editor/scripts/',
-			'sourcecode' : 'http://help.vedor.nl/vedor_wysiwyg_editor/broncode/',
-			'default' : 'http://help.vedor.nl/vedor_wysiwyg_editor/'
+			'meta' : 'http://help.vedor.com/editor/meta/',
+			'languages' : 'http://help.vedor.com/editor/languages/',
+			'scripts' : 'http://help.vedor.com/editor/scripts/',
+			'sourcecode' : 'http://help.vedor.com/editor/sourcecode/',
+			'default' : 'http://help.vedor.com/editor/'
 		}
 		if (!item || !items[item]) {
 			item='default';

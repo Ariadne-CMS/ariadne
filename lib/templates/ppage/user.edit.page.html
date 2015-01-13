@@ -2,14 +2,10 @@
 	$ARCurrent->nolangcheck=true;
 	$ARCurrent->forcenls=true;
 	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-?>
-<body>
-<?php
-	$this->_load('mod_edit.php');
-	edit::setEditMode(true);
-	edit::showDiv($this->GetPage(), "[$nls][page]");
-?>
-</body>
-<?php
+		$this->_load('mod_edit.php');
+		edit::setEditMode(true);
+		edit::reset();
+		$this->call('view.html', $arCallArgs);
+		edit::init();
 	}
 ?>
