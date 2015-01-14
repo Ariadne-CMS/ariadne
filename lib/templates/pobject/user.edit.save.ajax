@@ -1,0 +1,33 @@
+<?php
+	$ARCurrent->allnls = true;
+	$ARCurrent->nolangcheck = true;
+	if ( $this->CheckLogin('read') && $this->CheckConfig( $arCallFunction, $arCallArgs ) ) {
+		if ( is_array($changes) ) {
+			/* check for custom save templates (vedor meta data nls) */
+			$arEditorSettings = ar::call('editor.ini');
+			if ( !$arEditorSettings ) {
+				$arEditorSettings = ar::getvar('arEditorSettings');
+			}
+			$prefixes = array();
+			if ( is_array($arEditorSettings['meta'] ) ) {
+				foreach ( $arEditorSettings['meta'] as $section => $settings ) {
+					if ( $settings['prefix'] && $settings['save'] ) {
+						$prefixes[$settings['prefix']] = $settings['save'];
+					}
+				}
+			}
+			/* now save each path seperately */
+			foreach ( $changes as $path => $fields ) {
+				foreach ( $prefixes as $prefix => $savetemplate ) {
+					if ( isset($fields[$prefix]) ) {
+						$results[$path][$prefix] = current(ar::get($path)->call($savetemplate, array( $prefix => $fields[$prefix] )));
+						unset($fields[$prefix]);
+					}
+				}
+				if (count($fields)) {
+					get($path, 'user.edit.save.current.ajax', $fields);
+				}
+			}
+		}
+	}
+</pinp>

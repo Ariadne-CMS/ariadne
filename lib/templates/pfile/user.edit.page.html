@@ -1,0 +1,7 @@
+<?php
+    $ARCurrent->nolangcheck=true;
+    $ARCurrent->forcenls=true;
+    if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		ar::call('view.html', $arCallArgs);
+	}
+?>

@@ -1,0 +1,20 @@
+<?php
+	if ( $this->CheckSilent('edit') && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+		$fields = $arCallArgs;
+		if ( is_array($fields['custom']) ) {
+			$this->_load("mod_page.php");
+			foreach ( $fields['custom'] as $custom_nls => $custom_data ) {
+				if ( is_array($custom_data) ) {
+					foreach ( $custom_data as $custom_field => $custom_value ) {
+						if ( is_string($custom_value) ) {
+							// FIXME: references property wordt niet gevuld met inhoud van customfields
+							$language = ( $custom_nls != 'none' ) ? $custom_nls : '';
+							$fields['custom'][$custom_nls][$custom_field] = page::compile($custom_value, $language);
+						}
+					}
+				}
+			}
+		}
+		ar::call('system.save.current.phtml', $fields);
+	}
+</pinp>
