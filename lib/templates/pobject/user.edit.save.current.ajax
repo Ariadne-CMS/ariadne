@@ -17,4 +17,4 @@
 		}
 		ar::call('system.save.current.phtml', $fields);
 	}
-</pinp>
+?>
