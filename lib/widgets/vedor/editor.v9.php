@@ -2956,6 +2956,8 @@
 				//	vdSelectionState.restore(sel); // // FIXME: This reverses the current selection, which causes problems selecting from right to left; Is it used at all?
 				}
 				window.setTimeout(function() { skipContextUpdate = false;}, 20);
+		} else {
+			hideIt();
 		}
 
 		if (document.getElementById("VD_DETAILS")) {
