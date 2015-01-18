@@ -45,6 +45,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$this->store=$store;
 		$this->path=$path;
 		$this->data=$data;
+		if ( !isset($this->data->config) ) {
+			$this->data->config = new object();
+		}
 	}
 
 	public function call($arCallFunction="view.html", $arCallArgs="") {
