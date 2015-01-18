@@ -2277,7 +2277,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function getdatacache($name) {
-		global $ARnls;
+		global $ARCurrent, $ARnls;
 		$result=false;
 		if ($name) {
 
