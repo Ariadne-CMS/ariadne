@@ -196,16 +196,16 @@
 			}
 		}
 
-		// FIXME: Chrome sometimes sends If-Modified-Since combined with Pragma: no-cache or Cache-control: no-cache;
-		// The check should first check if a 304 not modified header can be sent;
-		// then check if the cache-image can be used;
-		// then pass it to Ariadne.
-		// For now: pragma: no-cache check is removed, this makes Ariadne stubborn with returning cache-images.
+		// add min-fresh if the client asked for it
+		if (isset($ARCurrent->RequestCacheControl["min-fresh"])) {
+			$timecheck += $ARCurrent->RequestCacheControl["min-fresh"];
+		}
+
 		if (
 			file_exists($cachedimage) &&
-			((($mtime=@filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
+			((($mtime=@filemtime($cachedimage)) > $timecheck) || ($mtime==0)) &&
 			($_SERVER["REQUEST_METHOD"]!="POST") &&
-			($_SERVER["HTTP_CACHE_CONTROL"] != "no-cache") &&
+			($ARCurrent->RequestCacheControl["no-cache"] != true ) &&
 			($ARCurrent->refreshCacheOnShutdown !== true)
 		) {
 			$ctime=filemtime($cachedimage); // FIXME: Waarom moet dit mtime zijn? Zonder mtime werkt de if-modified-since niet;
