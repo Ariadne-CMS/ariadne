@@ -510,3 +510,33 @@
 			return 2;
 		}
 	}
+
+	function ldProcessCacheControl() {
+		global $ARCurrent;
+		if (isset($_SERVER["HTTP_CACHE_CONTROL"])) {
+			$cc = $_SERVER["HTTP_CACHE_CONTROL"];
+			$parts = explode(',', $cc);
+			foreach($parts as $part) {
+				$part = trim ($part);
+				list($key,$value) = explode('=', $part,2);
+				$key = trim($key);
+				switch($key) {
+					case "no-cache":
+					case "no-store":
+					case "no-transform":
+					case "only-if-cached":
+						$ARCurrent->RequestCacheControl[$key] = true;
+						break;
+					case "max-age":
+					case "max-stale":
+					case "min-fresh":
+						$value = (int)filter_var($value,FILTER_SANITIZE_NUMBER_INT);
+						$ARCurrent->RequestCacheControl[$key] = $value;
+						break;
+					default:
+						// do nothing
+						break;
+				}
+			}
+		}
+	}

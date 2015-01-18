@@ -738,6 +738,7 @@
 		}
 		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise.
 
+		ldProcessCacheControl();
 		ldProcessRequest($AR_PATH_INFO);
 	}
 	/* Finish execution */
