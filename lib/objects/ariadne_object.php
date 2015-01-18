@@ -2164,9 +2164,15 @@ debug("loadLibrary: loading cache for $this->path");
 				$nls=$this->nls;
 			}
 			$file=$nls.".".$name;
+
+			$minfresh = time();
+			if (isset($ARCurrent->RequestCacheControl["min-fresh"])) {
+				$minfresh += $ARCurrent->RequestCacheControl["min-fresh"];
+			}
+
 			$pcache=$this->store->get_filestore("privatecache");
 			if ( $pcache->exists($this->id, $file) &&
-			     ($pcache->mtime($this->id, $file)>time()) ) {
+			     ($pcache->mtime($this->id, $file) > ($minfresh) )  ) {
 
 				$result = $pcache->read($this->id, $file);
 
@@ -2271,10 +2277,16 @@ debug("loadLibrary: loading cache for $this->path");
 		global $ARnls;
 		$result=false;
 		if ($name) {
+
+			$minfresh = time();
+			if (isset($ARCurrent->RequestCacheControl["min-fresh"])) {
+				$minfresh += $ARCurrent->RequestCacheControl["min-fresh"];
+			}
+
 			$pcache=$this->store->get_filestore("privatecache");
 			if ( $pcache->exists($this->id, $name) &&
-			     ($pcache->mtime($this->id, $name)>time()) ) {
-				$result=unserialize($pcache->read($this->id, $name));
+			     ($pcache->mtime($this->id, $name) > $minfresh) ) {
+				$result = unserialize($pcache->read($this->id, $name));
 			} else {
 				debug("getdatacache: $name doesn't exists, returning false.","all");
 			}
