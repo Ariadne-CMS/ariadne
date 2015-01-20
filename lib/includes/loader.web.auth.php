@@ -92,10 +92,10 @@
 		}
 
 		$eventData = new object();
-	    $eventData->arCallPath = $path;
+		$eventData->arCallPath = $path;
 		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
-	    $eventData->arLoginMessage = $message;
+		$eventData->arLoginMessage = $message;
 		$eventData->arReason = 'access timeout';
 		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
 		if ( $eventData ) {
@@ -106,8 +106,8 @@
 			if (!$ARCurrent->arLoginSilent) {
 				$ARCurrent->arLoginSilent = true;
 				$store->call("user.session.timeout.html",
-									$arCallArgs,
-									$store->get($path) );
+					$arCallArgs,
+					$store->get($path) );
 			}
 
 		}
@@ -127,14 +127,15 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-	    $eventData = new object();
-	    $eventData->arCallPath = $path;
+		$eventData = new object();
+		$eventData->arCallPath = $path;
 		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
-	    $eventData->arLoginMessage = $message;
+		$eventData->arLoginMessage = $message;
 		$eventData->arReason = 'access denied';
 
 		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
+
 		if ( $eventData ) {
 
 			$arCallArgs = $eventData->arCallArgs;
@@ -143,8 +144,8 @@
 			if (!$ARCurrent->arLoginSilent) {
 				$ARCurrent->arLoginSilent = true;
 				$store->call("user.login.html",
-									$arCallArgs,
-									$store->get($path) );
+					$arCallArgs,
+					$store->get($path) );
 			}
 		}
 	}
@@ -164,8 +165,8 @@
 		}
 
 		$eventData = new object();
-	    $eventData->arCallPath = $path;
-	    $eventData->arCallFunction = ldGetCurrentTemplate( $function );
+		$eventData->arCallPath = $path;
+		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arLoginMessage = $message;
 		$eventData->arReason = 'password expired';
 		$eventData->arCallArgs = $arCallArgs;
@@ -178,8 +179,8 @@
 			if (!$ARCurrent->arLoginSilent) {
 				$ARCurrent->arLoginSilent = true;
 				$store->call("user.password.expired.html",
-									$arCallArgs,
-									$store->get($path) );
+					$arCallArgs,
+					$store->get($path) );
 			}
 		}
 
