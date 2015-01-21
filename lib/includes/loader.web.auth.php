@@ -240,7 +240,7 @@
 		global $AR;
 		$data = json_decode($cookie,true);
 		if(is_null($data)){
-			if(isset($AR->sessionCryptoKey)) {
+			if(isset($AR->sessionCryptoKey) && extension_loaded('mcrypt') ) {
 				$key = $AR->sessionCryptoKey;
 				$crypto = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
 				$data = json_decode($crypto->decrypt($cookie),true);
@@ -253,7 +253,7 @@
 	function ldEncodeCookie($cookie) {
 		global $AR;
 		$data = json_encode($cookie);
-		if(isset($AR->sessionCryptoKey)) {
+		if(isset($AR->sessionCryptoKey) && extension_loaded('mcrypt') ) {
 			$key = $AR->sessionCryptoKey;
 			$crypto = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
 			$encdata = $crypto->crypt($data);
