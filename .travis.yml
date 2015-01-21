@@ -5,6 +5,7 @@ env:
     - DB=postgresql
 
 language: php
+cache: apt
 
 php:
     - 5.4
