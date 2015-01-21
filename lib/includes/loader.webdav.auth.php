@@ -125,7 +125,7 @@
 		$data = json_decode($cookie,true);
 		if(is_null($data)){
 			if(isset($AR->sessionCryptoKey)) {
-				$key = $AR->sessionCryptoKey;
+				$key = base64_decode($AR->sessionCryptoKey);
 				$crypto = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
 				$data = json_decode($crypto->decrypt($cookie),true);
 			}
@@ -138,7 +138,7 @@
 		global $AR;
 		$data = json_encode($cookie);
 		if(isset($AR->sessionCryptoKey)) {
-			$key = $AR->sessionCryptoKey;
+			$key = base64_decode($AR->sessionCryptoKey);
 			$crypto = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
 			$encdata = $crypto->crypt($data);
 			if($encdata !== false) {

@@ -21,7 +21,7 @@ class ar_cryptTest extends AriadneBaseTest {
 		$this->assertEquals($text, $decoded);
 	}
 
-	public function testNewApi() {
+	public function testNewApiSetKey() {
 		$text = "testme";
 		$key  = "frop";
 		$salt = sha1("saltgeneration");
@@ -31,6 +31,22 @@ class ar_cryptTest extends AriadneBaseTest {
 		$generatedkey = $crypt->pbkdf2($key,$salt);
 		$crypt->setKey($generatedkey);
 
+		$encoded = $crypt->crypt($text);
+		$decoded = $crypt->decrypt($encoded);
+
+		$this->assertEquals($text, $decoded);
+	}
+
+	public function testNewApi() {
+		$text = "testme";
+		$key  = "frop";
+		$salt = sha1("saltgeneration");
+
+		$crypt = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
+
+		$key = $crypt->pbkdf2($key,$salt);
+
+		$crypt = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
 		$encoded = $crypt->crypt($text);
 		$decoded = $crypt->decrypt($encoded);
 

@@ -12,7 +12,7 @@
 			global $AR;
 			$this->encoding = $encoding;
 			$this->api      = $api;
-			$this->key      = $this->key;
+			$this->key      = $key;
 
 			if ($this->api === 0 ) {
 				// this api will be deprecated in the future
