@@ -242,7 +242,7 @@
 		if(is_null($data)){
 			if(isset($AR->sessionCryptoKey)) {
 				$key = $AR->sessionCryptoKey;
-				$crypto = new ar_crypt($key);
+				$crypto = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
 				$data = json_decode($crypto->decrypt($cookie),true);
 			}
 		}
@@ -255,9 +255,11 @@
 		$data = json_encode($cookie);
 		if(isset($AR->sessionCryptoKey)) {
 			$key = $AR->sessionCryptoKey;
-			error_log("Crypto key == ".$key,4);
-			$crypto = new ar_crypt($key);
-			$data = $crypto->crypt($data);
+			$crypto = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
+			$encdata = $crypto->crypt($data);
+			if($encdata !== false) {
+				$data = $encdata;
+			}
 		}
 		return $data;
 	}
