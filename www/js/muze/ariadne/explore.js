@@ -1016,7 +1016,7 @@ muze.namespace( 'muze.ariadne.explore.viewpane', function() {
 			muze.ariadne.registry.set('direction', event.dir);
 		},
 		onClick : function(event) {
-			YAHOO.util.Event.preventDefault(event);
+			//YAHOO.util.Event.preventDefault(event);
 			return;
 			if (!event.ctrlKey) {
 				muze.ariadne.explore.viewpane.unselectItem();
