@@ -65,10 +65,9 @@
 		$root = $this->getvar("root");
 		if (!$root) {
 			$root = '/';
-		}
-
-		if ($pathmode == "siterelative") {
-			$root = $this->currentsite();
+			if ($pathmode == "siterelative") {
+				$root = $this->currentsite();
+			}
 		}
 
 		$root = $this->make_path( $root );
