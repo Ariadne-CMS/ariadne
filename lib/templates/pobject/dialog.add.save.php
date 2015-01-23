@@ -12,7 +12,9 @@
 		exit();
 	}
 
-	if ( $this->CheckLogin("add", $arNewType) && $this->CheckConfig() ) {
+	$location = $this->getvar( 'location' );
+
+	if ( $this->CheckConfig() ) {
 
 		$arNewFilename = $this->getdata("arNewFilename","none");
 		$arNewData = new object();

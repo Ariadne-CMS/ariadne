@@ -10,7 +10,7 @@
 					$this->parent => $ARnls['ariadne:new:beside']
 				),
 				'class' => 'field',
-				'value'=> $location,
+				'value'=> $this->getvar( 'location' ),
 				'label' => false
 			)
 		);

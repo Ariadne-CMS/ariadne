@@ -10,15 +10,16 @@
 		if($typeslist && is_array($typeslist) && count($typeslist)) {
 			$itemlist = yui::getItems($locationOb, $typeslist, $location, "dialog.add.php");
 			foreach ($itemlist as $item) {
-				if ($this->CheckLogin('add', $item['type'])) {
+				if ($this->CheckSilent( 'add', $item['type'], $location )) {
 					$typeslist[$item['type']] = ar('html')->el(
 						"div",
 						ar('html')->el(
 							"img",
 							array("src" => $item['icon'], "alt" => $item['name'], "title" => $item['name'])
-						) . $item['name']);
+						) . $item['name']
+					);
 				} else {
-					unset($typeslist[$item['type']]);
+					unset( $typeslist[ $item['type'] ] );
 				}
 			}
 
