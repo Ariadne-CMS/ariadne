@@ -32,6 +32,13 @@
 				'icon' => $AR->dir->images . 'icons/small/edit.png',
 				'nlslabel' => $ARnls['ariadne:edit']
 			);
+
+			$tasks[] = array(
+				'href' => $this->make_ariadne_url() . "user.edit.html",
+				'onclick' => "muze.ariadne.explore.arshow('_blank', this.href); return false;",
+				'icon' => $AR->dir->images . 'vedor/vedor.png',
+				'nlslabel' => 'Vedor Editor'
+			);
 		}
 
 		if( !$shortcutSidebar ) {
@@ -43,7 +50,7 @@
 					'nlslabel' => $ARnls['ariadne:rename']
 				);
 			}
-                        if ($this->CheckSilent("delete")) {
+			if ($this->CheckSilent("delete")) {
 				$tasks[] = array(
 					'href' => $this->make_ariadne_url() . "dialog.move.php",
 					'onclick' => "muze.ariadne.explore.dialog.move(this.href); return false;",
@@ -67,7 +74,7 @@
 				);
 			}
 		}
-		if ($this->CheckSilent("admin") && $this->can_mogrify() ) {
+		if ($this->CheckSilent("config") && $this->can_mogrify() ) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
 				'onclick' => "muze.ariadne.explore.dialog.mogrify(this.href); return false;",
