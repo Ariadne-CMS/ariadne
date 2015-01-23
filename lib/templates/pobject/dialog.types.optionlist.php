@@ -20,6 +20,6 @@
 	}
 	if (!$haveselected && $selected) {
 		// The template is not in the typetree anymore. This makes it available in the list.
-		echo "<option value=\"$selected\" selected>$type</option>\n";
+		echo "<option value=\"$selected\" selected>$selected</option>\n";
 	}
 ?>
