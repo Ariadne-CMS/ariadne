@@ -1999,8 +1999,8 @@ debug("loadLibrary: loading cache for $this->path");
 						} else if (($ARCurrent->allnls) || (!$initialConfigChecked && $ARCurrent->nolangcheck)) {
 							// all objects must be displayed
 							// $this->reqnls=$this->nls; // set requested nls, for checks
-							$this->nls=$this->data->nls->default;
-							$this->nlsdata=$this->data->$nls;
+							$this->nls = isset($this->data->nls->default) ? $this->data->nls->default : $this->reqnls;
+							$this->nlsdata = $this->data->$nls ?: $this->data->{$this->nls} ?: $this->data;
 							$continue=true;
 						} else {
 							debug("CheckConfig: requested language not available, allnls not set","object");
