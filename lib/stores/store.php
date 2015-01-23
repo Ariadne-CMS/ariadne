@@ -279,6 +279,7 @@ abstract class store {
 		This functions creates a new ariadne object
 	**********************************************************************************/
 	public function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
+		global $ARnls;
 		$class = $type;
 		if ($subcpos = strpos($type, '.')) {
 			$class = substr($type, 0, $subcpos);
@@ -295,6 +296,7 @@ abstract class store {
 		$object->vtype=$vtype;
 		$object->size=(int)$size;
 		$object->priority=(int)$priority;
+		$object->ARnls = $ARnls;
 		$object->init($this, $path, $data);
 		return $object;
 	}
