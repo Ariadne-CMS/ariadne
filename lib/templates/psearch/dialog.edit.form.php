@@ -36,10 +36,12 @@
 </fieldset>
 <fieldset id="target" class="browse">
 	<legend><?php echo $ARnls["target"]; ?></legend>
-	<div class="field">
-		<label for="path" class="required"><?php echo $ARnls["path"]; ?></label>
-		<input type="text" id="path" name="path" value="<?php echo $wgBrowsePath; ?>" class="inputline">
-		<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='window.open("<?php echo $this->make_ariadne_url($wgBrowsePath); ?>" + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
+	<div class="browse_wrapper">
+		<div class="field">
+			<label for="path" class="required"><?php echo $ARnls["path"]; ?></label>
+			<input type="text" id="path" name="path" value="<?php echo $wgBrowsePath; ?>" class="inputline">
+			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='window.open("<?php echo $this->make_ariadne_url($wgBrowsePath); ?>" + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
+		</div>
 	</div>
 </fieldset>
 <?php
