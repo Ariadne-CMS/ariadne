@@ -32,7 +32,7 @@
 		$nlsFiles = array();
 		$dirs = array();
 		$objectID = pathToObjectID($path);
-		while ( false !== ($file = readdir($dh))) {
+		while ( is_resource($dh) && false !== ($file = readdir($dh))) {
 			if ($file != "." && $file != "..") {
 				$f = $path.$file;
 				if ( is_file($f) && $file[0] == '_' ) {
@@ -63,11 +63,13 @@
 
 	recurse($files);
 
+	sort($needsUpgrade);
 	foreach($needsUpgrade as $objID) {
+		print "Searching for $objID\n";
 		$result = ar::get('/')->find("id == $objID")->call('system.get.phtml');
 		if(count($result) == 1) {
 			$obj = current($result);
-			print "Upgrading ".$obj->path."\n";
+			print "Upgrading ".$obj->path."\n<br>";
 			$obj->call('system.upgrade.filestore.8.4.php');
 		}
 	}
