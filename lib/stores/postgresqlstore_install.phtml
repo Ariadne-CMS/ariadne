@@ -154,7 +154,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 	used by objects to set special information on which to quickly search
 	using find.
 
-	$name must be a string of at most 16 characters from the set [a-zA-Z0-9_] 
+	$name must be a string of at most 16 characters from the set [a-zA-Z0-9_]
 	or '-', starting with a letter (a-zA-Z).
 
 	$definition describes which name value pairs this property contains and
@@ -162,7 +162,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 	$definition is defined as: $definition[{name}][{type}]={size}
 		{name} is defined like $name above
 		(type} can be 'number', 'string', 'text' or 'boolean'
-		{size} is only used for the string type and can not be more than 255. 
+		{size} is only used for the string type and can not be more than 255.
 	$indexes describes which indexes the storage layer should consider
 		for the property. Default behaviour is to create one index for the
 		complete set of name-value pairs. If you want you can create a smaller
@@ -173,10 +173,10 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 				 $indexes[1][1]="name3";
 		this would create two indexes, one on "name1" and one on "name2" and
 		"name3".
-		{name} is defined like $name above. 
-	if $indexes is set to "none", no user indexes will be created on this 
-	property. This is usually not a good thing to do. 
-	 
+		{name} is defined like $name above.
+	if $indexes is set to "none", no user indexes will be created on this
+	property. This is usually not a good thing to do.
+
 	**********************************************************************/
 		$result=1;
 		$this->error=false;
@@ -189,7 +189,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 					$result=0;
 					$this->error="Wrong format for type: $name";
 					break;
-				}	 
+				}
 				$create_string .= " AR_".$name." ";
 				$create_string .= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
 				$create_string .= ",";
@@ -274,10 +274,10 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 		//FIXME: check for succes first, check whether table no longer exists.
 		return 1;
 	}
-	
+
 	function add_type($type, $implements) {
 	/**********************************************************************
-	
+
 		This function does not actually create a type, it only serves to
 	notify to the system that $type exists and that it implements the
 	type or interface given in $implements.
@@ -297,7 +297,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 				error("ERROR: PostgreSQL: ".$this->error);
 			} else {
 				$result=1;
-			}	
+			}
 		} else {
 			$this->error="Wrong format for type or implements";
 		}
