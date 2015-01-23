@@ -104,7 +104,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 				}
 				$defaultstr = "DEFAULT $default ";
 				if ($alter == null) {
-					$result="bigint $default not null\n";
+					$result="bigint $defaultstr not null\n";
 				} else {
 					$result  = $alter . ' set  ' . $defaultstr . ', ';
 					$result .= $alter . ' set  not null';
