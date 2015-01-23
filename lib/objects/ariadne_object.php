@@ -3323,9 +3323,9 @@ debug("loadLibrary: loading cache for $this->path");
 							break;
 							default:
 								$value = $prop_value;
-								if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-										&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-									$value = stripSlashes(substr($wf_prop_value,1,-1));
+								if (substr($prop_value, 0, 1) === "'" && substr($prop_value, -1) === "'"
+										&& "'".AddSlashes(StripSlashes(substr($prop_value, 1, -1)))."'" == $prop_value) {
+									$value = stripSlashes(substr($prop_value,1,-1));
 									// todo add deprecated warning
 								}
 						}
