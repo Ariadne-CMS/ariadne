@@ -1,4 +1,5 @@
 <?php
+	ldHeader('X-XSS-Protection: 0');
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		include($this->store->get_config("code")."widgets/wizard/code.php");
