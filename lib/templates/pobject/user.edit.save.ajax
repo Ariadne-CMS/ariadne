@@ -25,7 +25,7 @@
 					}
 				}
 				if (count($fields)) {
-					get($path, 'user.edit.save.current.ajax', $fields);
+					ar::get($path)->call('user.edit.save.current.ajax', $fields);
 				}
 			}
 		}
