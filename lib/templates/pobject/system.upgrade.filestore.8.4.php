@@ -3,8 +3,9 @@
   upgrades filestore data of file
  ******************************************************************/
 
-if ($this->CheckLogin("admin") && $this->CheckConfig())
+if ($this->CheckLogin("admin"))
 {
+	ob_end_flush();
 
 	$filestore=$this->store->get_filestore("files");
 
