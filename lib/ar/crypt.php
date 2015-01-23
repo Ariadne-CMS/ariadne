@@ -81,6 +81,9 @@
 				$decoded = base64_decode($value);
 				$ivsize = mcrypt_get_iv_size ( $this->encoding, $this->mode);
 				$iv = substr($decoded, 0, $ivsize);
+				if($ivsize != strlen($iv)) {
+					return false;
+				}
 
 				$encrypted = substr($decoded, $ivsize);
 				return trim(mcrypt_decrypt($this->encoding, $this->key, $encrypted, $this->mode,$iv), "\0");
@@ -134,5 +137,4 @@
 				return base64_encode(substr($output, 0, $key_length));
 			}
 		}
-
 	}
