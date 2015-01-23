@@ -1281,7 +1281,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$ARCurrent->arLoginSilent = $loginSilent;
 		$ARCurrent->arConfig = $prevArConfig;
-
 	}
 
 	protected function getConfigData() {
@@ -1379,7 +1378,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	global $ARConfig, $ARConfigChecked, $ARCurrent;
 		$path=$this->make_path($path);
 		// debug("loadConfig($path)");
-		if (!$ARConfig->cache[$path]) {
+		if (!$ARConfig->cache[$path] ) {
 			$allnls = $ARCurrent->allnls;
 			$ARCurrent->allnls = true;
 			$configChecked = $ARConfigChecked;
@@ -1454,9 +1453,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 //				echo "checking $i::$arType<br>\n";
 				if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType][$this->reqnls])) {
 					$arCallTemplate=$arType.".".$function.".".$this->reqnls;
+					$arCallTemplateName = $function;
+					$arCallTemplateNLS = $this->reqnls;
 					break 2;
 				} else if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType]['any'])) {
 					$arCallTemplate=$arType.".".$function.".any";
+					$arCallTemplateName = $function;
+					$arCallTemplateNLS = "any";
 					break 2;
 				} else {
 
@@ -1490,6 +1493,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			"arTemplateId" => $arTemplate["arTemplateId"],
 			"arCallTemplate" => $arCallTemplate,
 			"arCallType" => $type,
+			"arCallTemplateName" => $arCallTemplateName,
+			"arCallTemplateNLS" => $arCallTemplateNLS,
 			"arCallTemplateType" => $arType,
 			"arCallTemplatePath" => $arTemplate["arLibraryLocalPath"],
 			"arLibrary" => "current",
@@ -1661,8 +1666,12 @@ debug("loadLibrary: loading cache for $this->path");
 			while ($arType!='ariadne_object' && !$arCallTemplate) {
 				if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls])) {
 					$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
+					$arCallTemplateName = $arCallFunction;
+					$arCallTemplateNLS = $this->reqnls;
 				} else if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any'])) {
 					$arCallTemplate=$arType.".".$arCallFunction.".any";
+					$arCallTemplateName = $arCallFunction;
+					$arCallTemplateNLS = 'any';
 				} else {
 
 					if (!($arSuper=$AR->superClass[$arType])) {
@@ -1735,6 +1744,8 @@ debug("loadLibrary: loading cache for $this->path");
 		$result["arTemplateId"] = $arTemplateId;
 		$result["arCallTemplate"] = $arCallTemplate;
 		$result["arCallType"] = $arCallType;
+		$result["arCallTemplateName"] = $arCallTemplateName;
+		$result["arCallTemplateNLS"] = $arCallTemplateNLS;
 		$result["arCallTemplateType"] = $arType;
 		$result["arCallTemplatePath"] = $lastcheckedpath;
 		$result["arLibrary"] = $arLibrary;
@@ -1959,6 +1970,8 @@ debug("loadLibrary: loading cache for $this->path");
 								"arCallFunction" => $arCallFunction,
 								"arCurrentObject" => $this,
 								"arCallType" => $template['arCallType'],
+								"arCallTemplateName" => $template['arCallTemplateName'],
+								"arCallTemplateNLS" => $template['arCallTemplateNLS'],
 								"arCallTemplateType" => $template['arCallTemplateType'],
 								"arCallTemplatePath" => $template['arCallTemplatePath'],
 								"arLibrariesSeen" => $template['arLibrariesSeen']
@@ -2566,7 +2579,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function _call_super($arCallArgs="") {
-	global $ARCurrent;
+	global $ARCurrent, $AR;
 		$context = $this->getContext();
 		if (!$arCallArgs) {
 			$arCallArgs = end($ARCurrent->arCallStack);
@@ -2635,15 +2648,38 @@ debug("loadLibrary: loading cache for $this->path");
 						"arLibrary" => $arLibrary,
 						"arLibraryPath" => $template['arLibraryPath'],
 						"arCallFunction" => $arCallFunction,
+						"arCurrentObject" => $this,
 						"arCallType" => $template['arCallType'],
+						"arCallTemplateName" => $template['arCallTemplateName'],
+						"arCallTemplateNLS"  => $template['arCallTemplateNLS'],
 						"arCallTemplateType" => $template['arCallTemplateType'],
 						"arCallTemplatePath" => $template['arCallTemplatePath']
 					)
 				);
-				set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-				$arResult = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
-				restore_error_handler();
+				$continue = true;
+				$eventData = new object();
+				if ( !$AR->contextCallHandler ) { /* prevent onbeforecall from re-entering here */
+					$AR->contextCallHandler = true;
+					$eventData->arCallArgs = $arCallArgs;
+					$eventData->arCallFunction = $arCallFunction;
+					$eventData->arContext = $this->getContext();
+					$eventData = ar_events::fire('onbeforecall', $eventData);
+					$AR->contextCallHandler = false;
+					$continue = ($eventData!=false);
+				}
+				if ( $continue ) {
+					set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
+					$arResult = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+					restore_error_handler();
 
+					if ( !$AR->contextCallHandler ) { /* prevent oncall from re-entering here */
+						$AR->contextCallHandler = true;
+						$eventData->arResult = $arResult;
+						ar_events::fire('oncall', $eventData );
+						$ARCurrent->arResult = $temp; /* restore correct result */
+						$AR->contextCallHandler = false;
+					}
+				}
 				array_pop($ARCurrent->arCallStack);
 				$this->popContext();
 			}
