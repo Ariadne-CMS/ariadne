@@ -338,9 +338,9 @@
 
 		public static function raiseError($message, $code, $previous = null) {
 			if (self::$throwExceptions) {
-				throw new ar_error($message, $code, $previous);
+				throw new ar_error($message, (int)$code, $previous);
 			} else {
-				return new ar_error($message, $code, $previous);
+				return new ar_error($message, (int)$code, $previous);
 			}
 		}
 
@@ -484,15 +484,15 @@
 			$me = self::getObject( $options );
 			if ($me) {
 				$path = $me->make_path( $options['path'] );
-				if ($options['rememberShortcuts']) {
-					$me->_load('mod_keepurl.php');
-					$path = pinp_keepurl::_make_path( $path );
-				} else if ($options['skipShortcuts']) {
+				if ($options['skipShortcuts']) {
 					$me->_load('mod_keepurl.php');
 					$realpath = pinp_keepurl::_make_real_path( $path );
 					if ($realpath) {
 						$path = $realpath;
 					}
+				} else if ($options['rememberShortcuts']) {
+					$me->_load('mod_keepurl.php');
+					$path = pinp_keepurl::_make_path( $path );
 				}
 			} else {
 				$path = self::makePath( '/', $options['path'] );
