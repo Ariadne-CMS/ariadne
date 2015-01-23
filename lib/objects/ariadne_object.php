@@ -2674,6 +2674,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 					if ( !$AR->contextCallHandler ) { /* prevent oncall from re-entering here */
 						$AR->contextCallHandler = true;
+						$temp = $ARCurrent->arResult; /* event listeners will change ARCurrent->arResult */
 						$eventData->arResult = $arResult;
 						ar_events::fire('oncall', $eventData );
 						$ARCurrent->arResult = $temp; /* restore correct result */
