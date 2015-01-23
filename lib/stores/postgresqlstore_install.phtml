@@ -75,33 +75,75 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 	}
 
 
-	function _generate_column_def($type, $size, $default = null) {
+	function _generate_column_def($type, $size, $default = null, $alter = null) {
 		switch($type) {
-			case "string": 
+			case "string":
 				if ($size>0 && $size<256) {
 					if (!isset($default)) {
 						$default = "";
 					}
-					$result="varchar($size) DEFAULT '$default' not null\n";
+					$typestr    = "varchar($size) ";
+					$defaultstr = "DEFAULT '$default' ";
+					$nullstr    = "not null";
+
+					if ($alter == null) {
+						$result= $typestr.$defaultstr.$nullstr;
+					} else {
+						$result  = $alter . ' type ' . $typestr . ', ';
+						$result .= $alter . ' set  ' . $defaultstr . ', ';
+						$result .= $alter . ' set  ' . $nullstr;
+					}
 				} else {
 					$result=0;
-					$this->error="Wrong format for typedefinition $name: incorrect size."; 
+					$this->error="Wrong format for typedefinition $name: incorrect size.";
 				}
 				break;
 			case "number":
 				if (!isset($default)) {
 					$default = 0;
 				}
-				$result="bigint default $default not null\n";
+				$defaultstr = "DEFAULT $default ";
+				if ($alter == null) {
+					$result="bigint $default not null\n";
+				} else {
+					$result  = $alter . ' set  ' . $defaultstr . ', ';
+					$result .= $alter . ' set  not null';
+				}
 				break;
 			case "boolean":
 				if (!isset($default)) {
 					$default = false;
 				}
-				$result="bool DEFAULT $default not null\n";
+				$defaultstr = "DEFAULT '$default' ";
+				if ($alter == null) {
+					$result="bool $default not null\n";
+				} else {
+					$result .= $alter . ' set  ' . $defaultstr . ', ';
+					$result .= $alter . ' set  not null';
+				}
 				break;
 		}
 		return $result;
+	}
+
+	function alter_property($property, $definition) {
+		foreach ($definition['fields'] as $name => $typedef) {
+			$alter_string="alter table ".$this->tbl_prefix."prop_".AddSlashes($property)." ";
+			if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
+				$result=0;
+				$this->error="Wrong format for type: $name";
+				error($this->error);
+				break;
+			}
+			$alter         = " alter AR_".$name." ";
+			$alter_string .= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default'], $alter);
+
+			$qresult = $this->store_run_query($alter_string);
+			if (!$qresult ) {
+				var_dump($this->error);
+				error($this->error);
+			}
+		}
 	}
 
 
