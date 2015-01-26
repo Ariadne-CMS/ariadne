@@ -23,6 +23,16 @@
 //	$ARnls["ariadne:browsetotarget"]                =    "Browse to target"; // value from english
 	$ARnls["ariadne:by"]                            =    "Von";
 	$ARnls["ariadne:cache"]                         =    "Zwischenspeicher einstellen für ";
+//	$ARnls["ariadne:cache:browsercaching"]          =    "Browser cache settings (HTTP/1.1)"; // value from english
+//	$ARnls["ariadne:cache:max-age"]                 =    "Max-age"; // value from english
+//	$ARnls["ariadne:cache:must-revalidate"]         =    "Must revalidate"; // value from english
+//	$ARnls["ariadne:cache:no-cache"]                =    "No cache"; // value from english
+//	$ARnls["ariadne:cache:no-store"]                =    "No store"; // value from english
+//	$ARnls["ariadne:cache:no-transform"]            =    "No transform"; // value from english
+//	$ARnls["ariadne:cache:private"]                 =    "Private"; // value from english
+//	$ARnls["ariadne:cache:proxy-revalidate"]        =    "Proxy must revalidate"; // value from english
+//	$ARnls["ariadne:cache:proxycaching"]            =    "Proxy cache settings (HTTP/1.1)"; // value from english
+//	$ARnls["ariadne:cache:s-max-age"]               =    "S-Max-age"; // value from english
 //	$ARnls["ariadne:change_priority"]               =    "Change priority"; // value from english
 //	$ARnls["ariadne:childrenonly"]                  =    "Children only"; // value from english
 //	$ARnls["ariadne:close"]                         =    "Close"; // value from english
@@ -115,6 +125,7 @@
 //	$ARnls["ariadne:next"]                          =    "Next"; // value from english
 //	$ARnls["ariadne:no_adding_found"]               =    "You can not add objects here."; // value from english
 //	$ARnls["ariadne:no_objects_found"]              =    "No objects found."; // value from english
+//	$ARnls["ariadne:noscaffold"]                    =    "No Scaffold"; // value from english
 	$ARnls["ariadne:object:copied_object"]          =    " (Kopie)";
 //	$ARnls["ariadne:options"]                       =    "Options"; // value from english
 //	$ARnls["ariadne:override_typetree"]             =    "Override typetree settings"; // value from english
@@ -143,6 +154,7 @@
 //	$ARnls["ariadne:rewrite.references"]            =    "Rewrite path references"; // value from english
 //	$ARnls["ariadne:rewrite.urls"]                  =    "Rewrite URLs"; // value from english
 //	$ARnls["ariadne:rewriting"]                     =    "Rewriting"; // value from english
+//	$ARnls["ariadne:scaffold"]                      =    "Scaffold"; // value from english
 	$ARnls["ariadne:search"]                        =    "Suchen";
 //	$ARnls["ariadne:select:created_last_day"]       =    "Created last day"; // value from english
 //	$ARnls["ariadne:select:created_last_month"]     =    "Created last month"; // value from english

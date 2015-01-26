@@ -118,6 +118,7 @@
 	$ARnls["ariadne:next"]                          =    "Volgende";
 	$ARnls["ariadne:no_adding_found"]               =    "U kunt hier geen objecten aanmaken.";
 	$ARnls["ariadne:no_objects_found"]              =    "Geen objecten gevonden.";
+	$ARnls["ariadne:noscaffold"]                    =    "Geen raamwerk";
 	$ARnls["ariadne:object:copied_object"]          =    " (Kopie)";
 	$ARnls["ariadne:options"]                       =    "Opties";
 	$ARnls["ariadne:override_typetree"]             =    "Negeer typeboom instellingen";
@@ -147,7 +148,6 @@
 	$ARnls["ariadne:rewrite.urls"]                  =    "URLs herschrijven";
 	$ARnls["ariadne:rewriting"]                     =    "Inhoud herschrijven van ";
 	$ARnls["ariadne:scaffold"]                      =    "Raamwerk";
-	$ARnls["ariadne:noscaffold"]                    =    "Geen raamwerk";
 	$ARnls["ariadne:search"]                        =    "Zoek";
 	$ARnls["ariadne:select:created_last_day"]       =    "Afgelopen dag aangemaakt";
 	$ARnls["ariadne:select:created_last_month"]     =    "Afgelopen maand aangemaakt";

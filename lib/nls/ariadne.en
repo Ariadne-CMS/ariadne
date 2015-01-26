@@ -118,6 +118,7 @@
 	$ARnls["ariadne:next"]                          =    "Next";
 	$ARnls["ariadne:no_adding_found"]               =    "You can not add objects here.";
 	$ARnls["ariadne:no_objects_found"]              =    "No objects found.";
+	$ARnls["ariadne:noscaffold"]                    =    "No Scaffold";
 	$ARnls["ariadne:object:copied_object"]          =    " (Copy)";
 	$ARnls["ariadne:options"]                       =    "Options";
 	$ARnls["ariadne:override_typetree"]             =    "Override typetree settings";
@@ -147,7 +148,6 @@
 	$ARnls["ariadne:rewrite.urls"]                  =    "Rewrite URLs";
 	$ARnls["ariadne:rewriting"]                     =    "Rewriting";
 	$ARnls["ariadne:scaffold"]                      =    "Scaffold";
-	$ARnls["ariadne:noscaffold"]                    =    "No Scaffold";
 	$ARnls["ariadne:search"]                        =    "Search";
 	$ARnls["ariadne:select:created_last_day"]       =    "Created last day";
 	$ARnls["ariadne:select:created_last_month"]     =    "Created last month";

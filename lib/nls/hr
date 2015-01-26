@@ -371,6 +371,7 @@
 	$ARnls["weeks"]                                 =    "Tjedana";
 	$ARnls["width"]                                 =    "Širina";
 	$ARnls["winxp"]                                 =    "Windows XP";
+//	$ARnls["withoutchildren"]                       =    "Without Children"; // value from english
 	$ARnls["withoutdata"]                           =    "Bez podataka";
 	$ARnls["withoutfiles"]                          =    "Bez datoteka";
 	$ARnls["withoutgrants"]                         =    "Bez dozvola";

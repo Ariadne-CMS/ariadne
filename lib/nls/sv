@@ -379,6 +379,7 @@
 	$ARnls["weeks"]                                 =    "Veckor";
 	$ARnls["width"]                                 =    "Bredd";
 	$ARnls["winxp"]                                 =    "Windows XP";
+//	$ARnls["withoutchildren"]                       =    "Without Children"; // value from english
 	$ARnls["withoutdata"]                           =    "Utan data";
 	$ARnls["withoutfiles"]                          =    "Utan filer";
 	$ARnls["withoutgrants"]                         =    "Utan r&auml;ttigheter";
