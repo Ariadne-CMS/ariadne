@@ -6,7 +6,7 @@
 	}
 
 	$languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en');
-	$modules=Array('','ariadne.');
+	$modules=Array('','ariadne.','vedor-editor.');
 	$target='./';
 	define('NLSESCAPE', "\"\\\n\r");
 
@@ -18,8 +18,11 @@
 		unset($ARnls);
 
 		foreach ($languages as $language) {
-			echo "Updating ".$module.$language."\n";
-			include($module.$language);
+			$file = $module.$language;
+			echo "Updating ".$file."\n";
+			if (file_exists($file)) {
+				include($file);
+			}
 
 			$content = "<"."?php\n\n";
 			if ( file_exists($module.$language.".head") ) {
