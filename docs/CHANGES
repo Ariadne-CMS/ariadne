@@ -1,4 +1,59 @@
 ========================
+Changes in Ariadne 9.0
+========================
+
+Upgrade notes
+  - all loaders now use lib/bootstrap.php for global initialisation
+    if you have custom loaders look at the bin/skeleton.php for how to adapt your loaders
+  - minimal php version is now 5.4
+  - installing php5-mcrypt is recommended
+
+Features
+  - new inline WYSIWYG editor by Vedor
+  - added closure support in pinp templates, added numerous php functions to the whitelist that use callbacks, though we support only closures as a callback method
+  - added ar/files api for interaction with the filestore
+  - reworked the caching layer, this makes it possible to clear all cache images interacting with a template or object
+    this also installs another store in the current database data storage
+  - added ar\formats\markdown
+  - added ar\formats\less, supercedes ar\beta\lessc which is now deprecated
+  - the muze.js libraries now have support for dynamic loading of dependencies using muze.require() 
+  - parse errors in templates are correctly shown when using xdebug
+  - Upgraded ace library for chrome >=38 support
+  - added parsing and minimal function support for cache-control request headers, 
+  - added seperate client-side and server-side caching options in the cache dialog
+
+Changes
+  - files are no longer stored in duplicate: the _file entry in the filestore is removed, just the _$defaultnls_file is left.
+  - properties are now quoted by the store instead by the caller of save
+  - added php-unit and a first set of unit-tests
+  - session cookies now use json encoding. To prevent upgrade problems we also renamed the session cookie
+  - added optional cookie encryption for, enabled by default for new installs
+    running 'php www/install/conf/session.conf' will give you a config snippet with a random generated encryption key
+
+Bugfixes
+  - fixed support for sub-method calling of xmlrpc methods ( method name is x.y or x.y.z )
+  - synced function definitions between loaders
+  - fixed typo in error reporting when running an ax import from the commandline
+  - made mfu.save.html overrideable by pinp templates
+  - fixed ar\html\menu menubar links to point to the correct parent
+  - fixed formSecret handling
+  - fixed saving user/groups where the group isn't a pgroup but implements it
+  - set the responseheader in ar/http/Client even when the result of the request is empty
+  - fixed loadtext(): now correctly supports 'current:template.nls' where multiple libraries provide the same template.nls
+  - fixed a parse error in mod_pinp
+  - fixed a usecase where psite would lose it's site url
+  - typo fixes in im/export.wddx
+  - fixed a timing issue in the backend with the fade-in / fade-out code
+  - synced/corrected function definitions between loaders
+  - Fixed buttons in dialog.browse.php
+  - Automatic formsecrets in ar/html/form have been improved
+  - improved handling of relative paths in dialog.browse.php
+  - corrected check for implements user/group it now also support subtypes
+  - added saving of an emailadres in mod_rcas
+  - You don't need add rights to display the userinterface of the add dialog anymore
+  - Private templates in libraries are now actually private, no longer accessiable through the browser.
+
+========================
 Changes in Ariadne 8.3
 ========================
 
@@ -56,8 +111,6 @@ Bugfixes
  - reverted 2 commits which should not have been in the 8.1 release. This broke
 	the backend in some special ways. This was related to multiple select and
 	filtering in the backend and dialogs
-
-+========================
 
 ========================
 Changes in Ariadne 8.1
