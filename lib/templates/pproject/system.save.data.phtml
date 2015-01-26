@@ -1,0 +1,178 @@
+<?php
+	/******************************************************************
+	 system.save.data.phtml				 Muze Ariadne v2.1
+	 ------------------------------------------------------------------
+ 
+	******************************************************************/
+        require_once($this->store->get_config('code')."modules/mod_page.php");
+	if ((($this->arIsNewObject &&
+			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+			$parentobj->CheckLogin("add", $this->type)) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
+			$this->CheckConfig()) {
+		if (!$this->arIsNewObject) {
+			// first make sure that the object is clean (data can only be set via 
+			// the defined interface: $arCallArgs)
+		    $this->data=current($this->get(".","system.get.data.phtml"));
+		} else {
+			$this->data=new object;
+		}
+		$arIsNewObject = $this->arIsNewObject;
+		// unset the properties array, so no properties can be passed to this template.
+		$properties = array();
+
+		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+		} else {
+			if (!$this->data->nls) {
+				$this->data->nls=new object;
+			}
+			$this->data->nls->default=$ARConfig->nls->default;
+
+			if ($ContentEditOptionsPath) {
+				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
+				if (!$arEditorSettings) {
+					$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+					$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
+				}
+			} else {
+				$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+				if (!$arEditorSettings) {
+					$arEditorSettings=$this->call("editor.ini");
+					$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
+				}
+			}
+
+			$this->data->scaffold = $this->getdata('scaffold','none');
+
+			reset($AR->nls->list);
+			$count=0;
+			while (list($key, $value)=each($AR->nls->list)) {
+
+				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
+					if (!$this->data->$key) {
+						debug("$key not yet set","all");
+						$newnlsdata=new object;
+					} else {
+						debug("$key was set","all");
+						$newnlsdata=$this->data->$key;
+					}
+					debug("name found: $name","all");
+					$newnlsdata->name=$name;
+					$properties["name"][$count]["value"]=$newnlsdata->name;
+					$properties["name"][$count]["nls"]=$key;
+					$properties["text"][$count]["value"]=$newnlsdata->name;
+					$properties["text"][$count]["nls"]=$key;
+					$count++;
+					$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
+					if ($arEditorSettings) {
+						if ($arEditorSettings["htmlcleaner"]["enabled"]) {
+							include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
+							$config = $arEditorSettings["htmlcleaner"];
+							$newnlsdata->summary = htmlcleaner::cleanup($newnlsdata->summary, $config);
+						}
+						if ($arEditorSettings["htmltidy"]["enabled"]) {
+							include_once($this->store->get_config("code")."modules/mod_tidy.php");
+							$config=$arEditorSettings["htmltidy"];
+							$config["temp"]=$this->store->get_config("files")."temp/";
+							$config["path"]=$AR->Tidy->path;
+							$tidy=new tidy($config);
+							$result=$tidy->clean($newnlsdata->summary);
+							$newnlsdata->summary=$result["html"];
+						}
+						if ($arEditorSettings["allow_tags_summary"]) {
+							$newnlsdata->summary=strip_tags($newnlsdata->summary, $arEditorSettings["allow_tags_summary"]);
+						}
+					}
+					$properties["text"][$count]["value"]=$newnlsdata->summary;
+					$properties["text"][$count]["nls"]=$key;
+					$count++;
+					if ($this->store->is_supported("fulltext")) {
+						$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
+								$newnlsdata->name." ".
+								$this->html_to_text($newnlsdata->summary)." ".
+								$newnlsdata->title." ".
+								$this->html_to_text($this->getdata("page",$key))
+								);
+						$properties["fulltext"][$count]["nls"]=$key;
+					}
+					$this->data->{$key}=$newnlsdata;
+					$this->data->nls->list[$key]=$value;
+				} else { // clear language values for $key->name if set, keep the rest, just in case.
+					if ($this->data->$key) {
+						unset($this->data->$key->name);
+						unset($this->data->nls->list[$key]);
+					}
+				}
+			}
+			$this->save($properties);
+
+			if (!$this->error) {
+
+				if ( $arIsNewObject && $this->data->scaffold && ar::exists($this->data->scaffold) ) {
+					$scaffold = current(ar::get($this->data->scaffold)->call('system.get.phtml'));
+					if ( $scaffold ) {
+						// copy config from scaffold
+						foreach ($scaffold->data->config->pinp as $ttype => $tdata ) {
+							foreach ( $tdata as $tfunction => $tlanguages ) {
+								foreach( $tlanguages as $tlanguage => $tid ) {
+									if ( $scaffold->data->config->privatetemplates[$ttype][$tfunction]) {
+										$private = true;
+									} else {
+										$private = false;
+									}
+									if ( $scaffold->data->config->templates[$ttype][$tfunction][$tlanguage] ) {
+										$default = true;
+									} else {
+										$default = false;
+									}
+									$template = $scaffold->call('system.get.layout.phtml', array(
+										'type'     => $ttype,
+										'function' => $tfunction,
+										'language' => $tlanguage
+									));
+									$this->call('system.save.layout.phtml', array(
+										'type'     => $ttype,
+										'function' => $tfunction,
+										'language' => $tlanguage,
+										'default'  => $default,
+										'private'  => $private,
+										'template' => $template
+									));
+								}
+							}
+						}
+					}
+
+					// copy all children from scaffold
+					$objects = ar::get($this->data->scaffold)->find('')->limit(0)->order('object.path ASC')->call('system.get.name.phtml');
+					foreach( $objects as $objectpath => $objectname ) {
+						$subpath = substr($objectpath, strlen($this->data->scaffold));
+						ar::get($objectpath)->call('system.copyto.phtml', array(
+							'target' => $this->path.$subpath,
+							'search' => $this->data->scaffold,
+							'replace' => $this->path,
+							'defaultnls' => $this->data->nls->default
+						));
+					}
+				}
+
+
+				unset($this->arIsNewObject);
+				reset($AR->nls->list);
+				$count=0;
+				while (list($key, $value)=each($AR->nls->list)) {
+					/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
+					global $ARBeenHere;
+					$ARBeenHere=array();
+					                
+					$page=$this->getdata("page",$key);
+					if ($page!==false) {
+						$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
+					}
+				}
+				$this->ClearCache();
+			}
+		}
+	}
+?>

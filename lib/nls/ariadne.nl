@@ -146,6 +146,8 @@
 	$ARnls["ariadne:rewrite.references"]            =    "Paden herschrijven";
 	$ARnls["ariadne:rewrite.urls"]                  =    "URLs herschrijven";
 	$ARnls["ariadne:rewriting"]                     =    "Inhoud herschrijven van ";
+	$ARnls["ariadne:scaffold"]                      =    "Raamwerk";
+	$ARnls["ariadne:noscaffold"]                    =    "Geen raamwerk";
 	$ARnls["ariadne:search"]                        =    "Zoek";
 	$ARnls["ariadne:select:created_last_day"]       =    "Afgelopen dag aangemaakt";
 	$ARnls["ariadne:select:created_last_month"]     =    "Afgelopen maand aangemaakt";

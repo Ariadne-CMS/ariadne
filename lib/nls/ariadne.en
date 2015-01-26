@@ -146,6 +146,8 @@
 	$ARnls["ariadne:rewrite.references"]            =    "Rewrite path references";
 	$ARnls["ariadne:rewrite.urls"]                  =    "Rewrite URLs";
 	$ARnls["ariadne:rewriting"]                     =    "Rewriting";
+	$ARnls["ariadne:scaffold"]                      =    "Scaffold";
+	$ARnls["ariadne:noscaffold"]                    =    "No Scaffold";
 	$ARnls["ariadne:search"]                        =    "Search";
 	$ARnls["ariadne:select:created_last_day"]       =    "Created last day";
 	$ARnls["ariadne:select:created_last_month"]     =    "Created last month";
