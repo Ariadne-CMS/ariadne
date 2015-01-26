@@ -1487,7 +1487,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		$config = ($ARConfig->cache[$arTemplate["arLibraryLocalPath"]]) ? $ARConfig->cache[$arTemplate["arLibraryLocalPath"]] : $this->loadConfig($arTemplate["arLibraryLocalPath"]);
-		$arPrivateTemplate = $config->privatetemplates[$type][$function];
+		$arPrivateTemplate = $config->privatetemplates[$arType][$function];
 
 		return array(
 			"arTemplateId" => $arTemplate["arTemplateId"],
@@ -1985,7 +1985,8 @@ debug("loadLibrary: loading cache for $this->path");
 
 							// FIXME: Echte header sturen? Of gewoon niet uitvoeren? Wat is het correcte gedrag?
 							// Return true zorgt er voor dat de default 404 handler het oppikt alsof het template niet bestaat.
-
+							$this->popContext();
+							array_pop($ARCurrent->arCallStack);
 							return true;
 						} else if ($ARCurrent->forcenls || isset($this->data->nls->list[$reqnls])) {
 							// the requested language is available.
