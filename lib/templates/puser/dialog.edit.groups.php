@@ -1,5 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
+	$ARCurrent->allnls = true;
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 		$arLanguage=$this->getdata("arLanguage","none");
 		if (!$arLanguage) {
@@ -39,7 +40,7 @@
 			foreach ($authconfig['groupdirs'] as $groupdir) {
 				$this->find(
 					$groupdir,
-					"object.implements = 'pgroup' and login.value != 'owner' order by name.value",
+					"object.implements = 'pgroup' and login.value != 'owner' order by name.nls.value",
 					"show.option.multiple.phtml",
 					array(
 						"selected"	=> $selected,
