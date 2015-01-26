@@ -375,6 +375,7 @@
 	$ARnls["withoutfiles"]                          =    "Zonder bestanden";
 	$ARnls["withoutgrants"]                         =    "Zonder rechten";
 	$ARnls["withouttemplates"]                      =    "Zonder templates";
+	$ARnls["withoutchildren"]                       =    "Zonder kinderen";
 	$ARnls["wysiwyg"]                               =    "WYSIWYG";
 	$ARnls["year"]                                  =    "Jaar";
 	$ARnls["years"]                                 =    "Jaar";

@@ -375,10 +375,11 @@
 	$ARnls["weeks"]                                 =    "Weeks";
 	$ARnls["width"]                                 =    "Width";
 	$ARnls["winxp"]                                 =    "Windows XP";
-	$ARnls["withoutdata"]                           =    "Without data";
-	$ARnls["withoutfiles"]                          =    "Without files";
-	$ARnls["withoutgrants"]                         =    "Without grants";
-	$ARnls["withouttemplates"]                      =    "Without templates";
+	$ARnls["withoutdata"]                           =    "Without Data";
+	$ARnls["withoutfiles"]                          =    "Without Files";
+	$ARnls["withoutgrants"]                         =    "Without Grants";
+	$ARnls["withouttemplates"]                      =    "Without Templates";
+	$ARnls["withoutchildren"]                       =    "Without Children";
 	$ARnls["wysiwyg"]                               =    "WYSIWYG";
 	$ARnls["year"]                                  =    "Year";
 	$ARnls["years"]                                 =    "Years";
