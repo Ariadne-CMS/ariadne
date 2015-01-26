@@ -4,6 +4,11 @@ include_once($ariadne."/stores/mysqlstore.phtml");
 
 class mysqlstore_install extends mysqlstore {
 
+	public function __construct($path, $config) {
+		parent::__construct($path, $config);
+		$this->engine = $this->detectStorageEngine();
+	}
+
 	function initialize() {
 		echo "initializing mysql store.\n";
 		$queries[0]["msg"]="creating nodes table.";
@@ -315,6 +320,18 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			$result=1;
 		}
 		return $result;
+	}
+
+	protected function detectStorageEngine() {
+		$query = "show engines";
+		$result = $this->store_run_query($query);
+		$aria = false;
+		while( $row = $result->fetch_assoc()){
+			if($row['Engine'] == "Aria") {
+				$aria = true;
+			}
+		}
+		return ($aria?"Aria":"MyISAM");
 	}
 
 }
