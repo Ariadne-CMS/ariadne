@@ -112,23 +112,54 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	}
 	
 	function alter_property($property, $definition) {
+		$table = $this->tbl_prefix."prop_".AddSlashes($property);
+		$tablespec = $this->getTableDefinition($table);
 		foreach ($definition['fields'] as $name => $typedef) {
-			$alter_string="alter table ".$this->tbl_prefix."prop_".AddSlashes($property)." \n";
+			$alter_string="alter table ".$table." ";
+
 			if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
 				$result=0;
 				$this->error="Wrong format for type: $name";
 				error($this->error);
 				break;
-			}	 
-			$alter_string.= " modify AR_".$name."	";
-			$alter_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
-
-			$qresult = $this->store_run_query($alter_string);
-
-			if (!$qresult ) {
-				error($this->error);
 			}
-		}	
+
+			$tname =  "AR_".$name;
+			$currentSpec = $tablespec[$tname];
+			if ( isset($currentSpec) ) {
+				if(
+					( $typedef['type'] == 'string' &&  (
+						$typedef['size'] > $currentSpec['typelength'] ||
+						$typedef['default'] != $currentSpec['default']
+						)
+					) ||
+					( $typedef['type'] == 'number' &&  (
+						isset($typedef['default']) && $typedef['default'] != $currentSpec['default']
+						)
+					) ||
+					( $typedef['type'] == 'boolean' &&  (
+						$typedef['default'] != $currentSpec['default']
+						)
+					)
+				) {
+
+					$alter_string.= " modify ".$tname." ";
+					$alter_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+
+					$qresult = $this->store_run_query($alter_string);
+					print $alter_string;
+
+					if (!$qresult ) {
+						error($this->error);
+					}
+				}
+			} else {
+				// field is new
+				$alter_string.= " add ".$tname." ";
+				$alter_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+				print $alter_string ."\n";
+			}
+		}
 	}
 
 
@@ -332,6 +363,52 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			}
 		}
 		return ($aria?"Aria":"MyISAM");
+	}
+
+	protected function getTableDefinition($table){
+		$result = array();
+		$qresult = $this->store_run_query('show columns from '.$table);
+		while($qresult && $row = $qresult->fetch_assoc()) {
+			$row = array_change_key_case ( $row, CASE_LOWER);
+			$rowresult['field']   = $row['field'];
+			$rowresult['extra']   = $row['extra'];
+			$rowresult['null']    = $row['null'];
+			$rowresult['default'] = $row['default'];
+
+			// parse type
+			preg_match('/([a-z]+)(\(([0-9]+)\))?/i',$row['type'],$parsed);
+			$rowresult['type'] = $parsed[1];
+			if(isset($parsed[3]) && $parsed[3] !== '' ) {
+				$rowresult['typelength'] = $parsed[3];
+			}
+
+			$result[$row['field']] = $rowresult;
+		}
+		return $result;
+
+	}
+
+	/*
+	 * update ndoes table to minimal path length
+	 */
+	public function upgradeNodes() {
+		$tablespec = $this->getTableDefinition($this->tbl_prefix.'nodes');
+		foreach($tablespec as $row) {
+			if($row['field'] == 'path' || $row['field'] == 'parent') {
+				$length = $row['typelength'];
+				if(
+					( is_numeric($length) && $length >= 127) && // sanity check
+					( $length <= MAX_PATH_LENGTH ) // do we need a upgrade ?
+				) {
+					$query = 'alter table `'.$this->tbl_prefix.'nodes` CHANGE `'.$row['field'].'` `'.$row['field'].'` varchar('.(MAX_PATH_LENGTH+1).')  not null default ""';
+					print $query ."\n";
+					$upresult = $this->store_run_query($query);
+					if($upresult) {
+						print "Success\n";
+					}
+				}
+			}
+		}
 	}
 
 }
