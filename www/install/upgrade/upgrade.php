@@ -186,6 +186,12 @@
 							"operation" => "9.0/mogrify.system.folders.php",
 							"newversion" => '9.0-rc1.5'
 						));
+		case '9.0-rc1.5':
+				array_push($todo, array(
+							"description" => "Mogrify dirs in system folder",
+							"operation" => "9.0/install.configfiles.php",
+							"newversion" => '9.0-rc1.6'
+						));
 	}
 
 

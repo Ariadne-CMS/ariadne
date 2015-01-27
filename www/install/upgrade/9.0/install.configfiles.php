@@ -16,6 +16,13 @@
 	$inst_store = $ax_config["dbms"]."store";
 	$axstore=new $inst_store("", $ax_config);
 
+	// test if the base lib is available, die if not
+	if(!ar::exists('/system/lib/muze/cms/base/')) {
+		echo "muze libs are not yet available, refusing upgrade\n";
+		echo "Please manual import  /system/lib/muze/ from www/install/packages/base.ax and continue upgrade after that\n";
+		die("could not complete upgrade");
+	}
+
 	function importTemplate($cpath,$args){
 		global $store,$axstore;
 		$templatesrc = current($axstore->call('system.get.template.php',$args, $axstore->get($cpath)));
