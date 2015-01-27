@@ -413,11 +413,13 @@ abstract class store {
 	{
 		switch($name)
 		{
-		case "implements":
+			case "implements":
 				return $this->AR_implements($arguments[0],$arguments[1]);
-				break;
+			break;
 			default:
+				debug("Called unknown function $name on store","store");
 				return false;
+
 		}
 	}
 
