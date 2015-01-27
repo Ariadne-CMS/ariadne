@@ -150,7 +150,7 @@
 				array_push($todo, array(
 							"description" => "Remove duplicate content in filestore by removing the non-nls version of files",
 							"operation" => "8.4/upgrade.files.php",
-							"newversion" => "8.4-b1"
+							"newversion" => "9.0-rc1.1"
 							));
 		/*
 		case '8.4-b1':
@@ -160,12 +160,32 @@
 							"newversion" => "8.4"
 							));
 		*/
-		case '8.4-b1':
+		case '8.4-b1': // because of previous released upgrade scripts
+		case '9.0-rc1.1':
 				array_push($todo, array(
 							"description" => "Installing cache store",
 							"operation" => "9.0/install.cache_store.php",
-							"newversion" => "8.4-b2"
-							));
+							"newversion" => '9.0-rc1.2'
+						));
+		case '8.4-b2': // because of previous released upgrade scripts
+		case '9.0-rc1.2':
+				array_push($todo, array(
+							"description" => "Installing default libs",
+							"operation" => "9.0/install.muze.libs.php",
+							"newversion" => '9.0-rc1.3'
+						));
+		case '9.0-rc1.3':
+				array_push($todo, array(
+							"description" => "Install configurations files",
+							"operation" => "9.0/install.config.php",
+							"newversion" => '9.0-rc1.4'
+						));
+		case '9.0-rc1.4':
+				array_push($todo, array(
+							"description" => "Mogrify dirs in system folder",
+							"operation" => "9.0/mogrify.system.folders.php",
+							"newversion" => '9.0-rc1.5'
+						));
 	}
 
 
