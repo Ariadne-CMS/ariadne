@@ -332,4 +332,51 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 		return $result;
 	}
 
+
+	protected function getTableDefinition($table){
+		$result = array();
+		$qresult = $this->store_run_query("SELECT column_name, column_default, is_nullable, data_type, character_maximum_length  FROM information_schema.columns WHERE table_name ='$table'");
+		while($qresult && $row = pg_fetch_assoc($qresult)) {
+			$rowresult = array();
+
+			$row = array_change_key_case ( $row, CASE_LOWER);
+			$rowresult['field']   = $row['column_name'];
+			$rowresult['extra']   = $row['extra'];
+			$rowresult['null']    = $row['is_nullable'];
+			$rowresult['default'] = $row['default'];
+			$rowresult['type']    = $row["data_type"];
+
+			// parse type
+			if($row['character_maximum_length'] != null){
+				$rowresult['typelength'] = $row['character_maximum_length'];
+			}
+
+			$result[$rowresult['field']] = $rowresult;
+		}
+		return $result;
+
+	}
+	public function upgradeNodes() {
+		$tablespec = $this->getTableDefinition($this->tbl_prefix.'nodes');
+		foreach($tablespec as $row) {
+			if($row['field'] == 'path' || $row['field'] == 'parent') {
+				$length = $row['typelength'];
+				if(
+					( is_numeric($length) && $length >= 127) && // sanity check
+					( $length <= MAX_PATH_LENGTH ) // do we need a upgrade ?
+				) {
+					$typestr    = "varchar(".(MAX_PATH_LENGTH+1).") ";
+					$query = 'alter table '.$this->tbl_prefix.'nodes alter '.$row['field'].' type  varchar('.(MAX_PATH_LENGTH+1).')';
+					print $query ."\n";
+					$upresult = $this->store_run_query($query);
+					if($upresult) {
+						print "Success\n";
+					}
+				}
+			}
+		}
+
+	}
+
+
 }
