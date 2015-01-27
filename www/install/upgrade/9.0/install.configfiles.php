@@ -1,0 +1,54 @@
+<pre>
+<?php
+	$ARCurrent->nolangcheck = true;
+	$ARCurrent->options["verbose"]=true;
+	$ARCurrent->AXAction == "import";
+
+	// become admin
+	$AR->user=new object;
+	$AR->user->data=new object;
+	$AR->user->data->login=$ARLogin="admin";
+
+	$ax_config["writeable"]=false;
+	$ax_config["database"]="../packages/base.ax";
+	echo "ax file (".$ax_config["database"].")\n";
+
+	$inst_store = $ax_config["dbms"]."store";
+	$axstore=new $inst_store("", $ax_config);
+
+	function importTemplate($cpath,$args){
+		global $store,$axstore;
+		$templatesrc = current($axstore->call('system.get.template.php',$args, $axstore->get($cpath)));
+		$templatedst = current(  $store->call('system.get.template.php',$args,   $store->get($cpath)));
+
+		if(!ar_error::isError($templatesrc)) {
+			if(ar_error::isError($templatedst)) { // error means no template found
+				// save template
+				$args['template'] = $templatesrc;
+				ar::get($cpath)->call('system.save.layout.phtml',$args);
+			} else {
+				print "Already a configfile defined on $cpath, please merge the following in your configfile ".$args['function']."\n";
+				print $templatesrc."\n";
+			}
+		} else {
+			print "Error src template not found on $cpath \n";
+		}
+	}
+
+	$args = array ('type' => 'pdir',     'function' => 'config.ini','language' => 'any');
+	$cpath = '/';
+	importTemplate($cpath,$args);
+
+	$args = array ('type' => 'pproject', 'function' => 'config.ini','language' => 'any');
+	$cpath = '/projects/';
+	importTemplate($cpath,$args);
+
+	$args = array ('type' => 'pdir',     'function' => 'config.ini','language' => 'any');
+	$cpath = '/system/';
+	importTemplate($cpath,$args);
+
+	$args = array ('type' => 'pobject',  'function' => 'typetree.ini','language' => 'any');
+	$cpath = '/system/';
+	importTemplate($cpath,$args);
+?>
+</pre>
