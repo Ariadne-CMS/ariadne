@@ -192,6 +192,12 @@
 							"operation" => "9.0/install.configfiles.php",
 							"newversion" => '9.0-rc1.6'
 						));
+		case '9.0-rc1.6':
+				array_push($todo, array(
+							"description" => "Update properties and path length",
+							"operation" => "9.0/update.database.php",
+							"newversion" => '9.0-rc1.7'
+						));
 	}
 
 
