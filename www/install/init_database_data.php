@@ -65,7 +65,7 @@
 			'fields' => array(
 				'id' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 128
 				),
 				'duration' => array(
 					'type' => 'number',
@@ -78,7 +78,7 @@
 			'fields' => array(
 				'value' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 128
 				)
 			)
 		);
@@ -87,7 +87,7 @@
 			'fields' => array(
 				'login' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 128
 				)
 			)
 		);
@@ -104,7 +104,7 @@
 				),
 				'muser' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 128
 				)
 			),
 			'indexes' => array(
@@ -118,7 +118,7 @@
 			'fields' => array(
 				'value' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 128
 				)
 			)
 		);
@@ -127,7 +127,7 @@
 			'fields' => array(
 				'name' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 64
 				),
 				'value' => array(
 					'type' => 'string',
@@ -280,7 +280,7 @@
 			'fields' => array(
 				'name' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 64
 				),
 				'value' => array(
 					'type' => 'string',
@@ -293,7 +293,7 @@
 			'fields' => array(
 				'name' => array(
 					'type' => 'string',
-					'size' => 32
+					'size' => 64
 				),
 				'value' => array(
 					'type' => 'string',
