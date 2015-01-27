@@ -14,6 +14,7 @@ function mogrifyDir($path,$type) {
 mogrifyDir('/system/profiles/','pdir.profiles');
 mogrifyDir('/system/users/',   'pdir.users');
 mogrifyDir('/system/groups/',  'pdir.groups');
+mogrifyDir('/system',  'pdir.system');
 ?>
 
 </pre>
