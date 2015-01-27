@@ -61,4 +61,7 @@ class mysql_workspacesstore_install extends mysql_workspacesstore {
 	public function create_property($property, $definition) {
 		return $this->mysqlstore->create_property($property, $definition);
 	}
+	public function alter_property($property, $definition) {
+		return $this->mysqlstore->create_property($property, $definition);
+	}
 }
