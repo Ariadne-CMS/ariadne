@@ -40,5 +40,23 @@
 		echo $error;
 	}
 
+	$ax_config["writeable"]=false;
+	$ax_config["database"]="packages/madcat.ax";
+	// echo "ax file (".$ax_config["database"].")\n";
+	set_time_limit(0);
+	$inst_store = $ax_config["dbms"]."store";
+	$axstore=new $inst_store("", $ax_config);
+	if (!$axstore->error) {
+		$ARCurrent->importStore=&$store;
+		$args="srcpath=/&destpath=/";
+		$axstore->call("system.export.phtml", $args,
+			$axstore->get("/"));
+		$error=$axstore->error;
+		$axstore->close();
+	} else {
+		$error=$axstore->error;
+		echo $error;
+	}
+
 	$store->close();
 ?>
