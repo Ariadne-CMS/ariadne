@@ -67,6 +67,34 @@
 			$context = ar::context()->getObject();
 			return $context->loadLibrary( $name, $library );
 		}
+
+		public static function loaded( $name, $library = null ) {
+			global $ARConfig;
+			// return if a library with that name is loaded
+			// if library is set will also check if it is the same path
+			$context = ar::context()->getObject();
+			$path = $context->path;
+			$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $context->loadConfig($path);
+            $libraryPath = $config->libraries[$name] ?: null;
+			if ( isset($library) ) {
+				return ($libraryPath == $library );
+			} else {
+				return $libraryPath;
+			}
+		}
+
+		public static function exists( $template ) {
+			// will check if a template with the given name is available to call
+			// template has format "library:type::function"
+			// FIXME: allow search for specific nls as well
+			$context = ar::context()->getObject();
+			$templateData = $context->getPinpTemplate($template);
+			if ( !$templateData || !$templateData['arTemplateId'] ) {
+				return false;
+			} else {
+				return $templateData;
+			}
+		}
 	}
 
-	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback', 'load'));
+	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback', 'load', 'loaded', 'exists'));

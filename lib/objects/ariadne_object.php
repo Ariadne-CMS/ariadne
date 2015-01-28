@@ -1608,7 +1608,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $this->mergeLibraryConfig( $defaultLibraryName, $defaults );
 	}
 
-	protected function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
+	public function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary","class");
 		$result = array();
