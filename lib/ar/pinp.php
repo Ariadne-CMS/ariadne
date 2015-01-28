@@ -68,18 +68,22 @@
 			return $context->loadLibrary( $name, $library );
 		}
 
-		public static function loaded( $name, $library = null ) {
+		public static function loaded( $name = null, $library = null ) {
 			global $ARConfig;
 			// return if a library with that name is loaded
 			// if library is set will also check if it is the same path
 			$context = ar::context()->getObject();
 			$path = $context->path;
 			$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $context->loadConfig($path);
-            $libraryPath = $config->libraries[$name] ?: null;
-			if ( isset($library) ) {
-				return ($libraryPath == $library );
+			if ( isset($name) ) {
+	            $libraryPath = $config->libraries[$name] ?: null;
+				if ( isset($library) ) {
+					return ($libraryPath == $library );
+				} else {
+					return $libraryPath;
+				}
 			} else {
-				return $libraryPath;
+				return $config->libraries;
 			}
 		}
 
