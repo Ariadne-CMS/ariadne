@@ -54,7 +54,7 @@
 						// don't just kill it, it may be from another ariadne installation
 						if ($data['timestamp']<(time()-86400)) {
 							// but do kill it if it's older than one day
-							unset($cookie[$sessionid]);
+							unset($cookies[$sessionid]);
 							setcookie("ARSessionCookie[".$sessionid."]",null);
 						}
 					}
