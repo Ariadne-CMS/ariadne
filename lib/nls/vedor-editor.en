@@ -71,6 +71,7 @@
 	$ARnls["vd.editor:newspaper"]                   =    "Newspaper";
 	$ARnls["vd.editor:nofollow"]                    =    "Nofollow";
 	$ARnls["vd.editor:noindex"]                     =    "Noindex";
+	$ARnls["vd.editor:follow-link"]                 =    "Follow";
 	$ARnls["vd.editor:none"]                        =    "None";
 	$ARnls["vd.editor:ol"]                          =    "Ordered List";
 	$ARnls["vd.editor:original"]                    =    "Original";

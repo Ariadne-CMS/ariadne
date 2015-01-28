@@ -71,6 +71,7 @@
 	$ARnls["vd.editor:newspaper"]                   =    "Krant";
 	$ARnls["vd.editor:nofollow"]                    =    "Nofollow";
 	$ARnls["vd.editor:noindex"]                     =    "Noindex";
+	$ARnls["vd.editor:follow-link"]                 =    "Volg";
 	$ARnls["vd.editor:none"]                        =    "Geen";
 	$ARnls["vd.editor:ol"]                          =    "Gesorteerde lijst";
 	$ARnls["vd.editor:original"]                    =    "Origineel";

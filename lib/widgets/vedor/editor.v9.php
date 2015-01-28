@@ -810,23 +810,7 @@
 
 			var arguments='';
 			if (!isDirty()) {
-				// alert('No changes found, page is not saved.');
-				if (confirm('<?php echo $ARnls['vd.editor:confirm_save_all']; ?>')) {
-					var donelist=new Array();
-					var fields=arFieldList;
-					if (fields && fields.length) {
-						for (var i=0; i<fields.length; i++) {
-							if (!donelist[fields[i].path+':'+fields[i].name]) {
-								donelist[fields[i].path+':'+fields[i].name]=true;
-								var fieldEl = vdEditorCanvas.document.getElementById(fields[i].fieldId);
-								if ( fieldEl && fieldEl.contenteditable ) {
-									arguments+='changes['+escape(fields[i].path)+']'+fields[i].name+'='+vdEscape(getValue(fields[i].fieldId))+'&';
-								}
-							}
-						}
-						clearDirty();
-					}
-				}
+				return; // nothing to save
 			} else {
 				while (isDirty()) {
 					if (field = getDirtyField()) {
@@ -3485,6 +3469,52 @@
 		},
 		"vedor-hyperlink-insert" : function(el) {
 			VD_HYPERLINK_onclick();
+		},
+		"vedor-follow-link" : function(el) {
+			var oSel = vdSelectionState.get();
+			var control = vdSelectionState.getControlNode(oSel);
+			if (control) {
+				oElement=control;
+				oParent=oElement.parentNode;
+			} else {
+				if( oSel.select ) { // IE only
+					var htmlText = vdSelection.getHTMLText(oSel);
+					if (htmlText.substr(htmlText.length-4, 4)=='<BR>') {
+						// BR included in selection as last element, remove it, it has
+						// dangerous effects on the hyperlink command in IE
+						oSel.moveEnd('character',-1);
+						oSel.select();
+					}
+					if (htmlText.substr(0,4)=='<BR>') {
+						// idem when its the first character
+						oSel.moveStart('character',1);
+						oSel.select();
+					}
+				}
+				oParent = vdSelection.parentNode(oSel);
+			}
+			while ( oParent && oParent.tagName != 'A' ) {
+				oParent = oParent.parentNode;
+			}
+			if ( oParent ) {
+				var arType = oParent.getAttribute('ar:type');
+				if (arType && arType == 'internal') {
+					var newLocation = oParent.getAttribute('href') + '<?php echo $wgHTMLEditTemplate.$getargs; ?>';
+					if (isDirty() && doConfirmSave()) {
+						var newLocation = oParent.getAttribute('href') + '<?php echo $wgHTMLEditManageTemplate.$getargs; ?>';
+						SAVE_onclick(newLocation);
+					} else {
+						if ( isDirty() ) {
+							clearDirty(); // prevent onbeforeunload to ask again, since you already declined saving in doConfirmSave
+						}
+						vdEditPane.contentWindow.document.location=newLocation;
+					}
+				} else if ( arType && arType == 'external' ) {
+					window.location.href = oParent.getAttribute('href');
+				} else {
+					muze.event.fire(oParent, 'dblclick');
+				}
+			}
 		},
 		"vedor-insert-image" : function(el) {
 			VD_IMAGE_onclick();
