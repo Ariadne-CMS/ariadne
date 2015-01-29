@@ -74,9 +74,9 @@
 			// if library is set will also check if it is the same path
 			$context = ar::context()->getObject();
 			$path = $context->path;
-			$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $context->loadConfig($path);
+			$config = $ARConfig->cache[$path] ?: $context->loadConfig($path);
 			if ( isset($name) ) {
-	            $libraryPath = $config->libraries[$name] ?: null;
+				$libraryPath = $config->libraries[$name] ?: null;
 				if ( isset($library) ) {
 					return ($libraryPath == $library );
 				} else {
