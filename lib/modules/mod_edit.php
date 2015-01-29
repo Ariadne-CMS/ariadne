@@ -269,10 +269,10 @@
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<span class='editable' id='".$prefix.$id."' $vedorVars title='$title' $extra>";
-				echo edit::fixEditSource($var);
+				echo edit::fixEditSource(page::parse($var));
 				echo "</span>";
 			} else if (!edit::isEmpty($var)) {
-				echo page::stripARNameSpace(edit::fixSource($var));
+				echo page::stripARNameSpace(edit::fixSource(page::parse($var)));
 			}
 			return $id;
 		}
@@ -286,10 +286,10 @@
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<span class='editable text-only' id='".$prefix.$id."' $vedorVars title='$title' $extra>";
-				echo $var;
+				echo page::parse($var);
 				echo "</span>";
 			} else if (!edit::isEmpty($var)) {
-				echo $var;
+				echo page::parse($var);
 			}
 			return $id;
 		}
@@ -303,10 +303,10 @@
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<div class='editable' id='".$prefix.$id."' $vedorVars title='$title' $extra>";
-				echo edit::fixEditSource($var);
+				echo edit::fixEditSource(page::parse($var));
 				echo "</div>";
 			} else if (!edit::isEmpty($var)) {
-				echo page::stripARNameSpace(edit::fixSource($var));
+				echo page::stripARNameSpace(edit::fixSource(page::parse($var)));
 			}
 			return $id;
 		}
