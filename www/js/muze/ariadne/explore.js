@@ -1016,7 +1016,11 @@ muze.namespace( 'muze.ariadne.explore.viewpane', function() {
 			muze.ariadne.registry.set('direction', event.dir);
 		},
 		onClick : function(event) {
-			if ( event.target && event.target.classList.contains('explore_link') ) {
+			target = event.target;
+			while ( target && target.tagName != 'A' ) {
+				target = target.parentElement;
+			}
+			if ( target && target.classList.contains('explore_link') ) {
 				YAHOO.util.Event.preventDefault(event);
 			}
 		},

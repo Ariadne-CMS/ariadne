@@ -142,10 +142,7 @@ This adds filter options to the browse dialog, unfinished code so removed for no
 			//YAHOO.util.Event.addListener('archildren', 'click', muze.ariadne.explore.viewpane.onClick);
 			muze.event.attach( document.body, 'click', function(evt) {
 				evt = muze.event.get(evt);
-				var target = muze.event.target(evt);
-				if ( target.tagName != 'A' && target.tagName!='IMG' ) {
-					muze.ariadne.explore.viewpane.onClick(evt);
-				}
+				muze.ariadne.explore.viewpane.onClick(evt);
 			});
 			YAHOO.util.Event.addListener('archildren', 'selected', muze.ariadne.explore.viewpane.onSelected);
 			YAHOO.util.Event.addListener('archildren', 'clearselection', muze.ariadne.explore.viewpane.unselectItem);
