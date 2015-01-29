@@ -31,6 +31,7 @@
 	$ARnls["vd.editor:edit"]                        =    "Edit";
 	$ARnls["vd.editor:edit_img"]                    =    "Edit image";
 	$ARnls["vd.editor:exit_skip_save"]              =    "You have made changes to this page, if you leave these changes will not be saved.";
+	$ARnls["vd.editor:follow-link"]                 =    "Follow";
 	$ARnls["vd.editor:formatted"]                   =    "Formatted";
 	$ARnls["vd.editor:gadget"]                      =    "Gadget";
 	$ARnls["vd.editor:gallery"]                     =    "Gallery";
@@ -71,7 +72,6 @@
 	$ARnls["vd.editor:newspaper"]                   =    "Newspaper";
 	$ARnls["vd.editor:nofollow"]                    =    "Nofollow";
 	$ARnls["vd.editor:noindex"]                     =    "Noindex";
-	$ARnls["vd.editor:follow-link"]                 =    "Follow";
 	$ARnls["vd.editor:none"]                        =    "None";
 	$ARnls["vd.editor:ol"]                          =    "Ordered List";
 	$ARnls["vd.editor:original"]                    =    "Original";

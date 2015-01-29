@@ -31,6 +31,7 @@
 	$ARnls["vd.editor:edit"]                        =    "Bewerk";
 	$ARnls["vd.editor:edit_img"]                    =    "Bewerk afbeelding";
 	$ARnls["vd.editor:exit_skip_save"]              =    "Als u deze pagina verlaat worden uw wijzigingen niet bewaard.";
+	$ARnls["vd.editor:follow-link"]                 =    "Volg";
 	$ARnls["vd.editor:formatted"]                   =    "Geformateerd";
 	$ARnls["vd.editor:gadget"]                      =    "Gadget";
 	$ARnls["vd.editor:gallery"]                     =    "Gallery";
@@ -71,7 +72,6 @@
 	$ARnls["vd.editor:newspaper"]                   =    "Krant";
 	$ARnls["vd.editor:nofollow"]                    =    "Nofollow";
 	$ARnls["vd.editor:noindex"]                     =    "Noindex";
-	$ARnls["vd.editor:follow-link"]                 =    "Volg";
 	$ARnls["vd.editor:none"]                        =    "Geen";
 	$ARnls["vd.editor:ol"]                          =    "Gesorteerde lijst";
 	$ARnls["vd.editor:original"]                    =    "Origineel";
