@@ -37,7 +37,11 @@ script:
 
 notifications:
     email: false
-    irc: "open.ircnet.org#ariadne"
+    irc:
+      channels:
+        - "open.ircnet.org#ariadne"
+      on_success: change
+      on_failure: always
 
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
