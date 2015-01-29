@@ -1,0 +1,7 @@
+<?php
+	$ARCurrent->nolangcheck=true;
+	if ($linknls=='none') {
+		$linksnls='';
+	}
+	echo $this->make_url($linkpath, $linknls);
+?>
