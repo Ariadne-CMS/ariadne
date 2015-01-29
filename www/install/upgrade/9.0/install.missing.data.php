@@ -52,5 +52,7 @@ foreach($paths as $path){
 	importMissingData($path);
 }
 
+ar::get('/system/newspaper/scenarios/')->ls()->call('system.save.data.phtml');
+
 ?>
 </pre>
