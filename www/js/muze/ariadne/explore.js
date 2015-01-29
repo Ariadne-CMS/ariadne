@@ -1016,30 +1016,9 @@ muze.namespace( 'muze.ariadne.explore.viewpane', function() {
 			muze.ariadne.registry.set('direction', event.dir);
 		},
 		onClick : function(event) {
-			//YAHOO.util.Event.preventDefault(event);
-			return;
-			if (!event.ctrlKey) {
-				muze.ariadne.explore.viewpane.unselectItem();
+			if ( event.target && event.target.classList.contains('explore_link') ) {
+				YAHOO.util.Event.preventDefault(event);
 			}
-			var target = YAHOO.util.Event.getTarget(event);
-			while (target.id != "viewpane") {
-				if (YAHOO.util.Dom.hasClass(target, 'explore_item')) {
-					if (YAHOO.util.Dom.hasClass(target, 'selected')) {
-						YAHOO.util.Dom.removeClass(target, 'selected');
-					} else {
-						muze.ariadne.explore.viewpane.selectItem(target);
-					}
-					return;
-				}
-				if (target.parentNode) {
-					target = target.parentNode;
-				} else {
-					break;
-				}
-			}
-			var item = new Object();
-			item.path = muze.ariadne.explore.viewpane.path;
-			muze.ariadne.explore.viewpane.onSelectItem(item);
 		},
 		setviewmode : function(viewmode) {
 			muze.ariadne.registry.set('viewmode', viewmode);
