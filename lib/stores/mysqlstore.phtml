@@ -39,8 +39,32 @@ class mysqlstore extends store{
 	protected $database;
 	protected $cachedQueries;
 	protected $filestores;
+	protected static $connections = array();
 	
 	public $total = 0;
+
+	protected function getConnection($host,$user,$password,$database) {
+		// get connection
+		if (isset(self::$connections[$host][$user][$db])) {
+			// cached connection available
+			$dbh = self::$connections[$host][$user][$db];
+		} else {
+			$dbh = new mysqli($host, $user, $password, $database);
+			if ($dbh->connect_errno) {
+				die("Error " . $this->dbh->connect_error);
+			}
+			self::$connections[$host][$user][$db] = $dbh;
+		}
+
+		if (!$dbh->ping()) {
+			$dbh->close();
+			unset(self::$connections[$host][$user][$db]);
+			$dbh = $this->getConnection($host,$user,$password,$database);
+			self::$connections[$host][$user][$db] = $dbh;
+		}
+
+		return $dbh;
+	}
 
 	public function __construct($path, $config) {
 	/**********************************************************************************
@@ -56,19 +80,8 @@ class mysqlstore extends store{
 
 	 **********************************************************************************/
 		$this->error="";
-		// test if the connection is still viable, and if not reconnect
-		$this->dbh = new mysqli('p:'.$config['host'], $config["user"], $config["password"], $config["database"]);
-		if ($this->dbh->connect_errno) {
-			die("Error " . $this->dbh->connect_error);
-		}
+		$this->dbh = $this->getConnection('p:'.$config['host'], $config["user"], $config["password"], $config["database"]);
 
-		if( !$this->dbh->ping() ){
-			$this->dbh->close();
-			$this->dbh = new mysqli('p:'.$config['host'], $config["user"], $config["password"], $config["database"]);
-			if ($this->dbh->connect_errno) {
-				die("Error " . $this->dbh->connect_error);
-			}
-		}
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
@@ -87,8 +100,7 @@ class mysqlstore extends store{
 		
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
-		$this->mod_lock=new mysqllock($config["prefix"]);
-		$this->mod_lock->connect($config['host'], $config["user"], $password, $config['database']);
+		$this->mod_lock=new mysqllock($config["prefix"],$this->dbh);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 
 		if (isset($config['filestores']) && is_array($config['filestores'])) {

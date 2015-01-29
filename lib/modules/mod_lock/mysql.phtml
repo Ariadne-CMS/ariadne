@@ -24,9 +24,10 @@
 
 class mysqllock {
 
-	function __construct($tbl_prefix="") {
+	function __construct($tbl_prefix="", $dbh) {
 		debug("mysqllock::mysqllock($tbl_prefix)");
 		  $this->tbl_prefix=$tbl_prefix;
+		  $this->dbh = $dbh;
 		  debug("mysqllock::mysqllock end","all");
 	}
 
