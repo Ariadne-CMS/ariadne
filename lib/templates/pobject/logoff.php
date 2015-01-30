@@ -1,4 +1,6 @@
 <?php
+
+
 $pageStart = '
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -10,9 +12,9 @@ $pageStart = '
 <body id="login_panel">
 	<div id="centered">
 		<div id="header">
-			<?php
-				ar::call('ariadne.logo.html');
-			?>
+';
+
+$pageSubHeader = '
 			Logged off<img class="typeicon" src="' . $AR->dir->www . 'images/icons/large/grants.png" alt="Login">
 		</div>
 		<div id="sectiondata" class="nosections notfixed">
@@ -48,6 +50,8 @@ if ($this->CheckLogin("read")) {
       $ARCurrent->session->kill();
       unset($ARCurrent->session);
       echo $pageStart;
+      ar::call('ariadne.logo.html');
+      echo $pageSubHeader;
 
       // Add nls for this phrase
       echo "Session closed for ".$AR->user->data->name;
