@@ -196,8 +196,14 @@
 				array_push($todo, array(
 							"description" => "Update properties and path length",
 							"operation" => "9.0/update.database.php",
-							"newversion" => '9.0-rc1.7'
+							"newversion" => '9.0-rc1'
 						));
+		case '9.0-rc1.7':
+				array_push($todo, array(
+							"description" => "Bumping revision to 9.0-rc1",
+							"operation" => "all/dummy.php",
+							"newversion" => "9.0-rc1"
+							));
 	}
 
 
