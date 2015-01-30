@@ -94,7 +94,15 @@ TH,TD,LI,P,BODY,DIV {
 }
 
 #explore_top {
-	background:url("../images/sprite.png") repeat-x 0 0;
+	xbackground:url("../images/sprite.png") repeat-x 0 0;
+    background: #eeeeee; /* Old browsers */
+    background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#cccccc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
 	height: 32px;
 	width: 100%;
 	border-bottom: 1px solid #808080;
@@ -102,6 +110,7 @@ TH,TD,LI,P,BODY,DIV {
 
 #explore_top .logo {
 	width: 220px;
+	height: 30px;
 }
 
 #explore_top .logo a, #explore_top .logo a:visited, #explore_top .logo a img {
@@ -113,26 +122,28 @@ TH,TD,LI,P,BODY,DIV {
 
 
 #explore_top .logo img {
+	max-height: 29px;
 	margin-top: 2px;
-	margin-left: 11px;
+	margin-left: 5px;
 }
 
 #explore_top .ariadne {
-	font-weight: bold;
-	font-family: arial, verdana;
+	font-weight: normal;
+	font-family: 'Montserrat', arial, verdana;
 	font-size: 14px;
 	position: absolute;
 	top: 5px;
-	left: 42px;
+	left: 58px;
 }
 
 #explore_top .ariadne_sub {
 	font-weight: normal;
-	font-size: 10px;
-	font-family: verdana,helvetica, arial, sans-serif;
+	font-size: 11px;
+	font-family: arial, sans-serif;
 	position: absolute;
 	top: 17px;
-	left: 50px;
+	left: 58px;
+	color: #de5227;
 }
 
 #explore_tree #treecontrol {
@@ -191,6 +202,7 @@ TH,TD,LI,P,BODY,DIV {
  */
 
 #explore_menubar {
+	background: none;
 	visibility: visible;
 	margin-right: 0px;
 	height: 32px;

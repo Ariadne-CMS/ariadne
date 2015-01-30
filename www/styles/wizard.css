@@ -21,7 +21,15 @@ a img {
 #header {
 	height: 32px;
 	width: 100%;
-	background:url("../images/sprite.png") repeat-x 0 0;
+	xbackground:url("../images/sprite.png") repeat-x 0 0;
+    background: #eeeeee; /* Old browsers */
+    background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#cccccc)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #eeeeee 0%,#cccccc 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #eeeeee 0%,#cccccc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
 	border-bottom: 1px solid #808080;	
 	text-align: right;
 	vertical-align: middle;
@@ -39,14 +47,20 @@ a img {
 }
 #header .logo {
 	width: 220px;
+	height: 30px;
 	float: left;
 	text-align: left;
 	color: black;
 	text-decoration: none;
 }
+#header .logo a {
+	color: black;
+	text-decoration: none;
+}
 #header .logo img {
-	margin-top: 4px;
-	margin-left: 11px;
+	margin-top: 2px;
+	margin-left: 5px;
+	max-height: 29px;
 	border: 0px;
 }
 #header .ariadne {
@@ -55,7 +69,7 @@ a img {
 	font-size: 14px;
 	position: absolute;
 	top: 5px;
-	left: 42px;
+	left: 58px;
 }
 #header .ariadne_sub {
 	font-weight: normal;
@@ -63,7 +77,8 @@ a img {
 	font-family: verdana,helvetica, arial, sans-serif;
 	position: absolute;
 	top: 17px;
-	left: 50px;
+	left: 58px;
+	color: #de5227;
 }
 #sections {
 	position: fixed;
@@ -133,6 +148,8 @@ a img {
 	padding-right: 20px;
 	padding-top: 10px;
 	padding-bottom: 10px;
+	border: 1px solid #aaa;
+	margin-bottom: 10px;
 }
 #tabsdata label {
 	display: block;
