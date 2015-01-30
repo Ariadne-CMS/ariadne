@@ -86,14 +86,8 @@
 		);
 
 
+		ar::call('ariadne.logo.html');
 	?>
-		<div class="logo">
-			<a href="http://www.ariadne-cms.org">
-				<img src="<?php echo $wwwroot;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
-				<span class="ariadne">Ariadne</span>
-				<span class="ariadne_sub">Web Application Server</span>
-			</a>
-		</div>
 		<?php
 			echo yui::yui_menuitems($menuitems, "yuimenubar", "explore_menubar")."\n";
 		?>

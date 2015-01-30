@@ -18,11 +18,10 @@
 <body id="login_panel">
 	<div id="centered">
 		<div id="header">
-			<div class="logo">
-				<img src="<?php echo $AR->dir->www;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
-				<span class="ariadne">Ariadne</span>
-				<span class="ariadne_sub">Web Application Server</span>
-			</div><?php echo $ARnls["ariadne:selectlanguage"]; ?><img class="typeicon" src="<?php echo $AR->dir->images.'icons/large/language.png'; ?>" alt="<?php echo $ARnls["selectlanguage"]; ?>">
+			<?php
+				ar::call('ariadne.logo.html');
+				echo $ARnls["ariadne:selectlanguage"]; 
+			?><img class="typeicon" src="<?php echo $AR->dir->images.'icons/large/language.png'; ?>" alt="<?php echo $ARnls["selectlanguage"]; ?>">
 		</div>
 		<div id="sectiondata" class="nosections notfixed">
 			<div id="tabs"></div>

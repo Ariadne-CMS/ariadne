@@ -139,20 +139,17 @@
 	<input type="hidden" name="wgWizAction" value="">
 </div>
 <div id="header">
-	<div class="logo">
-<?php
-	if( !$wgWizNoDefaultStyle && !$wgWizHeaderLogo) {
-?>
-		<img src="<?php echo $AR->dir->www;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
-		<span class="ariadne">Ariadne</span>
-		<span class="ariadne_sub">Web Application Server</span>
-<?php
-	}
-	if( $wgWizHeaderLogo ) {
-		echo $wgWizHeaderLogo;
-	}
-?>
-	</div>
+	<?php
+		if( !$wgWizNoDefaultStyle && !$wgWizHeaderLogo) {
+			ar::call('ariadne.logo.html');
+		} else {
+			echo '<div class="logo">';
+			if( $wgWizHeaderLogo ) {
+				echo $wgWizHeaderLogo;
+			}
+			echo '</div>';
+		}
+	?>
 	<span class="text"><?php echo htmlspecialchars($wgWizHeader); ?></span>
 	<?php
 		if( $wgWizHeaderIcon ) {

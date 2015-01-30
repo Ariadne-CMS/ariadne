@@ -99,6 +99,7 @@
 	$ARnls["ariadne:logoff"]                        =    "Afmelden";
 	$ARnls["ariadne:mimetype"]                      =    "MIME Type";
 	$ARnls["ariadne:mogrify"]                       =    "Mogrify";
+	$ARnls["ariadne:morethanacms"]                  =    "meer dan een cms";
 	$ARnls["ariadne:move"]                          =    "Verplaats";
 	$ARnls["ariadne:new"]                           =    "Voeg nieuw object toe";
 	$ARnls["ariadne:new:add_language"]              =    "Taal toevoegen";

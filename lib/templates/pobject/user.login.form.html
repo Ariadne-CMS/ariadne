@@ -31,11 +31,10 @@
 	<input type="hidden" name="arReturnTemplate" value="<?php echo htmlentities($arReturnTemplate); ?>">
 </div>
 <div id="header">
-	<div class="logo">
-		<img src="<?php echo $AR->dir->www;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
-		<span class="ariadne">Ariadne</span>
-		<span class="ariadne_sub">Web Application Server</span>
-	</div><?php echo $arLoginMessage; ?><img class="typeicon" src="<?php echo $AR->dir->images.'icons/large/grants.png'; ?>" alt="<?php echo $ARnls["login"]; ?>">
+	<?php
+		ar::call('ariadne.logo.html');
+	?>
+	<?php echo $arLoginMessage; ?><img class="typeicon" src="<?php echo $AR->dir->images.'icons/large/grants.png'; ?>" alt="<?php echo $ARnls["login"]; ?>">
 </div>
 <div id="sectiondata" class="nosections notfixed">
 	<div id="tabs"></div>

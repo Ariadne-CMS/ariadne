@@ -10,11 +10,10 @@ $pageStart = '
 <body id="login_panel">
 	<div id="centered">
 		<div id="header">
-			<div class="logo">
-				<img src="' . $AR->dir->www . '/images/tree/logo2.gif" alt="Ariadne Web Application Server">
-				<span class="ariadne">Ariadne</span>
-				<span class="ariadne_sub">Web Application Server</span>
-			</div>Logged off<img class="typeicon" src="' . $AR->dir->www . 'images/icons/large/grants.png" alt="Login">
+			<?php
+				ar::call('ariadne.logo.html');
+			?>
+			Logged off<img class="typeicon" src="' . $AR->dir->www . 'images/icons/large/grants.png" alt="Login">
 		</div>
 		<div id="sectiondata" class="nosections notfixed">
 			<div id="tabs"></div>
