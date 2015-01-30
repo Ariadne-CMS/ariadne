@@ -21,14 +21,17 @@ Features
   - Upgraded ace library for chrome >=38 support
   - added parsing and minimal function support for cache-control request headers, 
   - added seperate client-side and server-side caching options in the cache dialog
+  - ar('pinp') allows you to check if a library is loaded and/or if a template exists.
 
 Changes
+  - Introduced a new Ariadne logo
   - files are no longer stored in duplicate: the _file entry in the filestore is removed, just the _$defaultnls_file is left.
   - properties are now quoted by the store instead by the caller of save
   - added php-unit and a first set of unit-tests
   - session cookies now use json encoding. To prevent upgrade problems we also renamed the session cookie
   - added optional cookie encryption for, enabled by default for new installs
     running 'php www/install/conf/session.conf' will give you a config snippet with a random generated encryption key
+  - the MySQL store now uses mysqli internally.
 
 Bugfixes
   - fixed support for sub-method calling of xmlrpc methods ( method name is x.y or x.y.z )
