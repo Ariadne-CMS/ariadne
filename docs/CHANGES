@@ -7,6 +7,7 @@ Upgrade notes
     if you have custom loaders look at the bin/skeleton.php for how to adapt your loaders
   - minimal php version is now 5.4
   - installing php5-mcrypt is recommended
+  - after upgrading the code, you must run the upgrade script or some sites may have broken files/images
 
 Features
   - new inline WYSIWYG editor by Vedor
@@ -24,6 +25,7 @@ Features
   - ar('pinp') allows you to check if a library is loaded and/or if a template exists.
   - added scaffolds to quickly start new projects.
   - added the muze CMS libraries in /system/lib/muze/
+  - added onbeforecall/oncall events
 
 Changes
   - Introduced a new Ariadne logo
