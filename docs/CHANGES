@@ -22,6 +22,8 @@ Features
   - added parsing and minimal function support for cache-control request headers, 
   - added seperate client-side and server-side caching options in the cache dialog
   - ar('pinp') allows you to check if a library is loaded and/or if a template exists.
+  - added scaffolds to quickly start new projects.
+  - added the muze CMS libraries in /system/lib/muze/
 
 Changes
   - Introduced a new Ariadne logo
@@ -32,6 +34,8 @@ Changes
   - added optional cookie encryption for, enabled by default for new installs
     running 'php www/install/conf/session.conf' will give you a config snippet with a random generated encryption key
   - the MySQL store now uses mysqli internally.
+  - added a 'fixed' scenario and display for newspaper articles
+  - added array_column and key_exists to allowed function calls in pinp
 
 Bugfixes
   - fixed support for sub-method calling of xmlrpc methods ( method name is x.y or x.y.z )
@@ -55,6 +59,8 @@ Bugfixes
   - added saving of an emailadres in mod_rcas
   - You don't need add rights to display the userinterface of the add dialog anymore
   - Private templates in libraries are now actually private, no longer accessiable through the browser.
+  - fixed saving of properties in the workspace store
+  - fixed incorrect cleaning of HTML in the YUI WYSIWYG editor which turned <iframe> into <emframe>
 
 ========================
 Changes in Ariadne 8.3
