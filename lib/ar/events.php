@@ -55,7 +55,7 @@
 		protected static function walkListeners( $listeners, $path, $objectType, $capture ) {
 			$strObjectType = (string) $objectType;
 			$objectTypeStripped = $strObjectType;
-			$pos = strpos('.', $strObjectType);
+			$pos = strpos( $strObjectType, '.');
 			if ( $pos !== false ) {
 				$objectTypeStripped = substr($strObjectType, 0, $pos);
 			}
