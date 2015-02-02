@@ -3437,6 +3437,13 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function __call($name,$arguments) {
+		if ( $name[0] == '_' ) {
+			$fname = substr($name, 1);
+			if ( isset($this->{$fname}) && $this->{$fname} instanceof \Closure ) {
+				\Closure::bind( $this->{$fname}, $this );
+				return call_user_func_array( $this->{$fname}, $arguments);
+			}
+		}
 		switch($name) {
 			case "implements":
 				return $this->AR_implements($arguments[0]);
@@ -3444,6 +3451,7 @@ debug("loadLibrary: loading cache for $this->path");
 			default:
 				trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $name), E_USER_ERROR);
 				return false;
+			break;
 		}
 	}
 
