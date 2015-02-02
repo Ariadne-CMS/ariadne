@@ -275,7 +275,7 @@
 		global $AR, $ARCurrent;
 		$nls=$ARCurrent->nls;
 		if ($AR->hideSessionIDfromURL) {
-			$cookies = ldGetCredentials();
+			$cookies = (array) ldGetCredentials();
 			if( ! isset($cookies[$ARCurrent->session->id]) ) {
 				foreach($cookies as $sessionid => $data){
 					// kill all other sessions
