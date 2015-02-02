@@ -28,6 +28,11 @@
 		$templatesrc = current($axstore->call('system.get.template.php',$args, $axstore->get($cpath)));
 		$templatedst = current(  $store->call('system.get.template.php',$args,   $store->get($cpath)));
 
+		if(!$store->exists($cpath)) {
+			// cannot install config on non-existing path
+			print "$cpath doesn't exists, skipping\n";
+		}
+
 		if(!ar_error::isError($templatesrc)) {
 			if(ar_error::isError($templatedst)) { // error means no template found
 				// save template
