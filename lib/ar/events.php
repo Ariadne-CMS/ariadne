@@ -30,15 +30,13 @@
 				$prevEvent = self::$event;
 			}
 			$path = ar::context()->getPath( array( 'path' => $path ) );
-			if ( !isset($objectType) ) {
-				$me = ar::context()->getObject( array( 'path' => $path ) );
-				if ($me) {
-					$objectType = $me->type;
-				}
+			$me = ar::context()->getObject( array( 'path' => $path ) );
+			if ( $me && !isset($objectType) ) {
+				$objectType = $me->type;
 			} else if ( !$objectType ) { // when set to false to prevent automatic filling of the objectType, reset it to null
 				$objectType = null;
 			}
-			self::$event = new ar_eventsEvent( $eventName, $eventData, $objectType );
+			self::$event = new ar_eventsEvent( $eventName, $eventData, $objectType, $path, $me );
 			if ( self::walkListeners( self::$listeners['capture'][$eventName], $path, $objectType, true ) ) {
 				self::walkListeners( self::$listeners['listen'][$eventName], $path, $objectType, false );
 			}
@@ -213,11 +211,15 @@
 		private $name = '';
 		private $type = null;
 		private $preventDefault = false;
+		private $path = null;
+		private $target = null;
 
-		public function __construct( $name, $data = null, $type = null ) {
+		public function __construct( $name, $data = null, $type = null, $path = null, $target = null ) {
 			$this->name = $name;
 			$this->data = $data;
 			$this->type = $type;
+			$this->path = $path;
+			$this->target = $target;
 		}
 
 		public function preventDefault() {
@@ -226,14 +228,8 @@
 		}
 
 		public function __get( $name ) {
-			if ( $name == 'preventDefault' ) {
-				return $this->preventDefault;
-			}
-			if ( $name == 'name' ) {
-				return $this->name;
-			}
-			if ( $name == 'type' ) {
-				return $this->type;
+			if ( in_array($name, array('preventDefault','name','type','path','target') ) ) {
+				return $this->{$name};
 			}
 		}
 
