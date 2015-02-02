@@ -45,7 +45,8 @@ $paths = array (
 		'/system/newspaper/scenarios/fixed/',
 		'/system/newspaper/displays/fixed/',
 		'/system/profiles/administrators/',
-		'/system/scaffolds/'
+		'/system/scaffolds/',
+		'/projects/'
 	);
 
 foreach($paths as $path){

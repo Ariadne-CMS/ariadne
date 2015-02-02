@@ -38,6 +38,10 @@
 	require_once($ariadne."/bootstrap.php");
 	require_once($store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
 
+	require_once(AriadneBasePath . "/stores/axstore.phtml");
+	require_once(AriadneBasePath . "/configs/axstore.phtml");
+
+
 		// instantiate the store
 	$inst_store = $store_config["dbms"]."store_install";
 	$store=new $inst_store($root,$store_config);
@@ -175,11 +179,6 @@
 							"newversion" => '9.0-rc1.3'
 						));
 		case '9.0-rc1.3':
-				array_push($todo, array(
-							"description" => "Install configurations files",
-							"operation" => "9.0/install.config.php",
-							"newversion" => '9.0-rc1.4'
-						));
 		case '9.0-rc1.4':
 				array_push($todo, array(
 							"description" => "Mogrify dirs in system folder",
@@ -199,10 +198,11 @@
 							"newversion" => '9.0-rc1'
 						));
 		case '9.0-rc1.7':
+		case '9.0-rc1':
 				array_push($todo, array(
-							"description" => "Bumping revision to 9.0-rc1",
-							"operation" => "all/dummy.php",
-							"newversion" => "9.0-rc1"
+							"description" => "Installing missing objects",
+							"operation" => "9.0/install.missing.data.php",
+							"newversion" => "9.0-rc1.1"
 							));
 	}
 
