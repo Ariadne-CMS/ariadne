@@ -38,6 +38,8 @@
 				//echo "ar:function [" . $meta['ar:function'] . "]\n";
 				//echo "ar:language [" . $meta['ar:language'] . "]\n";
 
+				$this->error = null;
+
 				$this->call("system.save.layout.phtml", array(
 							"template" 	=> $template,
 							"default"	=> $meta['ar:default'],
