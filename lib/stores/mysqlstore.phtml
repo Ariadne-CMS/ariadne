@@ -713,7 +713,6 @@ class mysqlstore extends store{
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$nextid_tbl=$this->tbl_prefix."seq_id";
 
 		$object=$this->exists($path);
 		if ($object) {
@@ -756,8 +755,6 @@ class mysqlstore extends store{
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$nextid_tbl=$this->tbl_prefix."seq_id";
-
 
 		if (is_array($paths)) {
 			if (sizeof($paths)==1) { // only one path for this object
@@ -770,9 +767,6 @@ class mysqlstore extends store{
 				} else {
 					$result=0;
 				}
-				$query_string="delete from $nextid_tbl where path='$epath'";
-				$this->store_run_query($query_string);
-
 			}
 		}
 		return $result;
@@ -783,7 +777,7 @@ class mysqlstore extends store{
 
 		This function checks the given path to see if it exists. If it does
 	it returns the id of the object to which it points. Otherwise it returns
-	0.
+	null.
 
 	$path should always start and end with a '/'.
 
@@ -791,6 +785,7 @@ class mysqlstore extends store{
 
 		$this->error="";
 		$epath=AddSlashes($path);
+		$object = null;
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -1006,7 +1001,7 @@ class mysqlstore extends store{
 		} else {
 			$object=$this->exists($path);
 		}
-		if($object !== false) {
+		if ($object) {
 			$query_string="select path from $nodes_tbl where object=$object";
 			$qresult = $this->store_run_query($query_string);
 			while ($qresult && ($row=@$qresult->fetch_array(MYSQLI_ASSOC))) {
