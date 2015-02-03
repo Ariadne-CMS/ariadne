@@ -2137,6 +2137,10 @@ debug("loadLibrary: loading cache for $this->path");
 		$cache_types[] = "compressed";
 		$cache_types[] = "session";
 
+		global $cache_config,$store_config;
+		$cachestore=new cache($cache_config);
+
+
 		$filestore = $this->store->get_config("files");
 		foreach($cache_types as $type){
 			foreach($nlslist as $nls => $language){
@@ -2154,6 +2158,7 @@ debug("loadLibrary: loading cache for $this->path");
 							if (is_file($fpath.$entry)) {
 								@unlink($fpath.$entry);
 								@unlink($hpath.$entry);
+								$cachestore->delete("/".$type."/".$nls.$fs_path.$entry);
 							} else if ( $recurse && !$recursed[$entry]) {
 								$this->ClearCache($path.$entry."/", false, true);
 								$recursed[$entry]=true;
@@ -2167,6 +2172,7 @@ debug("loadLibrary: loading cache for $this->path");
 				} else if (file_exists(substr($fpath,0,-1)."=")) {
 					@unlink(substr($fpath,0,-1)."=");
 					@unlink(substr($hpath,0,-1)."=");
+					$cachestore->delete("/".$type."/".$nls.substr($fs_path,0,-1)."=");
 				}
 			}
 		}
