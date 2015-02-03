@@ -81,7 +81,7 @@
 		}
 
 		public function delete($filename) {
-			$this->cachestore->purge("/" . md5($filename) . "/");
+			$this->cachestore->delete("/" . md5($filename) . "/");
 		}
 	}
 ?>
