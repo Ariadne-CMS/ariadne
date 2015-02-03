@@ -141,7 +141,7 @@
 			/* private method - adds $id to group $name, a change in any member of the group, forces dirty on all members */
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$prefix = edit::getEditPrefix();
-				echo "<script type='vedor/registerGroup' data-vedor-group='$name' data-vedor-id='$prefix.$id'>\n";
+				echo "<script type='vedor/registerGroup' data-vedor-group='$name' data-vedor-id='$prefix.$id'></script>\n";
 			}
 		}
 
