@@ -392,7 +392,7 @@
 					var vedorSiteNls	= allScripts[i].getAttribute("data-vedor-site-nls");
 					reset(vedorPath, vedorUrl, vedorParentUrl, vedorNlsList, vedorLanguage, vedorUrlNls, vedorSiteNls);
 				break;
-				case "vedor/registerGruop":
+				case "vedor/registerGroup":
 					var vedorGroup = allScripts[i].getAttribute("data-vedor-group");
 					var vedorId = allScripts[i].getAttribute("data-vedor-id");
 					registerGroup(vedorGroup, vedorId);
