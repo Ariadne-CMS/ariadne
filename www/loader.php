@@ -34,9 +34,7 @@
 
 	require_once("./ariadne.inc");
 	require_once($ariadne."/bootstrap.php");
-	require_once($ariadne."/configs/cache.phtml");
 
-	include_once($store_config['code']."modules/mod_cache.php");
 	function ldGatherXSSInput(&$xss, $input) {
 		if (is_array($input)) {
 			foreach ($input as $value) {

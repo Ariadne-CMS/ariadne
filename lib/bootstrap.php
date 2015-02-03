@@ -16,6 +16,7 @@
 	require_once(AriadneBasePath."/configs/store.phtml");
 	require_once(AriadneBasePath."/ar.php");
 	require_once(AriadneBasePath."/modules/mod_debug.php");
+	require_once(AriadneBasePath."/modules/mod_cache.php");
 
 
 	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
