@@ -6,7 +6,8 @@
 		include_once($ariadne."/configs/store.phtml");
 		include_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 		include_once($ariadne."/includes/loader.web.php");
-		include_once($ariadne."/modules/mod_ar.php");
+		include_once($ariadne."/ar.php");
+		include_once($ariadne."/modules/mod_cache.php");
 
 		/* become admin */
 		$ARLogin="admin";

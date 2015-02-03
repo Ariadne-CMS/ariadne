@@ -8,7 +8,8 @@
 	include_once( $store_config['code']."stores/".$ax_config["dbms"]."store.phtml");
 	include_once( $store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
 	include_once( $store_config['code']."nls/".$AR->nls->default );
-	include_once($ariadne."/modules/mod_ar.php");
+	include_once($ariadne."/ar.php");
+	include_once($ariadne."/modules/mod_cache.php");
 
 	/* instantiate the store */
 	$inst_store = $store_config["dbms"]."store";
