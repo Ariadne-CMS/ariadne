@@ -104,7 +104,10 @@
 				}
 
 				$this->save();
-				$this->ClearCache($this->path, false, true);
+
+				global $cache_config;
+				$cachestore=new cache($cache_config);
+				$cachestore->onTemplateSaved($this->id, $type, $file);
 			}
 		}
 	}
