@@ -55,6 +55,7 @@ class import_wddx {
 				break;
 			case "number":
 			case "string":
+			case "string64":
 			case "boolean":
 				array_push($this->stack, Array("type" => $name));
 				break;
@@ -67,7 +68,10 @@ class import_wddx {
 		$element = &$this->stack[count($this->stack)-1];
 		$element["locked"] = true;
 
-		if($name == "var")
+		if ( $name=="string64" ) 
+		{
+			$element['data'] = base64_decode( $element['data'] );
+		} else if($name == "var")
 		{
 			$value = array_pop($this->stack);
 			if ($value["type"] == "var") {
@@ -219,8 +223,16 @@ class import_wddx {
 			{
 
 				debug("WDDX data: object doesn't exists",'all');
-				$this->print_verbose(" ( saving ) \n");
 				$parent = $this->store->make_path($path,'..');
+				if ( !$this->store->exists($parent) ) {
+					$this->print_verbose(" ( orphan ) \n");
+					return;
+				} else {
+					$parentOb = current( $this->store->call("system.get.phtml", array(), $this->store->get($parent)));
+					$parent = $parentOb->path;
+					$path = $parent . basename($path);
+				}
+				$this->print_verbose(" ( saving ) \n");
 				if($parent == $path){ $parent = '..'; }
 				$object = $this->store->newobject($path,
 						$parent, $objdata['type'],
@@ -508,6 +520,7 @@ class import_wddx {
 						$element["data"] = false;
 					}
 				break;
+				case "string64":
 				case "string":
 					$element["data"] .= $data;
 				break;

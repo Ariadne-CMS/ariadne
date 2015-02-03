@@ -10,11 +10,13 @@ class export_wddx {
 	}
 
 	function strtoxmldata($string) {
-		return str_replace("]]>","]]&gt;",str_replace("]]&","]]&amp;",$string));
+		//return str_replace("]]>","]]&gt;",str_replace("]]&","]]&amp;",$string));
+		return base64_encode($string);
 	}
 
 	function xmldatatostr($string) {
-		return str_replace("]]&amp;","]]&",str_replace("]]&gt;","]]>",$string));
+		//return str_replace("]]&amp;","]]&",str_replace("]]&gt;","]]>",$string));
+		return base64_decode($string);
 	}
 
 	function header($fp){
@@ -106,7 +108,7 @@ class export_wddx {
 				if($ARCurrent->wddxoptions['srcpath'] != $ARCurrent->wddxoptions['dstpath']){
 					$value = preg_replace( '#(^|[\'"])'.$ARCurrent->wddxoptions['srcpath'].'#i', '$1'.$ARCurrent->wddxoptions['dstpath'], $value);
 				}
-				fwrite($fp,"<string><![CDATA[".export_wddx::strtoxmldata($value)."]]></string>\n");
+				fwrite($fp,"<string64><![CDATA[".export_wddx::strtoxmldata($value)."]]></string64>\n");
 			} else if (is_array($value) || is_object($value)) {
 				if (is_array($value)) {
 					fwrite($fp,"<struct type=\"hash\">\n");
