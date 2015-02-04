@@ -1302,7 +1302,7 @@ class ISBN
             if ($ver === false) {
                 return new ISBN_Exception('Invalid ISBN');
             }
-            if ($ver != $this->ver and $this->ver !== ISBN_VERSION_NONE) {
+            if ($ver != $this->ver && $this->ver !== ISBN_VERSION_NONE) {
                 return new ISBN_Exception(
                   'ISBN Version of passed ISBN (' . $ver . ') '.
                   'does not match existing (' . $this->ver . ').'
