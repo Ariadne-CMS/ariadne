@@ -172,8 +172,6 @@
 			}
 			if ( isset($ARCurrent->$name) ) {
 				return $ARCurrent->$name;
-			} else if ( isset($me) && isset($ARConfig->pinpcache[$me->path][$name])) {
-				return $ARConfig->pinpcache[$me->path][$name];
 			}
 			return ar_loader::getvar( $name );
 		}
