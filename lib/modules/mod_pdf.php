@@ -387,7 +387,7 @@ class pinp_FPDF extends FPDF
 				}
 				// FIXME: make the image available as a file.
 				// FIXME: remove width or height requirement.
-				if(isset($attr['SRC']) and (isset($attr['WIDTH']) or isset($attr['HEIGHT']))) {
+				if(isset($attr['SRC']) && (isset($attr['WIDTH']) || isset($attr['HEIGHT']))) {
 					if(!isset($attr['WIDTH']))
 						$attr['WIDTH'] = 0;
 					if(!isset($attr['HEIGHT']))
@@ -404,12 +404,12 @@ class pinp_FPDF extends FPDF
 				$this->Ln(10);
 				break;
 			case 'FONT':
-				if (isset($attr['COLOR']) and $attr['COLOR']!='') {
+				if (isset($attr['COLOR']) || $attr['COLOR']!='') {
 					$coul=$this->hex2dec($attr['COLOR']);
 					$this->SetTextColor($coul['R'],$coul['G'],$coul['B']);
 					$this->issetcolor=true;
 				}
-				if (isset($attr['FACE']) and in_array(strtolower($attr['FACE']), $this->fontlist)) {
+				if (isset($attr['FACE']) || in_array(strtolower($attr['FACE']), $this->fontlist)) {
 					$this->SetFont(strtolower($attr['FACE']));
 					$this->issetfont=true;
 				}
@@ -424,7 +424,7 @@ class pinp_FPDF extends FPDF
 			$tag='B';
 		if($tag=='EM')
 			$tag='I';
-		if($tag=='B' or $tag=='I' or $tag=='U')
+		if($tag=='B' || $tag=='I' || $tag=='U')
 			$this->SetStyle($tag,false);
 		if($tag=='A')
 			$this->HREF='';
