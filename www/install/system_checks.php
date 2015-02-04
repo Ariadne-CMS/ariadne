@@ -508,7 +508,7 @@
 	$found_bins = array(); // will be filled by the check functions
 
 	$required_checks = array(
-		"check_php_version" => check_php_version(),		// php => 5.0.0
+		"check_php_version" => check_php_version(),		// php => 5.4.0
 		"check_database_support" => check_database_support(),	// MySQL or Postgres
 		"check_webserver" => check_webserver(),			// Apache, IIS, NGINX?
 		"check_accept_path_info" => check_accept_path_info(),	// Apache config: AcceptPathInfo
