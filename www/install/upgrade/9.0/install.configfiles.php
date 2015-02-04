@@ -47,20 +47,17 @@
 		}
 	}
 
-	$args = array ('type' => 'pdir',     'function' => 'config.ini','language' => 'any');
+	$args = array ('type' => 'pdir',     'function' => 'config.ini','language' => 'any', 'default' => false);
 	$cpath = '/';
 	importTemplate($cpath,$args);
 
-	$args = array ('type' => 'pproject', 'function' => 'config.ini','language' => 'any');
+	$args = array ('type' => 'pobject',  'function' => 'typetree.ini','language' => 'any', 'default' => true);
+	$cpath = '/';
+	importTemplate($cpath,$args);
+
+	$args = array ('type' => 'pproject', 'function' => 'config.ini','language' => 'any', 'default' => false);
 	$cpath = '/projects/';
 	importTemplate($cpath,$args);
 
-	$args = array ('type' => 'pdir',     'function' => 'config.ini','language' => 'any');
-	$cpath = '/system/';
-	importTemplate($cpath,$args);
-
-	$args = array ('type' => 'pobject',  'function' => 'typetree.ini','language' => 'any');
-	$cpath = '/system/';
-	importTemplate($cpath,$args);
 ?>
 </pre>
