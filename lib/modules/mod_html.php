@@ -62,6 +62,7 @@
 				preserve : array with exeptions on the rewrite rules
 				rewrite : tag : attribute : value match = new value or false (remove)
 			*/
+			$rules = array();
 			$rules['rewrite']['.*']['class']['mso.*']=false;	// class="msoNormal" etc
 			$rules['rewrite']['o:.*']=false;					// <o:p style=".."></o>
 			$rules['rewrite']['.*']['style']=false;				// style="..."
