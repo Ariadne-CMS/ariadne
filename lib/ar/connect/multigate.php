@@ -42,7 +42,7 @@
 				fclose( $socket );
 			}
 
-			return ar::error( $this->errorstr, $this->errornr );
+			return ar::error( $this->errorStr, $this->errorNr );
 		}
 
 		private function isSupported( $protocol ) {
