@@ -373,6 +373,18 @@
 		muze.event.attach(vdEditorFrame, "load", initEditablePage);
 	}
 
+	function initGroups() {
+		var allScripts = vdEditorFrame.contentDocument.getElementsByTagName("SCRIPT");
+		for (var i=0; i<allScripts.length; i++) {
+			switch (allScripts[i].getAttribute("type")) {
+				case "vedor/registerGroup":
+					var vedorGroup = allScripts[i].getAttribute("data-vedor-group");
+					var vedorId = allScripts[i].getAttribute("data-vedor-id");
+					registerGroup(vedorGroup, vedorId);
+				break;
+			}
+		}
+	}
 
 	function initEditablePage() {
 		var allScripts = this.contentDocument.getElementsByTagName("SCRIPT");
@@ -393,9 +405,10 @@
 					reset(vedorPath, vedorUrl, vedorParentUrl, vedorNlsList, vedorLanguage, vedorUrlNls, vedorSiteNls);
 				break;
 				case "vedor/registerGroup":
-					var vedorGroup = allScripts[i].getAttribute("data-vedor-group");
-					var vedorId = allScripts[i].getAttribute("data-vedor-id");
-					registerGroup(vedorGroup, vedorId);
+					/* Moved to own init, otherwise the groups are initialized too early; */
+					// var vedorGroup = allScripts[i].getAttribute("data-vedor-group");
+					// var vedorId = allScripts[i].getAttribute("data-vedor-id");
+					// registerGroup(vedorGroup, vedorId);
 				break;
 				case "vedor/editorSettings":
 					//try {
@@ -403,6 +416,7 @@
 						// FIXME: add sanity check for settings;
 						setConfig(editorSettings);
 						init();
+						initGroups();
 					//} catch (e) {
 					//	console.log(e);
 					//	console.log("invalid editor settings");
