@@ -66,6 +66,18 @@ function procCacheFile($filename) {
 			} else {
 				@unlink($headerfilename);
 			}
+			// HACK:
+			// this case should only trigger in the public cache case, and
+			// only the public cache uses the cachestore
+			// the headerfilename will only exists in the public cache case
+
+			global $cache_config,$store_config;
+			$prefix = $store_config['files']."cache/";
+
+			$cachename = str_replace($prefix, "", $filename);
+
+			$cachestore=new cache($cache_config);
+			$cachestore->delete($cachename);
 		}
 
 		print $res?" - ":" ! ";
@@ -74,8 +86,6 @@ function procCacheFile($filename) {
 			$age,
 			$perms,
 			$filename);
-	} else {
-		echo "Skipped $filename, not stale enough;\n";
 	}
 }
 
@@ -153,6 +163,7 @@ if ($AR->OS=="UNIX") {
  */
 }
 
+require_once(AriadneBasePath."/modules/mod_cache.php");
 // clean up cache files
 if ($AR->OS=="UNIX") {
 	echo " . Clearing stale cache files...\n";
