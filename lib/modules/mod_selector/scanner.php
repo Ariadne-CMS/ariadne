@@ -20,6 +20,7 @@
 			// Numbers [0-9]
 			$start = ord('0');
 			$end   = ord('9');
+			$class_number = array();
 			for ($i = $start; $i <= $end; $i++) {
 				$class_number[chr($i)] = chr($i);
 			}
