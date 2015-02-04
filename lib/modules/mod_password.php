@@ -110,7 +110,6 @@ class password {
 		do {
 			$c = 1;
 			$prev = 0;
-			$should_be = 0;
 			$first = 1;
 			$result = "";
 
