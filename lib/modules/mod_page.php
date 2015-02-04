@@ -64,23 +64,27 @@ class page {
 	}
 
 	public static function getBody($page) {
+		if (stripos($page, "</body") !== false) {
 			$page = preg_replace('|</BODY.*$|is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
 				debug('preg_replace returned null errno '. $errno .' in ' .
 					__CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
 				debug('preg error:'. page::pregError($errno));
-				return '';
+				return '<!-- Error: Backtrack limit was exhausted (531) -->';
 			}
+		}
+		if (stripos($page, "<body") !== false) {
 			$page = preg_replace('/^.*<BODY[^>]*>/is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
 				debug('preg_replace returned null, errno '. $errno .' in ' .
 					__CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
 				debug('preg error:'. page::pregError($errno));
-				return '';
+				return '<!-- Error: Backtrack limit was exhausted (532) -->';
 			}
-			return $page;
+		}
+		return $page;
 	}
 
 	public static function parse($page, $full=false) {
