@@ -1535,7 +1535,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 		}
-		if ($path != '/' && $config->type != 'psection') {
+		list($basetype,) = explode('.', $config->type,2);
+		if ($path != '/' && $basetype != 'psection') {
 			$this->loadLibraryCache($base, $this->store->make_path($path, '../'), $arLibraryPath);
 		}
 	}
@@ -1697,8 +1698,10 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 			}
 			if ($inLibrary) {
-				//debug("getPinpTemplate; INLIBRARY $checkpath; ".$ARConfig->cache[$checkpath]->type);
-				if ($ARConfig->cache[$checkpath]->type == 'psection') {
+
+				list($basetype,) = explode('.', $ARConfig->cache[$checkpath]->type,2);
+				//debug("getPinpTemplate; INLIBRARY $checkpath; ".$basetype);
+				if ($basetype == 'psection') {
 					// debug("BREAKING; $arTemplateId");
 					// break search operation when we have found a
 					// psection object
