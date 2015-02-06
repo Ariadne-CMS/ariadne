@@ -1,6 +1,6 @@
 <?php
 
-	global $auth_config,$store_config,$cache_config,$session_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader;
+	global $auth_config,$store_config,$cache_config,$session_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader,$ARnls;
 
 	if(!defined('AriadneBasePath') ) {
 		define('AriadneBasePath', $ariadne);
@@ -44,4 +44,4 @@
 	require_once(AriadneBasePath."/modules/mod_session.phtml");
 	require_once(AriadneBasePath."/modules/mod_auth/".$auth_config['method'].".php");
 
-	include(AriadneBasePath."/nls/".$AR->nls->default);
+	$ARnls = ar('nls')->dict($AR->nls->default,null,'ARnls',AriadneBasePath.'/nls/');

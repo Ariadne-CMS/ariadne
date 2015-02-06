@@ -341,12 +341,9 @@
 			}
 
 			// instantiate the ARnls
-			global $ARnls;
-			$ARnls = ar('nls')->dict($AR->nls->default);
 			if( $ARCurrent->nls != "" ) {
 				ldSetNls($nls);
 			}
-
 
 
 			if (substr($function, -6)==".phtml") {
