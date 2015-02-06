@@ -37,6 +37,9 @@
 				if (!$arEditorSettings) {
 					$arEditorSettings=$this->call("editor.ini");
 					$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
+					if (sizeof($ARCurrent->editorSettings) > 10) {
+						array_shift($ARCurrent->editorSettings);
+					}
 				}
 			}
 			if (!$this->data->nls) {
