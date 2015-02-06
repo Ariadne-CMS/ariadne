@@ -44,4 +44,6 @@
 	require_once(AriadneBasePath."/modules/mod_session.phtml");
 	require_once(AriadneBasePath."/modules/mod_auth/".$auth_config['method'].".php");
 
-	$ARnls = ar('nls')->dict($AR->nls->default,null,'ARnls',AriadneBasePath.'/nls/');
+	if (!isset($ARnls)) {
+		$ARnls = ar('nls')->dict($AR->nls->default,null,'ARnls',AriadneBasePath.'/nls/');
+	}
