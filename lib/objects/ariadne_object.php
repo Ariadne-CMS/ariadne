@@ -1191,6 +1191,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			foreach ($ARConfig->cache as $cachepath => $cache) {
 				if (strpos($cachepath, $path) === 0) {
 					unset($ARConfig->cache[$cachepath]);
+					unset($ARConfig->pinpcache[$cachepath]);
 				}
 			}
 		}
@@ -1885,10 +1886,12 @@ debug("loadLibrary: loading cache for $this->path");
 				$ARCurrent->cachetime=$config->cache;
 			}
 
-			if (!is_array($ARCurrent->cacheConfigChainSettings)) {
-				$ARCurrent->cacheConfigChainSettings = array();
+			if (!$ARCurrent->arDontCache) {
+				if (!is_array($ARCurrent->cacheConfigChainSettings)) {
+					$ARCurrent->cacheConfigChainSettings = array();
+				}
+				$ARCurrent->cacheConfigChainSettings[$this->path] = $config->cacheSettings;
 			}
-			$ARCurrent->cacheConfigChainSettings[$this->path] = $config->cacheSettings;
 
 			/*
 				Set ARConfigChecked to true to indicate that we have been here
