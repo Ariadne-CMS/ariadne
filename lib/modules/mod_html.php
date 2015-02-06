@@ -45,7 +45,7 @@
 			global $AR;
 			require_once($AR->dir->install."/lib/modules/mod_tidy.php");
 
-			return tidy::clean($html, $config);
+			return ARtidy::clean($html, $config);
 		}
 
 

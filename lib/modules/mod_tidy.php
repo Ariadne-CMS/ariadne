@@ -33,7 +33,7 @@
 
     ******************************************************************/
 
-	class tidy {
+	class ARtidy {
 
 		function __construct($config)
 		{
@@ -85,4 +85,9 @@
 			return $ret;
 		}
 
+	}
+
+	if (!class_exists('tidy')) {
+		// provide tidy class for code not migrated to ARtidy name, but only if the package php5-tidy is not loaded
+		class tidy extends ARtidy {}
 	}

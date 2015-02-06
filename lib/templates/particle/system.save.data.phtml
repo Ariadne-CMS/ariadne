@@ -92,7 +92,7 @@
 									$config=$arEditorSettings["htmltidy"];
 									$config["temp"]=$this->store->get_config("files")."temp/";
 									$config["path"]=$AR->Tidy->path;
-									$tidy=new tidy($config);
+									$tidy=new ARtidy($config);
 									$result=$tidy->clean($newnlsdata->summary);
 									$newnlsdata->summary=$result["html"];
 								}

@@ -266,7 +266,7 @@
 				}
 				$config["temp"]	= $me->store->get_config("files")."temp/";
 				$config["path"]	= $AR->Tidy->path;
-				$tidy			= new tidy($config);
+				$tidy			= new ARtidy($config);
 				$result			= $tidy->clean($html);
 				$html			= $result["html"];
 			}
