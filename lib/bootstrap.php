@@ -44,6 +44,13 @@
 	require_once(AriadneBasePath."/modules/mod_session.phtml");
 	require_once(AriadneBasePath."/modules/mod_auth/".$auth_config['method'].".php");
 
-	if (!isset($ARnls)) {
-		$ARnls = ar('nls')->dict($AR->nls->default,null,'ARnls',AriadneBasePath.'/nls/');
+	$prevARnls = $ARnls;
+
+
+	$ARnls = ar('nls')->dict($AR->nls->default,null,'ARnls',AriadneBasePath.'/nls/');
+
+	if (is_array($prevARnls)) {
+		foreach($prevARnls as $key => $value) {
+			$ARnls[$key] = $value;
+		}
 	}
