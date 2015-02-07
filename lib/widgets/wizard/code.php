@@ -6,7 +6,8 @@
    No result.
 
   ******************************************************************/
-	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
+global $ARnls;
+$ARnls->load('ariadne', $this->reqnls);
 
 if( !function_exists("wgWizKeepVars") ) {
 	function wgWizKeepVars($array, $prefix="") {

@@ -1,6 +1,6 @@
 <?php
     // beun oplossing om om keepurl heen te werken
-	global $ARCurrent;
+	global $ARCurrent,$ARnls;
 	$js_root = $AR->dir->www."js/";
 	$image_dir=$AR->dir->www.'widgets/vedor/images/';
 	$script_dir=$AR->dir->www.'widgets/vedor/';
@@ -17,8 +17,8 @@
 		$language='en';
 	}
 	$language = preg_replace('/[^a-z0-9_]/i', '', $language);
-	include($this->store->get_config("code")."nls/".$language);
-	include($this->store->get_config("code")."nls/vedor-editor.".$language);
+	$ARnls->load('', $language);
+	$ARnls->load('vedor-editor', $language);
 
 	$getargs = "?vdLanguage=" . RawURLEncode($language);
 	// CAS vars;
