@@ -194,7 +194,7 @@
 		case '9.0-rc1.6':
 				array_push($todo, array(
 							"description" => "Update properties and path length",
-							"operation" => "9.0/update.database.php",
+							"operation" => "9.0/upgrade.database.php",
 							"newversion" => '9.0-rc1'
 						));
 		case '9.0-rc1.7':
