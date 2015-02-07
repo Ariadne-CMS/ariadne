@@ -80,7 +80,7 @@ class mysqlstore extends store{
 
 	 **********************************************************************************/
 		$this->error="";
-		$this->dbh = $this->getConnection('p:'.$config['host'], $config["user"], $config["password"], $config["database"]);
+		$this->dbh = $this->getConnection($config['host'], $config["user"], $config["password"], $config["database"]);
 
 		$this->root=$path;
 		$this->code=$config["code"];

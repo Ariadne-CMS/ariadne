@@ -8,6 +8,7 @@ Upgrade notes
   - minimal php version is now 5.4
   - installing php5-mcrypt is recommended
   - after upgrading the code, you must run the upgrade script or some sites may have broken files/images
+  - we removed the "persistent connections by default" for the mysqlstore, this can be reenabled by adding 'p:' in front of the database server name in lib/configs/ariadne.phtml
 
 Features
   - new inline WYSIWYG editor by Vedor
