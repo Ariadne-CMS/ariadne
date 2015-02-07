@@ -203,7 +203,6 @@
 		}
 		if (!$this->error) {
 			$newpath=$this->save($properties);
-			$this->ClearCache();
 			if (!$this->error) {
 				/* warning: do not save this object again, since system.set.user.phtml updates the object also.. */
 				$oldgroups = $this->data->groups;
@@ -269,5 +268,8 @@
 				}
 			}
 		}
+		global $cache_config;
+		$cachestore=new cache($cache_config);
+		$cachestore->onObjectSaved($this->id);
 	}
 ?>

@@ -122,10 +122,10 @@
 						$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
 					}
 				}
-//				if ($AR->user->data->login!='admin') {
-					$this->ClearCache();
-//				}
 			}
+			global $cache_config;
+			$cachestore=new cache($cache_config);
+			$cachestore->onObjectSaved($this->id);
 		}
 	}
 ?>

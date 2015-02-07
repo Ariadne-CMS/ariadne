@@ -73,7 +73,6 @@
 			$this->save($properties);
 
 			if (!$this->error) {
-				$this->ClearCache();
 				// keep only the fulltext properties.
 				$properties = array('fulltext' => $properties['fulltext']);
 
@@ -188,6 +187,10 @@
 				if (!$this->error) {
 						$this->save($properties);
 				}
+
+				global $cache_config;
+				$cachestore=new cache($cache_config);
+				$cachestore->onObjectSaved($this->id);
 			}
 		}
 	}

@@ -203,7 +203,9 @@
 							$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
 						}
 					}
-					$this->ClearCache();
+					global $cache_config;
+					$cachestore=new cache($cache_config);
+					$cachestore->onObjectSaved($this->id);
 				}
 			} else {
 				$this->error=sprintf($ARnls["err:notascenario"],$scenario);

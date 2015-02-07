@@ -63,6 +63,8 @@
 		$this->data->display = $this->getdata("display", "none");
 
 		$this->save($properties);
-		$this->ClearCache();
+		global $cache_config;
+		$cachestore=new cache($cache_config);
+		$cachestore->onObjectSaved($this->id);
 	}
 ?>

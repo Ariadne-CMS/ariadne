@@ -13,6 +13,9 @@
 		}
 		$files=$this->store->get_filestore("files");
 		$files->write($html, $this->id, $file);
-		$this->ClearCache();
+
+		global $cache_config;
+		$cachestore=new cache($cache_config);
+		$cachestore->onObjectSaved($this->id);
 	}
 ?>

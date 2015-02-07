@@ -214,9 +214,11 @@
 
 			if (!$this->error) {
 				$this->save($properties);
-				$this->ClearCache();
 			}
 
 		}
+		global $cache_config;
+		$cachestore=new cache($cache_config);
+		$cachestore->onObjectSaved($this->id);
 	}
 ?>

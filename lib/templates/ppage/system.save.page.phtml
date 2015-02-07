@@ -68,8 +68,11 @@
 				$count++;
 			}
 			$this->save($properties);
-			$this->ClearCache();
 			$arResult=$page;
+
+			global $cache_config;
+			$cachestore=new cache($cache_config);
+			$cachestore->onObjectSaved($this->id);
 		}
 	}
 ?>

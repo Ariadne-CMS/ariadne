@@ -36,7 +36,11 @@
 						}
 					}
 					// clear cache
-					$clone->ClearCache();
+
+					global $cache_config;
+					$cachestore=new cache($cache_config);
+					$cachestore->onObjectSaved($clone->id);
+
 					$clone->resetConfig();
 				}
 			} else {
