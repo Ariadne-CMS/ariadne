@@ -1,21 +1,29 @@
 # .travis.yml
 env:
-    - DB=mysql
+    - DB=mysql WORKSPACE=yes
+    - DB=mysql WORKSPACE=no
+    - DB=postgresql
 
 language: php
+cache: apt
 
 php:
-    - 5.3
+    - 5.4
+    - 5.6
 
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq apache2 libapache2-mod-php5 php5-curl php5-mysql php5-pgsql imagemagick php5-mcrypt wget php-pear lynx subversion tidy
-    - sudo a2enmod actions
-    - sudo a2enmod rewrite
+    - sudo apt-get install -qq apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy poppler-utils
+    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - echo 'date.timezone = "Europe/Amsterdam"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - sudo a2enmod rewrite actions fastcgi alias
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
-    - sudo apache2ctl graceful
-    - sudo chown -R www-data:www-data ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml ${TRAVIS_BUILD_DIR}/lib/configs/svn/
-    - sudo svn co --non-interactive https://svn.muze.nl/svn/muze/pear/VersionControl /usr/share/php/VersionControl
+    - sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/default
+    - sudo svn co --non-interactive https://svn.muze.nl/svn/muze/pear/VersionControl `pear config-get php_dir`/VersionControl
+    - phpenv rehash
+    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+    - sudo service apache2 restart
     - ls -lad ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml
 
 before_script:
@@ -24,9 +32,20 @@ before_script:
     - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
 
 script:
-    - bash -e ./tests/run.sh
+    - bash ./tests/run.sh
+    - phpunit --coverage-clover=coverage.clover
 
 notifications:
     email: false
-    irc: "open.ircnet.org#ariadne"
+    irc:
+      channels:
+        - "open.ircnet.org#ariadne"
+      on_success: change
+      on_failure: always
+      use_notice: true
+      skip_join: true
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
