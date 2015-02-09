@@ -6,7 +6,8 @@
 			"function"	=> $this->getvar("newfunction"),
 			"language"	=> $this->getvar("newlanguage"),
 			"default"	=> $this->getvar("default"),
-			"template"	=> $this->getvar("template")
+			"template"	=> $this->getvar("template"),
+			"private"   => $this->getvar("private")
 		);
 		if ( ($args['function']=='config.ini') && ($this instanceof $args['type'])) {
 			$result = $this->call('system.template.test.phtml', $args );
