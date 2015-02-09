@@ -42,6 +42,8 @@ notifications:
         - "open.ircnet.org#ariadne"
       on_success: change
       on_failure: always
+      use_notice: true
+      skip_join: true
 
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
