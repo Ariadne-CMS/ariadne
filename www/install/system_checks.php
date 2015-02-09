@@ -61,8 +61,10 @@
 				require_once($ariadne . '/ar.php');
 
 				// checking if path_info could be available
-				$testuri = 'http://' .  $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-				$testuri = str_replace('/index.php', '/serverinfo.php', $testuri);
+				$testuri = new ar_url('http://' .  $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+				$testuri->query = '';
+				$testuri->path = str_replace('/index.php', '/', $testuri->path)."serverinfo.php";
+				$testuri = (string)$testuri;
 				$result1 = json_decode(ar_http::get($testuri),true);
 				$result2 = json_decode(ar_http::get($testuri.'/my/path/info'),true);
 
@@ -471,6 +473,13 @@
 		return false;
 	}
 
+	function check_mcrypt() {
+		if (extension_loaded('mcrypt')) {
+			return true;
+		}
+		return false;
+	}
+
 	function getServerVar( $name ) {
 		return isset( $_SERVER[$name] ) ? $_SERVER[$name] : null;
 	}
@@ -521,6 +530,7 @@
 		"check_html_tidy" => check_html_tidy(),
 		"check_grep" => check_grep(),
 		"check_demo_ax" => check_demo_ax(),
+		"check_mcrypt" => check_mcrypt(),
 //		"check_libs_ax" => check_libs_ax(),
 //		"check_docs_ax" => check_docs_ax()
 	);

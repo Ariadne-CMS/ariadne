@@ -80,6 +80,7 @@
 			echo "\$AR->DB->password = '$database_pass';\n";
 
 			include("conf/salt.conf");
+			include("conf/session.conf");
 			include("conf/pinp.conf");
 			include("conf/loader.conf");
 			include("conf/im.conf");

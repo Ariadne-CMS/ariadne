@@ -50,6 +50,7 @@
 	$ARnls['install:check_nls']		= 'NLS directory is readable';
 	$ARnls['install:check_tar_class']	= 'Archive/Tar class is available';
 	$ARnls['install:check_mb_functions'] = 'Multibyte string support is available';
+	$ARnls['install:check_mcrypt'] = 'Mcrypt support is available';
 
 	$ARnls['install:check_default_nls']	= 'Default nls language files are available';
 	$ARnls['install:check_connect_db']	= 'Connect to database server';
@@ -109,5 +110,3 @@
 	$ARnls['install:file_should_be']	= 'The file should be named "ariadne.phtml" and goes under "ariadne/lib/configs/"';
 	$ARnls['install:continue_when_done']	= 'When the file has been placed, click the button below to continue.';
 	$ARnls['install:continue_install']	= 'Continue installation';
-	
-?>
