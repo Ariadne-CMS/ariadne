@@ -185,8 +185,8 @@
 							$result = $this->getUser($login, $ARUserDir);
 						} else {
 							debug("checkLogin: could not login ($login) on private session (".$ARCurrent->session->id.") with credentials from cookie: removing cookie", "all");
-							unset($cookie[$ARCurrent->session->id]);
-							setcookie("ARCookie", serialize($cookie), 0, '/');
+							// FIXME: only the loader should know about cookies for sessions
+							setcookie("ARSessionCookie[".$ARCurrent->session->id."]", null);
 							$this->getUser('public');
 							$result = LD_ERR_ACCESS;
 						}
@@ -194,10 +194,10 @@
 				} else {
 					if ($AR->arSessionRespawn) {
 						debug("checkLogin: trying to respawn a session", "all");
-						$cookie = ldGetCredentials();
-						if (is_array($cookie)) {
-							reset($cookie);
-							while (!$result && (list($sid, $sval)=each($cookie))) {
+						$cookies = ldGetCredentials();
+						if (is_array($cookies)) {
+							reset($cookies);
+							while (!$result && (list($sid, $sval)=each($cookies))) {
 								ldStartSession($sid);
 								$login = $ARCurrent->session->get("ARLogin");
 								debug("checkLogin: trying to respawn session ($sid) for user ($login)", "all");

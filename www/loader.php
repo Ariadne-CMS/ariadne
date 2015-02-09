@@ -129,10 +129,9 @@
 			$AR_PATH_INFO=substr($AR_PATH_INFO,strlen($matches[0])-1);
 			$AR->hideSessionIDfromURL=false;
 		} elseif ($AR->hideSessionIDfromURL) {
-			$ARCookie=stripslashes($_COOKIE["ARCookie"]);
-			$cookie=@unserialize($ARCookie);
-			if (is_array($cookie)) {
-				$session_id=current(array_keys($cookie));
+			$cookies = ldGetCredentials();
+			if (is_array($cookies) && count($cookies) === 1) {
+				$session_id=current(array_keys($cookies));
 			}
 		}
 

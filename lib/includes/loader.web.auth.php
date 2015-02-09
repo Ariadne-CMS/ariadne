@@ -23,8 +23,6 @@
 		// numerous checks on "admin".
 		$login = strtolower( $login );
 
-		$ARCookie = stripslashes($_COOKIE["ARCookie"]);
-
 		debug("ldSetCredentials($login)","object");
 
 		if (!$ARCurrent->session) {
@@ -46,35 +44,42 @@
 		/* now save our session */
 		$ARCurrent->session->save();
 
-		if (!$AR->hideSessionIDfromURL) {
-			$cookie=unserialize($ARCookie);
-		} else {
-			// If we are hiding the session id from the URL,
-			// there can only be one user per cookie, so we
-			// throw the old stuff away
-			$cookie=array();
-		}
+		$cookies = (array)$_COOKIE["ARSessionCookie"];
 
-		// FIXME: now clean up the cookie, remove old sessions
-		@reset($cookie);
-		while (list($sessionid, $data)=@each($cookie)) {
-			if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")) {
-				// don't just kill it, it may be from another ariadne installation
-				if ($data['timestamp']<(time()-86400)) {
-					// but do kill it if it's older than one day
-					unset($cookie[$sessionid]);
+		foreach($cookies as $sessionid => $cookie){
+			if(!$AR->hideSessionIDfromURL){
+				if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")) {
+					$data = ldDecodeCookie($cookie);
+					if(is_array($data)) {
+						// don't just kill it, it may be from another ariadne installation
+						if ($data['timestamp']<(time()-86400)) {
+							// but do kill it if it's older than one day
+							unset($cookie[$sessionid]);
+							setcookie("ARSessionCookie[".$sessionid."]",null);
+						}
+					}
+				}
+			} else {
+				// only 1 cookie allowed, unset all cookies
+				if( $sessionid != $ARCurrent->session->id) {
+					setcookie("ARSessionCookie[".$sessionid."]",null);
 				}
 			} 
 		}
 
-		$cookie[$ARCurrent->session->id]['login']=$login;
-		$cookie[$ARCurrent->session->id]['timestamp']=time();
-		$cookie[$ARCurrent->session->id]['check']=ldGenerateSessionKeyCheck();
-		$ARCookie=serialize($cookie);
-		debug("setting cookie ($ARCookie)");
+		$data = array();
+
+		$data['login']=$login;
+		$data['timestamp']=time();
+		$data['check']=ldGenerateSessionKeyCheck();
+
+		$cookie=ldEncodeCookie($data);
+		$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
+
+		debug("setting cookie ()($cookie)");
 		header('P3P: CP="NOI CUR OUR"');
 		$https = ($_SERVER['HTTPS']=='on');
-		setcookie("ARCookie",$ARCookie, 0, '/', false, $https, true);
+		setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 	}
 
 	function ldAccessTimeout($path, $message, $args = null, $function = null) {
@@ -194,16 +199,9 @@
 	}
 
 	function ldGetCredentials() {
-		/* 
-			FIXME:
-			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-			cookies put in $_COOKIE which will cause unserialize
-			to not function correctly.
-		*/
-		$ARCookie = stripslashes($_COOKIE["ARCookie"]);
 		debug("ldGetCredentials()","object");
-		$cookie=unserialize($ARCookie);
-		return $cookie;
+		$ARSessionCookie = $_COOKIE["ARSessionCookie"];
+		return $ARSessionCookie;
 	}
 
 	function ldCheckCredentials($login) {
@@ -211,10 +209,11 @@
 		debug("ldCheckCredentials()","object");
 		$result=false;
 		$cookie=ldGetCredentials();
-		if ($login==$cookie[$ARCurrent->session->id]['login']
-			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
+		$data = ldDecodeCookie($cookie[$ARCurrent->session->id]);
+		if ($login === $data['login']
+			&& ($saved=$data['check'])) {
 			$check=ldGenerateSessionKeyCheck();
-			if ($check==$saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
+			if ($check === $saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
 				$result=true;
 			} else {
 				debug("login check failed","all");
@@ -234,5 +233,31 @@
 			}
 		}
 		return $result;
+	}
+
+	function ldDecodeCookie($cookie) {
+		global $AR;
+		$data = json_decode($cookie,true);
+		if(is_null($data)){
+			if(isset($AR->sessionCryptoKey)) {
+				$key = $AR->sessionCryptoKey;
+				$crypto = new ar_crypt($key);
+				$data = json_decode($crypto->decrypt($cookie),true);
+			}
+		}
+
+		return $data;
+	}
+
+	function ldEncodeCookie($cookie) {
+		global $AR;
+		$data = json_encode($cookie);
+		if(isset($AR->sessionCryptoKey)) {
+			$key = $AR->sessionCryptoKey;
+			error_log("Crypto key == ".$key,4);
+			$crypto = new ar_crypt($key);
+			$data = $crypto->crypt($data);
+		}
+		return $data;
 	}
 ?>

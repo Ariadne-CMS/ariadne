@@ -22,7 +22,7 @@
 		);
 		
 		public function __construct( $name = 'ARUserCookie', $cookie = null, $configuration = array() ) {
-			if ( $name == 'ARCookie' ) {
+			if ( $name == 'ARSessionCookie' ) {
 				// prevent access to Ariadne's authentication cookie
 				$name = 'ARUserCookie';
 			}
@@ -56,7 +56,7 @@
 		}
 		
 		public function save( $name = null ) {
-			if ( $name == 'ARCookie' ) {
+			if ( $name == 'ARSessionCookie' ) {
 				// prevent access to Ariadne's authentication cookie
 				$name = 'ARUserCookie';
 			}
