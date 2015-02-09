@@ -1,6 +1,4 @@
-#!/bin/bash -x
-
-set -e
+#!/bin/bash
 
 if [ "${TRAVIS}" = "true" ] ; then
 	BUILDROOT="${TRAVIS_BUILD_DIR}"
@@ -34,7 +32,13 @@ fi
 if [ ${DB:=mysql} = 'postgresql' ] ; then
 	INSTALLDATA="language=en&step=step6&database=postgresql&database_host=&database_user=postgres&database_pass=&database_name=${TESTDB}&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=0&enable_workspaces=0&install_demo=1"
 else
-	INSTALLDATA="language=en&step=step6&database=mysql&database_host=localhost&database_user=root&database_pass=&database_name=${TESTDB}&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=0&enable_workspaces=0&install_demo=1"
+	INSTALLDATA="language=en&step=step6&database=mysql&database_host=localhost&database_user=root&database_pass=&database_name=${TESTDB}&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=0&install_demo=1"
+	if [ ${WORKSPACE:=no} = 'yes' ] ; then
+		set -x
+		INSTALLDATA="${INSTALLDATA}&enable_workspaces=1"
+	else
+		INSTALLDATA="${INSTALLDATA}&enable_workspaces=0"
+	fi
 fi
 
 echo  "${INSTALLDATA}" | lynx -post_data  ${URL}install/index.php > ${TMPDIR}/installer.output.txt
@@ -181,7 +185,7 @@ if [ $EXPLORE_ITEM -lt 1 ]; then
 	exit 1;
 fi
 # Export /projects/demo/ from the commandline
-sudo ${BUILDROOT}/bin/export --verbose /projects/demo/ ${TMPDIR}/demo.ax | tee ${TMPDIR}/exportresult.txt
+${BUILDROOT}/bin/export --verbose /projects/demo/ ${TMPDIR}/demo.ax | tee ${TMPDIR}/exportresult.txt
 EXPORTRESULT_ITEM=`grep 'processing(/projects/demo/demo/)' ${TMPDIR}/exportresult.txt | wc -l`
 EXPORTRESULT_ERRORS=`grep -i error ${TMPDIR}/exportresult.txt|wc -l`
 EXPORTRESULT_WARNINGS=`grep -i warning ${TMPDIR}/exportresult.txt|wc -l`
@@ -246,10 +250,12 @@ if [ ${EXPORT_BASE_TEMPLATES_COUNT} -ne ${EXPORT_EXPORT_TEMPLATES_COUNT} ] ; the
 fi
 
 cd ${BUILDROOT}
-SYNTAX_ERROR_COUNT=`(find www -type f -name \*php ; find www/install/conf lib ftp soap webdav -type f)  | xargs -n1 --replace={} bash -c 'php5 -d short_open_tag=off -l {} || true' | grep -v 'No syntax errors detected in'  | tee ${TMPDIR}/syntax.errors.txt | wc -l`
+SYNTAX_ERROR_COUNT=`(find www -type f -name \*php ; find www/install/conf lib ftp soap webdav -type f)  | grep -v 'lib/ar/beta/' | xargs -n1 --replace={} bash -c 'php -d "error_reporting=E_ALL & ~E_STRICT & ~E_NOTICE " -d short_open_tag=off -l {} || true' | grep -v 'No syntax errors detected in'  | tee ${TMPDIR}/syntax.errors.txt | wc -l`
 
 if [ ${SYNTAX_ERROR_COUNT} -ge 1 ]; then
 	echo "syntax errors found in build";
 	cat ${TMPDIR}/syntax.errors.txt
 	exit 1;
 fi
+
+echo "Tests done"
