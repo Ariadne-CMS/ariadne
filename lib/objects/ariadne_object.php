@@ -177,6 +177,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$arResult = $this;
 			} else {
 				while ($arType != "ariadne_object") {
+					// if it is a subtype object, disk templates do not exists, 
+					$subcpos = strpos($arType, '.');
+					if ($subcpos) {
+						// subtype, skip looking for templates
+						$arSuper = substr($arType, 0, $subcpos);
+						$AR->superClass[$arType]=$arSuper;
+						$arType=$arSuper;
+						continue;
+					}
+
 					// search for the template, stop at the root class ('ariadne_object')
 					// (this should not happen, as pobject must have a 'default.phtml')
 					$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
@@ -195,22 +205,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						if (!($arSuper=$AR->superClass[$arType])) {
 							// no template found, no default.phtml found, try superclass.
 
-							if ($subcpos = strpos($arType, '.')) {
-								$arSuper = substr($arType, 0, $subcpos);
-								if (!class_exists($arType)) {
-									// the super class was not yet loaded, so do that now
-									$this->store->newobject('', '', $arSuper, new object);
-								}
-							} else {
-								if (!class_exists($arType)) {
-									// the given class was not yet loaded, so do that now
-									$this->store->newobject('','',$arType,new object);
-									// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
-
-								}
-								$arTemp=new $arType();
-								$arSuper=get_parent_class($arTemp);
+							if (!class_exists($arType)) {
+								// the given class was not yet loaded, so do that now
+								$this->store->newobject('','',$arType,new object);
 							}
+							$arSuper=get_parent_class($arType);
+
 							$AR->superClass[$arType]=$arSuper;
 						}
 						$arType=$arSuper;
@@ -1468,9 +1468,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						// no template found, no default.phtml found, try superclass.
 						if ($subcpos = strpos($arType, '.')) {
 							$arSuper = substr($arType, 0, $subcpos);
-							if (!class_exists($arSuper)) {
-								$this->store->newobject('', '', $arSuper, new object);
-							}
 						} else {
 							if (!class_exists($arType)) {
 								// the given class was not yet loaded, so do that now
@@ -1680,9 +1677,6 @@ debug("loadLibrary: loading cache for $this->path");
 						// no template found, no default.phtml found, try superclass.
 						if ($subcpos = strpos($arType, '.')) {
 							$arSuper = substr($arType, 0, $subcpos);
-							if (!class_exists($arSuper)) {
-								$this->store->newobject('', '', $arSuper, new object);
-							}
 						} else {
 							if (!class_exists($arType)) {
 								// the given class was not yet loaded, so do that now
