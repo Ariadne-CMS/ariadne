@@ -87,6 +87,7 @@ class htmlcleanertag {
 
 		while ($i<strlen($str)) {
 			$chr = $str[$i];
+
 			if ($_state == -1) {		// reset buffers
 				$_name = '';
 				$_quote = '';
@@ -112,7 +113,7 @@ class htmlcleanertag {
 						$_state = 3;
 					} else {
 						// end of attribute
-						$return[strtolower($_name)] = "";
+						$return[] = $_name;
 						$_state = -1;
 						continue; // Don't up the counter, this char is the first char for the next attribute.
 					}
@@ -163,6 +164,10 @@ class htmlcleanertag {
 		if ($_value!='') {
 			$return[strtolower($_name)] = $_value;
 		}
+		if ($_name!='') {
+			$return[] = $_name;
+		}
+
 		return $return;
 	}
 
@@ -180,7 +185,11 @@ class htmlcleanertag {
 		else if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE)
 			return '</'.$this->nodeName.">";
 		foreach ($this->attributes as $attkey => $attvalue) {
-			$str .= ' '.$attkey."=\"".$attvalue."\"";
+			if (is_numeric($attkey)) {
+				$str .= ' '.$attvalue;
+			} else {
+				$str .= ' '.$attkey."=\"".$attvalue."\"";
+			}
 		}
 		if ($this->closingStyle == HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE)
 			$str .= ' />';
