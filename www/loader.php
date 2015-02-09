@@ -65,15 +65,6 @@
 
 
 
-	function fix_quotes(&$value) {
-		if (is_array($value)) {
-			reset($value);
-			array_walk($value, 'fix_quotes');
-		} else {
-			$value=stripslashes($value);
-		}
-	}
-
 	function ldGatherXSSInput(&$xss, $input) {
 		if (is_array($input)) {
 			foreach ($input as $value) {
@@ -330,16 +321,7 @@
 				$cachenls="/$nls";
 			}
 
-			// find (and fix) arguments
-			ini_set('magic_quotes_runtime', 0); 
-			if (get_magic_quotes_gpc()) {
-				// this fixes magic_quoted input
-				fix_quotes($_GET);
-				fix_quotes($_POST);
-				$ARCookie=stripslashes($ARCookie);
-			}
 			$args=array_merge($_GET,$_POST);
-
 
 			// instantiate the store
 			$inst_store = $store_config["dbms"]."store";

@@ -8,15 +8,6 @@
 	include_once($store_config['code']."includes/loader.soap.php");
 	include_once($store_config['code']."modules/mod_ar.php");
 
-	function fix_quotes(&$value) {
-		if (is_array($value)) {
-			reset($value);
-			array_walk($value, 'fix_quotes');
-		} else {
-			$value=stripslashes($value);
-		}
-	}
-
 	function unpack_array_names($source, &$target) {
 		if (is_array($source)) {
 			reset($source);
