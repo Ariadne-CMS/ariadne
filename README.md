@@ -1,6 +1,8 @@
 Ariadne: more than a cms.
 ========================= 
 
+[![Join the chat at https://gitter.im/Ariadne-CMS/ariadne](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Ariadne-CMS/ariadne?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Ariadne-CMS/ariadne/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Ariadne-CMS/ariadne/?branch=master)
 [![Travis](https://travis-ci.org/Ariadne-CMS/ariadne.svg)](https://travis-ci.org/Ariadne-CMS/ariadne/)
 [![License](https://img.shields.io/badge/License-GPL2-brightgreen.svg)](https://github.com/Ariadne-CMS/ariadne/blob/master/LICENSE)
