@@ -1,4 +1,27 @@
 ========================
+Changes in Ariadne 8.5
+========================
+
+* Fixes
+- encrypt arcookies if encryption key is available
+  - session cookies are now split in 1 cookie per session
+- log off screen should not show a error if there are no locks to unlock
+- Added support to the htmlcleaner for attributes without values (<input type="radio" checked>) now parses correctly
+- ar/crypt improvements for php5.6 support and better encryption
+- remove magic quotes compatibility code
+- fixed saving of 'private' flag for templates
+- merge lock dialog fix
+
+Added:
+- Unit tests from trunk
+
+Notes:
+- because 8.3.2 had as version 8.4 in some screens, we decided that it would be
+  confusing would we release 8.4 now
+- to enable encrypted session cookies:
+	run www/install/conf/session.conf and add the output to lib/configs/ariadne.phtml
+
+
 Changes in Ariadne 8.3.2
 ========================
 
