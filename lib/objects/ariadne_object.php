@@ -2103,14 +2103,21 @@ debug("loadLibrary: loading cache for $this->path");
 				//        only scalable solution is storage in a database
 				//        but it will need the original path info to
 				//        remove recursively fast enough.
-				  //        this means a change in the filestore api. -> 2.5
+				//        this means a change in the filestore api. -> 2.5
+
+				// Use chunks of max 5000 objects at a time to be more memory-efficient;
 				$pcache=$this->store->get_filestore("privatecache");
 				if ($recurse) {
-					$ids=$this->store->info($this->store->find($path, "" ,0));
-					if(is_array($ids)){
+					$offset = 0;
+					$limit = 5000;
+					$ids=$this->store->info($this->store->find($path, "" , $limit, $offset));
+					while (is_array($ids) && sizeof($ids)) {
 						foreach($ids as $value) {
 							$pcache->purge($value["id"]);
 						}
+
+						$offset += $limit;
+						$ids = $this->store->info($this->store->find($path, "", $limit, $offset));
 					}
 				} else {
 					$pcache->purge($this->id);
