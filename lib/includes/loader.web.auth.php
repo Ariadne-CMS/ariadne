@@ -45,6 +45,7 @@
 		$ARCurrent->session->save();
 
 		$cookies = (array)$_COOKIE["ARSessionCookie"];
+		$https = ($_SERVER['HTTPS']=='on');
 
 		foreach($cookies as $sessionid => $cookie){
 			if(!$AR->hideSessionIDfromURL){
@@ -62,24 +63,24 @@
 			} else {
 				// only 1 cookie allowed, unset all cookies
 				if( $sessionid != $ARCurrent->session->id) {
-					setcookie("ARSessionCookie[".$sessionid."]",null);
+					setcookie("ARSessionCookie[".$sessionid."]",null,0,'/',false,$https,true);
 				}
 			}
 		}
 
-		$data = array();
+		if( $ARCurrent->session->id !== 0) {
+			$data = array();
 
-		$data['login']=$login;
-		$data['timestamp']=time();
-		$data['check']=ldGenerateSessionKeyCheck();
+			$data['login']=$login;
+			$data['timestamp']=time();
+			$data['check']=ldGenerateSessionKeyCheck();
 
-		$cookie=ldEncodeCookie($data);
-		$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
+			$cookie=ldEncodeCookie($data);
+			$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
 
-		debug("setting cookie ()($cookie)");
-		header('P3P: CP="NOI CUR OUR"');
-		$https = ($_SERVER['HTTPS']=='on');
-		setcookie($cookiename,$cookie, 0, '/', false, $https, true);
+			header('P3P: CP="NOI CUR OUR"');
+			setcookie($cookiename,$cookie, 0, '/', false, $https, true);
+		}
 	}
 
 	function ldAccessTimeout($path, $message, $args = null, $function = null) {
