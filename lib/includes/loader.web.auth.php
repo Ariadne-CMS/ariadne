@@ -207,7 +207,7 @@
 
 	function ldCheckCredentials($login) {
 	global $ARCurrent, $AR;
-		debug("ldCheckCredentials()","object");
+		debug("ldCheckCredentials($login)","object");
 		$result=false;
 		$cookie=ldGetCredentials();
 		$data = ldDecodeCookie($cookie[$ARCurrent->session->id]);
