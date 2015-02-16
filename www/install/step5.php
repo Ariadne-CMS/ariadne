@@ -38,14 +38,19 @@
 					<h2><?php echo $ARnls['install:install_modules']; ?></h2>
 					<div class="field checkbox">
 						<?php
-							if ($enable_svn) {
+							$disabled = '';
+							$checked =  '';
+							$svnsupport = check_svn();
+							if (!$svnsupport) {
+								$disabled = "disabled";
+							} elseif ($enable_svn) {
 								$checked = "checked='checked'";
 							} else {
 								$checked = '';
 							}
 						?>
 						<input type="hidden" name="enable_svn" value="0">
-						<input <?php echo $checked; ?> type="checkbox" id="enable_svn" name="enable_svn" value="1">
+						<input <?php echo $checked; ?> <?php echo $disabled; ?> type="checkbox" id="enable_svn" name="enable_svn" value="1">
 						<label for='enable_svn'><?php echo $ARnls['install:enable_svn']; ?></label>
 					</div>
 					<div class="field checkbox">
