@@ -279,10 +279,11 @@
 		$nls=$ARCurrent->nls;
 		if ($AR->hideSessionIDfromURL) {
 			$cookies = ldGetCredentials();
-			if( ! isset($cookies[$ARCurrent->session->id]) ) {
+			$https = ($_SERVER['HTTPS']=='on');
+			if( ! isset($cookies[$ARCurrent->session->id])  && $ARCurrent->session->id != 0) {
 				foreach($cookies as $sessionid => $data){
 					// kill all other sessions
-					setcookie("ARSessionCookie[".$sessionid."]",null);
+					setcookie("ARSessionCookie[".$sessionid."]",null,0,'/', false, $https, true);
 				}
 				$data = array();
 				$data['timestamp']=time();
@@ -290,7 +291,6 @@
 				$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
 				debug("setting cookie (".$ARCurrent->session->id.")(".$cookie.")");
 				header('P3P: CP="NOI CUR OUR"');
-				$https = ($_SERVER['HTTPS']=='on');
 				setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 			}
 		}
