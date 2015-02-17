@@ -263,6 +263,7 @@
 		}
 	?>
 		<label for="private" class="ontop"><?php echo $ARnls["ariadne:template:private"]; ?></label>
+		<input type="hidden" name="private" value="0">
 		<input type="checkbox" id="private" name="private" value="1" <?php if ($private) { echo " checked"; } ?>>
 	</div>
 	<div class="template_option">
@@ -272,6 +273,7 @@
 		}
 	?>
 		<label for="default" class="ontop"><?php echo $ARnls["default"]; ?></label>
+		<input type="hidden" name="default" value="0">
 		<input type="checkbox" id="default" name="default" value="1" <?php if ($default) { echo " checked"; } ?>>
 	</div>
 
