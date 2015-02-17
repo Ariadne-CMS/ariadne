@@ -166,10 +166,6 @@
 			} else if ( $name == 'arCallArgs' ) {
 				return ar_loader::getvar();
 			}
-			$context = pobject::getContext();
-			if ( is_array($context) ) {
-				$me = $context["arCurrentObject"];
-			}
 			if ( isset($ARCurrent->$name) ) {
 				return $ARCurrent->$name;
 			}
