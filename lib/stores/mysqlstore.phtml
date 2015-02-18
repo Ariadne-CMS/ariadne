@@ -95,8 +95,6 @@ class mysqlstore extends store{
 
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_compiler.php");
-		include_once($this->code."stores/modules/mysqlstore_iterator.php");
-		include_once($this->code."modules/mod_selector.php");
 		
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
@@ -108,10 +106,6 @@ class mysqlstore extends store{
 		} else {
 			$this->filestores = Array('templates', 'files');
 		}
-	}
-
-	public function getIterator($selector, $definitions, $objects) {
-		return new mysqlstoreIterator($selector, $definitions, $this, $objects);
 	}
 
 	public function call($template, $args, $objects, $options = array() ) {
