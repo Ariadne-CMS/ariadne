@@ -363,14 +363,8 @@
 	global $store;
 
 		debug("ldMkDir($dir)","object");
-		$dir=strtok($dir, "/");
 		$curr=$store->get_config("files");
-		while ($dir) {
-			$curr.=$dir."/";
-			debug("ldMkDir: $curr","all");
-			@mkdir($curr, 0755);
-			$dir=strtok("/");
-		}
+		@mkdir($curr.'/'.$dir, 0755, true);
 	}
 
 	function ldGetUserCookie($cookiename="ARUserCookie") {
