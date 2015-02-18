@@ -38,8 +38,7 @@ script:
 notifications:
     email: false
     irc:
-      channels:
-        - "open.ircnet.org#ariadne"
+      secure: "mOc/UjQgoRI1+Ez12A/DWXShtfKjKwDTSuMn8PoSyul8WelNYl6z6zKBflePB8BcYN2TNIaGQQGAXqAJKB1njYG5/RCmF8HVvBUOLWBdcJ7AW2h7bOb30YxYZr+vTXebKhz9TDZHD0lTVI5F6d7JYv0jjfPr4nj6rVhSvkbZUrw="
       on_success: change
       on_failure: always
       use_notice: true
