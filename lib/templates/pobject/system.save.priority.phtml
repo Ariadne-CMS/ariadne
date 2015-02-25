@@ -8,6 +8,7 @@
 			$this->data=current($this->get(".","system.get.data.phtml"));
 			$this->priority=(int)$this->getdata("priority","none");
 			$this->save();
+			$this->ClearCache();
 		}
 	}
 ?>
