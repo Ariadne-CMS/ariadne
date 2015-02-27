@@ -33,6 +33,14 @@
 
     ******************************************************************/
 
+	// compatibility with loaders in the bin directory which where not yet updated
+	if( ! defined('AriadneBasePath') ){
+		global $ariadne;
+		$ARLoader = 'cmd';
+		trigger_error('bootstrap.php not included, please update your loader',E_USER_DEPRECATED);
+		require_once($ariadne."/bootstrap.php");
+	}
+
 	$DB["method"]["loader"] = false;
 	$DB["method"]["file"] = true;
 	$DB["file"] = "php://stderr";
