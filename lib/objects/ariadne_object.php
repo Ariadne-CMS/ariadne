@@ -3115,7 +3115,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 		if ($ARCurrent->session && $ARCurrent->session->data && $ARCurrent->session->data->formSecret) {
 			$formSecret = $this->getvar("formSecret");
-			return ($formSecret == $ARCurrent->session->data->formSecret);
+			return ($formSecret === $ARCurrent->session->data->formSecret);
 		}
 		return false;
 	}
