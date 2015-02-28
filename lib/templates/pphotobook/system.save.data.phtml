@@ -24,7 +24,7 @@
 		$properties = array();
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
 		} else {
 			if ($ContentEditOptionsPath) {
 				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
@@ -121,7 +121,7 @@
 		$this->data->thumbwidth=$this->getdata("thumbwidth","none");
 		$this->data->thumbheight=$this->getdata("thumbheight","none");
 		$this->data->thumbcolor=$this->getdata("thumbcolor","none");
-		$this->save($properties);
+		$arResult = $this->save($properties);
 		reset($AR->nls->list);
 		while (list($key, $value)=each($AR->nls->list)) {
 			if ($page=$this->getdata("page",$key)) {

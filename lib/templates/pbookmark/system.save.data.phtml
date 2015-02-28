@@ -49,7 +49,7 @@
 		if (!$this->error) {
 			$properties["value"][]["value"]=$this->data->value;
 			if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-				$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+				$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
 			} else {
 				if (!$this->data->nls) {
 					$this->data->nls=new object;
@@ -86,7 +86,7 @@
 					}
 				}
 			}
-			$this->save($properties);
+			$arResult = $this->save($properties);
 			global $cache_config;
 			$cachestore=new cache($cache_config);
 			$cachestore->onObjectSaved($this->id);

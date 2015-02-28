@@ -22,7 +22,7 @@
 		$properties = array();
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
 		} else {
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
@@ -106,7 +106,7 @@
 					}
 				}
 			}
-			$this->save($properties);
+			$arResult = $this->save($properties);
 
 			if (!$this->error) {
 				unset($this->arIsNewObject);

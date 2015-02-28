@@ -10,7 +10,11 @@
 			$parentobj->CheckLogin("add", $this->type)) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
 			$this->CheckConfig()) {
-		$this->call("pdir::system.save.data.phtml",$arCallArgs);
+
+		$arResult = $this->call("pdir::system.save.data.phtml",$arCallArgs);
+		if ( !$arResult ) {
+			return $arResult;
+		}
 
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = array();
@@ -163,7 +167,7 @@
 						if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
 							$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
 						} else {
-							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
+							$this->error = ar::error("Please fill in distinctive hostnames; they should not be the same for different languages.", 208);
 							break 2; // break the foreach and the nls while loop
 						}
 
@@ -196,7 +200,7 @@
 						if (!$this->data->config->workspaceurl_list['host'][$regs[2].$regs[3]]) {
 							$this->data->config->workspaceurl_list['host'][$regs[2].$regs[3]] = $key;
 						} else {
-							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
+							$this->error = ar::error( "Please fill in distinctive hostnames; they should not be the same for different languages.", 208);
 						}
 					}
 
@@ -213,7 +217,7 @@
 			$this->data->workspaceurl=$this->data->{$this->data->nls->default}->workspaceurl;
 
 			if (!$this->error) {
-				$this->save($properties);
+				$arResult = $this->save($properties);
 			}
 
 		}

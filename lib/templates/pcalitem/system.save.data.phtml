@@ -62,7 +62,8 @@
 		$repeat_by=$this->getdata("repeat_by","none");
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+			return false;
 		} else {
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
@@ -111,7 +112,7 @@
 
 			// calculate start and endtime, repeats etc.
 			if (!isset($date)) {
-				$this->error=$ARnls["err:validdate"];
+				$this->error = ar::error( $ARnls["err:validdate"], 211);
 			} else {
 				$days=(24*60*60);
 				$weeks=(7*$days);
@@ -270,7 +271,7 @@
 					}
 					$this->data->timeframes=$properties["timeframe"];
 				}
-				$this->save($properties);
+				$arResult = $this->save($properties);
 				global $cache_config;
 				$cachestore=new cache($cache_config);
 				$cachestore->onObjectSaved($this->id);

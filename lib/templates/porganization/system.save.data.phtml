@@ -24,7 +24,8 @@
 		$properties = array();
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+			$this->error = ar_error::raiseError( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+			$arResult = false;
 		} else {
 			$this->data->address=$this->getdata("address","none");
 			$this->data->zipcode=$this->getdata("zipcode","none");
@@ -61,7 +62,7 @@
 						$newnlsdata=$this->data->$key;
 					}
 					if (!$this->getdata("name",$key)) {
-						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+						$this->error = ar::error( sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]), 114);
 					}
 					$newnlsdata->name=$this->getdata("name",$key);
 					$properties["name"][$count]["value"]=$newnlsdata->name;
@@ -105,7 +106,9 @@
 			$properties["address"][0]["city"]=$this->data->city;
 			$properties["address"][0]["country"]=$this->data->country;
 			if (!$this->error) {
-				$this->save($properties);
+				$arResult = $this->save($properties);
+			} else {
+				$arResult = false;
 			}
 
 			global $cache_config;

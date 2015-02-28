@@ -22,7 +22,8 @@
 		$properties = array();
 
 		if (!$this->getdata("lastname","none")) {
-			$this->error=$ARnls["err:nolastnameentered"];
+			$this->error = ar::error( $ARnls["err:nolastnameentered"], 210);
+			return false;
 		} else {
 			$this->data->initials=$this->getdata("initials", "none");
 			$this->data->firstname=$this->getdata("firstname","none");
@@ -106,7 +107,7 @@
 						);
 			}
 			if (!$this->error) {
-				$this->save($properties);
+				$arResult = $this->save($properties);
 			}
 			global $cache_config;
 			$cachestore=new cache($cache_config);

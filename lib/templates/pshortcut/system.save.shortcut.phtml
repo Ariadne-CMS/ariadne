@@ -26,11 +26,11 @@
 		}
 
 
-		$this->data->path=$this->getdata("path","none");
-		$path=$this->store->make_path($this->parent, $this->data->path);
+		$this->data->path = $this->getdata("path","none");
+		$path = $this->store->make_path($this->parent, $this->data->path);
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
 		} else {
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
@@ -71,7 +71,7 @@
 		$this->data->keepurl = $this->getdata("keepurl");
 
 		if ($path == $this->path) {
-			$this->error=sprintf($ARnls["err:nosupportforshortcuts"],$path);
+			$this->error = ar::error( sprintf($ARnls["err:nosupportforshortcuts"],$path), 212);
 		} else
 		if ($this->store->exists($path)) {
 			$result=$this->get($path, "system.get.type.phtml");
@@ -80,14 +80,14 @@
 				$arResult=$vtype;
 				$properties["references"][0]["path"] = $this->data->path;
 			} else {
-				$this->error=sprintf($ARnls["err:nosupportforshortcuts"],$path);
+				$this->error = ar::error( sprintf($ARnls["err:nosupportforshortcuts"],$path), 212);
 			}
 		} else {
-			$this->error=sprintf($ARnls["err:wrongpath"],$path);
+			$this->error = ar::error( sprintf($ARnls["err:wrongpath"],$path), 115);
 		}
 		if (!$this->error) {
 			$this->vtype=$vtype;
-			$this->save($properties, $vtype);
+			$arResult = $this->save($properties, $vtype);
 
 			global $cache_config;
 			$cachestore=new cache($cache_config);

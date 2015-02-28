@@ -36,7 +36,8 @@
 				$this->data->priority=$displays->data->priority;
 
 				if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-					$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+					$this->error = ar_error::raiseError( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+					$arResult = false;
 				} else {
 					if ($ContentEditOptionsPath) {
 						$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
@@ -191,7 +192,8 @@
 				}
 				$properties["published"][0]["value"]=$this->data->published;
 
-				if ($this->save($properties)) {
+				$arResult = $this->save($properties);
+				if ( $arResult ) {
 					reset($AR->nls->list);
 					while (list($key, $value)=each($AR->nls->list)) {
 						/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
@@ -200,7 +202,7 @@
 
 						$page=$this->getdata("page",$key);
 						if ($page!==false) {
-							$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
+							$arResult = $this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
 						}
 					}
 					global $cache_config;
@@ -208,10 +210,12 @@
 					$cachestore->onObjectSaved($this->id);
 				}
 			} else {
-				$this->error=sprintf($ARnls["err:notascenario"],$scenario);
+				$this->error = ar_error::raiseError( sprintf($ARnls["err:notascenario"],$scenario), 201 );
+				$arResult = false;
 			}
 		} else {
-			$this->error=sprintf($ARnls["err:scenerionotfound"],$scenario);
+			$this->error = ar_error::raiseError( sprintf($ARnls["err:scenerionotfound"],$scenario), 202 );
+			$arResult = false;
 		}
 	}
 ?>

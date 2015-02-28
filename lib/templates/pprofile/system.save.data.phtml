@@ -30,8 +30,8 @@
 		$properties["text"][]["value"]=$this->data->name;
 		if ($this->arIsNewObject) {
 			if ($login=$this->getdata("arNewFilename","none")) {
-				if (strlen($login)>32) {
-					$this->error=$ARnls["err:logintoolong"];
+				if (strlen($login)>128) {
+					$this->error = ar::error( $ARnls["err:logintoolong"], 206);
 				} else {
 					$criteria["login"]["value"]["="]=$login;
 				
@@ -45,10 +45,10 @@
 					}
 
 					if ($loginexists) {
-						$this->error=sprintf($ARnls["err:loginexists"],$login);
+						$this->error = ar::error( sprintf($ARnls["err:loginexists"],$login), 207);
 					} else {
 						if (preg_match('/\{.*\}/',$login)) {
-							$this->error=$ARnls["err:donotuseid"];
+							$this->error = ar::error( $ARnls["err:donotuseid"], 204);
 						} else {
 							$this->data->login=$login;
 							$properties["login"][0]["value"]=$login;
@@ -56,7 +56,7 @@
 					}
 				}
 			} else {
-				$this->error=$ARnls["err:mustenterlogin"];
+				$this->error = ar::error( $ARnls["err:mustenterlogin"], 205);
 			}
 		}
 		if ($language=$this->getdata("language","none")) {
@@ -86,7 +86,7 @@
 		}
 
 		if (!$this->error) {
-			$this->save($properties);
+			$arResult = $this->save($properties);
 		}
 		global $cache_config;
 		$cachestore=new cache($cache_config);
