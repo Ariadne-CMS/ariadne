@@ -1,7 +1,7 @@
 <?php   
 	if ($this->CheckSilent("delete")) {
 		if (!$this->lock("T")) {
-			$this->error=$ARnls["err:cannotlockobject"];
+			$this->error = ar::error( $ARnls["err:cannotlockobject"], 105);
 		} else {
 			if ($this->AR_implements("pgroup")) {
 				$systempath = "/system/groups/";
@@ -11,7 +11,7 @@
 			if (substr($this->path, 0, strlen($systempath))==$systempath) {
 				// this is a live user object, not a link in a group
 				if ($this->data->login=="public" || $this->data->login=="admin") {
-					$this->error=$ARnls["err:cannotdelsystemusers"];
+					$this->error = ar::error($ARnls["err:cannotdelsystemusers"], 116);
 				} else {
 					if (is_array($this->data->config->usergrants)) {
 						// remove usergrants
@@ -42,10 +42,10 @@
 				}
 			}
 			if (!$this->error) {
-				$this->call("pobject::system.delete.phtml",$arCallArgs);
+				$arResult = $this->call("pobject::system.delete.phtml",$arCallArgs);
 			}
 		}
 	} else {
-		$this->error=$ARnls["nopermission"];
+		$this->error = ar::error( $ARnls["nopermission"], 117);
 	}
 ?>

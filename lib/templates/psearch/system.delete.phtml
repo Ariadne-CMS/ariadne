@@ -1,7 +1,7 @@
 <?php   
 	if ($this->CheckSilent("delete")) {
 		if (!$this->lock("T")) {
-			$this->error=$ARnls["err:cannotlockobject"];
+			$this->error = ar::error( $ARnls["err:cannotlockobject"], 105);
 		} else {
 			if (!$this->real_ls(".","system.get.phtml")) {
 				// remove grants for this object in all user objects.
@@ -23,11 +23,11 @@
 				// finally remove object itself
 				$this->delete();
 			} else {
-				$this->error=$ARnls["err:containsobj"];
+				$this->error = ar::error($ARnls["err:containsobj"], 118);
 			}
 			$this->unlock();
 		}
 	} else {
-		$this->error=$ARnls["nopermission"];
+		$this->error = ar::error( $ARnls["nopermission"], 117);
 	}
 ?>

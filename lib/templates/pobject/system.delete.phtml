@@ -1,7 +1,7 @@
 <?php   
 	if ($this->CheckSilent("delete")) {
 		if (!$this->lock("T")) {
-			$this->error=$ARnls["err:cannotlockobject"];
+			$this->error = ar::error( $ARnls["err:cannotlockobject"], 105);
 		} else {
 			if (!$this->ls(".","system.get.phtml")) {
 				$userConfig = $this->loadUserConfig();
@@ -12,6 +12,7 @@
 
 				// remove object itself
 				if ($this->delete() && !$this->error) {
+					$arResult = true;
 					// remove grants for this object in all user objects.
 					if ($clone->data->config->grants && is_array($clone->data->config->grants)) {
 						foreach ($clone->data->config->grants as $type => $grantdata) {
@@ -44,11 +45,11 @@
 					$clone->resetConfig();
 				}
 			} else {
-				$this->error=$ARnls["err:containsobj"];
+				$this->error = ar::error( $ARnls["err:containsobj"], 118);
 			}
 			$this->unlock();
 		}
 	} else {
-		$this->error=$ARnls["nopermission"];
+		$this->error = ar::error( $ARnls["nopermission"], 117);
 	}
 ?>
