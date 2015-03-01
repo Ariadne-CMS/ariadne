@@ -132,7 +132,8 @@
 			if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
 				window.opener.muze.dialog.callback( window.name, 'deleted', {
 					'childrenOnly': <?php echo (int)$this->getvar("childrenonly") ?>,
-					'showPath': '<?php echo $returnpath; ?>'
+					'showPath': '<?php echo $returnpath; ?>',
+					'showURL': '<?php echo $this->make_url($returnpath); ?>'
 				});
 			} else  {
 				// backward compatibility with pre muze.dialog openers
