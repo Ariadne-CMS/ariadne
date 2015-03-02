@@ -44,6 +44,9 @@
 		} else {
 			$this->data=new object;
 		}
+		
+		$this->error = null;
+
 		$this->data->value=$this->getdata("value","none");
 
 		if (!$this->error) {

@@ -20,6 +20,8 @@
 			$this->data=new object;
 		}
 
+		$this->error = null;
+
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = array();
 
@@ -193,7 +195,7 @@
 				$properties["published"][0]["value"]=$this->data->published;
 
 				$arResult = $this->save($properties);
-				if ( $arResult ) {
+				if ( !$this->error ) {
 					reset($AR->nls->list);
 					while (list($key, $value)=each($AR->nls->list)) {
 						/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
@@ -202,7 +204,7 @@
 
 						$page=$this->getdata("page",$key);
 						if ($page!==false) {
-							$arResult = $this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
+							$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
 						}
 					}
 					global $cache_config;

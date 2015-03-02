@@ -18,6 +18,8 @@
 			$this->data=new object;
 		}
 
+		$this->error = null;
+
 		$userConfig = $this->loadUserConfig();
 		$authConfig = $userConfig['authentication'];
 

@@ -17,6 +17,9 @@
 		} else {
 			$this->data=new object;
 		}
+
+		$this->error = null;
+
 		$this->data->query=$this->getdata("query","none");
 		$this->data->path=$this->getdata("path","none");
 

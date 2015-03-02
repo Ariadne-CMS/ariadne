@@ -20,6 +20,8 @@
 			$this->data=new object;
 		}
 
+		$this->error = null;
+
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = array();
 
@@ -122,10 +124,12 @@
 		$this->data->thumbheight=$this->getdata("thumbheight","none");
 		$this->data->thumbcolor=$this->getdata("thumbcolor","none");
 		$arResult = $this->save($properties);
-		reset($AR->nls->list);
-		while (list($key, $value)=each($AR->nls->list)) {
-			if ($page=$this->getdata("page",$key)) {
-				$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
+		if ( !$this->error ) {
+			reset($AR->nls->list);
+			while (list($key, $value)=each($AR->nls->list)) {
+				if ($page=$this->getdata("page",$key)) {
+					$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
+				}
 			}
 		}
 		global $cache_config;

@@ -25,6 +25,7 @@
 			$this->data=new object;
 		}
 
+		$this->error = null;
 
 		$this->data->path = $this->getdata("path","none");
 		$path = $this->store->make_path($this->parent, $this->data->path);
@@ -72,8 +73,7 @@
 
 		if ($path == $this->path) {
 			$this->error = ar::error( sprintf($ARnls["err:nosupportforshortcuts"],$path), 212);
-		} else
-		if ($this->store->exists($path)) {
+		} else if ($this->store->exists($path)) {
 			$result=$this->get($path, "system.get.type.phtml");
 			if ($result && $result[0]) {
 				$vtype=$result[0];

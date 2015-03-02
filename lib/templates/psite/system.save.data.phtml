@@ -11,8 +11,10 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
 			$this->CheckConfig()) {
 
+		$this->error = null;
+
 		$arResult = $this->call("pdir::system.save.data.phtml",$arCallArgs);
-		if ( !$arResult ) {
+		if ( $this->error ) {
 			return $arResult;
 		}
 

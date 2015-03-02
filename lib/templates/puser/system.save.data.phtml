@@ -22,6 +22,9 @@
 			$this->data=new object;
 			$arIsNewObject=true;
 		}
+
+		$this->error = null;
+
 		$userConfig = $this->loadUserConfig();
 		$authConfig = $userConfig['authentication'];
 
