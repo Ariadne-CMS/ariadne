@@ -56,11 +56,11 @@
       $tar_cmd                          = $AR->dir->install.'\bin\tar.exe '.$compress_cmd;
       $ax_config["tar"]["error_handler"]   = '';
     } else {
-      $tar_cmd                          = 'tar -z ';
+      $tar_cmd                          = 'tar ';
       $ax_config["tar"]["error_handler"]   = ' 2> %s ';
     }
 
-    $ax_config["tar"]["tar"]               = $tar_cmd." -f %archive% -c -C %destdir% %contents% %errorhandler%";
+    $ax_config["tar"]["tar"]               = $tar_cmd." -z -f %archive% -c -C %destdir% %contents% %errorhandler%";
     $ax_config["tar"]["untar"]             = $tar_cmd." --no-same-owner -x -C %destdir% %contents% -f %archive% %errorhandler%";
 
     // set this to true if you are really sure that tar throws errors which

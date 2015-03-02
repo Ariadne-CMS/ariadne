@@ -43,7 +43,7 @@
 		function untar_pear($archive, $file, $dstdir) {
 			debug("untar_pear($archive, $file, $dstdir)");
 
-			$archive = new Archive_Tar($archive, true);
+			$archive = new Archive_Tar($archive);
 			$result = $archive->extract($dstdir);
 			$archive->_Archive_Tar();
 
