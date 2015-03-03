@@ -1,0 +1,6 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		/* return the old flow information */
+		$arResult = $arCallArgs["section"];
+	}
+?>

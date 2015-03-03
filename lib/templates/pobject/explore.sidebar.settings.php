@@ -83,12 +83,13 @@
 			$settings[] = $task;
 		}
 
-		if (count($settings)) {
-			$section = array(
-				'id' => 'settings',
-				'label' => $ARnls['ariadne:settings'],
-				'tasks' => $settings
-			);
+		$section = array(
+			'id' => 'settings',
+			'label' => $ARnls['ariadne:settings'],
+			'tasks' => $settings
+		);
+		$section = $this->call('explore.sidebar.settings.extra.html', array("section" => $section, "images" => $AR->dir->images));
+		if (count($section['tasks'])) {
 			if( $shortcutSidebar ) {
 				if (!$ARCurrent->arTypeTree) {
 					$this->call('typetree.ini');
