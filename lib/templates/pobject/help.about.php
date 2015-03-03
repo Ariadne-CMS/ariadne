@@ -1,3 +1,6 @@
+<?php
+include(AriadneBasePath."/version.php");
+?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
@@ -15,9 +18,9 @@
 			<div id="tabsdata">
 				<div id="data">
 					<div id="version">
-						Version 9.0rc2<br>
-						February 4, 2015<br><br>
-						&copy; 1998 - 2015 <a href="http://www.muze.nl/" target="_blank">Muze</a>
+					Version <?php echo $ARversion['version'];?><br>
+					<?php echo strftime('%B %d, %G',$ARversion['date']);?><br><br>
+					&copy; 1998 - <?php echo $ARversion['year'];?> <a href="http://www.muze.nl/" target="_blank">Muze</a>
 					</div>
 					<form action="">
 						<div>
