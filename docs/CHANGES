@@ -9,6 +9,7 @@ Upgrade notes
   - installing php5-mcrypt is recommended
   - after upgrading the code, you must run the upgrade script or some sites may have broken files/images
   - we removed the "persistent connections by default" for the mysqlstore, this can be reenabled by adding 'p:' in front of the database server name in lib/configs/ariadne.phtml
+  - to reenable persistent connections for mysql add 'p:' infront of the database hostname
 
 Features
   - new inline WYSIWYG editor by Vedor
@@ -28,6 +29,7 @@ Features
   - added the muze CMS libraries in /system/lib/muze/
   - added onbeforecall/oncall events
   - added target object and path to all events by default, as $event->target and $event->path
+  - ARnls id now initialized in bootstrap.php, and is thus always an object
 
 Changes
   - Introduced a new Ariadne logo
@@ -41,6 +43,8 @@ Changes
   - added a 'fixed' scenario and display for newspaper articles
   - added array_column and key_exists to allowed function calls in pinp
   - the default typetree.ini template now keeps any typetree information already set
+  - tidy is renamed to ARtidy
+  - removed the persistent connections by default for the mysqlstore
 
 Bugfixes
   - fixed support for sub-method calling of xmlrpc methods ( method name is x.y or x.y.z )
@@ -68,6 +72,8 @@ Bugfixes
   - fixed incorrect cleaning of HTML in the YUI WYSIWYG editor which turned <iframe> into <emframe>
   - fixed error display for SVN updates, errors from previous files were displayed again for each next file
   - fixed event listeners which filter on specific subtypes
+  - break template lookup's on psection subtypes
+  - also reset pinpcache when calling resetconfig
 
 ========================
 Changes in Ariadne 8.3
