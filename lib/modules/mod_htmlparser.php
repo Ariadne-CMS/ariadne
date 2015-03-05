@@ -30,7 +30,6 @@
 		protected static function scanner($buffer) {
 			$scanner = array();
 			$scanner['YYBUFFER'] = $buffer."\000";
-			$scanner['YYLINE'] = 0;
 			$scanner['YYCURSOR'] = 0;
 			$scanner['YYSTATE'] = AR_HTMLPARSER_STATE_TEXT;
 			$scanner['YYCONTEXT'] = CONTEXT_NORMAL;
@@ -72,7 +71,6 @@
 
 		protected static function scan(&$scanner, &$value) {
 			$YYCURSOR = &$scanner["YYCURSOR"];
-			//$YYLINE = &$scanner["YYLINE"];
 			$YYBUFFER = &$scanner["YYBUFFER"];
 			$yych = $YYBUFFER[$YYCURSOR];
 			$YYSTATE = &$scanner["YYSTATE"];
@@ -128,15 +126,15 @@
 						$YYBUFFER[++$YYCURSOR];
 						return AR_HTMLPARSER_T_TEXT;
 					break;
-					case (strtolower(substr($YYBUFFER, $YYCURSOR, strlen('<!--'))) == '<!--') && ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
+					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && (substr_compare($YYBUFFER, '<!--', $YYCURSOR) == 0 ):
 							$value		= "<!--"; $YYCURSOR+=3;
 							$YYSTATE	= AR_HTMLPARSER_STATE_COMMENT;
 							return AR_HTMLPARSER_T_TEXT;
 					break;
-					case strtolower(substr($YYBUFFER, $YYCURSOR, strlen('</script>'))) == '</script>' && ($YYSTATE == AR_HTMLPARSER_STATE_SCRIPT):
+					case ($YYSTATE == AR_HTMLPARSER_STATE_SCRIPT) && ( substr_compare($YYBUFFER, '</script>', $YYCURSOR, 9, true) == 0 ) :
 						$YYCONTEXT = CONTEXT_NORMAL;
 						// fallthrough
-					case substr($YYBUFFER, $YYCURSOR, 2) == '</' && ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
+					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && substr($YYBUFFER, $YYCURSOR, 2) == '</':
 						$YYSTATE	= AR_HTMLPARSER_STATE_CLOSE_TAG;
 						$YYCURSOR	+= 1;
 						$value		= "";
@@ -145,10 +143,10 @@
 						}
 						return AR_HTMLPARSER_T_CLOSE_TAG;
 					break;
-					case strtolower(substr($YYBUFFER, $YYCURSOR, strlen('<!doctype'))) == '<!doctype' && ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
+					case  ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && ( substr_compare($YYBUFFER, '<!doctype', $YYCURSOR, 9 , true) == 0 ):
 						$YYSTATE	= AR_HTMLPARSER_STATE_DOCTYPE;
-						$value		= substr($YYBUFFER, $YYCURSOR, strlen('<!doctype'));
-						$YYCURSOR	+= strlen('<!doctype');
+						$value		= substr($YYBUFFER, $YYCURSOR, 9/* strlen('<!doctype')*/);
+						$YYCURSOR	+= 9 /*strlen('<!doctype')*/;
 						return AR_HTMLPARSER_T_DOCTYPE;
 					break;
 					case $yych == '<' && ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
@@ -200,9 +198,18 @@
 					case $yych === $yych && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
 						$yych = $YYBUFFER[++$YYCURSOR]; continue;
 					break;
+					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
+						$value = "";
+						while ( $yych != '<'  && $yych != "\000" ) {
+							$value .= $yych;
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						return AR_HTMLPARSER_T_TEXT;
+					break;
 					default:
 						$value = $yych;
-						$yych = $YYBUFFER[++$YYCURSOR]; return AR_HTMLPARSER_T_TEXT;
+						$YYCURSOR++;
+						return AR_HTMLPARSER_T_TEXT;
 				}
 			} while (1);
 
