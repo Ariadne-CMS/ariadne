@@ -131,7 +131,7 @@
 							$YYSTATE	= AR_HTMLPARSER_STATE_COMMENT;
 							return AR_HTMLPARSER_T_TEXT;
 					break;
-					case ($YYSTATE == AR_HTMLPARSER_STATE_SCRIPT) && ( substr_compare($YYBUFFER, '</script>', $YYCURSOR, 9, true) == 0 ) :
+					case ($YYSTATE == AR_HTMLPARSER_STATE_SCRIPT) && ( substr_compare($YYBUFFER, '</script>', $YYCURSOR, 9, true) == 0 ):
 						$YYCONTEXT = CONTEXT_NORMAL;
 						// fallthrough
 					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && substr($YYBUFFER, $YYCURSOR, 2) == '</':
@@ -143,7 +143,7 @@
 						}
 						return AR_HTMLPARSER_T_CLOSE_TAG;
 					break;
-					case  ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && ( substr_compare($YYBUFFER, '<!doctype', $YYCURSOR, 9 , true) == 0 ):
+					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && ( substr_compare($YYBUFFER, '<!doctype', $YYCURSOR, 9 , true) == 0 ):
 						$YYSTATE	= AR_HTMLPARSER_STATE_DOCTYPE;
 						$value		= substr($YYBUFFER, $YYCURSOR, 9/* strlen('<!doctype')*/);
 						$YYCURSOR	+= 9 /*strlen('<!doctype')*/;
