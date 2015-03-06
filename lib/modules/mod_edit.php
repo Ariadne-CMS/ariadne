@@ -232,18 +232,16 @@
 			) {
 				$var = preg_replace_callback(
 					'/<(span|div)[^>]*vd:source="([^"]*)"[^>]*>.*<span.*vd:endsource="true".*>.*<\/span>.*<\/(span|div)>/isU',
-					create_function(
-						'$matches',
-						'return "[' . $ARnls['vd_cookie_consent_required'] . ']";'
-					), $var);
+					function($matches) use ($ARnls) {
+						return "[" . $ARnls['vd_cookie_consent_required'] . "]";
+					}, $var);
 			} else {
 
 				$var = preg_replace_callback(
 					'/<(span|div)[^>]*vd:source="([^"]*)"[^>]*>.*<span.*vd:endsource="true".*>.*<\/span>.*<\/(span|div)>/isU',
-					create_function(
-						'$matches',
-						'return base64_decode($matches[2]);'
-				), $var);
+					function($matches) {
+						return base64_decode($matches[2]);
+					}, $var);
 			}
 	
 			return $var;
@@ -252,10 +250,9 @@
 		function fixEditSource($var) {
 			$var = preg_replace_callback(
 				'/(<(span|div)[^>]*vd:source=")([^"]*)("[^>]*>).*(<span[^>]*vd:endsource="true".*>.*<\/span>.*<\/(span|div)>)/isU',
-				create_function(
-					'$matches',
-					'return $matches[1] . $matches[3] . $matches[4] . base64_decode($matches[3]) . $matches[5];'
-			), $var);
+				function($matches) {
+					return $matches[1] . $matches[3] . $matches[4] . base64_decode($matches[3]) . $matches[5];
+				}, $var);
 	
 			return $var;
 		}
