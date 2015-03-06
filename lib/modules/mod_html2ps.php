@@ -48,8 +48,7 @@
 			$me = $context["arCurrentObject"];
 
 			require_once(HTML2PS_LOCATION.'pipeline.factory.class.php');
-			// Works only with safe mode off; in safe mode it generates a warning message
-			@set_time_limit(600);
+			set_time_limit(600);
 
 			check_requirements();
 
