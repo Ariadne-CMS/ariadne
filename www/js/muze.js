@@ -421,16 +421,6 @@ muze.url = (function() {
 		var params = null;
 		if ( method == 'POST' || method == 'post' ) {
 			method = 'POST';
-			if ( arguments ) {
-				params = [];
-				for ( var i in arguments ) {
-					params.push( encodeURIComponent( i) + '=' + encodeURIComponent( arguments[i]) )
-				}
-				params = params.join('&');
-				http.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
-				http.setRequestHeader( 'Content-length', params.length );
-				http.setRequestHeader( 'Connection', 'close' );
-			}
 		} else {
 			method = 'GET';
 		}
@@ -441,6 +431,18 @@ muze.url = (function() {
 					loader.loaded( http.responseText );
 				}
 			};
+		}
+		if ( method=="POST" ) {
+			if ( arguments ) {
+				params = [];
+				for ( var i in arguments ) {
+					params.push( encodeURIComponent( i) + '=' + encodeURIComponent( arguments[i]) )
+				}
+				params = params.join('&');
+				http.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
+				http.setRequestHeader( 'Content-length', params.length );
+				http.setRequestHeader( 'Connection', 'close' );
+			}
 		}
 		http.send( params );
 		if ( waitforme ) {
