@@ -276,7 +276,11 @@ muze.namespace("muze.ariadne.explore", function() {
 				arguments='';
 			}
 			arguments = window.location.search+arguments;
-			var workwindow = window.open(link+arguments, windowname, properties);
+			if ( properties ) {
+				var workwindow = window.open(link+arguments, windowname, properties);
+			} else {
+				var workwindow = window.open(link+arguments, windowname );
+			}
 			workwindow.focus();
 		},
 		viewable : function(path) {
