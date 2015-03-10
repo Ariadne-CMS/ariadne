@@ -445,15 +445,18 @@ div.sourcepath .progressbar {
     margin-bottom: 5px;
 }
 /*tabsdata items not in vedor wizard.css*/
-#tabsdata #data fieldset.formField div.formField {
+#tabsdata fieldset.formField div.formField {
 	clear: right;
 }
-#tabsdata #data fieldset.formField  input {
+#tabsdata div.formField {
+	padding-bottom: 2px;
+}
+#tabsdata fieldset.formField  input {
 	display: inline;
 	width: 85%;
 } 
-#tabsdata #data fieldset.formField button.formFieldListDelete,
-#tabsdata #data fieldset.formField button.formFieldListAdd {
+#tabsdata fieldset.formField button.formFieldListDelete,
+#tabsdata fieldset.formField button.formFieldListAdd {
 	float: right;
 }
 .clear {
