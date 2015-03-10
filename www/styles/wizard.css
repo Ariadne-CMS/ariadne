@@ -19,7 +19,7 @@ a img {
 	border: 0px;
 }
 .required::after {
-	content: " \2605";
+	content: " *";
 	color: red;
 }
 #header {
