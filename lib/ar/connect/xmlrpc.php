@@ -101,7 +101,11 @@ class ar_connect_xmlrpcClient extends arBase {
 	public function __get($name) {
 		$result = $this->wrapped->{$name};
 		if ( $result instanceof Ripcord_Client ) {
-			return new ar_connect_xmlrpcClient($result); // FIXME: use clone here instead?
+			try {
+				return new ar_connect_xmlrpcClient($result); // FIXME: use clone here instead?
+			} catch( Ripcord_Exception $e ) {
+				return new ar_error($e->getMessage(), $e->getCode() );
+			}
 		} else {
 			return $result;
 		}
