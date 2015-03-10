@@ -18,6 +18,10 @@ TH,TD,LI,P,BODY,DIV {
 a img {
 	border: 0px;
 }
+.required::after {
+	content: " \2605";
+	color: red;
+}
 #header {
 	height: 32px;
 	width: 100%;
