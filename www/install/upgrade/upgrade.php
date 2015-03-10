@@ -204,6 +204,12 @@
 							"operation" => "9.0/install.missing.data.php",
 							"newversion" => "9.0-rc1.1"
 							));
+		case '9.0-rc1.1':
+				array_push($todo, array(
+							"description" => "Bumping revision to 9.0",
+							"operation" => "all/dummy.php",
+							"newversion" => "9.0"
+							));
 	}
 
 
