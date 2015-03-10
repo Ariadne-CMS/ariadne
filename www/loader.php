@@ -350,7 +350,37 @@
 				// system template: no language check
 				$ARCurrent->nolangcheck=1;
 			}
-
+			$ext = pathinfo($function, PATHINFO_EXTENSION);
+			switch ( $ext ) {
+				case 'css':
+					ldSetContent('text/css; charset=utf-8');
+				break;
+				case 'js':
+					ldSetContent('application/javascript; charset=utf-8');
+				break;
+				case 'json':
+					ldSetContent('application/json; charset=utf-8');
+				break;
+				case 'xml':
+					ldSetContent('text/xml; charset=utf-8');
+				break;
+				case 'jpg':
+					ldSetContent('image/jpeg');
+				break;
+				case 'gif':
+					ldSetContent('image/gif');
+				break;
+				case 'png':
+					ldSetContent('image/png');
+				break;
+				case 'svg':
+					ldSetContent('image/svg+xml');
+				break;
+				default:
+					ldSetContent('text/html; charset=utf-8');
+				break;
+			}
+			$ARCurrent->arContentTypeSent = true;
 
 			register_shutdown_function("ldOnFinish");
 
