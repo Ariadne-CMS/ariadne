@@ -1410,7 +1410,7 @@
 		public function __construct($field, $form) {
 			parent::__construct ($field, $form);
 			if ( isset( $field->value ) ) { // apply default behaviour, step 1
-				if ( !$field->newField ) {
+				if ( !isset( $field->newField ) ) {
 					$field->newField = array(
 						'name' => $this->name.'[]',
 						'value' => '',
@@ -1418,7 +1418,7 @@
 					);
 				}
 
-				if ( !$field->defaultField ) {
+				if ( !isset( $field->defaultField ) ) {
 					$field->defaultField = array(
 						'name' => $this->name.'[]',
 						'label' => false
