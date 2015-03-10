@@ -107,7 +107,7 @@
 		}
 		$tasks[] = array( // we use make_local_url specifically here.
 			'href' => $this->make_local_url($path, $nls)."view.html",
-			'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
+			'onclick' => "muze.ariadne.explore.arshow('_blank', this.href); return false;",
 			'icon' => $AR->dir->images . 'icons/small/viewweb.png',
 			'nlslabel' => $ARnls['ariadne:viewweb']
 		);
