@@ -30,6 +30,7 @@ muze.require('muze.event', function() {
 	muze.namespace('muze.dialog', function() {
 		var self = {};
 		var callbackRegistry = {};
+		var optionsRegistry = {};
 		var windowRegistry = {};
 
 		/* 
@@ -105,11 +106,16 @@ muze.require('muze.event', function() {
 					} while ( callbackRegistry[name+id] );
 					name = name + id;
 				}
-				var dialogWindow = window.open( url, name, options['windowFeatures'] );
+				if ( options['windowFeatures'] && !options['openInTab'] ) {
+					var dialogWindow = window.open( url, name, options['windowFeatures'] );
+				} else {
+					var dialogWindow = window.open( url, name );
+				}
 				dialogWindow.focus();
 				windowRegistry[name] = dialogWindow;
 			}
 			callbackRegistry[name] = {};
+			optionsRegistry[name] = options;
 			return new callbackHandler( name );
 		};
 		
@@ -150,6 +156,51 @@ muze.require('muze.event', function() {
 				}
 			}
 			return false;
+		}
+
+		/* 
+			This method is meant to be run from inside the dialog window. 
+			It will trigger the callback in the opener
+			It will return the result from the callback if it succeeded, null otherwise.
+		*/
+		self.return = function( action, values ) {
+			if (window.opener && window.opener.muze && window.opener.muze.dialog) {
+				return window.opener.muze.dialog.callback( window.name, action, values );
+			} else if ( window.parent && window.parent.muze && window.parent.muze.dialog) {
+				return window.parent.muze.dialog.callback( window.name, action, values );
+			}
+			return null;
+		}
+
+		/*
+			This method is meant to be run from inside the dialog window. It will return a parameter passed
+			by the opener to muze.dialog.open.
+		*/
+		self.getvar = function( name ) {
+			if (window.opener && window.opener.muze && window.opener.muze.dialog ) {
+				return window.opener.muze.dialog.getOption(window.name, name);
+			} else {
+				var p = window.parent;
+				while ( p ) {
+					if ( p.muze && p.muze.dialog ) {
+						var option = p.muze.dialog.getOption(window.name, name);
+						if ( typeof option != 'undefined' ) {
+							return option;
+						}
+					}
+					p = p.parent;
+				}
+			}
+		}
+
+
+		/*
+			This method is used by a dialog, through the muze.dialog.getvar() method.
+		*/
+		self.getOption = function( windowName, name ) {
+			if ( typeof optionsRegistry[ windowName ] != 'undefined' ) {
+				return optionsRegistry[ windowName ][ name ];
+			}
 		}
 
 		/*
