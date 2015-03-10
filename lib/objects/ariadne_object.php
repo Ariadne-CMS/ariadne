@@ -278,7 +278,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$this->store->error) {
 			$result = $this->store->call($function, $args, $objects);
 		} else {
-			$this->error = ar::error( ''.$this->store->error, 110, $this->store->error );
+			$this->error = ar::error( ''.$this->store->error, 1110, $this->store->error );
 			$result = false;
 		}
 		return $result;
@@ -411,25 +411,25 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							$config=new object();
 						}
 					} else {
-						$this->error = ar::error( sprintf($ARnls["err:noparent"],$arNewParent), 102);
+						$this->error = ar::error( sprintf($ARnls["err:noparent"],$arNewParent), 1102);
 					}
 				} else {
-					$this->error = ar::error( sprintf($ARnls["err:alreadyexists"],$arNewFilename), 103);
+					$this->error = ar::error( sprintf($ARnls["err:alreadyexists"],$arNewFilename), 1103);
 				}
 			} else {
-				$this->error = ar::error( sprintf($ARnls["err:fileillegalchars"],$arNewFilename), 104);
+				$this->error = ar::error( sprintf($ARnls["err:fileillegalchars"],$arNewFilename), 1104);
 			}
 		} else { // existing object
 			debug("pobject: save: existing object","all");
 			if ($this->exists($this->path)) { // prevent 'funny stuff'
 				if (!$this->lock()) {
-					$this->error = ar::error( $ARnls["err:objectalreadylocked"], 105);
+					$this->error = ar::error( $ARnls["err:objectalreadylocked"], 1105);
 				} else {
 					$needsUnlock = true;
 					$config = $this->data->config;
 				}
 			} else {
-				$this->error = ar::error($ARnls["err:corruptpathnosave"], 106);
+				$this->error = ar::error($ARnls["err:corruptpathnosave"], 1106);
 			}
 		}
 		// pre checks done
@@ -541,7 +541,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				if ( is_array($wf_result) ){
 					$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 					if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
-						$this->error = ar::error( ''.$this->store->error, 108, $this->store->error);
+						$this->error = ar::error( ''.$this->store->error, 1108, $this->store->error);
 						$result = false;
 					}
 				}
@@ -554,7 +554,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				ar_events::fire( 'onsave', $eventData ); // nothing to prevent here, so ignore return value
 				$this->popContext();
 			} else {
-				$this->error = ar::error( ''.$this->store->error, 107, $this->store->error);
+				$this->error = ar::error( ''.$this->store->error, 1107, $this->store->error);
 				$result = false;
 			}
 		}
@@ -606,7 +606,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$this->call("user.workflow.delete.post.html", $eventData->arCallArgs);
 				ar_events::fire( 'ondelete', $eventData );
 			} else {
-				$this->error = ar::error( ''.$this->store->error, 107, $this->store->error);
+				$this->error = ar::error( ''.$this->store->error, 1107, $this->store->error);
 			}
 		}
 		return $result;
@@ -842,7 +842,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		$result = $this->store->touch($id, $timestamp);
 		if ($this->store->error) {
-			$this->error = ar::error( ''.$this->store->error, 107, $this->store->error);
+			$this->error = ar::error( ''.$this->store->error, 1107, $this->store->error);
 		}
 		return $result;
 	}
@@ -859,7 +859,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		$result = $this->store->mogrify($id, $type, $vtype);
 		if ($this->store->error) {
-			$this->error = ar::error( ''.$this->store->error, 107, $this->store->error);
+			$this->error = ar::error( ''.$this->store->error, 1107, $this->store->error);
 		}
 		return $result;
 	}
@@ -1178,13 +1178,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				if ($this->store->exists($parent)) {
 					$result=1;
 				} else {
-					$this->error = ar::error( sprintf($ARnls["err:filenameinvalidnoparent"],$newfilename,$parent), 102);
+					$this->error = ar::error( sprintf($ARnls["err:filenameinvalidnoparent"],$newfilename,$parent), 1102);
 				}
 			} else {
-				$this->error = ar::error( sprintf($ARnls["err:chooseotherfilename"],$newfilename), 103);
+				$this->error = ar::error( sprintf($ARnls["err:chooseotherfilename"],$newfilename), 1103);
 			}
 		} else {
-			$this->error = ar::error( sprintf($ARnls["err:fileillegalchars"],$newfilename)." ".$ARnls["err:startendslash"], 104);
+			$this->error = ar::error( sprintf($ARnls["err:fileillegalchars"],$newfilename)." ".$ARnls["err:startendslash"], 1104);
 		}
 		return $result;
 	}
@@ -1549,7 +1549,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		debug("pobject::loadLibrary($name, $path);");
 		if ($name===ARUNNAMED) {
 			if (strstr($path, $this->path)===0) {
-				return ar::error('You cannot load an unnamed library from a child object.', 109);
+				return ar::error('You cannot load an unnamed library from a child object.', 1109);
 			} else {
 				if (!$ARConfig->libraries[$this->path]) {
 					$ARConfig->libraries[$this->path]=array();
@@ -1583,7 +1583,7 @@ debug("loadLibrary: loading cache for $this->path");
 			unset($ARConfig->cache[$this->path]->libraries[$name]);
 			unset($ARConfig->pinpcache[$this->path]["library"][$name]);
 		} else {
-			return ar::error('Illegal library name: '.$name, 110);
+			return ar::error('Illegal library name: '.$name, 1110);
 		}
 	}
 
@@ -2237,7 +2237,7 @@ debug("loadLibrary: loading cache for $this->path");
 				*/
 			}
 		} else {
-			$this->error = ar::error($ARnls["err:nonamecache"], 111);
+			$this->error = ar::error($ARnls["err:nonamecache"], 1111);
 			$result = false;
 		}
 		return $result;
@@ -2283,7 +2283,7 @@ debug("loadLibrary: loading cache for $this->path");
 				$pcache->write($image, $this->id, $file);
 				$time=time()+($time*3600);
 				if (!$pcache->touch($this->id, $file, $time)) {
-					$this->error = ar::error("savecache: ERROR: couldn't touch $file", 113);
+					$this->error = ar::error("savecache: ERROR: couldn't touch $file", 1113);
 					$result = false;
 				}
 				ob_end_clean();
@@ -2293,7 +2293,7 @@ debug("loadLibrary: loading cache for $this->path");
 				$result = false;
 			}
 		} else {
-			$this->error = ar::error($ARnls["err:savecachenofile"], 112);
+			$this->error = ar::error($ARnls["err:savecachenofile"], 1112);
 			$result = false;
 		}
 		return $result;
@@ -2318,7 +2318,7 @@ debug("loadLibrary: loading cache for $this->path");
 				debug("getdatacache: $name doesn't exists, returning false.","all");
 			}
 		} else {
-			$this->error = ar::error($ARnls["err:nonamecache"], 111);
+			$this->error = ar::error($ARnls["err:nonamecache"], 1111);
 		}
 		return $result;
 	}
@@ -2332,7 +2332,7 @@ debug("loadLibrary: loading cache for $this->path");
 		$pcache->write(serialize($data), $this->id, $name);
 		$time=time()+($time*3600);
 		if (!$pcache->touch($this->id, $name, $time)) {
-			$this->error = ar::error('Could not touch '.$name, 113);
+			$this->error = ar::error('Could not touch '.$name, 1113);
 			return false;
 		}
 		return true;
@@ -2743,7 +2743,7 @@ debug("loadLibrary: loading cache for $this->path");
 		$result = $this->store->call($function, $args,
 			$this->store->find($this->path, $criteria, $limit, $offset));
 		if ($this->store->error) {
-			$this->error = ar::error( ''.$this->store->error, 107, $this->store->error );
+			$this->error = ar::error( ''.$this->store->error, 1107, $this->store->error );
 		}
 		return $result;
 	}
