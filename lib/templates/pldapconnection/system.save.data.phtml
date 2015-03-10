@@ -25,7 +25,7 @@
 		$properties = array();
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 		} else {
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
@@ -41,7 +41,7 @@
 						$newnlsdata=$this->data->$key;
 					}
 					if (!$this->getdata("name", $key)) {
-						$this->error = ar::error(sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]),114);
+						$this->error = ar::error(sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]),1114);
 					}
 					$newnlsdata->name=$this->getdata("name", $key);
 					$properties["name"][$count]["value"]=$this->getdata("name", $key);

@@ -24,7 +24,7 @@
 		$properties = array();
 
 		if (!$this->getdata("lastname","none")) {
-			$this->error = ar::error( $ARnls["err:nolastnameentered"], 210);
+			$this->error = ar::error( $ARnls["err:nolastnameentered"], 1210);
 			return false;
 		} else {
 			$this->data->initials=$this->getdata("initials", "none");

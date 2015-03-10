@@ -52,7 +52,7 @@
 		if (!$this->error) {
 			$properties["value"][]["value"]=$this->data->value;
 			if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-				$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+				$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			} else {
 				if (!$this->data->nls) {
 					$this->data->nls=new object;

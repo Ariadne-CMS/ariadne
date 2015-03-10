@@ -31,7 +31,7 @@
 		$path = $this->store->make_path($this->parent, $this->data->path);
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 		} else {
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
@@ -72,7 +72,7 @@
 		$this->data->keepurl = $this->getdata("keepurl");
 
 		if ($path == $this->path) {
-			$this->error = ar::error( sprintf($ARnls["err:nosupportforshortcuts"],$path), 212);
+			$this->error = ar::error( sprintf($ARnls["err:nosupportforshortcuts"],$path), 1212);
 		} else if ($this->store->exists($path)) {
 			$result=$this->get($path, "system.get.type.phtml");
 			if ($result && $result[0]) {
@@ -80,10 +80,10 @@
 				$arResult=$vtype;
 				$properties["references"][0]["path"] = $this->data->path;
 			} else {
-				$this->error = ar::error( sprintf($ARnls["err:nosupportforshortcuts"],$path), 212);
+				$this->error = ar::error( sprintf($ARnls["err:nosupportforshortcuts"],$path), 1212);
 			}
 		} else {
-			$this->error = ar::error( sprintf($ARnls["err:wrongpath"],$path), 115);
+			$this->error = ar::error( sprintf($ARnls["err:wrongpath"],$path), 1115);
 		}
 		if (!$this->error) {
 			$this->vtype=$vtype;

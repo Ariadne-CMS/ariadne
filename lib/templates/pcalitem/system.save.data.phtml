@@ -64,7 +64,7 @@
 		$repeat_by=$this->getdata("repeat_by","none");
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			return false;
 		} else {
 			if (!$this->data->nls) {
@@ -114,7 +114,7 @@
 
 			// calculate start and endtime, repeats etc.
 			if (!isset($date)) {
-				$this->error = ar::error( $ARnls["err:validdate"], 211);
+				$this->error = ar::error( $ARnls["err:validdate"], 1211);
 			} else {
 				$days=(24*60*60);
 				$weeks=(7*$days);

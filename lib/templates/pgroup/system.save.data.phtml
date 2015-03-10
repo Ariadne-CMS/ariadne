@@ -39,7 +39,7 @@
 				$login = $this->make_path($this->getdata("arNewFilename", "none"));
 				$login = substr($login, strlen($this->store->make_path($login, "..")), -1);
 				if (preg_match('/\{.*\}/',$login)) {
-					$this->error = ar::error( $ARnls["err:donotuseid"], 204);
+					$this->error = ar::error( $ARnls["err:donotuseid"], 1204);
 					return false;
 				}
 			}
@@ -56,13 +56,13 @@
 					}
 				}
 				if ($loginexists) {
-					$this->error = ar::error( sprintf($ARnls["err:loginexists"],$login), 207);
+					$this->error = ar::error( sprintf($ARnls["err:loginexists"],$login), 1207);
 				} else {
 					$this->data->login=$login;
 					$properties["login"][0]["value"]=$this->data->login;
 				}
 			} else {
-				$this->error = ar::error( $ARnls["err:mustenterlogin"], 205);
+				$this->error = ar::error( $ARnls["err:mustenterlogin"], 1205);
 			}
 		}
 		$arResult = false;

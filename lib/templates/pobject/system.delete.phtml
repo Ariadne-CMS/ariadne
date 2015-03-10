@@ -1,7 +1,7 @@
 <?php   
 	if ($this->CheckSilent("delete")) {
 		if (!$this->lock("T")) {
-			$this->error = ar::error( $ARnls["err:cannotlockobject"], 105);
+			$this->error = ar::error( $ARnls["err:cannotlockobject"], 1105);
 		} else {
 			if (!$this->ls(".","system.get.phtml")) {
 				$userConfig = $this->loadUserConfig();
@@ -45,11 +45,11 @@
 					$clone->resetConfig();
 				}
 			} else {
-				$this->error = ar::error( $ARnls["err:containsobj"], 118);
+				$this->error = ar::error( $ARnls["err:containsobj"], 1118);
 			}
 			$this->unlock();
 		}
 	} else {
-		$this->error = ar::error( $ARnls["nopermission"], 117);
+		$this->error = ar::error( $ARnls["nopermission"], 1117);
 	}
 ?>

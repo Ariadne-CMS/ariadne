@@ -25,7 +25,7 @@
 		$properties = array();
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			return false;
 		} else {
 			if (!$this->data->nls) {

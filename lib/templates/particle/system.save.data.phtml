@@ -38,7 +38,7 @@
 				$this->data->priority=$displays->data->priority;
 
 				if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-					$this->error = ar_error::raiseError( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 101);
+					$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 					$arResult = false;
 				} else {
 					if ($ContentEditOptionsPath) {
@@ -212,11 +212,11 @@
 					$cachestore->onObjectSaved($this->id);
 				}
 			} else {
-				$this->error = ar_error::raiseError( sprintf($ARnls["err:notascenario"],$scenario), 201 );
+				$this->error = ar::error( sprintf($ARnls["err:notascenario"],$scenario), 1201 );
 				$arResult = false;
 			}
 		} else {
-			$this->error = ar_error::raiseError( sprintf($ARnls["err:scenerionotfound"],$scenario), 202 );
+			$this->error = ar::error( sprintf($ARnls["err:scenerionotfound"],$scenario), 1202 );
 			$arResult = false;
 		}
 	}

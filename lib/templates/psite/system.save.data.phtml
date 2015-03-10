@@ -169,7 +169,7 @@
 						if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
 							$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
 						} else {
-							$this->error = ar::error("Please fill in distinctive hostnames; they should not be the same for different languages.", 208);
+							$this->error = ar::error("Please fill in distinctive hostnames; they should not be the same for different languages.", 1208);
 							break 2; // break the foreach and the nls while loop
 						}
 
@@ -202,7 +202,7 @@
 						if (!$this->data->config->workspaceurl_list['host'][$regs[2].$regs[3]]) {
 							$this->data->config->workspaceurl_list['host'][$regs[2].$regs[3]] = $key;
 						} else {
-							$this->error = ar::error( "Please fill in distinctive hostnames; they should not be the same for different languages.", 208);
+							$this->error = ar::error( "Please fill in distinctive hostnames; they should not be the same for different languages.", 1208);
 						}
 					}
 
