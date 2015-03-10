@@ -1,4 +1,0 @@
-CVS Server                                                      Muze Ariadne 2.0
-================================================================================
-
-cvs access is no longer available
