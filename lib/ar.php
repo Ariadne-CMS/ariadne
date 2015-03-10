@@ -304,10 +304,11 @@
 		protected static $throwExceptions = false;
 
 		public function __construct( $message = '', $code = 0, $previous = null ) {
+			if ( $previous && !($previous instanceof \Exception) ) {
+				$previous = new ar_error( $previous );
+			}
 			parent::__construct( (string) $message, (int) $code, $previous );
 			$this->code = $code;
-			$this->message = $message;
-			$this->previous = $previous;
 		}
 
 		public function __call($name, $arguments) {
