@@ -3447,6 +3447,15 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				return $result;
 			break;
+			case 'nls:list':
+				return $AR->nls->list;
+			break;
+			case 'nls:default':
+				return $AR->nls->default;
+			break;
+			case 'svn':
+				return $AR->SVN->enabled;
+			break;
 		}
 	}
 
