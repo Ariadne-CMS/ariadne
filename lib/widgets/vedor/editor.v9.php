@@ -391,6 +391,11 @@
 		var resetScripts = new Array();
 		var settingScripts = new Array();
 		var groupScripts = new Array();
+		var activeSection = document.querySelector(".vedor-section-active");
+
+		if (activeSection) {
+			activeSection.classList.remove("vedor-section-active");
+		}
 
 		for (var i=0; i<allScripts.length; i++) {
 			switch (allScripts[i].getAttribute("type")) {
@@ -2515,6 +2520,7 @@
 				cssSetStyle( myStyleSheet, '.editable A:link', 'border-bottom: 0px;' );
 				cssSetStyle( myStyleSheet, '.editable A:visited', 'border-bottom: 0px;' );
 			}
+			cssSetStyle( myStyleSheet, '[data-vedor-selectable]', 'outline: 1px dotted #CCCCCC;');
 
 			if (vdHandles) {
 				vdShowHandles();
@@ -2631,14 +2637,14 @@
 				( (typeof filter["selector"] !== 'undefined') ? tempNode.querySelectorAll(":scope > " + filter["selector"]).length : true) && 
 				( (typeof filter["sel-collapsed"] !== 'undefined') ? (sel.collapsed == filter["sel-collapsed"]) : true)
 			) {
+				result += 50 * (targets.length+1); // tagName weight
 				if (typeof filter["selector"] !== 'undefined') {
-					result += 50 * (targets.length+1); // tagName weight
-					result += filter["selector"].split(".").length-1; // Add the number of class selectors;
-					result += filter["selector"].split("[").length-1; // Add the number of attribute selectors
-
+					result += 2*(filter["selector"].split(".").length-1); // Add the number of class selectors;
+					result += 2*(filter["selector"].split("[").length-1); // Add the number of attribute selectors
 				}
+
 				if (typeof filter["sel-collapsed"] !== 'undefined') {
-					result += 5;
+					result += 1;
 				}
 				if (typeof filter["parent"] == 'undefined') {
 					return result;
@@ -2656,11 +2662,12 @@
 	}
 
 	function getVedorEditorContext() {
-		var sel = vdSelectionState.get();
+		var sel = vdSelectionState ? vdSelectionState.get() : false;
 
 		if (sel) {
 			var parent = vdSelection.getNode(sel);
-			if ((parent && parent.getAttribute && parent.getAttribute("contenteditable")) || hasEditableParent(parent)) {
+
+			if ((parent && parent.getAttribute && (parent.getAttribute("contenteditable") || parent.getAttribute("data-vedor-selectable"))) || hasEditableParent(parent)) {
 				if (parent || parent.getAttribute || parent.getAttribute("contenteditable")) {
 					var validFilters = {};
 					var bestFilter = false;
@@ -2676,8 +2683,7 @@
 								bestFilterWeight = filterWeight;
 							}
 						}
-					}							
-
+					}
 					return bestFilter;
 				} else {
 					if (sel.collapsed) {
@@ -2860,6 +2866,8 @@
 		//window.setTimeout(hideIt, 200);
 
 		var activeSection = document.getElementById(currentContext);
+		console.log(activeSection);
+
 		if (activeSection && !vdHideToolbars) {
 				var htmlContext = activeSection.querySelectorAll("div.vedor-toolbar-status")[0];
 				if ( htmlContext ) {
@@ -2883,6 +2891,10 @@
 
 				var bmLeft = vdEditPane.contentWindow.document.getElementById("vdBookmarkLeft");
 				var obj = bmLeft;
+				if (!obj) {
+					return;
+				}
+
 				var lleft = 0, ltop = 0;
 				do {
 					lleft += obj.offsetLeft;
@@ -2908,13 +2920,23 @@
 					rtop = pos.bottom;
 				}
 
+				if ( parent.getAttribute("data-vedor-selectable")) {
+					pos = parent.getBoundingClientRect();
+					lleft = pos.left;
+					ltop = pos.top;
+					rleft = pos.right;
+					rtop = pos.bottom;
+				}
+
 				var top = Math.max(ltop, rtop);
 				var left = lleft + ((rleft - lleft) / 2);
 
 				var activeToolbar = activeSection.querySelectorAll("div.vedor-toolbar")[0];
 
-				top -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
-				left -= vdEditPane.contentWindow.document.body.scrollLeft ? vdEditPane.contentWindow.document.body.scrollLeft : vdEditPane.contentWindow.pageXOffset;
+				if (!parent.getAttribute("data-vedor-selectable")) {
+					top -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
+					left -= vdEditPane.contentWindow.document.body.scrollLeft ? vdEditPane.contentWindow.document.body.scrollLeft : vdEditPane.contentWindow.pageXOffset;
+				}
 
 				newleft = left - (activeToolbar.offsetWidth/2);
 
