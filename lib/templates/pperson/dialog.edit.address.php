@@ -29,9 +29,13 @@
 		<select id="country" name="country">
 			<option value=''><?php echo $ARnls["none"]; ?></option>
 			<?php
-				// FIXME: country names must be added for all available languages, currently ordered by english value
-				$query="object.parent='/system/addressbook/countries/' and name.nls='en' order by name.value";
-				$this->find("/system/addressbook/countries/", $query, "show.option.value.phtml",array( "selected" => $this->getdata("country","none")),0);
+				$query="object.parent='/system/addressbook/countries/' and name.nls='".$nls."' order by name.value";
+				$list = ar::get('/system/addressbook/countries/')->find($query)->call('system.get.phtml');
+				$country =  $this->getdata("country","none");
+				foreach($list as $entry) {
+					$selected = ($entry->data->value == $country )?'selected':'';
+					printf('<option value="%s" %s>%s</option>',$entry->data->value,$selected,$entry->nlsdata->name);
+				}
 			?>
 		</select>
 	</div>
