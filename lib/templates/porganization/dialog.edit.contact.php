@@ -1,6 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+		$emails = $this->getdata('emails', 'none');
 ?>
 <fieldset id="contact">
 	<legend><?php echo $ARnls["contactinformation"]; ?></legend>
@@ -15,13 +16,20 @@
 	<div class="field">
 		<label for="emails" class="required"><?php echo $ARnls["email"]; ?></label>
 		<?php
-			$wgMultipleArray=$this->getdata("emails","none");
-			if (!is_array($wgMultipleArray) && ($wgMultipleArray)) {
-					$wgMultipleArray=explode(",",$wgMultipleArray);
-			}
-			$wgMultipleName="emails";
-			include($this->store->get_config("code")."widgets/multiple/js.html");
-			include($this->store->get_config("code")."widgets/multiple/form.html");
+			$snippetDef = array(
+				'emails' => array(
+						'name' => 'emails',
+						'type' => 'fieldlist',
+						'label' => false,
+						'class' => 'inputline',
+						'value' => $emails
+				)
+			);
+			$formSnippet = ar('html')->parse( (string)ar('html')->form( $snippetDef, null, null ) );
+			$snippet = $formSnippet->getElementsByTagName('fieldset');
+
+			echo (string)$snippet;
+
 		?>
 	</div>
 </fieldset>
