@@ -7,6 +7,10 @@ class URL {
 		global $ARCurrent, $AR;
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
+		if(!$me) {
+			return $page;
+		}
+
 		$nls_match = "(/(?:".implode('|', array_keys($AR->nls->list))."))?";
 		// FIXME: make the rest of the code also use the $nls_match2 expression
 		// which doesn't match deel1/ as the nlsid 'de'
