@@ -1,10 +1,12 @@
 {
 	"require": {
+		"php": ">=5.4",
 		"mrclay/jsmin-php": "~2.3",
 		"arc/arc": "~1.0",
 		"mishal/iless": "~1",
 		"leafo/lessphp": "v0.4.0",
 		"erusev/parsedown": "~1",
-		"firephp/firephp-core": "v0.4.0"
+		"firephp/firephp-core": "v0.4.0",
+		"pear/archive_tar": "1.3.15"
 	}
 }
