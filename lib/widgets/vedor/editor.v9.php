@@ -2866,7 +2866,7 @@
 		//window.setTimeout(hideIt, 200);
 
 		var activeSection = document.getElementById(currentContext);
-		console.log(activeSection);
+		// console.log(activeSection);
 
 		if (activeSection && !vdHideToolbars) {
 				var htmlContext = activeSection.querySelectorAll("div.vedor-toolbar-status")[0];
