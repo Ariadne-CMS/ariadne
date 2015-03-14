@@ -17,7 +17,9 @@
 		if ($svn_enabled) {
 			$filestore = $this->store->get_filestore_svn("templates");
 			$svn = $filestore->connect($this->id);
+			// FIXME eror checking
 			$svn_info = $filestore->svn_info($svn);
+
 			$svn_status = $filestore->svn_status($svn);
 		} else {
 			$filestore = $this->store->get_filestore("templates");
@@ -95,7 +97,7 @@
 							<div class="bd">
                                                                 <ul class="first-of-type">
 <?php
-		if ($svn_info['Revision']) {
+		if (count($svn_info['entry'])) {
 ?>
                                                                     <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.tree.info.php" onclick="muze.ariadne.explore.arshow('dialog.svn.tree.info', this.href); return false;"><?php echo $ARnls["ariadne:svn:info"]; ?></a></li>
                                                                     <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.diff.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.diff', this.href); return false;"><?php echo $ARnls["ariadne:svn:diff"]; ?></a></li>
@@ -246,25 +248,26 @@
 								$svn_style = "";
 								$svn_style_hide = "";
 								$svn_img = "";
-
-								switch($svn_status[$filename]) {
+								$itemstatus = $svn_status[$filename]['wc-status']['item'];
+								var_dump($itemstatus);
+								switch($itemstatus) {
 									// Fixme: find out the codes for "locked", "read only" and add them.
 
-									case "C":
+									case "conflicted":
 										$svn_img = "ConflictIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:conflict'];
 										break;
-									case "M":
+									case "modified":
 										$svn_img = "ModifiedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:modified'];
 										break;
-									case "?":
+									case "unversioned":
 										break;
-									case "A":
+									case "added":
 										$svn_img = "AddedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:added'];
 										break;
-									case "D":
+									case "deleted":
 										$svn_img = "DeletedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:deleted'];
 										if ($this->data->config->deleted_templates[$type][$function][$language]) {
@@ -272,13 +275,16 @@
 											$svn_style_hide = "hidden";
 										}
 										break;
-									case "!":
+									case "missing":
 										$svn_style = "blurred";
 										$svn_style_hide = "hidden";
 										break;
-									default:
+									case 'normal':
 										$svn_img = "InSubVersionIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:insubversion'];
+										break;
+									default:
+										var_dump($itemstatus);
 										break;
 								}
 							}

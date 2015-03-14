@@ -129,7 +129,6 @@
 				$svn_switches['config-dir'] = $AR->dir->install . "/lib/configs/svn";
 			}
 
-			$svn_switches['non-recursive'] = true;
 
 			$svn = array(
 				'instance' 		=> $svn_instance,
@@ -331,10 +330,12 @@
 		function svn_info($svn, $name='') {
 			$path = $this->get_path($svn, $name);
 			if( file_exists($path.'.svn/') ) {
+				$switches = $svn['switches'];
+				$switches['recursive'] = false;
 				$args = array(
 					$path
 				);
-				$result = $svn['instance']->info->run($args, $svn['switches']);
+				$result = $svn['instance']->info->run($args, $switches);
 			} else {
 				$result = array();
 			}
@@ -433,8 +434,11 @@
 				$args = array(
 					$path
 				);
+				$svn_switches = $svn['switches'];
+				$svn_switches['non-recursive'] = true;
+				$svn_switches['verbose'] = true;
 				$svn['instance']->status->_prepared = false;
-				$tempresult = $svn['instance']->status->run($args, $svn['switches']);
+				$tempresult = $svn['instance']->status->run($args, $svn_switches);
 
 				// Since we have a flat structure, remove the path and use only the names.
 				if ($tempresult) {
@@ -446,11 +450,13 @@
 						return false;
 					} else {
 						$result = array();
+						$tempresult = $tempresult['target'][0]['entry'];
 						foreach ($tempresult as $key=>$value) {
-							$filename = basename($key);
-							$filename = substr($filename, 1);
-				
-							$result[$filename] = $value;
+							$filename = basename($value['path']);
+							if ($filename[0] === '_') {
+								$filename = substr($filename, 1);
+								$result[$filename] = $value;
+							}
 						}
 						return $result;
 					}
