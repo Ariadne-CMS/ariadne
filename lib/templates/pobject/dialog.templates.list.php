@@ -196,7 +196,7 @@
 				$deleted_privatetemplates = $data->config->deleted_privatetemplates;
 
 				foreach ($svn_status as $filename=>$file_status) {
-					if ($file_status == "!") {
+					if ($file_status['wc-status']['item'] == "missing") {
 						// Template is deleted here, but not in the SVN.
 						$file_meta = array();
 						$file_meta['ar:default'] = $filestore->svn_propget($svn, "ar:default", $filename);
@@ -209,7 +209,7 @@
 						$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
 						$privatetemplates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:private'];
 
-					} else if ($file_status == "D") {
+					} else if ($file_status['wc-status']['item'] == "deleted") {
 						foreach ($deleted_templates as $type => $functions) {
 							foreach ($functions as $function => $languages) {
 								foreach ($languages as $language => $default) {
@@ -284,7 +284,7 @@
 										$svn_alt = $ARnls['ariadne:svn:insubversion'];
 										break;
 									default:
-										var_dump($itemstatus);
+										// No status, this is an error
 										break;
 								}
 							}
