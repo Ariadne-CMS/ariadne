@@ -297,6 +297,7 @@
 				$switches['revision'] = $revision;
 			}
 
+			$svn['instance']->diff->setOptions([ 'fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_RAW ]);
 			$result = $svn['instance']->diff->run($args, $switches);
 			return $result;
 		}
@@ -383,7 +384,7 @@
 			);
 			$svn['instance']->propget->_prepared = false;
 			$result = $svn['instance']->propget->run($args, $svn['switches']);
-			return $result;
+			return $result['target'][0]['property']['text'];
 		}
 
 		function svn_proplist($svn, $name='') {
@@ -419,8 +420,10 @@
 			$args = array(
 				$this->get_path($svn, $name, true)
 			);
+			$svn_switches = $svn['switches'];
+			$svn_switches['recursive'] = false;
 			$svn['instance']->revert->_prepared = false;
-			$result = $svn['instance']->revert->run($args, $svn['switches']);
+			$result = $svn['instance']->revert->run($args, $svn_switches);
 			return $result;
 		}
 
@@ -510,13 +513,16 @@
 
 			// accepts a filename within the svn store and returns an array containing the ar: properties of the file
 			$svn['instance']->proplist->_prepared = false;
-			$proplist = explode("\n", $svn['instance']->proplist->run(array($name), $switches));
+			$svnresult = $svn['instance']->proplist->run(array($name), $switches);
+			$proplist = $svnresult['target'][0]['property'];
 			$result = array();
 			foreach( $proplist as $value ) {
+				$value = $value['name'];
 				$value = ltrim($value);
 				if( substr($value, 0, 3) == "ar:" ) {
 					$svn['instance']->propget->_prepared = false;
-					$result[$value] = $svn['instance']->propget->run(array($value, $name), $switches);
+					$temp = $svn['instance']->propget->run(array($value, $name), $switches);
+					$result[$value] = $temp['target'][0]['property']['text'];
 				}
 			}
 			return $result;

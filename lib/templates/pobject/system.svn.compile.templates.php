@@ -19,11 +19,11 @@
 				$template = file_get_contents($path);
 
 				$meta = array();
-				$meta['ar:default']	= $fstore->svn_propget($svn, "ar:default", $filename);
-				$meta['ar:type']	= $fstore->svn_propget($svn, "ar:type", $filename);
-				$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
-				$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
-				$meta['ar:private']	= $fstore->svn_propget($svn, "ar:private", $filename);
+				$meta['ar:default']  = $fstore->svn_propget($svn, "ar:default", $filename);
+				$meta['ar:type']     = $fstore->svn_propget($svn, "ar:type", $filename);
+				$meta['ar:function'] = $fstore->svn_propget($svn, "ar:function", $filename);
+				$meta['ar:language'] = $fstore->svn_propget($svn, "ar:language", $filename);
+				$meta['ar:private']  = $fstore->svn_propget($svn, "ar:private", $filename);
 
 				if($meta['default'] == '1') {
 					$meta['default'] = 1;
@@ -41,12 +41,12 @@
 				$this->error = null;
 
 				$this->call("system.save.layout.phtml", array(
-							"template" 	=> $template,
-							"default"	=> $meta['ar:default'],
-							"type"		=> $meta['ar:type'],
-							"function"	=> $meta['ar:function'],
-							"language"	=> $meta['ar:language'],
-							"private"	=> $meta['ar:private']
+							"template" => $template,
+							"default"  => $meta['ar:default'],
+							"type"     => $meta['ar:type'],
+							"function" => $meta['ar:function'],
+							"language" => $meta['ar:language'],
+							"private"  => $meta['ar:private']
 							));
 
 				if ($this->error) {

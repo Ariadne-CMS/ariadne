@@ -24,7 +24,7 @@
 			switch( $firstchar ) {
 				case "I": // Index:
 					$template = substr($line, strpos($line, " ")+1);
-					$props = $fstore->svn_get_ariadne_props($svn, $template);
+					$props = $fstore->svn_get_ariadne_props($svn, $template, '');
 					if( count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
 					}
@@ -35,7 +35,7 @@
 					$firstspace = strpos($line, " ")+1;
 					$nextspace = strpos($line, "\t", $firstspace);
 					$template = substr($line, $firstspace, $nextspace-$firstspace);
-					$props = $fstore->svn_get_ariadne_props($svn, $template);
+					$props = $fstore->svn_get_ariadne_props($svn, $template, '');
 					if( count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
 					}
@@ -44,7 +44,7 @@
 					$firstspace = strpos($line, " ")+1;
 					$nextspace = strpos($line, "\t", $firstspace);
 					$template = substr($line, $firstspace, $nextspace-$firstspace);
-					$props = $fstore->svn_get_ariadne_props($svn, $template);
+					$props = $fstore->svn_get_ariadne_props($svn, $template, '');
 					if( count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
 					}
