@@ -297,7 +297,7 @@
 			$switches = $svn['switches'];
 
 			if ($revision != '') {
-				$switches['revision'] = $revision;
+				$switches['revision'] = 'BASE:'.$revision;
 			}
 
 			$svn['instance']->diff->setOptions([ 'fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_RAW ]);
@@ -487,6 +487,7 @@
 			}
 			$svn['instance']->update->_prepared = false;
 			$result = $svn['instance']->update->run($args, $switches);
+			$result = $this->svn_update_parser($result);
 			return $result;
 		}
 
@@ -724,26 +725,44 @@
 			*/
 
 			$lines = explode("\n",$input);
-			$revisionline = array_pop($lines);
 
-			$revision = end(explode(' ',$revisionline));
+			while($line = array_shift($lines)) {
+				// pre check char 4 should be empty
+				if(strpos($line,'Skipped') === 0) {
+					// skipped
+					$rest = substr($line,9,-1);
+					$result[] = array (
+						'filestate' => 'Skipped',
+						'propstate' => 'Skipped',
+						'lockstate' => '',
+						'name'  => $rest,
+					);
+				} elseif(
+					strpos($line, 'At revision') === 0 ||
+					strpos($line, 'Updated to revision') === 0
+				) {
+					// Done
+					$revisionline = $line;
+					$revision = trim(end(explode(' ',$revisionline))," \t\n\r\0\x0B.");
+					break;
+				} else {
+					$filestate = $line[0];
+					$propstate = $line[1];
+					$lockstate = $line[2];
 
-			foreach($lines as $line) {
-				$filestate = $line[0];
-				$propstate = $line[1];
-				$lockstate = $line[2];
-
-				$rest = substr($line,3);
-				$rest = trim($rest);
-				$result[] = array (
-					'filestate' => $filestate,
-					'propstate' => $propstate,
-					'lockstate' => $lockstate,
-					'name'  => $rest,
-				);
+					$rest = substr($line,3);
+					$rest = trim($rest);
+					$result[] = array (
+						'filestate' => $filestate,
+						'propstate' => $propstate,
+						'lockstate' => $lockstate,
+						'name'  => $rest,
+					);
+				}
 			}
 			$result[] = array (
-				'revision' => $revision
+				'revision' => $revision,
+				'rest' => join("\n",$lines)
 			);
 			return $result;
 		}
