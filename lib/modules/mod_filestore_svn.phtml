@@ -501,7 +501,10 @@
 
 			$svn['instance']->list->_prepared = false;
 
-			$result = $svn['instance']->list->run($listargs, $switches);
+			try {
+				$result = $svn['instance']->list->run($listargs, $switches);
+			} catch(Exception $e){
+			}
 			return $result;
 		}
 
@@ -603,7 +606,13 @@
 			);
 			// echo "Testing repository directory - error is normal\n";
 			$svn['instance']->list->_prepared = false;
-			$svnlist = @$svn['instance']->list->run($listargs, $svn['switches']);
+			$svnlist = false;
+			try {
+				$svnlist = @$svn['instance']->list->run($listargs, $svn['switches']);
+			} catch(Exception $e) {
+				// ignore exception, only testing if the folder exists
+			}
+
 			if ($svnlist) {
 				return false;
 			} else {
