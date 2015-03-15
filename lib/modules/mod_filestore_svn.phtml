@@ -223,6 +223,7 @@
 				$switches['revision'] = $revision;
 			}
 			$switches['non-recursive'] = true;
+			$switches['force'] = true;
 			$svn['instance']->checkout->_prepared = false;
 			$result = $svn['instance']->checkout->run($args, $switches);
 			$result = $this->svn_update_parser($result);
@@ -358,6 +359,7 @@
 	
 			$svn['instance']->list->_prepared = false;
 			$result = $svn['instance']->list->run($args, $switches);
+			$result = $result['list'][0]['entry'];
 			return $result;
 		}
 
@@ -656,6 +658,7 @@
 
 			$svn['instance']->propget->_prepared = false;
 			$result = $svn['instance']->propget->run($args, $switches);
+			$result = $result['target'][0];
 			return $result;
 		}
 
@@ -736,7 +739,7 @@
 					'filestate' => $filestate,
 					'propstate' => $propstate,
 					'lockstate' => $lockstate,
-					'filename'  => $rest,
+					'name'  => $rest,
 				);
 			}
 			$result[] = array (

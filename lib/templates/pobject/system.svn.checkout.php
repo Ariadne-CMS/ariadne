@@ -56,9 +56,9 @@
 				if ($result) {
 					$templates = array();
 					foreach ($result as $item) {
-						$templates[] = $item['filename'];
+						$templates[] = $item['name'];
 						if( $item["filestate"]  == "A" ) {
-							$props = $fstore->svn_get_ariadne_props($svn, $item['filename'], '');
+							$props = $fstore->svn_get_ariadne_props($svn, $item['name'], '');
 							echo "<span class='svn_addtemplateline'>Adding ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "").( $props["ar:private"] == '1' ? " " . $ARnls["ariadne:template:private"] : "") . "</span>\n";
 						}
 						flush();
