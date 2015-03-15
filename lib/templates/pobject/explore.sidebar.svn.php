@@ -8,7 +8,7 @@
 		// FIXME eror checking
 		$svn_info = $fstore->svn_info($svn);
 
-		if (count($svn_info['entry'])) {
+		if (count($svn_info)) {
 			$tasks = array(
 				array(
 					'href' => $this->make_ariadne_url() . 'dialog.svn.tree.info.php',

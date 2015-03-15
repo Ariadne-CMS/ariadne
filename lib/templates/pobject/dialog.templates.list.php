@@ -97,7 +97,7 @@
 							<div class="bd">
                                                                 <ul class="first-of-type">
 <?php
-		if (count($svn_info['entry'])) {
+		if (count($svn_info)) {
 ?>
                                                                     <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.tree.info.php" onclick="muze.ariadne.explore.arshow('dialog.svn.tree.info', this.href); return false;"><?php echo $ARnls["ariadne:svn:info"]; ?></a></li>
                                                                     <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.diff.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.diff', this.href); return false;"><?php echo $ARnls["ariadne:svn:diff"]; ?></a></li>

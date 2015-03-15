@@ -222,8 +222,10 @@
 			if ($revision != '') {
 				$switches['revision'] = $revision;
 			}
+			$switches['non-recursive'] = true;
 			$svn['instance']->checkout->_prepared = false;
 			$result = $svn['instance']->checkout->run($args, $switches);
+			$result = $this->svn_update_parser($result);
 			return $result;
 		}
 
@@ -337,6 +339,7 @@
 					$path
 				);
 				$result = $svn['instance']->info->run($args, $switches);
+				$result = $result['entry'][0];
 			} else {
 				$result = array();
 			}
@@ -492,11 +495,13 @@
 			);
 
 			$switches = $svn['switches'];
-			$switches['non-interactive'] = false;
+			$switches['non-interactive'] = true;
+			$switches['trust-server-cert'] = true;
+			;
 
 			$svn['instance']->list->_prepared = false;
 
-			$result = $svn['instance']->list->run_interactive($listargs, $switches);
+			$result = $svn['instance']->list->run($listargs, $switches);
 			return $result;
 		}
 
@@ -686,5 +691,48 @@
 			} else {
 				return false;
 			}
+		}
+
+		protected function svn_update_parser($input) {
+			/*
+				For each updated item a line will start with a character reporting the
+				action taken.  These characters have the following meaning:
+
+				A  Added
+				D  Deleted
+				U  Updated
+				C  Conflict
+				G  Merged
+				E  Existed
+
+				A character in the first column signifies an update to the actual file,
+				while updates to the file's properties are shown in the second column.
+				A 'B' in the third column signifies that the lock for the file has
+				been broken or stolen.
+			*/
+
+			$lines = explode("\n",$input);
+			$revisionline = array_pop($lines);
+
+			$revision = end(explode(' ',$revisionline));
+
+			foreach($lines as $line) {
+				$filestate = $line[0];
+				$propstate = $line[1];
+				$lockstate = $line[2];
+
+				$rest = substr($line,3);
+				$rest = trim($rest);
+				$result[] = array (
+					'filestate' => $filestate,
+					'propstate' => $propstate,
+					'lockstate' => $lockstate,
+					'filename'  => $rest,
+				);
+			}
+			$result[] = array (
+				'revision' => $revision
+			);
+			return $result;
 		}
 	}

@@ -9,7 +9,7 @@
 				$filestore = $this->store->get_filestore_svn("templates");
 				$svn = $filestore->connect($this->id);
 				$svn_info = $filestore->svn_info($svn);
-				if ( $svn_info['Revision'] ) {
+				if ( $svn_info['revision'] ) {
 					$svn_status = $filestore->svn_status($svn);
 				} else {
 					$svn_enabled = false; // this library is not under revision control

@@ -14,7 +14,7 @@
 		}
 
 		$svn_info = $fstore->svn_info($svn);
-		$repository = $svn_info['URL'];
+		$repository = $svn_info['url'];
 
 		if (!isset($repository) || $repository == '') {
 			echo $ARnls['err:svn:enterURL'];

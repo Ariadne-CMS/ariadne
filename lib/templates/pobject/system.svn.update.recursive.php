@@ -8,7 +8,7 @@
 		$fstore	= $this->store->get_filestore_svn("templates");
 		$svn	= $fstore->connect($this->id, $this->getdata("username"), $this->getdata("password"));
 		$svn_info = $fstore->svn_info($svn);
-		$stored_repository = rtrim($svn_info['URL'], "/") . "/";
+		$stored_repository = rtrim($svn_info['url'], "/") . "/";
 		$revision = $this->getdata('revision');
 		$repository = $this->getdata('repository');
 

@@ -20,7 +20,7 @@
 			$svn	= $fstore->connect($this->id, $username, $password);
 			$svn_info = $fstore->svn_info($svn);
 
-			if ($svn_info['Revision']) {
+			if ($svn_info['revision']) {
 				echo $this->path . " is already under version control - update instead.\n";
 			} else {
 				if ($repoPath) {
