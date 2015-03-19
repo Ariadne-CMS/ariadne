@@ -53,7 +53,7 @@
 <title>Ariadne<?php echo ": " . $AR->user->data->name . ": " . $objectName; ?></title>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-<link href='http://fonts.googleapis.com/css?family=Abel|Montserrat' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Abel|Montserrat' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>button/assets/skins/sam/button.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>menu/assets/skins/sam/menu.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>treeview/assets/skins/sam/treeview.css">
