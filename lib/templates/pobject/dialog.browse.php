@@ -15,7 +15,7 @@
 				'iconalt' => $ARnls['ariadne:folders'],
 				'icon' => $AR->dir->images . 'icons/small/view_tree.png',
 				'href' => "#",
-				'onclick' => 'muze.ariadne.explore.tree.toggle(); return false;'
+				'onclick' => 'document.body.classList.toggle("tree"); muze.ariadne.explore.tree.toggle(); return false;'
 			),
 			array(
 				'iconalt' => $ARnls['ariadne:iconview'],
@@ -309,7 +309,44 @@
 		});
 	});
 </script>
-
+<style type="text/css">
+	@media (max-width: 481px) {
+		.yui-skin-sam .yuimenubaritemlabel {
+			border: 0px;
+		}
+		#explore_top {
+			height: 64px;
+		}
+		#explore_top div.searchdiv {
+			left: 10px;
+			top: 32px;
+		}
+		.managediv {
+			margin-top: 65px;
+		}
+		#splitpane_thumb {
+			display: none;
+		}
+		#explore_tree {
+			width: 100% !important;
+		}
+		#explore_tree #treeDiv {
+			width: auto !important;
+			right: 0px !important;
+		}
+		#explore_managediv {
+			left: 0 !important;
+			transition: left 0.3s;
+			-webkit-transition: left 0.3s;
+		}
+		#explore_tree #treeDiv {
+			bottom: 34px;
+		}
+		body.tree #explore_managediv {
+			left: 100% !important;
+		}
+	}
+</style>
 </head>
 
 <body class="yui-skin-sam">
