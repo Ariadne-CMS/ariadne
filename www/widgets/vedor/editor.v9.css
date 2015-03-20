@@ -16,6 +16,15 @@ table {
 	border: 2px inset buttonface;
 	*border: 0px;
 }
+@media (max-width: 481px) {
+	body.vedor-properties #vdEditPane {
+		display: none;
+	}
+	body.vedor-properties #vdMetaDataSlide {
+	/*	height: 400px !important; */
+	/*	display: block !important;*/
+	}
+}
 .vdEditorHidden #editorPane {
 	position: fixed;
 	top: 0px;
@@ -210,6 +219,7 @@ a:hover span.deltag {
 		border: 0px;
 		background-color: rgba(255,255,255,0.7);
 	}
+	#vdInsertPopup,
 	#vdInsertHTMLPopup {
 		max-width: 500px;
 		width: 90%;
@@ -226,6 +236,9 @@ a:hover span.deltag {
 		margin-top: -200px;
 		left: 50%;
 		margin-left: -250px;
+	}
+	#vdInsertPopup {
+		min-height: 120px;
 	}
 	#vdInsertHTMLPopup TEXTAREA {
 		width: 100%;
@@ -273,7 +286,7 @@ a:hover span.deltag {
 	.vdDialogButton.right {
 		float: right;
 	}
-	#vdInsertPopup {
+/*	#vdInsertPopup {
 		position: absolute;
 		background-color: #CCCCCC;
 		font-family: arial, helvetica, sans-serif;
@@ -291,6 +304,7 @@ a:hover span.deltag {
 		float: none;
 		border: 1px solid #CCCCCC;
 	}
+*/
 	.vdDropDown {
 		float: left;
 		width: 9px;
@@ -783,11 +797,11 @@ a:hover span.deltag {
 		#vdComposePopupPreview {
 			line-height: 16px;
 		}
-		#vdInsertPopup {
+/*		#vdInsertPopup {
 			top: 0px;
 			left: 50px;
 		}
-		.vedor-cell-width select,
+*/		.vedor-cell-width select,
 		.vedor-cell-height select,
 		.vedor-table-width select,
 		.vedor-table-height select {
@@ -800,9 +814,12 @@ a:hover span.deltag {
 		.vedor-context-html {
 			xdisplay: none;
 		}
-		#editorPane {
+		#editorPane, #vdMetaDataSlide {
 			-webkit-overflow-scrolling: touch !important;
-			overflow: scroll !important;
+			/* overflow: scroll !important; *//* oorzaak dubbele scrollbar */
+		}
+		#vdMetaDataSlide {
+		/*	overflow: scroll !important;*/
 		}
 		/* vedor dropdown list */
 		.vedor-list {
@@ -948,4 +965,33 @@ a:hover span.deltag {
 }
 .vedor-hidden {
 	display: none !important;
+}
+@media (max-width: 481px) {
+	#vdInsertPopup,
+	#vdInsertHTMLPopup {
+		left: 0px;
+		right: 0px;
+		top: 0px;
+		bottom: 94px; /* toolbar + context */
+		max-width: auto;
+		margin-top: auto;
+		margin-left: auto;
+		width: auto;
+	}
+	#vdInsertHTMLPopup .vdContent {
+		padding-bottom: 50px;
+		box-sizing: border-box;
+		height: 100%;
+	}
+	#vdInsertHTMLPopup .vdDialogBody {
+		position: relative;
+	}
+	#vdInsertHTMLSource {
+		height: 100% !important;
+	}
+	#vdInsertHTMLPopup .vdDialogButton {
+		min-width: 0px;
+		padding: 0px 20px;
+	}
+
 }
