@@ -58,8 +58,13 @@
 			$scanner['class_ident_next'] = $class_ident_next;
 			$scanner['class_number'] = $class_number;
 
+			// List of allowed characters for attribute names;
 			$class_attrib_next = $class_ident_next;
 			$class_attrib_next[':'] = ':';
+			$class_attrib_next['-'] = '-';
+			$class_attrib_next['_'] = '_';
+			$class_attrib_next['.'] = '.';
+
 			$scanner['class_attrib_next'] = $class_attrib_next;
 
 
