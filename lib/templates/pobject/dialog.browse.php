@@ -343,7 +343,7 @@
 			bottom: 34px;
 		}
 		body.tree #explore_managediv {
-			left: 100% !important;
+			left: 110% !important;
 		}
 	}
 </style>
