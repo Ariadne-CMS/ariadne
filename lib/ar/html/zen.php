@@ -74,10 +74,10 @@
 
 		protected $tokens = array();
 
-		protected $token;
-		protected $token_value;
-		protected $token_ahead;
-		protected $token_ahead_value;
+		public $token;
+		public $token_value;
+		public $token_ahead;
+		public $token_ahead_value;
 
 
 		function __construct($buffer) {
