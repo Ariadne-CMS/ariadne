@@ -169,8 +169,7 @@ class htmlcleanertag {
 		}
 		if ($_value!='') {
 			$return[strtolower($_name)] = $_value;
-		}
-		if ($_name!='') {
+		} else if ($_name!='') {
 			$return[] = $_name;
 		}
 
