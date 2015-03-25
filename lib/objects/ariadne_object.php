@@ -2294,11 +2294,14 @@ debug("loadLibrary: loading cache for $this->path");
 					$image = URL::RAWtoAR($image, $imageNLS);
 				}
 
-				$pcache=$this->store->get_filestore("privatecache");
-				$pcache->write($image, $this->id, $file);
-				$time=time()+($time*3600);
-				if (!$pcache->touch($this->id, $file, $time)) {
-					debug("savecache: ERROR: couldn't touch $file","object");
+				if( $time > 0 ) {
+					$pcache=$this->store->get_filestore("privatecache");
+					$pcache->write($image, $this->id, $file);
+					$time=time()+($time*3600);
+					if (!$pcache->touch($this->id, $file, $time)) {
+						$this->error = ar::error("savecache: ERROR: couldn't touch $file", 1113);
+						$result = false;
+					}
 				}
 				/* it seems that ob_end_flush doesn't really clean the output
 				   output buffer, ob_end_clean() does. With flush, the loader
