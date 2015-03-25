@@ -2129,11 +2129,21 @@ debug("loadLibrary: loading cache for $this->path");
 					$ids=$this->store->info($this->store->find($path, "" ,0));
 					if(is_array($ids)){
 						foreach($ids as $value) {
+							$eventData = new object();
+							$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $value['type'], $value['path'] );
+							if ( !$eventData ) {
+								continue;
+							}
+
 							$pcache->purge($value["id"]);
 						}
 					}
 				} else {
-					$pcache->purge($this->id);
+					$eventData = new object();
+					$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $this->type, $this->path );
+					if ( $eventData ) {
+						$pcache->purge($this->id);
+					}
 				}
 			}
 
