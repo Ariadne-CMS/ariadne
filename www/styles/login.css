@@ -372,4 +372,7 @@ html {
 		border: 0px;
 		background-color: inherit;
 	}
+	#login_panel {
+		background-image: inherit;
+	}
 }
