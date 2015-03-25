@@ -2125,6 +2125,7 @@ debug("loadLibrary: loading cache for $this->path");
 							}
 
 							$pcache->purge($value["id"]);
+							ar_events::fire( 'onclearprivatecache', $eventData, $value['type'], $value['path'] );
 						}
 
 						$offset += $limit;
@@ -2135,6 +2136,7 @@ debug("loadLibrary: loading cache for $this->path");
 					$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $this->type, $this->path );
 					if ( $eventData ) {
 						$pcache->purge($this->id);
+						ar_events::fire( 'onclearprivatecache', $eventData, $this->type, $this->path );
 					}
 				}
 			}
