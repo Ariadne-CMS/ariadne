@@ -22,12 +22,6 @@
 		const T_OP_SIBLINGS         = 15;
 		const T_OP_SETTING          = 16;
 
-		protected $YYLINE, $YYBUFFER, $YYCURSOR, $YYSTATE;
-		protected $class_ident = array();
-		protected $class_ident_next = array();
-		protected $class_number = array();
-		protected $class_whitespace = array();
-
 		public function __construct( $string ) {
 			$parser = new ar_html_zenParser($string);
 			$nodes = $parser->run();
@@ -68,6 +62,23 @@
 	}
 
 	class ar_html_zenScanner {
+		protected $YYLINE;
+		protected $YYBUFFER;
+		protected $YYCURSOR;
+		protected $YYSTATE;
+
+		protected $class_ident = array();
+		protected $class_ident_next = array();
+		protected $class_number = array();
+		protected $class_whitespace = array();
+
+		protected $tokens = array();
+
+		public $token;
+		public $token_value;
+		public $token_ahead;
+		public $token_ahead_value;
+
 
 		function __construct($buffer) {
 			$this->YYBUFFER = $buffer."\000";
@@ -105,7 +116,8 @@
 			if (count($this->tokens) == 0) {
 				$new_token = $this->scan($new_value);
 			} else {
-				list($new_token, $new_value) = each(array_shift($this->tokens));
+				$entry = array_shift($this->tokens);
+				list($new_token, $new_value) = each($entry);
 			}
 			if (isset($this->token_ahead)) {
 				$this->token = $this->token_ahead;
@@ -119,9 +131,7 @@
 
 		function scan(&$value) {
 			$YYCURSOR = &$this->YYCURSOR;
-			//$YYLINE = &$this->YYLINE;
 			$YYBUFFER = &$this->YYBUFFER;
-			//$YYSTATE = &$this->YYSTATE;
 			$yych = $YYBUFFER[$YYCURSOR];
 			$token = "";
 
@@ -141,7 +151,7 @@
 							$value .= $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
-						$yych = $YYBUFFER[++$YYCURSOR];
+						++$YYCURSOR;
 						return ar_html_zen::T_IDENT;
 					break;
 					case '|' === $yych: ($token || $token = ar_html_zen::T_OP_FILTER);
@@ -157,7 +167,8 @@
 					case '.' === $yych: ($token || $token = ar_html_zen::T_OP_CLASS);
 					case '#' === $yych: ($token || $token = ar_html_zen::T_OP_ID);
 					case ':' === $yych: ($token || $token = ar_html_zen::T_OP_SETTING);
-						$value = $yych; $yych = $YYBUFFER[++$YYCURSOR];
+						$value = $yych;
+						++$YYCURSOR;
 						return $token;
 					break;
 					case $this->class_whitespace[$yych] === $yych:
@@ -185,7 +196,8 @@
 						return ar_html_zen::T_EOF;
 					break;
 					default:
-						$value = $yych; $yych = $YYBUFFER[++$YYCURSOR];
+						$value = $yych;
+						++$YYCURSOR;
 						return $value;
 					break;
 				}
@@ -194,6 +206,8 @@
 	}
 
 	class ar_html_zenParser {
+		protected $scanner;
+
 		public function __construct($string) {
 			$this->scanner = new ar_html_zenScanner($string);
 			$this->scanner->next();
