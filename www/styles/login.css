@@ -345,6 +345,8 @@ html {
 		text-align: center;
 		border-left: 0px;
 		border-right: 0px;
+		border-bottom: 1px solid #808080;
+		padding-bottom: 10px;
 	}
 	#login_panel #header .logo {
 		float: none;
@@ -367,8 +369,10 @@ html {
 	}
 	#login_panel #tabsdata,
 	#login_panel .notfixed #tabsdata {
-		position: fixed;
-		top: 75px;
-		margin-top: 0px;
+		border: 0px;
+		background-color: inherit;
+	}
+	#login_panel {
+		background-image: inherit;
 	}
 }
