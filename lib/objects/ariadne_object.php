@@ -2129,11 +2129,23 @@ debug("loadLibrary: loading cache for $this->path");
 					$ids=$this->store->info($this->store->find($path, "" ,0));
 					if(is_array($ids)){
 						foreach($ids as $value) {
+							$eventData = new object();
+							$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $value['type'], $value['path'] );
+							if ( !$eventData ) {
+								continue;
+							}
+
 							$pcache->purge($value["id"]);
+							ar_events::fire( 'onclearprivatecache', $eventData, $value['type'], $value['path'] );
 						}
 					}
 				} else {
-					$pcache->purge($this->id);
+					$eventData = new object();
+					$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $this->type, $this->path );
+					if ( $eventData ) {
+						$pcache->purge($this->id);
+						ar_events::fire( 'onclearprivatecache', $eventData, $this->type, $this->path );
+					}
 				}
 			}
 
@@ -2282,11 +2294,14 @@ debug("loadLibrary: loading cache for $this->path");
 					$image = URL::RAWtoAR($image, $imageNLS);
 				}
 
-				$pcache=$this->store->get_filestore("privatecache");
-				$pcache->write($image, $this->id, $file);
-				$time=time()+($time*3600);
-				if (!$pcache->touch($this->id, $file, $time)) {
-					debug("savecache: ERROR: couldn't touch $file","object");
+				if( $time > 0 ) {
+					$pcache=$this->store->get_filestore("privatecache");
+					$pcache->write($image, $this->id, $file);
+					$time=time()+($time*3600);
+					if (!$pcache->touch($this->id, $file, $time)) {
+						$this->error = ar::error("savecache: ERROR: couldn't touch $file", 1113);
+						$result = false;
+					}
 				}
 				/* it seems that ob_end_flush doesn't really clean the output
 				   output buffer, ob_end_clean() does. With flush, the loader
