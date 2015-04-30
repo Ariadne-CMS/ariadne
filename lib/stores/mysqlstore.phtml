@@ -91,6 +91,14 @@ class mysqlstore extends store{
 
 		$password = $config["password"];
 		$config["password"]="";
+
+		if(is_array($config['crypto'])) {
+			$crypto = $config['crypto'];
+			// hide crypto configuration from var_dump e.d.
+			$config['crypto'] = function () use ($crypto) {
+				return $crypto;
+			};
+		}
 		$this->config=$config;
 
 		/* Include module mysql_compiler */

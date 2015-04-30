@@ -415,9 +415,10 @@ abstract class store {
 		}
 
 		// Notice: When upgrading to a new crypto format, prepend the object data with a key of the crypto. This way you can be backwards compatible but new objects will be saved in the new crypto.
-		if ($this->config['crypto']) {
+		if ($this->config['crypto'] instanceof \Closure) {
+			$crypto = $this->config['crypto']();
 			// use the last crypto configured;
-			$cryptoConfig = end($this->config['crypto']);
+			$cryptoConfig = end($crypto);
 			if (is_array($cryptoConfig['paths'])) {
 				foreach ($cryptoConfig['paths'] as $cryptoPath) {
 					if (strpos($path, $cryptoPath) === 0) {
@@ -446,8 +447,9 @@ abstract class store {
 	protected function unserialize($value, $path) {
 		if (substr($value, 0, 2) == "O:") {
 			return unserialize($value);
-		} else if (is_array($this->config['crypto'])) {
-			foreach ($this->config['crypto'] as $cryptoConfig) {
+		} else if ($this->config['crypto'] instanceof \Closure) {
+			$crypto = $this->config['crypto']();
+			foreach ($crypto as $cryptoConfig) {
 				$cryptoToken = $cryptoConfig['token'];
 				if (substr($value, 0, strlen($cryptoToken)+1) == ($cryptoToken . ":")) {
 					$value = substr($value, strlen($cryptoToken)+1);
