@@ -68,7 +68,11 @@
 				$iv = mcrypt_create_iv ( $ivsize , MCRYPT_DEV_URANDOM);
 
 				$encrypted = mcrypt_encrypt($this->encoding, $this->key, $value, $this->mode,$iv);
-				return base64_encode($iv . $encrypted);
+				if($encrypted !== false) {
+					return base64_encode($iv . $encrypted);
+				} else {
+					return false;
+				}
 			}
 		}
 
