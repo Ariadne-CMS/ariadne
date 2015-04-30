@@ -408,6 +408,71 @@ abstract class store {
 		}
 	}
 
+	public function serialize($value, $path) {
+		if ($value->failedDecrypt && $value->originalData) {
+			$value = $value->originalData;
+			return $value;
+		}
+
+		// Notice: When upgrading to a new crypto format, prepend the object data with a key of the crypto. This way you can be backwards compatible but new objects will be saved in the new crypto.
+		if ($this->config['crypto']) {
+			// use the last crypto configured;
+			$cryptoConfig = end($this->config['crypto']);
+
+			if (is_array($cryptoConfig['paths'])) {
+				foreach ($cryptoConfig['paths'] as $cryptoPath) {
+					if (strpos($path, $cryptoPath) === 0) {
+						$value->crypted = true;
+						switch ($cryptoConfig['method']) {
+							case 'ar_crypt':
+								$key = base64_decode($cryptoConfig['key']);
+								$crypto = new ar_crypt($key,$cryptoConfig['crypto'],1);
+								$cryptedValue = $crypto->crypt(serialize($value));
+								if($cryptedValue !== false ) {
+									return $cryptoConfig['token'] . ":" . $cryptedValue;
+								}
+							break;
+							default:
+							break;
+						}
+
+					}
+				}
+			}
+		}
+		return serialize($value);
+	}
+
+	public function unserialize($value, $path) {
+		if (substr($value, 0, 2) == "O:") {
+			return unserialize($value);
+		} else if (is_array($this->config['crypto'])) {
+			foreach ($this->config['crypto'] as $cryptoConfig) {
+				$cryptoToken = $cryptoConfig['token'];
+				if (substr($value, 0, strlen($cryptoToken)+1) == ($cryptoToken . ":")) {
+					$value = substr($value, strlen($cryptoToken)+1);
+					switch ($cryptoConfig['method']) {
+						case 'ar_crypt':
+							$key = base64_decode($cryptoConfig['key']);
+							$crypto = new ar_crypt($key,$cryptoConfig['crypto'],1);
+							$decryptedValue =  $crypto->decrypt($value);
+						break;
+						default:
+						break;
+					}
+				}
+			}
+
+			if (substr($decryptedValue, 0, 2) == "O:") {
+				return unserialize($decryptedValue);
+			} else {
+				$dummy = unserialize('O:6:"object":7:{s:5:"value";s:0:"";s:3:"nls";O:6:"object":2:{s:7:"default";s:2:"nl";s:4:"list";a:1:{s:2:"nl";s:10:"Nederlands";}}s:2:"nl";O:6:"object":1:{s:4:"name";s:14:"Crypted object";}s:6:"config";O:6:"object":2:{s:10:"owner_name";s:6:"Nobody";s:5:"owner";s:6:"nobody";}s:5:"mtime";i:0;s:5:"ctime";i:0;s:5:"muser";s:6:"nobody";}');
+				$dummy->failedDecrypt = true;
+				$dummy->originalData = $value;
+				return $dummy;
+			}
+		}
+	}
 
 	public function __call($name,$arguments)
 	{
