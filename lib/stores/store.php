@@ -408,7 +408,7 @@ abstract class store {
 		}
 	}
 
-	public function serialize($value, $path) {
+	protected function serialize($value, $path) {
 		if ($value->failedDecrypt && $value->originalData) {
 			$value = $value->originalData;
 			return $value;
@@ -443,7 +443,7 @@ abstract class store {
 		return serialize($value);
 	}
 
-	public function unserialize($value, $path) {
+	protected function unserialize($value, $path) {
 		if (substr($value, 0, 2) == "O:") {
 			return unserialize($value);
 		} else if (is_array($this->config['crypto'])) {
