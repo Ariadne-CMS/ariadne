@@ -418,11 +418,10 @@ abstract class store {
 		if ($this->config['crypto']) {
 			// use the last crypto configured;
 			$cryptoConfig = end($this->config['crypto']);
-
 			if (is_array($cryptoConfig['paths'])) {
 				foreach ($cryptoConfig['paths'] as $cryptoPath) {
 					if (strpos($path, $cryptoPath) === 0) {
-						$value->crypted = true;
+						$value->ARcrypted = true;
 						switch ($cryptoConfig['method']) {
 							case 'ar_crypt':
 								$key = base64_decode($cryptoConfig['key']);
@@ -440,6 +439,7 @@ abstract class store {
 				}
 			}
 		}
+		unset($value->ARcrypted);
 		return serialize($value);
 	}
 
