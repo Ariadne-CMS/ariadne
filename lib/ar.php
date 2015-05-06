@@ -333,9 +333,9 @@
 
 		public static function raiseError($message, $code, $previous = null) {
 			if (self::$throwExceptions) {
-				throw new ar_error($message, (int)$code, $previous);
+				throw new ar_error($message, $code, $previous);
 			} else {
-				return new ar_error($message, (int)$code, $previous);
+				return new ar_error($message, $code, $previous);
 			}
 		}
 
