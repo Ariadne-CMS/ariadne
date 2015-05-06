@@ -151,6 +151,7 @@
 		// to make room for the toolbars
 		var vdToolbars=document.getElementById('vdToolbars');
 		var ToolbarHeight=52;//vdToolbars.offsetHeight;
+
 		if (window.getSelection ) { // FIXME: border in non-ie so we have to add 4
 			ToolbarHeight+=4;
 		}
@@ -371,10 +372,11 @@
 
 		// muze.event.attach(vdEditorFrame, "load", checkLoad);
 		muze.event.attach(vdEditorFrame, "load", initEditablePage);
+		muze.event.attach(vdMetaPane, "load", initMeta);
+		muze.event.attach(vdMetaPane, "initEditablePage", initEditablePage);
 	}
 
-	function initGroups() {
-		var allScripts = vdEditorFrame.contentDocument.getElementsByTagName("SCRIPT");
+	function initGroups(allScripts) {
 		for (var i=0; i<allScripts.length; i++) {
 			switch (allScripts[i].getAttribute("type")) {
 				case "vedor/registerGroup":
@@ -421,7 +423,6 @@
 						// FIXME: add sanity check for settings;
 						setConfig(editorSettings);
 						init();
-						initGroups();
 					//} catch (e) {
 					//	console.log(e);
 					//	console.log("invalid editor settings");
@@ -435,6 +436,10 @@
 				break;
 			}
 		}
+
+		// Init groups last, to make sure all the fields are available;
+		initGroups(allScripts);
+
 		checkLoad();
 	}
 
@@ -467,14 +472,14 @@
 			// FIXME: Dit maakt een kapotte weergave in de cidadis test-site;
 			VD_DETAILS_onclick(showBorders);
 
-			if ( vdOpenMetaPane && !vdMetaDataSlideEnabled ) {
+			/*if ( vdOpenMetaPane && !vdMetaDataSlideEnabled ) {
 				vdOpenMetaPane = false; // only do this once
 				VD_META_onclick();
 			} else {
 				if (vdMetaDataSlideEnabled) {
 					VD_META_onclick();
 				}
-			}
+			}*/
 
 			if (tbContentEditOptions['grants']) {
 				if (tbContentEditOptions['grants']['add']) {
@@ -583,8 +588,9 @@
 						} else {
 							var icon = '';
 						}
-						vdInsertContent += '<a href="#" class="vdButtonLarge" unselectable="on" id="vdInsert'+i+'" onClick="VD_INSERT_onclick(\''+i+'\')">'+
-							'<div class="vdIcon" id="vdIcon'+i+'"'+icon+'></div>'+tbContentEditOptions['htmlblocks'][i]['name']+'</a>';
+						var blockType = i.replace(/\./g, '-'); 
+						vdInsertContent += '<a href="#" class="vdButtonLarge" unselectable="on" id="vdInsert-'+blockType+'" onClick="VD_INSERT_onclick(\''+i+'\')">'+
+							'<div class="vdIcon" id="vdIcon-'+blockType+'"'+icon+'></div>'+tbContentEditOptions['htmlblocks'][i]['name']+'</a>';
 						count++;
 				}
 				vdInsertPopup.innerHTML = vdInsertContent;
@@ -832,8 +838,14 @@
 				return; // nothing to save
 			} else {
 				while (isDirty()) {
-					if (field = getDirtyField()) {
-						arguments+='changes['+escape(field.path)+']'+field.name+'='+vdEscape(getValue(field.fieldId))+'&';
+					field = getDirtyField();
+					if (field) {
+						var targetField = (vdEditPane.contentDocument.getElementById(field.fieldId) || vdMetaPane.contentDocument.getElementById(field.fieldId));
+						if (targetField) {
+							if (!targetField.name || (targetField.name == field.name)) {
+								arguments+='changes['+escape(field.path)+']'+field.name+'='+vdEscape(getValue(field.fieldId))+'&';
+							}
+						}
 					}
 				}
 				clearDirty();
@@ -1506,6 +1518,9 @@
 	}
 
 	function VD_INSERT_onclick(insert_type) {
+		// Close popup
+		vdToggleInsert();
+
 		if (tbContentEditOptions['htmlblocks'][insert_type]) {
 			if (isEditable()) {
 				var editField = getEditableField();
@@ -1576,6 +1591,9 @@
 						checkChangeEndEl(editField);
 					}
 					vdStoreUndo();
+					vdEditPane_DisplayChanged();
+					muze.event.fire(vdEditPane, "vedor-htmlblock-inserted");
+					muze.event.fire(vdEditPane, "vedor-selectable-inserted");
 				};
 				ajax.send(arguments);
 			}
@@ -1588,16 +1606,16 @@
 			vdInsertPopup.style.display='block';
 			var closeDropEvent;
 			function closeDropDown() {
-				muze.event.detach(document, 'click', closeDropEvent);
+				muze.event.detach(vdEditDoc, 'click', closeDropEvent);
 				document.getElementById('vdInsertPopup').style.display='none';
 				return true;
 			}
 			window.setTimeout(function() {
-				closeDropEvent = muze.event.attach(document, 'click', closeDropDown);
+				closeDropEvent = muze.event.attach(vdEditDoc, 'click', closeDropDown);
 			}, 100);
 		} else {
 			vdInsertPopup.style.display='none';
-			muze.event.detach(document, 'click', closeDropEvent);
+			muze.event.detach(vdEditDoc, 'click', closeDropEvent);
 		}
 	}
 
@@ -2139,6 +2157,46 @@
 
 			muze.event.attach(editable, 'focus', checkChangeStart);
 			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
+//			muze.event.attach(editable, 'mousedown', function() {
+//				vdStoreUndo();
+//				checkUndoRedo();
+//			});
+			if (vdHandles) {
+				muze.event.attach(editable, 'scroll', vdHandles.show);
+			}
+
+			if ( editable.tagName.toLowerCase()=='input' || editable.tagName.toLowerCase() == 'select') {
+				muze.event.attach(editable, 'change', checkChangeEnd);
+			} else {
+				editable.contentEditable=true;
+			}
+			muze.event.attach(editable, 'dblclick', checkDblClick);
+			if( brokenWebkit ) {
+				muze.event.attach(editable, 'click', vdHandleBrokenWebkitSelect);
+			}
+		}
+	}
+
+	function initMeta() {
+		var editable;
+
+		var brokenWebkit = false;
+		if( window.getSelection ) {
+			var selection = document.getElementById("vdMetaFrame").contentWindow.document.defaultView.getSelection();
+			if( selection.setBaseAndExtent ) { // broken webkit
+				brokenWebkit = true;
+			}
+		}
+
+		var all = document.getElementById("vdMetaFrame").contentWindow.document.querySelectorAll(".editable");
+		for(var k=0, all; elm=all[k++];) {
+			editable = elm;
+
+			registerDataField(elm.id, elm.getAttribute("data-vedor-field"), elm.getAttribute("data-vedor-path"), elm.getAttribute("data-vedor-id"));
+			// console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
+
+			muze.event.attach(editable, 'focus', checkChangeStart);
+			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
 			muze.event.attach(editable, 'mousedown', function() {
 				vdStoreUndo();
 				checkUndoRedo();
@@ -2157,17 +2215,8 @@
 				muze.event.attach(editable, 'click', vdHandleBrokenWebkitSelect);
 			}
 		}
-	}
 
-	function initMeta() {
-		var all = vdMetaPane.contentWindow.document.querySelectorAll(".editable");
-		for(var k=0, all;elm=all[k++];) {
-			editable = elm;
-			muze.event.attach(editable, 'focus', checkChangeStart);
-			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
-			muze.event.attach(editable, 'change', checkChangeEnd);
-			muze.event.attach(editable, 'mousedown', vdStoreUndo);
-		}
+		muze.event.fire(document.getElementById("vdMetaFrame"), "initEditablePage");
 	}
 
 	var vdMetaTab = null;
@@ -2578,11 +2627,13 @@
 			document.getElementById('vdMetaDataSlider').style.display='none';
 			vdMetaDataSlideEnabled = false;
 			document.getElementById('VD_META').classList.remove('vedor-selected');
+			document.body.classList.remove("vedor-properties");
 		} else {
 			document.getElementById('vdMetaDataSlide').style.display='';
 			document.getElementById('vdMetaDataSlider').style.display='';
 			vdMetaDataSlideEnabled = true;
 			document.getElementById('VD_META').classList.add('vedor-selected');
+			document.body.classList.add("vedor-properties");
 		}
 		window_onresize();
 	}
@@ -2891,11 +2942,13 @@
 
 				var bmLeft = vdEditPane.contentWindow.document.getElementById("vdBookmarkLeft");
 				var obj = bmLeft;
+
 				if (!obj) {
 					return;
 				}
 
 				var lleft = 0, ltop = 0;
+				ltop += obj.offsetHeight;
 				do {
 					lleft += obj.offsetLeft;
 					ltop += obj.offsetTop;
@@ -2904,6 +2957,7 @@
 				var bmRight = vdEditPane.contentWindow.document.getElementById("vdBookmarkRight");
 				obj = bmRight;
 				var rleft = 0, rtop = 0;
+				rtop += obj.offsetHeight;
 				do {
 					rleft += obj.offsetLeft;
 					rtop += obj.offsetTop;
@@ -2932,6 +2986,8 @@
 				var left = lleft + ((rleft - lleft) / 2);
 
 				var activeToolbar = activeSection.querySelectorAll("div.vedor-toolbar")[0];
+
+				top += vdEditPane.offsetTop;
 
 				if (!parent.getAttribute("data-vedor-selectable")) {
 					top -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
@@ -2965,7 +3021,7 @@
 						top = mintop;
 					}
 				}
-				activeSection.style.top = top  + 30 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
+				activeSection.style.top = top + 10 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
 				activeSection.style.left = newleft;
 
 
@@ -3023,7 +3079,35 @@
 		return false;
 	}
 
+	function getUneditableParent(checkParent) {
+		var parent = checkParent;
+		while (parent) {
+			if (parent.className && parent.className.match(/\buneditable\b/)) {
+				return parent;
+			} else if (parent.className && parent.className.match(/\beditable\b/)) {
+				return false;
+			}
+			parent = parent.parentNode;
+		}
+		return false;
+	}
+
 	function updateHtmlContext() {
+		// Check if the current selection is part of an uneditable thing, if so, move the selection to that parent;
+		var sel = vdSelectionState.get();
+		var parent = vdSelection.getNode(sel);
+		// console.log(parent);
+		var selParent = getUneditableParent(parent);
+		if (selParent) {
+			// console.log(selParent);
+			// Selection if part of something uneditable
+			sel.selectNode(selParent);
+			sel.startContainer.ownerDocument.defaultView.getSelection().removeAllRanges();
+			sel.startContainer.ownerDocument.defaultView.getSelection().addRange(sel);
+			vdSelectionState.save(sel);
+			sel.startContainer.ownerDocument.defaultView.getSelection().removeAllRanges()
+		}
+
 		showVedorEditorContext();
 
 		var parent			= false;
@@ -3110,13 +3194,14 @@
 		if (htmlblockOptions) {
 			var context_tmpl = tbContentEditOptions['htmlblocks'][htmlblock_id]['context'];
 			var vdHTMLBlockProperties = document.getElementById('vdHTMLBlockProperties');
+			/*
 			muze.event.attach(vdHTMLBlockProperties, 'load', function() {
 				var title = vdHTMLBlockProperties.contentWindow.document.title;
 				document.getElementById('vdTabHTMLBlockTitle').innerHTML = title;
 				var vdTabHTMLBlock = document.getElementById('vdTabHTMLBlock');
 			});
+			*/
 			vdHTMLBlockProperties.src = objectURL + context_tmpl;
-			var vdTabHTMLBlock = document.getElementById('vdTabHTMLBlock');
 		}
 
 		if (imgOptions) {
@@ -3363,7 +3448,6 @@
 	}
 
 </script>
-
 </head>
 <body unselectable="on">
 <div id="vdEditor" unselectable="on">
@@ -3408,7 +3492,7 @@
 		<a href="#" class="vdDialogButton left" unselectable="on" id="vdInsertHTMLSelectAll" title="<?php echo $ARnls['vd.editor:cancel'];?>" onClick="vdInsertHTMLSelectAll();"><?php echo $ARnls['vd.editor:selectall']; ?></a>
 	</div>
 </div>
-<div id="vdMetaDataSlide" style="height: 220px; display: none;" unselectable="on">
+<div id="vdMetaDataSlide" style="height: 220px; display: none;" unselectable="on" style="display: none; -webkit-overflow-scrolling:touch; overflow: scroll;">
 	<iframe id="vdMetaFrame" src="<?php echo $this->make_local_url(); ?>vd.meta.phtml?vdLanguage=<?php echo RawUrlEncode($language); ?>" unselectable="on"></iframe>
 </div>
 <div id="vdMetaDataSlider" style="display: none;" unselectable="on"></div>
@@ -3667,7 +3751,7 @@
 		},
 		"vedor-insert-gadget" : function(el) {
 			var gadgetPopup = document.getElementById("vdInsertPopup");
-			el.appendChild(gadgetPopup);
+			// el.appendChild(gadgetPopup);
 			vdToggleInsert();
 			return false;
 		},
@@ -3796,7 +3880,7 @@
 			if (scrollTimer) {
 				window.clearTimeout(scrollTimer);
 			}
-			scrollTimer = window.setTimeout(updateHtmlContext, 50);
+			scrollTimer = window.setTimeout(vdEditPane_DisplayChanged, 50);
 		});
 
 		muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
@@ -3943,10 +4027,16 @@
 			toolbars[i].insertBefore(marker, toolbars[i].firstChild);
 		}
 
+
 		muze.event.attach(vdEditPane.contentWindow, "load", function() {
-			muze.event.attach(vdEditPane.contentWindow.document, "click", function() {
+			vdEditPane.contentWindow.document.body.focus();
+			muze.event.attach(vdEditPane.contentWindow.document, "click", function(event) {
+//				if (!event.target.getAttribute("data-vedor-selectable")) {
+//					vdSelectionState.remove();
+//				}
 				if (vdHideToolbars) {
 					vdHideToolbars = false;
+//					vdSelectionState.remove();
 					showVedorEditorContext();
 				}
 			});
