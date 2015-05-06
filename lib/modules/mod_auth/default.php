@@ -189,7 +189,7 @@
 						} else {
 							debug("checkLogin: could not login ($login) on private session (".$ARCurrent->session->id.") with credentials from cookie: removing cookie", "all");
 							// FIXME: only the loader should know about cookies for sessions
-							setcookie("ARSessionCookie[".$ARCurrent->session->id."]", null);
+							setcookie("ARSessionCookie[".$ARCurrent->session->id."]", false);
 							$this->getUser('public');
 							$result = LD_ERR_ACCESS;
 						}

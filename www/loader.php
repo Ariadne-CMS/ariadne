@@ -104,9 +104,13 @@
 			$AR->hideSessionIDfromURL=false;
 		} elseif ($AR->hideSessionIDfromURL) {
 			$cookies = ldGetCredentials();
-			if (is_array($cookies) && count($cookies) === 1) {
-				$session_id=current(array_keys($cookies));
+			$current = ldGetCookieSession();
+			if ( array_key_exists( $current, $cookies ) ) {
+				$session_id = $current;
 			}
+			//if (is_array($cookies) && count($cookies) === 1) {
+			//	$session_id=current(array_keys($cookies));
+			//}
 		}
 
 		// set the default user (public)
