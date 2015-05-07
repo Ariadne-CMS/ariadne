@@ -74,8 +74,8 @@
 			$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
 
 			header('P3P: CP="NOI CUR OUR"');
-			setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 			setcookie('ARCurrentSession', $ARCurrent->session->id, 0, '/', false, $https, true);
+			setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 		}
 	}
 

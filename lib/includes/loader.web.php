@@ -277,15 +277,15 @@
 		if ($AR->hideSessionIDfromURL) {
 			$cookies = (array) ldGetCredentials();
 			$https = ($_SERVER['HTTPS']=='on');
-			if( ! isset($cookies[$ARCurrent->session->id])  && $ARCurrent->session->id != 0) {
+			if( !isset($cookies[$ARCurrent->session->id])  && $ARCurrent->session->id !== 0) {
 				$data = array();
 				$data['timestamp']=time();
 				$cookie=ldEncodeCookie($data);
 				$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
 				debug("setting cookie (".$ARCurrent->session->id.")(".$cookie.")");
 				header('P3P: CP="NOI CUR OUR"');
-				setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 				setcookie('ARCurrentSession', $ARCurrent->session->id, 0, '/', false, $https, true);
+				setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 			}
 		}
 		ldSetRoot($session, $nls);
@@ -396,7 +396,7 @@
 
 		$cookieconsent = ldGetUserCookie("ARCookieConsent");
 		if (!$consentneeded || ($cookieconsent == true)) { // Only set cookies when consent has been given, or no consent is needed for this cookie.
-			if( $cookiename != "ARSessionCookie") {
+			if( $cookiename != "ARSessionCookie" && $cookiename != "ARCurrentSession" ) {
 				$ARUserCookie=json_encode($cookie);
 				debug("ldSetUserCookie(".$ARUserCookie.")","object");
 				header('P3P: CP="NOI CUR OUR"');
