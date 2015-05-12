@@ -31,6 +31,10 @@
 			return $this;
 		}
 
+		function __destruct() {
+			unlink($this->_filename);
+		}
+
 
 		function _addFromString( $filename, $content ) {
 			return $this->addFromString( $filename, $content );
