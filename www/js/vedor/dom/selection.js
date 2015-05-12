@@ -61,9 +61,11 @@ vedor.dom.selection = ( function() {
 		select : function(range) { 
 			if( w3c ) {
 				var node = self.getNode(range);
-				var sel = node.ownerDocument.defaultView.getSelection();
-				sel.removeAllRanges();
-				sel.addRange(range);
+				if (node && node.ownerDocument) {
+					var sel = node.ownerDocument.defaultView.getSelection();
+					sel.removeAllRanges();
+					sel.addRange(range);
+				}
 			} else {
 				try { 
 					range.select(); // IE is sometimes buggy and likes to barf on you

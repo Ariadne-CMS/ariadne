@@ -277,17 +277,14 @@
 		if ($AR->hideSessionIDfromURL) {
 			$cookies = (array) ldGetCredentials();
 			$https = ($_SERVER['HTTPS']=='on');
-			if( ! isset($cookies[$ARCurrent->session->id])  && $ARCurrent->session->id != 0) {
-				foreach($cookies as $sessionid => $data){
-					// kill all other sessions
-					setcookie("ARSessionCookie[".$sessionid."]",null,0,'/', false, $https, true);
-				}
+			if( !isset($cookies[$ARCurrent->session->id])  && $ARCurrent->session->id !== 0) {
 				$data = array();
 				$data['timestamp']=time();
 				$cookie=ldEncodeCookie($data);
 				$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
 				debug("setting cookie (".$ARCurrent->session->id.")(".$cookie.")");
 				header('P3P: CP="NOI CUR OUR"');
+				setcookie('ARCurrentSession', $ARCurrent->session->id, 0, '/', false, $https, true);
 				setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 			}
 		}
@@ -300,6 +297,10 @@
 		require($ariadne."/configs/sessions.phtml");
 		$ARCurrent->session=new session($session_config,$sessionid);
 		ldSetSession($ARCurrent->session->id);
+	}
+
+	function ldGetCookieSession() {
+		return $_COOKIE['ARCurrentSession'];
 	}
 
 	function ldSetCache($file, $time, $image, $headers) {
@@ -370,7 +371,7 @@
 	function ldGetUserCookie($cookiename="ARUserCookie") {
 		$cookie = false;
 
-		if( $_COOKIE[$cookiename] && !($cookiename == "ARSessionCookie")) {
+		if( $_COOKIE[$cookiename] && !($cookiename == "ARSessionCookie") && !($cookiename == 'ARCurrentSession') ) {
 			$ARUserCookie = $_COOKIE[$cookiename];
 			debug("ldGetUserCookie() = $ARUserCookie","object");
 			$cookie = json_decode($ARUserCookie,true);
@@ -389,9 +390,13 @@
 	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=0, $path="/", $domain="", $secure=0, $consentneeded=false) {
 		$result = false;
 
+		if (substr($cookiename, 0, strlen('ARSessionCookie'))=='ARSessionCookie' || $cookiename=='ARCurrentSession' ) {
+			return false;
+		}
+
 		$cookieconsent = ldGetUserCookie("ARCookieConsent");
 		if (!$consentneeded || ($cookieconsent == true)) { // Only set cookies when consent has been given, or no consent is needed for this cookie.
-			if( $cookiename != "ARSessionCookie") {
+			if( $cookiename != "ARSessionCookie" && $cookiename != "ARCurrentSession" ) {
 				$ARUserCookie=json_encode($cookie);
 				debug("ldSetUserCookie(".$ARUserCookie.")","object");
 				header('P3P: CP="NOI CUR OUR"');

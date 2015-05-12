@@ -56,14 +56,9 @@
 						if ($data['timestamp']<(time()-86400)) {
 							// but do kill it if it's older than one day
 							unset($cookies[$sessionid]);
-							setcookie("ARSessionCookie[".$sessionid."]",null);
+							setcookie("ARSessionCookie[".$sessionid."]",false);
 						}
 					}
-				}
-			} else {
-				// only 1 cookie allowed, unset all cookies
-				if( $sessionid != $ARCurrent->session->id) {
-					setcookie("ARSessionCookie[".$sessionid."]",null,0,'/',false,$https,true);
 				}
 			}
 		}
@@ -79,6 +74,7 @@
 			$cookiename = "ARSessionCookie[".$ARCurrent->session->id."]";
 
 			header('P3P: CP="NOI CUR OUR"');
+			setcookie('ARCurrentSession', $ARCurrent->session->id, 0, '/', false, $https, true);
 			setcookie($cookiename,$cookie, 0, '/', false, $https, true);
 		}
 	}
