@@ -418,15 +418,16 @@
 					// registerGroup(vedorGroup, vedorId);
 				break;
 				case "vedor/editorSettings":
-					//try {
+					try {
 						var editorSettings = JSON.parse(allScripts[i].innerHTML);
 						// FIXME: add sanity check for settings;
 						setConfig(editorSettings);
 						init();
-					//} catch (e) {
-					//	console.log(e);
-					//	console.log("invalid editor settings");
-					//}
+					} catch (e) {
+						console.log("invalid editor settings");
+						console.log(e);
+						alert('Invalid editor.ini settings, cannot continue');
+					}
 				break;
 				default:
 					if (allScripts[i].getAttribute("type") && allScripts[i].getAttribute("type").match(/^vedor/)) {
@@ -469,17 +470,7 @@
 
 			updateHtmlContext();
 
-			// FIXME: Dit maakt een kapotte weergave in de cidadis test-site;
 			VD_DETAILS_onclick(showBorders);
-
-			/*if ( vdOpenMetaPane && !vdMetaDataSlideEnabled ) {
-				vdOpenMetaPane = false; // only do this once
-				VD_META_onclick();
-			} else {
-				if (vdMetaDataSlideEnabled) {
-					VD_META_onclick();
-				}
-			}*/
 
 			if (tbContentEditOptions['grants']) {
 				if (tbContentEditOptions['grants']['add']) {
@@ -511,10 +502,10 @@
 				}
 			});
 
+			//TODO: add compose widget again - once refactored
 			//vedor.editor.compose.init( vdEditDoc, document.getElementById('vdComposePopup'), vdComposeComplete);
 			muze.event.attach( vdEditDoc, 'Blur', function() { vdSelectionState.save(); return true; } ); // YES, blur is written with a capital B, intentional! Firefox does not support 'blur' on documents, only 'Blur'
 			muze.event.attach( vdEditDoc, 'keydown', vdEditor_keydown);
-			// muze.event.attach( vdEditDoc, 'mouseup', vdEditPane_DisplayChanged); // already handled by selectionchange, so removed;
 			muze.event.attach( vdEditDoc, 'selectionchange', vdEditPane_DisplayChanged);
 			muze.event.attach( vdEditDoc, 'keyup', vdEditPane_DisplayChanged); // mainly for FF and other nonselectionchange supporting browsers
 
@@ -2157,10 +2148,6 @@
 
 			muze.event.attach(editable, 'focus', checkChangeStart);
 			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
-//			muze.event.attach(editable, 'mousedown', function() {
-//				vdStoreUndo();
-//				checkUndoRedo();
-//			});
 			if (vdHandles) {
 				muze.event.attach(editable, 'scroll', vdHandles.show);
 			}
@@ -3194,13 +3181,6 @@
 		if (htmlblockOptions) {
 			var context_tmpl = tbContentEditOptions['htmlblocks'][htmlblock_id]['context'];
 			var vdHTMLBlockProperties = document.getElementById('vdHTMLBlockProperties');
-			/*
-			muze.event.attach(vdHTMLBlockProperties, 'load', function() {
-				var title = vdHTMLBlockProperties.contentWindow.document.title;
-				document.getElementById('vdTabHTMLBlockTitle').innerHTML = title;
-				var vdTabHTMLBlock = document.getElementById('vdTabHTMLBlock');
-			});
-			*/
 			vdHTMLBlockProperties.src = objectURL + context_tmpl;
 		}
 
@@ -4031,12 +4011,8 @@
 		muze.event.attach(vdEditPane.contentWindow, "load", function() {
 			vdEditPane.contentWindow.document.body.focus();
 			muze.event.attach(vdEditPane.contentWindow.document, "click", function(event) {
-//				if (!event.target.getAttribute("data-vedor-selectable")) {
-//					vdSelectionState.remove();
-//				}
 				if (vdHideToolbars) {
 					vdHideToolbars = false;
-//					vdSelectionState.remove();
 					showVedorEditorContext();
 				}
 			});
