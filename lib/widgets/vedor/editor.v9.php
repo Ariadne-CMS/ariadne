@@ -95,7 +95,8 @@
 
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor.js"></script>
 	<!-- script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/compose.js"></script -->
-	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/polyfill.js"></script>
+	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/polyfill/qsa-scope.js"></script>
+	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/polyfill/selectionchange.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/selection.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/bookmarks.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/styles.js"></script>
@@ -458,6 +459,7 @@
 			vdSelection = vedor.dom.selection;
 
 			vdSelectionState.init(vdEditPane.contentWindow);
+			selectionchange.start(vdEditPane.contentWindow.document); // onselectionchange event for Firefox
 
 			initEditable();
 
@@ -2134,7 +2136,7 @@
 		var brokenWebkit = false;
 		if( window.getSelection ) {
 			var selection = vdEditPane.contentWindow.document.defaultView.getSelection();
-			if( selection.setBaseAndExtent ) { // broken webkit
+			if( selection && selection.setBaseAndExtent ) { // broken webkit
 				brokenWebkit = true;
 			}
 		}
@@ -2170,7 +2172,7 @@
 		var brokenWebkit = false;
 		if( window.getSelection ) {
 			var selection = document.getElementById("vdMetaFrame").contentWindow.document.defaultView.getSelection();
-			if( selection.setBaseAndExtent ) { // broken webkit
+			if( selection && selection.setBaseAndExtent ) { // broken webkit
 				brokenWebkit = true;
 			}
 		}
