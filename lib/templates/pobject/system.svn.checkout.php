@@ -65,7 +65,7 @@
 					}
 					echo "<span class='svn_revisionline'>Done ".$this->path." Revision ".$last["revision"]."</span>\n\n";
 
-					$this->call(
+					$res = $this->call(
 						"system.svn.compile.templates.php",
 						array(
 							'templates' => $templates,

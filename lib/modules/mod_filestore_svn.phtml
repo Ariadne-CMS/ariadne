@@ -206,6 +206,7 @@
 		}
 
 		function svn_checkout($svn, $repository, $revision='HEAD') {
+			$repopath = $this->get_path($svn, '', true);
 			/* Checkout given SVN. 
 			   Since we only handle flat SVN, the checkout is
 			   done only for files, and does not recurse into
@@ -214,7 +215,7 @@
 
 			$args = array(
 				$repository,
-				$this->get_path($svn, '', true)
+				$repopath
 			);
 			
 			$switches = $svn['switches'];
@@ -226,7 +227,7 @@
 			$switches['force'] = true;
 			$svn['instance']->checkout->_prepared = false;
 			$result = $svn['instance']->checkout->run($args, $switches);
-			$result = $this->svn_update_parser($result);
+			$result = $this->svn_update_parser($result,$repopath);
 			return $result;
 		}
 
@@ -477,8 +478,9 @@
 		}
 
 		function svn_update($svn, $name='', $revision='HEAD') {
+			$repopath = $this->get_path($svn, '', true);
 			$args = array(
-				$this->get_path($svn, $name, true)
+				$repopath,
 			);
 			$switches = $svn['switches'];
 
@@ -487,7 +489,7 @@
 			}
 			$svn['instance']->update->_prepared = false;
 			$result = $svn['instance']->update->run($args, $switches);
-			$result = $this->svn_update_parser($result);
+			$result = $this->svn_update_parser($result, $repopath);
 			return $result;
 		}
 
@@ -732,7 +734,8 @@
 					);
 				} elseif(
 					strpos($line, 'At revision') === 0 ||
-					strpos($line, 'Updated to revision') === 0
+					strpos($line, 'Updated to revision') === 0 ||
+					strpos($line, 'Checked out') === 0
 				) {
 					// Done
 					$revisionline = $line;
@@ -744,13 +747,17 @@
 					$lockstate = $line[2];
 
 					$rest = substr($line,3);
-					$rest = trim($rest);
-					$result[] = array (
-						'filestate' => $filestate,
-						'propstate' => $propstate,
-						'lockstate' => $lockstate,
-						'name'  => $rest,
-					);
+					$rest = basename(trim($rest));
+					if ($rest[0] == '_') { // it's good and propper filestore entry
+						$rest = substr($rest ,1);
+						$result[] = array (
+							'filestate' => $filestate,
+							'propstate' => $propstate,
+							'lockstate' => $lockstate,
+							'name'  => $rest,
+						);
+					}
+
 				}
 			}
 			$result[] = array (
