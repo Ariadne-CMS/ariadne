@@ -301,8 +301,12 @@
 				$switches['revision'] = 'BASE:'.$revision;
 			}
 
-			$svn['instance']->diff->setOptions([ 'fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_RAW ]);
-			$result = $svn['instance']->diff->run($args, $switches);
+			try {
+				$svn['instance']->diff->setOptions([ 'fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_RAW ]);
+				$result = $svn['instance']->diff->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception','svn',$e);
+			}
 			return $result;
 		}
 

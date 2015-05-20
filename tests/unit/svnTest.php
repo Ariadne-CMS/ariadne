@@ -56,6 +56,16 @@ class svnTest extends AriadneBaseTest
 		$this->assertTrue(count($obj->data->config->pinp) > 0);
 	}
 
+	public function testbasediff(){
+		try {
+			$res = ar::get(TESTBASE)->call('system.svn.diff.php');
+		} catch (Exception $e) {
+			$this->assertNull($e, 'Exception should not happen');
+		}
+		// we should catch that exception
+		$this->assertInstanceOf('ar_error',current($res));
+	}
+
 	/*
 	public function testDiff(){
 		$args = array (
