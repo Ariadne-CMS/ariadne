@@ -620,18 +620,11 @@
 				return false;
 			} else {
 				// echo "\nRepository dir does not exist - creating...\n";
-				$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
-				unlink($tempdir);
-				mkdir($tempdir);
-				$args = array(
-					$tempdir,
-					$repository
-				);
 				$switches = $svn['switches'];
 				$switches['message'] = "Repository creation";
+				$switches['parents'] = true;
 				$svn['instance']->import->_prepared = false;
 				$result = $svn['instance']->import->run($args, $switches);
-				rmdir($tempdir);
 			}
 			return true;
 		}
