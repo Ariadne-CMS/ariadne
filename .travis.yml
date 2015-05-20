@@ -20,7 +20,6 @@ before_install:
     - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
     - sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/default
-    - sudo svn co --non-interactive https://svn.muze.nl/svn/muze/pear/VersionControl `pear config-get php_dir`/VersionControl
     - phpenv rehash
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo service apache2 restart
