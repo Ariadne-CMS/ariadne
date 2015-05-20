@@ -66,7 +66,6 @@ class svnTest extends AriadneBaseTest
 		$this->assertInstanceOf('ar_error',current($res));
 	}
 
-	/*
 	public function testDiff(){
 		$args = array (
 			'arNewType' => 'psection.library',
@@ -85,11 +84,57 @@ class svnTest extends AriadneBaseTest
 		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
 		$this->helperCheckout();
 		$args  = array (
+			"template" => 'changed',
+			"default"  => 1,
+			"type"     => 'pobject',
+			"function" => 'test.view.html',
+			"language" => 'any',
+			"private"  => false,
 		);
-		self::$testpath = current(ar::get(TESTBASE)->call('system.save.layout.phtml' , $args));
-
+		$res = current(ar::get(self::$testpath)->call('system.save.layout.phtml' , $args));
+		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php'));
+		$this->assertInternalType('int',strpos($res,'+changed'));
+		$this->assertNotFalse(strpos($res,'+changed'));
 	}
-		*/
+
+	public function testRevert(){
+		$args = array (
+			'arNewType' => 'psection.library',
+			'arNewFilename' => '{5:id}',
+			'nl' => array (
+				'name' => 'test lib',
+			),
+			'en' => array (
+				'name' => 'test lib',
+			),
+			'de' => array (
+				'name' => 'test lib',
+			)
+		);
+
+		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
+		$this->helperCheckout();
+		$args  = array (
+			"template" => 'changed',
+			"default"  => 1,
+			"type"     => 'pobject',
+			"function" => 'test.view.html',
+			"language" => 'any',
+			"private"  => false,
+		);
+		$res = current(ar::get(self::$testpath)->call('system.save.layout.phtml' , $args));
+		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php'));
+		$this->assertInternalType('int',strpos($res,'+changed'));
+		$this->assertNotFalse(strpos($res,'+changed'));
+
+		// reverting
+		ob_start();
+		ar::get(self::$testpath)->call('system.svn.revert.php');
+		ob_end_clean();
+		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php'));
+		$this->assertFalse(strpos($res,'+changed'));
+		$this->assertNotInternalType('int',strpos($res,'+changed'));
+	}
 
 /*
 revert
