@@ -30,6 +30,9 @@ class svnTest extends AriadneBaseTest
 		return $res;
 	}
 
+	/**
+	 * @large
+	 */
 	public function testCheckoutVersion() {
 		$version = 22;
 		$args = array (
@@ -66,6 +69,9 @@ class svnTest extends AriadneBaseTest
 		$this->assertInstanceOf('ar_error',current($res));
 	}
 
+	/**
+	 * @large
+	 */
 	public function testDiff(){
 		$args = array (
 			'arNewType' => 'psection.library',
@@ -98,6 +104,9 @@ class svnTest extends AriadneBaseTest
 
 	}
 
+	/**
+	 * @large
+	 */
 	public function testRevert(){
 		$args = array (
 			'arNewType' => 'psection.library',
@@ -137,6 +146,9 @@ class svnTest extends AriadneBaseTest
 		$this->assertNotInternalType('int',strpos($res,'+changed'));
 	}
 
+	/**
+	 * @large
+	 */
 	public function testDiffServer(){
 		$args = array (
 			'arNewType' => 'psection.library',
@@ -206,6 +218,9 @@ class svnTest extends AriadneBaseTest
 
 	}
 
+	/**
+	 * @large
+	 */
 	public function testUpdateConflict(){
 		$args = array (
 			'arNewType' => 'psection.library',
