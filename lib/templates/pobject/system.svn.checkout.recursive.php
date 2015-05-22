@@ -57,10 +57,10 @@
 					foreach ($result as $item) {
 						$templates[] = $item['name'];
 						if( $item["filestate"]  == "A" ) {
-							$props = $fstore->svn_get_ariadne_props($svn, $item['name'], $revision);
+							$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
 							echo "<span class='svn_addtemplateline'>Adding ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
 						} elseif($item["filestate"]  == "E") {
-							$props = $fstore->svn_get_ariadne_props($svn, $item['name'], $revision);
+							$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
 							echo "<span class='svn_existingtemplateline'>Existing ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
 
 						}
