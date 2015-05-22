@@ -82,7 +82,7 @@ class svnTest extends AriadneBaseTest
 		);
 
 		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
-		$this->helperCheckout();
+		$this->helperCheckout(22);
 		$args  = array (
 			"template" => 'changed',
 			"default"  => 1,
@@ -95,6 +95,7 @@ class svnTest extends AriadneBaseTest
 		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php'));
 		$this->assertInternalType('int',strpos($res,'+changed'));
 		$this->assertNotFalse(strpos($res,'+changed'));
+
 	}
 
 	public function testRevert(){
@@ -136,16 +137,129 @@ class svnTest extends AriadneBaseTest
 		$this->assertNotInternalType('int',strpos($res,'+changed'));
 	}
 
+	public function testDiffServer(){
+		$args = array (
+			'arNewType' => 'psection.library',
+			'arNewFilename' => '{5:id}',
+			'nl' => array (
+				'name' => 'test lib',
+			),
+			'en' => array (
+				'name' => 'test lib',
+			),
+			'de' => array (
+				'name' => 'test lib',
+			)
+		);
+
+		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
+		$this->helperCheckout(22);
+		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php',array('revision' => 23)));
+		$this->assertInternalType('int',strpos($res,'+test:serverdiff'));
+		$this->assertNotFalse(strpos($res,'+test:serverdiff'));
+
+		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php',array('revision' => 22)));
+		$this->assertEmpty($res);
+		$this->assertNotInternalType('int',strpos($res,'+test:serverdiff'));
+		$this->assertFalse(strpos($res,'+test:serverdiff'));
+
+	}
+
+	public function testUpdate(){
+		$args = array (
+			'arNewType' => 'psection.library',
+			'arNewFilename' => '{5:id}',
+			'nl' => array (
+				'name' => 'test lib',
+			),
+			'en' => array (
+				'name' => 'test lib',
+			),
+			'de' => array (
+				'name' => 'test lib',
+			)
+		);
+
+		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
+		$args = array (
+			'type'     => 'pobject',
+			'function' => 'test.view.html',
+			'language' => 'any'
+		);
+		$this->helperCheckout(22);
+		$res = current(ar::get(self::$testpath)->call('system.get.template.php',$args));
+		$this->assertEquals('template:test.view.html',$res);
+		// update outputs information, remove it for phpunit
+		ob_start();
+		ar::get(self::$testpath)->call('system.svn.update.php');
+		ob_end_clean();
+		$res = current(ar::get(self::$testpath)->call('system.get.template.php',$args));
+		$this->assertNotEquals('template:test.view.html',$res);
+
+		// update outputs information, remove it for phpunit
+		// update back to 22
+		ob_start();
+		ar::get(self::$testpath)->call('system.svn.update.php', array('revision' => 22));
+		ob_end_clean();
+		$res = current(ar::get(self::$testpath)->call('system.get.template.php',$args));
+		$this->assertEquals('template:test.view.html',$res);
+
+	}
+
+	public function testUpdateConflict(){
+		$args = array (
+			'arNewType' => 'psection.library',
+			'arNewFilename' => '{5:id}',
+			'nl' => array (
+				'name' => 'test lib',
+			),
+			'en' => array (
+				'name' => 'test lib',
+			),
+			'de' => array (
+				'name' => 'test lib',
+			)
+		);
+
+		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
+		$args = array (
+			'type'     => 'pobject',
+			'function' => 'test.view.html',
+			'language' => 'any'
+		);
+		$this->helperCheckout(22);
+		$res = current(ar::get(self::$testpath)->call('system.get.template.php',$args));
+		$this->assertEquals('template:test.view.html',$res);
+
+		// create conflict
+		$args  = array (
+			"template" => 'changed',
+			"default"  => 1,
+			"type"     => 'pobject',
+			"function" => 'test.view.html',
+			"language" => 'any',
+			"private"  => false,
+		);
+		$res = current(ar::get(self::$testpath)->call('system.save.layout.phtml' , $args));
+
+		// update outputs information, remove it for phpunit
+		ob_start();
+		ar::get(self::$testpath)->call('system.svn.update.php', array('revision' => 23));
+		ob_end_clean();
+
+		$res = current(ar::get(self::$testpath)->call('system.get.template.php',$args));
+		$prep =
+"<<<<<<< .mine
+changed=======
+template:test.view.html
+test:serverdiff
+>>>>>>> .r23
+";
+		$this->assertEquals($prep,$res);
+	}
+
 /*
-revert
 resolve
-diff
-server diff HEAD
-server diff version
-update PREV
-update HEAD
-update non-conflict
-update conflict
 */
 }
 ?>
