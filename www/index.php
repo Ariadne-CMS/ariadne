@@ -7,10 +7,9 @@
 	if (file_exists("ariadne.inc") && is_readable("ariadne.inc")) {
 		include("ariadne.inc");
 		if (file_exists($ariadne . "/configs/ariadne.phtml") && is_readable($ariadne . "/configs/ariadne.phtml")) {
-			include_once($ariadne . "/configs/ariadne.phtml");
+			include_once($ariadne . "/bootstrap.php");
 		}
 	}
-
 	if (!$AR) {
 		if (file_exists("install") && is_readable("install")) {
 			Header("Location: install/");
@@ -18,7 +17,7 @@
 	} else {
 		// All is well.
 		$AR_PATH_INFO="/system/ariadne.html";
-		$HTTP_SERVER_VARS["PATH_INFO"]="/system/ariadne.html"; // backwards compatible for old loaders, just to be sure
+		$_SERVER["PATH_INFO"]="/system/ariadne.html"; // backwards compatible for old loaders, just to be sure
 		include("./loader.php");
 	}
 ?>
