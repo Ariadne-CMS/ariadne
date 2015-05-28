@@ -447,6 +447,7 @@
 				$args = array(
 					$path
 				);
+				$matchpath = substr($path,0,-1);
 				$svn_switches = $svn['switches'];
 				$svn_switches['non-recursive'] = true;
 				$svn_switches['verbose'] = true;
@@ -459,7 +460,7 @@
 					//	echo "1";
 					//}
 
-					if ((sizeof($tempresult) == 1) && (isset($tempresult[$args[0]]))) {
+					if ((count($tempresult) == 1) && (isset($tempresult[$args[0]]))) {
 						return false;
 					} else {
 						$result = array();
@@ -469,6 +470,10 @@
 							if ($filename[0] === '_') {
 								$filename = substr($filename, 1);
 								$result[$filename] = $value;
+							}
+							if ( $matchpath == $value['path'] ) {
+								// dir entry
+								$result['/'] = $value;
 							}
 						}
 						return $result;

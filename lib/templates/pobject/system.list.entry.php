@@ -41,7 +41,7 @@
 			$svn['status'] = 'insubversion';
 			$svn_icon = $AR->dir->images . 'svn/InSubVersionIcon.png';
 			foreach ($svn_status as $key => $value) {
-				if (substr($key, -5) == ".pinp" && (
+				if ( ( substr($key, -5) == ".pinp"  || $key === '/' ) && (
 					$value['wc-status']['item']  != 'normal'  ||
 					$value['wc-status']['props'] != 'normal' 
 				) ){
