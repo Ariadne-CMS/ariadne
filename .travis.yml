@@ -25,7 +25,7 @@ before_install:
     - sudo service apache2 restart
     - ls -lad ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml
     - svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn
-    - svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/test/svnrepo.log
+    - svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log
 
 before_script:
     - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
