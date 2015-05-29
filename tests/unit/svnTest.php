@@ -2,7 +2,7 @@
 
 class svnTest extends AriadneBaseTest
 {
-	private static $repo = 'https://svn.muze.nl/svn/test/testlibrary/';
+	private static $repo;
 	private static $testpath;
 
 	public function setUp()
@@ -12,7 +12,7 @@ class svnTest extends AriadneBaseTest
 
 	public static function setUpBeforeClass()
 	{
-		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
+		self::$repo = getenv('svnrepo') . '/testlibrary/';
 	}
 
 
