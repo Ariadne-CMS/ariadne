@@ -563,7 +563,7 @@
 		}
 
 		function svn_update($svn, $name='', $revision='HEAD') {
-			$repopath = $this->get_path($svn, '', true);
+			$repopath = $this->get_path($svn, $name, true);
 			$args = array(
 				$repopath,
 			);
