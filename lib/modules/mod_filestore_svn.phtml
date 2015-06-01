@@ -547,7 +547,7 @@
 								$filename = substr($filename, 1);
 								$result[$filename] = $value;
 							}
-							if ( $matchpath == $value['path'] ) {
+							if ( $matchpath === $value['path'] ) {
 								// dir entry
 								$result[''] = $value;
 							}
