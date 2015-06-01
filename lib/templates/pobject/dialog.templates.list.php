@@ -249,7 +249,6 @@
 								$svn_style_hide = "";
 								$svn_img = "";
 								$itemstatus = $svn_status[$filename]['wc-status']['item'];
-								var_dump($itemstatus);
 								switch($itemstatus) {
 									// Fixme: find out the codes for "locked", "read only" and add them.
 
