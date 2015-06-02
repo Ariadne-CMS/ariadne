@@ -8,7 +8,7 @@
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		set_time_limit(0);
 		$arCallArgs["colorize"] = true;
-		$arCallArgs['revision'] = $this->getdata['revision'] ? $this->getdata['revision'] : "HEAD";
+		$arCallArgs['revision'] = $this->getdata('revision') ? $this->getdata('revision') : "HEAD";
 		$result = $this->call("system.svn.diff.php", $arCallArgs);
 		if( $result != "" ) {
 			echo $result;

@@ -17,7 +17,9 @@
 		if ($svn_enabled) {
 			$filestore = $this->store->get_filestore_svn("templates");
 			$svn = $filestore->connect($this->id);
+			// FIXME eror checking
 			$svn_info = $filestore->svn_info($svn);
+
 			$svn_status = $filestore->svn_status($svn);
 		} else {
 			$filestore = $this->store->get_filestore("templates");
@@ -95,7 +97,7 @@
 							<div class="bd">
                                                                 <ul class="first-of-type">
 <?php
-		if ($svn_info['Revision']) {
+		if (count($svn_info)) {
 ?>
                                                                     <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.tree.info.php" onclick="muze.ariadne.explore.arshow('dialog.svn.tree.info', this.href); return false;"><?php echo $ARnls["ariadne:svn:info"]; ?></a></li>
                                                                     <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.diff.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.diff', this.href); return false;"><?php echo $ARnls["ariadne:svn:diff"]; ?></a></li>
@@ -194,7 +196,7 @@
 				$deleted_privatetemplates = $data->config->deleted_privatetemplates;
 
 				foreach ($svn_status as $filename=>$file_status) {
-					if ($file_status == "!") {
+					if ($file_status['wc-status']['item'] == "missing") {
 						// Template is deleted here, but not in the SVN.
 						$file_meta = array();
 						$file_meta['ar:default'] = $filestore->svn_propget($svn, "ar:default", $filename);
@@ -207,7 +209,7 @@
 						$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
 						$privatetemplates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:private'];
 
-					} else if ($file_status == "D") {
+					} else if ($file_status['wc-status']['item'] == "deleted") {
 						foreach ($deleted_templates as $type => $functions) {
 							foreach ($functions as $function => $languages) {
 								foreach ($languages as $language => $default) {
@@ -246,25 +248,25 @@
 								$svn_style = "";
 								$svn_style_hide = "";
 								$svn_img = "";
-
-								switch($svn_status[$filename]) {
+								$itemstatus = $svn_status[$filename]['wc-status']['item'];
+								switch($itemstatus) {
 									// Fixme: find out the codes for "locked", "read only" and add them.
 
-									case "C":
+									case "conflicted":
 										$svn_img = "ConflictIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:conflict'];
 										break;
-									case "M":
+									case "modified":
 										$svn_img = "ModifiedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:modified'];
 										break;
-									case "?":
+									case "unversioned":
 										break;
-									case "A":
+									case "added":
 										$svn_img = "AddedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:added'];
 										break;
-									case "D":
+									case "deleted":
 										$svn_img = "DeletedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:deleted'];
 										if ($this->data->config->deleted_templates[$type][$function][$language]) {
@@ -272,13 +274,16 @@
 											$svn_style_hide = "hidden";
 										}
 										break;
-									case "!":
+									case "missing":
 										$svn_style = "blurred";
 										$svn_style_hide = "hidden";
 										break;
-									default:
+									case 'normal':
 										$svn_img = "InSubVersionIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:insubversion'];
+										break;
+									default:
+										// No status, this is an error
 										break;
 								}
 							}

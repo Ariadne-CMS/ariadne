@@ -5,8 +5,8 @@
 			$svninfo = current($this->get($this->parent, "system.svn.info.php"));
 
 			$repository = "";
-			if( $svninfo && $svninfo["URL"] ) {
-				$repository = $svninfo["URL"]."/".basename($this->path);
+			if( $svninfo && $svninfo["url"] ) {
+				$repository = $svninfo["url"]."/".basename($this->path);
 			}
 
 ?>

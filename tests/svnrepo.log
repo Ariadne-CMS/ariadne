@@ -1,0 +1,404 @@
+SVN-fs-dump-format-version: 2
+
+UUID: af6b952b-6aff-428b-ad74-b9b678ae3993
+
+Revision-number: 0
+Prop-content-length: 56
+Content-length: 56
+
+K 8
+svn:date
+V 27
+2009-12-14T19:22:05.675822Z
+PROPS-END
+
+Revision-number: 1
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2009-12-14T19:26:41.699815Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 2
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2010-05-28T10:11:46.822914Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 3
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2010-05-28T10:13:06.449735Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 4
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2010-05-28T12:15:35.444491Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 5
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2010-05-28T12:18:22.254613Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 6
+Prop-content-length: 112
+Content-length: 112
+
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+K 8
+svn:date
+V 27
+2010-05-28T12:20:46.435155Z
+PROPS-END
+
+Revision-number: 7
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2010-05-28T12:47:41.639385Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 8
+Prop-content-length: 112
+Content-length: 112
+
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+K 8
+svn:date
+V 27
+2010-05-28T12:48:17.583021Z
+PROPS-END
+
+Revision-number: 9
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2011-01-25T13:19:13.370466Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 10
+Prop-content-length: 112
+Content-length: 112
+
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+K 8
+svn:date
+V 27
+2011-01-25T13:20:05.795892Z
+PROPS-END
+
+Revision-number: 11
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2011-04-11T13:27:44.822551Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 12
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2011-04-11T13:28:18.791218Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 13
+Prop-content-length: 112
+Content-length: 112
+
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+K 8
+svn:date
+V 27
+2011-04-11T13:28:32.182742Z
+PROPS-END
+
+Revision-number: 14
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2011-04-11T13:29:12.456402Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 15
+Prop-content-length: 112
+Content-length: 112
+
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+K 8
+svn:date
+V 27
+2011-04-11T13:29:26.499804Z
+PROPS-END
+
+Revision-number: 16
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2011-05-23T09:30:24.925579Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 17
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2015-03-15T13:16:08.865580Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 18
+Prop-content-length: 112
+Content-length: 112
+
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+K 8
+svn:date
+V 27
+2015-03-15T13:16:16.225296Z
+PROPS-END
+
+Revision-number: 19
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2015-03-15T15:28:31.640860Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 20
+Prop-content-length: 112
+Content-length: 112
+
+K 8
+svn:date
+V 27
+2015-03-15T15:43:39.860023Z
+K 7
+svn:log
+V 38
+This is an empty revision for padding.
+PROPS-END
+
+Revision-number: 21
+Prop-content-length: 93
+Content-length: 93
+
+K 8
+svn:date
+V 27
+2015-03-22T17:16:20.776670Z
+K 7
+svn:log
+V 19
+Repository creation
+PROPS-END
+
+Node-path: testlibrary
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 22
+Prop-content-length: 73
+Content-length: 73
+
+K 8
+svn:date
+V 27
+2015-03-22T17:16:25.130727Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: testlibrary
+Node-kind: dir
+Node-action: change
+Prop-content-length: 70
+Content-length: 70
+
+K 7
+ar:name
+V 12
+Test Library
+K 7
+ar:type
+V 12
+psection.lib
+PROPS-END
+
+
+Node-path: testlibrary/_pobject.test.view.html.any.pinp
+Node-kind: file
+Node-action: add
+Text-content-md5: 6cc83c7108fbad36b838518b6534d406
+Prop-content-length: 140
+Text-content-length: 23
+Content-length: 163
+
+K 10
+ar:default
+V 1
+1
+K 11
+ar:function
+V 14
+test.view.html
+K 11
+ar:language
+V 3
+any
+K 10
+ar:private
+V 1
+0
+K 7
+ar:type
+V 7
+pobject
+PROPS-END
+template:test.view.html
+
+Revision-number: 23
+Prop-content-length: 99
+Content-length: 99
+
+K 8
+svn:date
+V 27
+2015-05-22T13:29:42.410712Z
+K 7
+svn:log
+V 25
+test entry for serverdiff
+PROPS-END
+
+Node-path: testlibrary/_pobject.test.view.html.any.pinp
+Node-kind: file
+Node-action: change
+Text-content-md5: d5323e4b2248f890e53c8455502f68fc
+Text-content-length: 40
+Content-length: 40
+
+template:test.view.html
+test:serverdiff
+
+
