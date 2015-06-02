@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e3fcd9fadec335f1dcd6e0545a9f7d4c",
+    "hash": "8cd57804d4edd23a1e8edca6a02a97f7",
     "packages": [
         {
             "name": "arc/arc",
@@ -767,6 +767,55 @@
                 "exception"
             ],
             "time": "2015-02-10 20:07:52"
+        },
+        {
+            "name": "pear/versioncontrol_svn",
+            "version": "0.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pear/VersionControl_SVN.git",
+                "reference": "10d899fcd2df32852c4e557d71def472071686f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pear/VersionControl_SVN/zipball/10d899fcd2df32852c4e557d71def472071686f5",
+                "reference": "10d899fcd2df32852c4e557d71def472071686f5",
+                "shasum": ""
+            },
+            "require": {
+                "pear/pear_exception": "*@dev",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "VersionControl_SVN": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "./"
+            ],
+            "license": [
+                "BSD License"
+            ],
+            "authors": [
+                {
+                    "name": "Michiel Rook",
+                    "email": "mrook@php.net",
+                    "role": "Lead"
+                },
+                {
+                    "name": "Clay Loveless",
+                    "email": "clay@loveless.net",
+                    "role": "Lead"
+                }
+            ],
+            "description": "More info available on: http://pear.php.net/package/VersionControl_SVN",
+            "time": "2014-09-29 07:55:44"
         }
     ],
     "packages-dev": [],

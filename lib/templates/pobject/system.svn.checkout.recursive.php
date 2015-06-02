@@ -20,7 +20,7 @@
 			$svn	= $fstore->connect($this->id, $username, $password);
 			$svn_info = $fstore->svn_info($svn);
 
-			if ($svn_info['Revision']) {
+			if ($svn_info['revision']) {
 				echo $this->path . " is already under version control - update instead.\n";
 			} else {
 				if ($repoPath) {
@@ -52,30 +52,33 @@
 				}
 
 				if ($result) {
+					$last = array_pop($result);
 					$templates = array();
 					foreach ($result as $item) {
 						$templates[] = $item['name'];
-						if( $item["status"]  == "A" ) {
-							$props = $fstore->svn_get_ariadne_props($svn, $item['name'], $revision);
+						if( $item["filestate"]  == "A" ) {
+							$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
 							echo "<span class='svn_addtemplateline'>Adding ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-						} elseif( $item["status"] == "U" || substr(ltrim($item['name']),0,2) == 'U ' ) { // substr to work around bugs in SVN.php
-							echo "<span class='svn_revisionline'>Done ".$this->path." Revision ".$item["revision"]."</span>\n\n";
+						} elseif($item["filestate"]  == "E") {
+							$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
+							echo "<span class='svn_existingtemplateline'>Existing ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
+
 						}
 						flush();
 					}
+					echo "<span class='svn_revisionline'>Done ".$last->path." Revision ".$last["revision"]."</span>\n\n";
 
 					$this->call(
 						"system.svn.compile.templates.php",
 						array(
 							'templates' => $templates,
-							'fstore'	=> $fstore,
-							'svn'		=> $svn
+							'fstore'    => $fstore,
+							'svn'       => $svn
 						)
 					);
 				} else {
 					echo "<span class='svn_error'>Error: " . $svn['instance']->add->_stack->_errors[0]['params']['errstr'] . "</span>\n\n";
 				}
-
 				// Run checkout on the existing subdirs.
 				$arCallArgs['repoPath'] = $this->path;
 				$arCallArgs['repository'] = $repository;

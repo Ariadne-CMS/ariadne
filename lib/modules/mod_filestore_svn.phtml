@@ -77,7 +77,7 @@
 			// Set up runtime options. 
 			$this->svn_options = array(
 				'fetchmode'		=> VERSIONCONTROL_SVN_FETCHMODE_ARRAY, 
-				'svn_path'		=> $AR->SVN->path
+				'binaryPath'		=> $AR->SVN->path
 			);
 
 		}
@@ -129,7 +129,6 @@
 				$svn_switches['config-dir'] = $AR->dir->install . "/lib/configs/svn";
 			}
 
-			$svn_switches['non-recursive'] = true;
 
 			$svn = array(
 				'instance' 		=> $svn_instance,
@@ -184,7 +183,11 @@
 				$this->get_path($svn, $name, true),
 			);
 			$svn['instance']->add->_prepared = false;
-			$result = $svn['instance']->add->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->add->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1301,$e);
+			}
 			return $result;
 		}
 
@@ -193,7 +196,11 @@
 				$this->get_path($svn, $name)
 			);
 			$svn['instance']->blame->_prepared = false;
-			$result = $svn['instance']->blame->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->blame->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1302,$e);
+			}
 			return $result;
 		}
 
@@ -202,11 +209,16 @@
 				$this->get_path($svn, $name)
 			);
 			$svn['instance']->cat->_prepared = false;
-			$result = $svn['instance']->cat->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->cat->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1302,$e);
+			}
 			return $result;
 		}
 
 		function svn_checkout($svn, $repository, $revision='HEAD') {
+			$repopath = $this->get_path($svn, '', true);
 			/* Checkout given SVN. 
 			   Since we only handle flat SVN, the checkout is
 			   done only for files, and does not recurse into
@@ -215,7 +227,7 @@
 
 			$args = array(
 				$repository,
-				$this->get_path($svn, '', true)
+				$repopath
 			);
 			
 			$switches = $svn['switches'];
@@ -223,8 +235,15 @@
 			if ($revision != '') {
 				$switches['revision'] = $revision;
 			}
+			$switches['non-recursive'] = true;
+			$switches['force'] = true;
 			$svn['instance']->checkout->_prepared = false;
-			$result = $svn['instance']->checkout->run($args, $switches);
+			try {
+				$result = $svn['instance']->checkout->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1303,$e);
+			}
+			$result = $this->svn_update_parser($result,$repopath);
 			return $result;
 		}
 
@@ -232,7 +251,11 @@
 			$args = array(
 				$this->get_path($svn, '')
 			);
-			$result = $svn['instance']->cleanup->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->cleanup->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1304,$e);
+			}
 			return $result;
 		}
 
@@ -275,7 +298,11 @@
 
 			$switches = $svn['switches'];
 			$switches['message'] = $comment;
-			$result = $svn['instance']->commit->run($args, $switches);
+			try {
+				$result = $svn['instance']->commit->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1305,$e);
+			}
 			return $result;
 		}
 
@@ -284,7 +311,11 @@
 				$this->get_path($svn, $name, true)
 			);
 			$switches = $svn['switches'];
-			$result = $svn['instance']->delete->run($args, $switches);
+			try {
+				$result = $svn['instance']->delete->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1306,$e);
+			}
 			return $result;
 		}
 
@@ -295,10 +326,15 @@
 			$switches = $svn['switches'];
 
 			if ($revision != '') {
-				$switches['revision'] = $revision;
+				$switches['revision'] = 'BASE:'.$revision;
 			}
 
-			$result = $svn['instance']->diff->run($args, $switches);
+			try {
+				$svn['instance']->diff->setOptions([ 'fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_RAW ]);
+				$result = $svn['instance']->diff->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1307,$e);
+			}
 			return $result;
 		}
 
@@ -313,7 +349,11 @@
 				$switches['revision'] = $revision;
 			}
 	
-			$result = $svn['instance']->export->run($args, $switches);
+			try {
+				$result = $svn['instance']->export->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1308,$e);
+			}
 			return $result;
 		}
 
@@ -324,17 +364,28 @@
 			);
 			$switches = $svn['switches'];
 			$switches['message'] = $comment;
-			$result = $svn['instance']->import->run($args, $switches);
+			try {
+				$result = $svn['instance']->import->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1309,$e);
+			}
 			return $result;
 		}
 
 		function svn_info($svn, $name='') {
 			$path = $this->get_path($svn, $name);
 			if( file_exists($path.'.svn/') ) {
+				$switches = $svn['switches'];
+				$switches['recursive'] = false;
 				$args = array(
 					$path
 				);
-				$result = $svn['instance']->info->run($args, $svn['switches']);
+				try {
+					$result = $svn['instance']->info->run($args, $switches);
+				} catch(VersionControl_SVN_Exception $e) {
+					return ar::error('svn exception',1310,$e);
+				}
+				$result = $result['entry'][0];
 			} else {
 				$result = array();
 			}
@@ -352,7 +403,12 @@
 			}
 	
 			$svn['instance']->list->_prepared = false;
-			$result = $svn['instance']->list->run($args, $switches);
+			try {
+				$result = $svn['instance']->list->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1311,$e);
+			}
+			$result = $result['list'][0]['entry'];
 			return $result;
 		}
 
@@ -361,7 +417,11 @@
 				$this->get_path($svn, $name)
 			);
 			$svn['instance']->log->_prepared = false;
-			$result = $svn['instance']->log->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->log->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1312,$e);
+			}
 			return $result;
 		}
 
@@ -371,7 +431,11 @@
 				$this->get_path($svn, $name, true)
 			);
 			$svn['instance']->propdel->_prepared = false;
-			$result = $svn['instance']->propdel->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->propdel->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1213,$e);
+			}
 			return $result;
 		}
 
@@ -381,8 +445,12 @@
 				$this->get_path($svn, $name)
 			);
 			$svn['instance']->propget->_prepared = false;
-			$result = $svn['instance']->propget->run($args, $svn['switches']);
-			return $result;
+			try {
+				$result = $svn['instance']->propget->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1314,$e);
+			}
+			return $result['target'][0]['property']['text'];
 		}
 
 		function svn_proplist($svn, $name='') {
@@ -390,7 +458,11 @@
 				$this->get_path($svn, $name)
 			);
 			$svn['instance']->proplist->_prepared = false;
-			$result = $svn['instance']->proplist->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->proplist->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1315,$e);
+			}
 			return $result;
 		}
 
@@ -401,7 +473,11 @@
 				$this->get_path($svn, $name, true)
 			);
 			$svn['instance']->propset->_prepared = false;
-			$result = $svn['instance']->propset->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->propset->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1316,$e);
+			}
 			return $result;
 		}
 
@@ -410,7 +486,11 @@
 				$this->get_path($svn, $name, true)
 			);
 			$svn['instance']->resolved->_prepared = false;
-			$result = $svn['instance']->resolved->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->resolved->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1317,$e);
+			}
 			return $result;
 		}
 
@@ -418,8 +498,14 @@
 			$args = array(
 				$this->get_path($svn, $name, true)
 			);
+			$svn_switches = $svn['switches'];
+			$svn_switches['recursive'] = false;
 			$svn['instance']->revert->_prepared = false;
-			$result = $svn['instance']->revert->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->revert->run($args, $svn_switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1318,$e);
+			}
 			return $result;
 		}
 
@@ -433,8 +519,16 @@
 				$args = array(
 					$path
 				);
+				$matchpath = substr($path,0,-1);
+				$svn_switches = $svn['switches'];
+				$svn_switches['non-recursive'] = true;
+				$svn_switches['verbose'] = true;
 				$svn['instance']->status->_prepared = false;
-				$tempresult = $svn['instance']->status->run($args, $svn['switches']);
+				try {
+					$tempresult = $svn['instance']->status->run($args, $svn_switches);
+				} catch(VersionControl_SVN_Exception $e) {
+					return ar::error('svn exception',1319,$e);
+				}
 
 				// Since we have a flat structure, remove the path and use only the names.
 				if ($tempresult) {
@@ -442,15 +536,21 @@
 					//	echo "1";
 					//}
 
-					if ((sizeof($tempresult) == 1) && (isset($tempresult[$args[0]]))) {
+					if ((count($tempresult) == 1) && (isset($tempresult[$args[0]]))) {
 						return false;
 					} else {
 						$result = array();
+						$tempresult = $tempresult['target'][0]['entry'];
 						foreach ($tempresult as $key=>$value) {
-							$filename = basename($key);
-							$filename = substr($filename, 1);
-				
-							$result[$filename] = $value;
+							$filename = basename($value['path']);
+							if ($filename[0] === '_') {
+								$filename = substr($filename, 1);
+								$result[$filename] = $value;
+							}
+							if ( $matchpath === $value['path'] ) {
+								// dir entry
+								$result[''] = $value;
+							}
 						}
 						return $result;
 					}
@@ -463,8 +563,9 @@
 		}
 
 		function svn_update($svn, $name='', $revision='HEAD') {
+			$repopath = $this->get_path($svn, $name, true);
 			$args = array(
-				$this->get_path($svn, $name, true)
+				$repopath,
 			);
 			$switches = $svn['switches'];
 
@@ -472,7 +573,12 @@
 				$switches['revision'] = $revision;
 			}
 			$svn['instance']->update->_prepared = false;
-			$result = $svn['instance']->update->run($args, $switches);
+			try {
+				$result = $svn['instance']->update->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1320,$e);
+			}
+			$result = $this->svn_update_parser($result, $repopath);
 			return $result;
 		}
 
@@ -483,15 +589,21 @@
 			);
 
 			$switches = $svn['switches'];
-			$switches['non-interactive'] = false;
+			$switches['non-interactive'] = true;
+			$switches['trust-server-cert'] = true;
+			;
 
 			$svn['instance']->list->_prepared = false;
 
-			$result = $svn['instance']->list->run_interactive($listargs, $switches);
+			try {
+				$result = $svn['instance']->list->run($listargs, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1321,$e);
+			}
 			return $result;
 		}
 
-		function svn_get_ariadne_props($svn, $name='', $revision='HEAD') {
+		function svn_get_ariadne_props($svn, $name='', $revision='BASE') {
 			if( substr($name, 0, 1) != "/" ) {
 				$name = $this->get_path($svn, $name);
 			}
@@ -504,13 +616,25 @@
 
 			// accepts a filename within the svn store and returns an array containing the ar: properties of the file
 			$svn['instance']->proplist->_prepared = false;
-			$proplist = explode("\n", $svn['instance']->proplist->run(array($name), $switches));
+			try {
+				$svnresult = $svn['instance']->proplist->run(array($name), $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1322,$e);
+			}
+			$proplist = $svnresult['target'][0]['property'];
 			$result = array();
 			foreach( $proplist as $value ) {
+				$value = $value['name'];
 				$value = ltrim($value);
 				if( substr($value, 0, 3) == "ar:" ) {
 					$svn['instance']->propget->_prepared = false;
-					$result[$value] = $svn['instance']->propget->run(array($value, $name), $switches);
+					try {
+						$temp = $svn['instance']->propget->run(array($value, $name), $switches);
+					} catch(VersionControl_SVN_Exception $e) {
+						//ignore exception
+						//return ar::error('svn exception','svn',$e);
+					}
+					$result[$value] = $temp['target'][0]['property']['text'];
 				}
 			}
 			return $result;
@@ -586,23 +710,26 @@
 			);
 			// echo "Testing repository directory - error is normal\n";
 			$svn['instance']->list->_prepared = false;
-			$svnlist = @$svn['instance']->list->run($listargs, $svn['switches']);
+			$svnlist = false;
+			try {
+				$svnlist = @$svn['instance']->list->run($listargs, $svn['switches']);
+			} catch(Exception $e) {
+				// ignore exception, only testing if the folder exists
+			}
+
 			if ($svnlist) {
 				return false;
 			} else {
 				// echo "\nRepository dir does not exist - creating...\n";
-				$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
-				unlink($tempdir);
-				mkdir($tempdir);
-				$args = array(
-					$tempdir,
-					$repository
-				);
 				$switches = $svn['switches'];
 				$switches['message'] = "Repository creation";
+				$switches['parents'] = true;
 				$svn['instance']->import->_prepared = false;
-				$result = $svn['instance']->import->run($args, $switches);
-				rmdir($tempdir);
+				try {
+					$result = $svn['instance']->import->run($args, $switches);
+				} catch(VersionControl_SVN_Exception $e) {
+					return ar::error('svn exception',1323,$e);
+				}
 			}
 			return true;
 		}
@@ -612,7 +739,11 @@
 				$repository . $name
 			);
 			$svn['instance']->info->_prepared = false;
-			$result = $svn['instance']->info->run($args, $svn['switches']);
+			try {
+				$result = $svn['instance']->info->run($args, $svn['switches']);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1324,$e);
+			}
 			return $result;
 		}
 
@@ -629,7 +760,12 @@
 			}
 
 			$svn['instance']->propget->_prepared = false;
-			$result = $svn['instance']->propget->run($args, $switches);
+			try {
+				$result = $svn['instance']->propget->run($args, $switches);
+			} catch(VersionControl_SVN_Exception $e) {
+				return ar::error('svn exception',1325,$e);
+			}
+			$result = $result['target'][0];
 			return $result;
 		}
 
@@ -674,5 +810,71 @@
 			} else {
 				return false;
 			}
+		}
+
+		protected function svn_update_parser($input) {
+			/*
+				For each updated item a line will start with a character reporting the
+				action taken.  These characters have the following meaning:
+
+				A  Added
+				D  Deleted
+				U  Updated
+				C  Conflict
+				G  Merged
+				E  Existed
+
+				A character in the first column signifies an update to the actual file,
+				while updates to the file's properties are shown in the second column.
+				A 'B' in the third column signifies that the lock for the file has
+				been broken or stolen.
+			*/
+
+			$lines = explode("\n",$input);
+
+			while($line = array_shift($lines)) {
+				// pre check char 4 should be empty
+				if(strpos($line,'Skipped') === 0) {
+					// skipped
+					$rest = substr($line,9,-1);
+					$result[] = array (
+						'filestate' => 'Skipped',
+						'propstate' => 'Skipped',
+						'lockstate' => '',
+						'name'  => $rest,
+					);
+				} elseif(
+					strpos($line, 'At revision') === 0 ||
+					strpos($line, 'Updated to revision') === 0 ||
+					strpos($line, 'Checked out') === 0
+				) {
+					// Done
+					$revisionline = $line;
+					$revision = trim(end(explode(' ',$revisionline))," \t\n\r\0\x0B.");
+					break;
+				} else {
+					$filestate = $line[0];
+					$propstate = $line[1];
+					$lockstate = $line[2];
+
+					$rest = substr($line,3);
+					$rest = basename(trim($rest));
+					if ($rest[0] == '_') { // it's good and propper filestore entry
+						$rest = substr($rest ,1);
+						$result[] = array (
+							'filestate' => $filestate,
+							'propstate' => $propstate,
+							'lockstate' => $lockstate,
+							'name'  => $rest,
+						);
+					}
+
+				}
+			}
+			$result[] = array (
+				'revision' => $revision,
+				'rest' => join("\n",$lines)
+			);
+			return $result;
 		}
 	}

@@ -5,10 +5,10 @@
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$fstore	= $this->store->get_filestore_svn("templates");
 		$svn	= $fstore->connect($this->id);
+		// FIXME eror checking
 		$svn_info = $fstore->svn_info($svn);
-		$svn_revision = $svn_info['Revision'];
 
-		if ($svn_revision) {
+		if (count($svn_info)) {
 			$tasks = array(
 				array(
 					'href' => $this->make_ariadne_url() . 'dialog.svn.tree.info.php',

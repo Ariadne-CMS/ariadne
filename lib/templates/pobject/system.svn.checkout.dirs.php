@@ -4,8 +4,8 @@
 		$this->resetloopcheck();
 		if ($dirlist) {
 			foreach ($dirlist as $item) {
-				if ($item['type'] == "D") {
-					// echo "found dir: " . $item['name'] . "<br>";
+				if ($item['kind'] == "dir") {
+					//echo "found dir: " . $item['name'] . "<br>";
 
 					$dirinfo = array();
 					$dirinfo['ar:path'] = basename($item['name']);
@@ -19,16 +19,17 @@
 						// type defaults to psection
 						// name defaults to pathname
 						$svn_type = $fstore->svn_rpropget($svn, $repository, "ar:type", $dirinfo['ar:path'], $revision);
-						if ($svn_type != "") {
-							// echo "SVN type: [$svn_type]<br>";
+						if ($svn_type['property']['text'] != "") {
+							$svn_type = $svn_type['property']['text'];
+							//echo "SVN type: [$svn_type]<br>";
 							$dirinfo['ar:type'] = $svn_type;
 						} else {
-							// echo "SVN type not found, default to psection<br>";
+							//echo "SVN type not found, default to psection<br>";
 							$dirinfo['ar:type'] = "psection";
 						}
 						$svn_name = $fstore->svn_rpropget($svn, $repository, "ar:name", $dirinfo['ar:path'], $revision);
-						if ($svn_name != "") {
-							$dirinfo['ar:name'] = $svn_name;
+						if ($svn_name['property']['text'] != "") {
+							$dirinfo['ar:name'] = $svn_name['property']['text'];
 						} else {
 							$dirinfo['ar:name'] = $dirinfo['ar:path'];
 						}
