@@ -538,8 +538,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$this->data = $wf_object->data;
 				$this->data->config = $config;
 				/* merge workflow properties */
+
 				if ( is_array($wf_result) ){
 					$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
+
 					if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
 						$this->error = ar::error( ''.$this->store->error, 1108, $this->store->error);
 						$result = false;
@@ -1829,10 +1831,10 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 			}
 */
-			if ($this->data->custom['none']) {
+			if (is_array($this->data->custom) && $this->data->custom['none']) {
 				$this->customdata=$this->data->custom['none'];
 			}
-			if ($this->data->custom[$nls]) {
+			if (is_array($this->data->custom) && $this->data->custom[$nls]) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 
@@ -2021,6 +2023,7 @@ debug("loadLibrary: loading cache for $this->path");
 								$eventData->arCallFunction = $arCallFunction;
 								$eventData->arContext = $this->getContext();
 								$eventData = ar_events::fire('onbeforecall', $eventData);
+								$ARCurrent->arResult = $eventData->arResult;
 								$AR->contextCallHandler = false;
 								$continue = ($eventData!=false);
 							}
@@ -2118,14 +2121,26 @@ debug("loadLibrary: loading cache for $this->path");
 					$ids=$this->store->info($this->store->find($path, "" , $limit, $offset));
 					while (is_array($ids) && sizeof($ids)) {
 						foreach($ids as $value) {
+							$eventData = new object();
+							$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $value['type'], $value['path'] );
+							if ( !$eventData ) {
+								continue;
+							}
+
 							$pcache->purge($value["id"]);
+							ar_events::fire( 'onclearprivatecache', $eventData, $value['type'], $value['path'] );
 						}
 
 						$offset += $limit;
 						$ids = $this->store->info($this->store->find($path, "", $limit, $offset));
 					}
 				} else {
-					$pcache->purge($this->id);
+					$eventData = new object();
+					$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $this->type, $this->path );
+					if ( $eventData ) {
+						$pcache->purge($this->id);
+						ar_events::fire( 'onclearprivatecache', $eventData, $this->type, $this->path );
+					}
 				}
 			}
 
@@ -2279,12 +2294,14 @@ debug("loadLibrary: loading cache for $this->path");
 					$image = URL::RAWtoAR($image, $imageNLS);
 				}
 
-				$pcache=$this->store->get_filestore("privatecache");
-				$pcache->write($image, $this->id, $file);
-				$time=time()+($time*3600);
-				if (!$pcache->touch($this->id, $file, $time)) {
-					$this->error = ar::error("savecache: ERROR: couldn't touch $file", 1113);
-					$result = false;
+				if( $time > 0 ) {
+					$pcache=$this->store->get_filestore("privatecache");
+					$pcache->write($image, $this->id, $file);
+					$time=time()+($time*3600);
+					if (!$pcache->touch($this->id, $file, $time)) {
+						$this->error = ar::error("savecache: ERROR: couldn't touch $file", 1113);
+						$result = false;
+					}
 				}
 				ob_end_clean();
 				echo $image;
@@ -2678,6 +2695,7 @@ debug("loadLibrary: loading cache for $this->path");
 					$eventData->arCallFunction = $arCallFunction;
 					$eventData->arContext = $this->getContext();
 					$eventData = ar_events::fire('onbeforecall', $eventData);
+					$ARCurrent->arResult = $eventData->arResult;
 					$AR->contextCallHandler = false;
 					$continue = ($eventData!=false);
 				}

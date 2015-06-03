@@ -20,11 +20,12 @@ before_install:
     - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
     - sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/default
-    - sudo svn co --non-interactive https://svn.muze.nl/svn/muze/pear/VersionControl `pear config-get php_dir`/VersionControl
     - phpenv rehash
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo service apache2 restart
     - ls -lad ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml
+    - svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn
+    - svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log
 
 before_script:
     - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
@@ -33,7 +34,7 @@ before_script:
 
 script:
     - bash ./tests/run.sh
-    - phpunit --coverage-clover=coverage.clover
+    - svnrepo="file://${TRAVIS_BUILD_DIR}/files/temp/testsvn/" phpunit --coverage-clover=coverage.clover
 
 notifications:
     email: false

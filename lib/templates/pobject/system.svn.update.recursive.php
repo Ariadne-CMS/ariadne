@@ -8,7 +8,7 @@
 		$fstore	= $this->store->get_filestore_svn("templates");
 		$svn	= $fstore->connect($this->id, $this->getdata("username"), $this->getdata("password"));
 		$svn_info = $fstore->svn_info($svn);
-		$stored_repository = rtrim($svn_info['URL'], "/") . "/";
+		$stored_repository = rtrim($svn_info['url'], "/") . "/";
 		$revision = $this->getdata('revision');
 		$repository = $this->getdata('repository');
 
@@ -40,11 +40,12 @@
 			$result = $fstore->svn_update($svn, '', $revision);
 
 			if ($result) {
+				$revisionentry = array_pop($result);
 				$updated_templates = array();
 				$deleted_templates = array();
 
 				foreach ($result as $item) {
-					switch ($item['status']) {
+					switch ($item['filestate']) {
 						case "A":
 						case "U":
 						case "M":
@@ -54,34 +55,38 @@
 						case "D":
 							$deleted_templates[] = $item['name'];
 							break;
+						case "Skipped":
+						case "C":
+							break; // Don't try to recompile conflicted templates
 						default:
 							$updated_templates[] = $item['name'];
 							break;
 					}
 
-					$props = $fstore->svn_get_ariadne_props($svn, $item['name'], $revision);
-					if( $item["status"]  == "A" ) {
+					$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
+					if( $item["filestate"]  == "A" ) {
 						echo "<span class='svn_addtemplateline'>Added ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "U" || substr(ltrim($item['name']),0,2) == 'U ' ) { // substr to work around bugs in SVN.php
+					} elseif( $item["filestate"] == "U" ) { // substr to work around bugs in SVN.php
 						echo "<span class='svn_revisionline'>Updated ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "M" || $item["status"] == "G" ) {
+					} elseif( $item["filestate"] == "M" || $item["filestate"] == "G" ) {
 						echo "<span class='svn_revisionline'>Merged ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "C" ) {
+					} elseif( $item["filestate"] == "C" ) {
 						echo "<span class='svn_revisionline'>Conflict ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "D" ) {
+					} elseif( $item["filestate"] == "D" ) {
 						echo "<span class='svn_deletetemplateline'>Deleted ".$item["name"]."</span>\n"; // we don't know the props since it's deleted.
 					} else {
-						echo $item["status"]." ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."\n";
+						echo $item["filestate"]." ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."\n";
 					}
 					flush();
 				}
+				//FIXME: add revision/rest output line
 
 				$this->call(
 					"system.svn.compile.templates.php",
 					array(
-						'templates'	=> $updated_templates,
-						'fstore'	=> $fstore,
-						'svn'		=> $svn
+						'templates' => $updated_templates,
+						'fstore'    => $fstore,
+						'svn'       => $svn
 					)
 
 				);
@@ -89,9 +94,9 @@
 				$this->call(
 					"system.svn.delete.templates.php",
 					array(
-						'templates'	=> $deleted_templates,
-						'fstore'	=> $fstore,
-						'svn'		=> $svn
+						'templates' => $deleted_templates,
+						'fstore'    => $fstore,
+						'svn'       => $svn
 					)
 				);
 

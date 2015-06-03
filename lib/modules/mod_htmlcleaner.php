@@ -106,7 +106,7 @@ class htmlcleanertag {
 					$_state = 1;
 				}
 			} else if ($_state == 1) {	// state 1 : looking for equal
-				if (preg_match("/([a-zA-Z0-9_:-]{1})/",$chr)) {
+				if (preg_match("/([a-zA-Z0-9_:.-]{1})/",$chr)) {
 					$_name .= $chr;
 				} else if ($chr == '=') {
 					$_state = 3;
@@ -169,8 +169,7 @@ class htmlcleanertag {
 		}
 		if ($_value!='') {
 			$return[strtolower($_name)] = $_value;
-		}
-		if ($_name!='') {
+		} else if ($_name!='') {
 			$return[] = $_name;
 		}
 

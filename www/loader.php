@@ -103,9 +103,10 @@
 			$AR_PATH_INFO=substr($AR_PATH_INFO,strlen($matches[0])-1);
 			$AR->hideSessionIDfromURL=false;
 		} elseif ($AR->hideSessionIDfromURL) {
-			$cookies = ldGetCredentials();
-			if (is_array($cookies) && count($cookies) === 1) {
-				$session_id=current(array_keys($cookies));
+			$cookies = (array) ldGetCredentials();
+			$current = ldGetCookieSession();
+			if ( array_key_exists( $current, $cookies ) ) {
+				$session_id = $current;
 			}
 		}
 
@@ -139,31 +140,12 @@
 			$ldCacheFilename.=sha1($qs);
 		}
 
-		/*
-			do not active output compression if:
-				- it isnt enabled
-				- the client doesn't explicitly states that it supports it
-				- the gzcompress function isn't available
-				- there is a session id in the request
-		*/
-		if (!$AR->output_compression
-				|| strpos($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")===false
-				|| !function_exists("gzcompress")
-				|| $session_id
-				|| $AR->ESI
-			) {
-
-			$AR->output_compression = 0;
-			if ( $session_id ) {
-				$cachedimage=$store_config["files"]."cache/session".$ldCacheFilename;
-				$cachedheader=$store_config["files"]."cacheheaders/session".$ldCacheFilename;
-			} else {
-				$cachedimage=$store_config["files"]."cache/normal".$ldCacheFilename;
-				$cachedheader=$store_config["files"]."cacheheaders/normal".$ldCacheFilename;
-			}
+		if ( $session_id ) {
+			$cachedimage=$store_config["files"]."cache/session".$ldCacheFilename;
+			$cachedheader=$store_config["files"]."cacheheaders/session".$ldCacheFilename;
 		} else {
-			$cachedimage=$store_config["files"]."cache/compressed".$ldCacheFilename;
-			$cachedheader=$store_config["files"]."cacheheaders/compressed".$ldCacheFilename;
+			$cachedimage=$store_config["files"]."cache/normal".$ldCacheFilename;
+			$cachedheader=$store_config["files"]."cacheheaders/normal".$ldCacheFilename;
 		}
 
 		if ($AR->ESI) {
@@ -583,57 +565,11 @@
 
 			$image_len = strlen($image);
 
-			if ($AR->ESI) {
-				$AR->output_compression = false;
-			}
-
 			if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
 				$ldCacheFilename = "/session".$ldCacheFilename;
 				$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
 			} else {
-				if ($AR->output_compression) {
-					$skip_compression = true;
-
-					// prevent errors if the config file is missing this option
-					if(!is_array($AR->output_compression_type)){
-						$AR->output_compression_type = array();
-					}
-
-					if($ARCurrent->ldHeaders["content-type"]) {
-						$header = $ARCurrent->ldHeaders["content-type"];
-						preg_match('/^content-type:\s+([^ ;]+)/i',$header,$matches);
-						$mimetype = $matches[1];
-						if(isset($mimetype)){
-							// dublecheck mimetype agains whitelist
-							foreach($AR->output_compression_type as $compress_match){
-								if(preg_match($compress_match,$mimetype)){
-									$skip_compression = false;
-									break;
-								}
-							}
-						}
-					}
-
-					if (!$skip_compression) {
-						$ldCacheFilename = "/compressed".$ldCacheFilename;
-						ob_end_clean();
-						ob_start();
-						$crc = crc32($image);
-						$size = strlen($image);
-						$image = gzcompress($image, $AR->output_compression);
-						$image = substr($image, 0, strlen($image) - 4);
-						ldHeader("Content-Encoding: gzip");
-						/* add header */
-						$image = "\x1f\x8b\x08\x00\x00\x00\x00\x00".$image;
-						$image.= pack('V', $crc).pack('V', $size);
-						echo $image;
-					} else {
-						$ldCacheFilename = "/normal".$ldCacheFilename;
-					}
-					$image_len = strlen($image);
-				} else {
-					$ldCacheFilename = "/normal".$ldCacheFilename;
-				}
+				$ldCacheFilename = "/normal".$ldCacheFilename;
 			}
 			// because we have the full content, we can now also calculate the content length
 			ldHeader("Content-Length: ".$image_len);

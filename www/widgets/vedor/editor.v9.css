@@ -21,8 +21,6 @@ table {
 		display: none;
 	}
 	body.vedor-properties #vdMetaDataSlide {
-	/*	height: 400px !important; */
-	/*	display: block !important;*/
 	}
 }
 .vdEditorHidden #editorPane {
@@ -238,7 +236,6 @@ a:hover span.deltag {
 		margin-left: -250px;
 	}
 	#vdInsertPopup {
-		min-height: 120px;
 	}
 	#vdInsertHTMLPopup TEXTAREA {
 		width: 100%;
@@ -286,25 +283,6 @@ a:hover span.deltag {
 	.vdDialogButton.right {
 		float: right;
 	}
-/*	#vdInsertPopup {
-		position: absolute;
-		background-color: #CCCCCC;
-		font-family: arial, helvetica, sans-serif;
-		color: black;
-		border: 1px solid black;
-		z-index: 9000;
-		left: 188px;
-		width: 120px;
-		overflow: hidden;
-		padding: 3px;
-	}
-	#vdInsertPopup A.vdButton,
-	#vdInsertPopup A.vdButtonDown,
-	#vdInsertPopup A.vdButtonLarge {
-		float: none;
-		border: 1px solid #CCCCCC;
-	}
-*/
 	.vdDropDown {
 		float: left;
 		width: 9px;
@@ -703,10 +681,6 @@ a:hover span.deltag {
 			border-top: 1px solid #888;
 			border-radius: 2px;		
 		}
-		/* .vedor-context-html li::after {
-			content: " \FE65";
-			line-height: 18px;
-		}*/
 		.vedor-context-html li:last-child a.vedor-context-tag::after {
 			content: "";
 		}
@@ -797,11 +771,7 @@ a:hover span.deltag {
 		#vdComposePopupPreview {
 			line-height: 16px;
 		}
-/*		#vdInsertPopup {
-			top: 0px;
-			left: 50px;
-		}
-*/		.vedor-cell-width select,
+		.vedor-cell-width select,
 		.vedor-cell-height select,
 		.vedor-table-width select,
 		.vedor-table-height select {
@@ -816,10 +786,6 @@ a:hover span.deltag {
 		}
 		#editorPane, #vdMetaDataSlide {
 			-webkit-overflow-scrolling: touch !important;
-			/* overflow: scroll !important; *//* oorzaak dubbele scrollbar */
-		}
-		#vdMetaDataSlide {
-		/*	overflow: scroll !important;*/
 		}
 		/* vedor dropdown list */
 		.vedor-list {
@@ -993,5 +959,26 @@ a:hover span.deltag {
 		min-width: 0px;
 		padding: 0px 20px;
 	}
-
+}
+#vdInsertPopup .vdButtonLarge {
+	display: inline-block;
+	margin: 10px;
+	color: #333;
+	text-align: center;
+}
+#vdInsertPopup #vdIcon-muze-gadget-rss:before {
+	content: '\f09e'; /* rss */
+	font-family: FontAwesome;
+	font-size: 40px;
+	height: 64px;
+	width: 64px;
+	text-align: center;
+	line-height: 64px;
+	vertical-align: middle;
+	border: 1px solid #888;
+	background-color: white;
+	border-radius: 3px;
+	margin-bottom: 5px;
+	display: inline-block;
+	color: #666;
 }
