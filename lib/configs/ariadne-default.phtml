@@ -108,7 +108,7 @@
 		$AR->dir->docroot = $_SERVER['DOCUMENT_ROOT'];
 	}
 
-	$AR->dir->www  = (string)\arc\path::clean($AR->dir->www);
+	$AR->dir->www  = (string)\arc\path::collapse($AR->dir->www);
 
 	/**************************************************************************/
 	/* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
@@ -121,7 +121,7 @@
 	if (!isset($AR->dir->root)) {
 		$AR->dir->root = $AR->dir->docroot.$AR->dir->www;
 	}
-	$AR->dir->root = (string)\arc\path::clean($AR->dir->root);
+	$AR->dir->root = (string)\arc\path::collapse($AR->dir->root);
 
 	/**************************************************************************/
 	/* The next lines check whether the current host uses http or https as    */
@@ -151,7 +151,7 @@
 	if (!isset($AR->dir->images)) {
 		$AR->dir->images = $AR->dir->www.'images/';
 	}
-	$AR->dir->images = (string)\arc\path::clean($AR->dir->images);
+	$AR->dir->images = (string)\arc\path::collapse($AR->dir->images);
 
 	/**************************************************************************/
 	/* Only change this if you have moved the CSS styles directory            */
@@ -160,7 +160,7 @@
 	if (!isset($AR->dir->styles)) {
 		$AR->dir->styles = $AR->dir->www.'styles/';
 	}
-	$AR->dir->styles = (string)\arc\path::clean($AR->dir->styles);
+	$AR->dir->styles = (string)\arc\path::collapse($AR->dir->styles);
 
 
 	/**************************************************************************/
