@@ -89,15 +89,6 @@
 			include("conf/tidy.conf");
 			include("conf/webkit2png.conf");
 			include("conf/grep.conf");
-			include("conf/textualizer.conf");
-			include("conf/https.conf");
-			include("conf/forward.conf");
-			include("conf/debug.conf");
-			include("conf/outputzip.conf");
-			include("conf/hidesession.conf");
-			include("conf/hashalgorithm.conf");
-			include("conf/ldap.conf");
-			include("conf/auto.conf");
 		$configfile = ob_get_contents();
 		ob_end_clean();
 
