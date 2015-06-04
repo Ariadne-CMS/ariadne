@@ -19,7 +19,6 @@ Step 3: add a virtual host
 
     ErrorLog /var/log/apache2/ariadne-cms.org-error.log
     TransferLog /var/log/apache2/ariadne-cms.org-access.log
-    php_flag magic_quotes_gpc off
 </VirtualHost>
 
 <VirtualHost *:80>
@@ -33,13 +32,12 @@ Step 3: add a virtual host
 
     ErrorLog /var/log/apache2/ariadne-cms.org-error.log
     TransferLog /var/log/apache2/ariadne-cms.org-access.log
-    php_flag magic_quotes_gpc off
 
     SetEnv ARIADNE_WORKSPACE workspace
-	SetEnv ARIADNE_WORKSPACE_PATHS /projects/demo/demo/
+    SetEnv ARIADNE_WORKSPACE_PATHS /projects/demo/demo/
 	
     #For multiple workspace paths you can seperate the entries with ';', for example
-	#SetEnv ARIADNE_WORKSPACE_PATHS /projects/demo/demo/;/projects/example/
+    #SetEnv ARIADNE_WORKSPACE_PATHS /projects/demo/demo/;/projects/example/
 </VirtualHost>
 
 Step 4: Enter the URL data into the psite object;
