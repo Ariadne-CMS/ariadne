@@ -66,6 +66,11 @@
 			$database = $database . "_workspaces";
 		}
 
+		// declare default object,
+		if (!class_exists('object',false)) {
+			class object { }           // do not change
+		}
+
 		// Generate the config file.
 		ob_start();
 			include("conf/global.conf");
