@@ -472,6 +472,7 @@
 
 			updateHtmlContext();
 
+			addBordersStyleSheet(vdEditDoc);
 			VD_DETAILS_onclick(showBorders);
 
 			if (tbContentEditOptions['grants']) {
@@ -2416,153 +2417,38 @@
 		}
 	}
 
-	function getLayoutStyleSheet() {
-		vdEditDoc = vdEditPane.contentWindow.document;
-		var myStyleSheet = vdEditDoc.styleSheets[0];
-
-		for (var i = 0, l = vdEditDoc.styleSheets.length; i < l; i++) {
-			if (vdEditDoc.styleSheets[i].href && vdEditDoc.styleSheets[i].href.match(/.*\/layout\.css$/)) {
-				myStyleSheet = vdEditDoc.styleSheets[i];
-				break;
-			}
-		}
-		return myStyleSheet;
-	}
+	function addBordersStyleSheet(doc) {
+		var head = doc.getElementsByTagName('head')[0];
+		var myStyle  = doc.createElement('link');
+		myStyle.id   = "vedorBorders"
+		myStyle.rel  = 'stylesheet';
+		myStyle.href = '<?php echo $AR->dir->www; ?>widgets/vedor/borders.css';
+		var head = doc.getElementsByTagName('HEAD')[0];
+		head.insertBefore(myStyle, head.firstChild); // always insert as first stylesheet, so other stylesheets may override it			
+	};
 
 	function VD_DETAILS_onclick(borders) {
-		if ( !document.documentMode || document.documentMode > 5 ) {
-			var outlineStyle = 'outline: 1px dotted #CCC; min-height: 1.5em;';
-			var highlightStyle = 'outline: 1px dotted blue !important;';
-			var showOutline = function(ob) {
-				ob.style.outline = '1px dotted #CCC';
-				ob.style.minHeight = '1.5em';
-			};
-			var hideOutline = function(ob) {
-				ob.style.outline = '';
-				ob.style.minHeight = '';
-			};
-		} else {
-			var outlineStyle = 'border: 1px dotted #CCC; min-height: 1.5em;';
-			var highlightStyel = 'border: 1px dotted blue !important;';
-			var showOutline = function( ob ) {
-				ob.style.border = '1px dotted #CCC';
-				ob.style.minHeight = '1.5em';
-			};
-			var hideOutline = function( ob ) {
-				ob.style.border = '';
-				ob.style.minHeight = '';
-			};
-		}
-
 		if (borders===false) {
 			showBorders=true;
 		} else if (borders===true) {
 			showBorders=false;
 		}
 		var vdEditDoc=vdEditPane.contentWindow.document;
-		var foundit=false;
-		var foundtable=false;
-		var foundanchor=false;
-		var founduneditable=false;
 		if (document.getElementById("VD_DETAILS")) {
 			document.getElementById('VD_DETAILS').className = document.getElementById('VD_DETAILS').className.replace(/\bvedor-selected\b/, '');
 		}
 		if (showBorders) {
 			showBorders=false;
 			if (document.getElementById("VD_DETAILS")) {
-				document.getElementById('VD_DETAILS').className = document.getElementById('VD_DETAILS').className.replace(/\bvedor-selected\b/, '');
+				document.getElementById('VD_DETAILS').classList.remove('vedor-selected');
 			}
+			vdEditDoc.body.classList.remove('vedor-borders');
 		} else {
 			showBorders=true;
 			if (document.getElementById("VD_DETAILS")) {
-				document.getElementById('VD_DETAILS').className += ' vedor-selected';
+				document.getElementById('VD_DETAILS').classList.add('vedor-selected');
 			}
-		}
-		// first show borders on editable sections
-
-		var myStyleSheet = getLayoutStyleSheet();
-
-		if (myStyleSheet) {
-			if ( myStyleSheet.rules || myStyleSheet.cssRules ) {
-
-				var myRules;
-				if( myStyleSheet.cssRules ) {
-					myRules = myStyleSheet.cssRules;
-				} else { // IE
-					myRules = myStyleSheet.rules;
-				}
-				for (var i=0; i<myRules.length; i++) {
-					if (myRules[i].selectorText) {
-						if (myRules[i].selectorText.match(/.*\.editable A/)) {
-							if (!showBorders) { //myRules[i].style.borderBottomWidth=="1px") {
-								myRules[i].style.borderBottomWidth='0px';
-							} else {
-								myRules[i].style.borderBottomWidth='1px';
-							}
-							var foundanchor=true;
-						} else if (myRules[i].selectorText.match(/.*\.editable.*/) || myRules[i].selectorText.match(/.*\.editable_border.*/)) {
-							myRules[i].style.borderWidth='0px';
-							if (!showBorders) { //myRules[i].style.borderWidth=="1px") {
-								if ( myRules[i].selectorText.match(/.* td.*/i) ) {
-									myRules[i].style.height='auto';
-									foundtable=true;
-								}
-								hideOutline(myRules[i]);
-								showBorders=false;
-							} else {
-								if ( myRules[i].selectorText.match(/.* td.*/i) ) {
-									myRules[i].style.height='1.5em';
-									foundtable=true;
-								}
-								showOutline( myRules[i] );
-								showBorders=true;
-							}
-							foundit=true;
-						} else if (myRules[i].selectorText.match(/.*\.uneditable.*/)) {
-							myRules[i].style.borderWidth='0px';
-							if (!showBorders) { //myRules[i].style.borderWidth=="1px") {
-								hideOutline( myRules[i] );
-								showBorders=false;
-							} else {
-								showOutline( myRules[i] );
-								showBorders=true;
-							}
-							myRules[i].style.display = 'inline-block';
-							founduneditable=true;
-						}
-					}
-				}
-			}
-			if (!foundit && showBorders) {
-				// append all styles with borders set
-				var list = ['.editable','.editable TABLE','.editable TH'];
-				for (var i = 0; i<list.length; i++) {
-					cssSetStyle( myStyleSheet, list[i], outlineStyle);
-				}
-			}
-			if (!foundtable) {
-				cssSetStyle( myStyleSheet, '.editable td', outlineStyle);
-			}
-			if (!founduneditable) {
-				var list = ['.uneditable'];
-				for (var i = 0; i<list.length; i++) {
-					if (showBorders) {
-						cssSetStyle( myStyleSheet, list[i], highlightStyle );
-					}
-					cssSetStyle( myStyleSheet, list[i], 'display: inline-block;');
-				}
-			}
-			if (!foundanchor && showBorders) {
-				// not found
-				cssSetStyle( myStyleSheet, '.editable A', 'border-bottom: 1px dotted #CCCCCC;' );
-				cssSetStyle( myStyleSheet, '.editable A:link', 'border-bottom: 0px;' );
-				cssSetStyle( myStyleSheet, '.editable A:visited', 'border-bottom: 0px;' );
-			}
-			cssSetStyle( myStyleSheet, '[data-vedor-selectable]', 'outline: 1px dotted #CCCCCC;');
-
-			if (vdHandles) {
-				vdShowHandles();
-			}
+			vdEditDoc.body.classList.add('vedor-borders');
 		}
 	}
 
