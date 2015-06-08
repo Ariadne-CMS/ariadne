@@ -128,12 +128,10 @@
 	/* its default protocol. Don't change this.                               */
 	/**************************************************************************/
 
-	if (!isset($AR->host)) {
-		if ($_SERVER['HTTPS']=='on') {
-			$AR->host = 'https://'.$AR->host;
-		} else {
-			$AR->host = 'http://'.$AR->host;
-		}
+	if ($_SERVER['HTTPS']=='on') {
+		$AR->host = 'https://'.$AR->host;
+	} else {
+		$AR->host = 'http://'.$AR->host;
 	}
 
 	/**************************************************************************/
