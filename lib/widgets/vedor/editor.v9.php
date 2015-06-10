@@ -2417,6 +2417,19 @@
 		}
 	}
 
+	function getLayoutStyleSheet() {
+		vdEditDoc = vdEditPane.contentWindow.document;
+		var myStyleSheet = vdEditDoc.styleSheets[0];
+
+		for (var i = 0, l = vdEditDoc.styleSheets.length; i < l; i++) {
+			if (vdEditDoc.styleSheets[i].href && vdEditDoc.styleSheets[i].href.match(/.*\/layout\.css$/)) {
+				myStyleSheet = vdEditDoc.styleSheets[i];
+				break;
+			}
+		}
+		return myStyleSheet;
+	}
+
 	function addBordersStyleSheet(doc) {
 		var head = doc.getElementsByTagName('head')[0];
 		var myStyle  = doc.createElement('link');
