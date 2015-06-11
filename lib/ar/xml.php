@@ -201,7 +201,6 @@
 				$uri = $DOMElement->lookupNamespaceURI( $node->localName );
 				if ($allns[$node->localName]!=$uri && $node->localName!='xmlns') {
 					$declaredns['xmlns:'.$node->localName] = $uri;
-					//$allns[$node->localName] = $uri;
 				}
 			}
 
@@ -209,7 +208,6 @@
 			$dns = $DOMElement->getAttribute('xmlns');
 			if ($dns) {
 				$declaredns['xmlns'] = $dns;
-				//$allns['{default}'] = $dns;
 			}
 
 			$result = $declaredns;
