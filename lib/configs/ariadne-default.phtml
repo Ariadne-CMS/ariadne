@@ -53,13 +53,22 @@
 	/**************************************************************************/
 
 	if (!isset($AR->host)) {
+		$url = new \arc\url\Url();
 		if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
-			$AR->host  = $_SERVER['HTTP_X_FORWARDED_HOST'];
+			$url->host  = $_SERVER['HTTP_X_FORWARDED_HOST'];
 		} else if(isset($_SERVER['HTTP_HOST'])) {
-			$AR->host  = $_SERVER['HTTP_HOST'];
+			$url->host  = $_SERVER['HTTP_HOST'];
 		} else {
-			$AR->host  = 'localhost';
+			$url->host  = 'localhost';
 		}
+
+
+		if ($_SERVER['HTTPS']=='on') {
+			$url->scheme = 'https';
+		} else {
+			$url->scheme = 'http';
+		}
+		$AR->host = $url;
 	}
 
 	/**************************************************************************/
@@ -122,17 +131,6 @@
 		$AR->dir->root = $AR->dir->docroot.$AR->dir->www;
 	}
 	$AR->dir->root = (string)\arc\path::collapse($AR->dir->root);
-
-	/**************************************************************************/
-	/* The next lines check whether the current host uses http or https as    */
-	/* its default protocol. Don't change this.                               */
-	/**************************************************************************/
-
-	if ($_SERVER['HTTPS']=='on') {
-		$AR->host = 'https://'.$AR->host;
-	} else {
-		$AR->host = 'http://'.$AR->host;
-	}
 
 	/**************************************************************************/
 	/* Only change this if you have made your own loader                      */
