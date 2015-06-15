@@ -82,7 +82,7 @@
 			return '_self';
 		}
 
-		function registerDataField($name) {
+		function registerDataField() {
 			/* private method */
 			global $mod_edit_data;
 			$id     = ++$mod_edit_data['id'];
@@ -100,7 +100,7 @@
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id        = edit::registerDataField($name);
+				$id        = edit::registerDataField();
 				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
@@ -117,7 +117,7 @@
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id        = edit::registerDataField($name);
+				$id        = edit::registerDataField();
 				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
@@ -144,7 +144,7 @@
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if(edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
+				$id=edit::registerDataField();
 				if ($group) {
 					edit::registerGroup($group, $id);
 				}
@@ -166,7 +166,7 @@
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id = edit::registerDataField($name);
+				$id = edit::registerDataField();
 				$checked = "";
 				if( $var == $value ) {
 					$checked = "checked";
@@ -185,7 +185,7 @@
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id        = edit::registerDataField($name);
+				$id        = edit::registerDataField();
 				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
@@ -256,7 +256,7 @@
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id        = edit::registerDataField($name);
+				$id        = edit::registerDataField();
 				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
@@ -273,7 +273,7 @@
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id        = edit::registerDataField($name);
+				$id        = edit::registerDataField();
 				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
@@ -290,7 +290,7 @@
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id        = edit::registerDataField($name);
+				$id        = edit::registerDataField();
 				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
@@ -433,8 +433,8 @@
 		}
 
 		function _registerDataField($name) {
+			$id      = edit::registerDataField();
 			// FIXME: Temporary fix voor older code which still use registerDataField
-			$id      = edit::registerDataField($name);
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			$prefix  = edit::getEditPrefix();
