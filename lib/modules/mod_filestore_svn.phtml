@@ -105,6 +105,7 @@
 					"info", 
 					"list", 
 					"log",
+					"mkdir",
 					"propdel",
 					"propget",
 					"proplist",
@@ -725,8 +726,11 @@
 				$switches['message'] = "Repository creation";
 				$switches['parents'] = true;
 				$svn['instance']->import->_prepared = false;
+				$args = array (
+					$repository
+				);
 				try {
-					$result = $svn['instance']->import->run($args, $switches);
+					$result = $svn['instance']->mkdir->run($args, $switches);
 				} catch(VersionControl_SVN_Exception $e) {
 					return ar::error('svn exception',1323,$e);
 				}

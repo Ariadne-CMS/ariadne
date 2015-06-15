@@ -1,0 +1,35 @@
+body .editable,
+body .editable_border,
+body .editable th,
+body .editable td {
+	outline: 0px dotted #CCC;
+}
+body .editable a {
+	border-bottom: 0px dotted #CCC;
+}
+body .uneditable {
+	outline: 0px dotted blue;
+}
+
+body.vedor-borders .editable,
+body.vedor-borders .editable_border,
+body.vedor-borders .editable th,
+body.vedor-borders .editable td {
+	outline: 1px dotted #CCC;
+}
+body.vedor-borders .editable a {
+	border-bottom: 1px dotted #CCC;
+}
+body.vedor-borders .editable A:link,
+body.vedor-borders .editable A:visited {
+	border-bottom: 0px;
+}
+body.vedor-borders .uneditable {
+	outline: 1px dotted blue;
+}
+
+.editable {
+	min-height: 1.5em;
+	min-width: 1.5em;
+}
+
