@@ -488,11 +488,11 @@
 			return edit::endContainer();
 		}
 
-		function _showLink($path='', $extra='', $url=false, $localurl='') {
+		function _showLink($path='', $extra='', $url=false, $localurl=false) {
 			return edit::showLink($path, $extra, $url, $localurl);
 		}
 
-		function _showEditableLink($path='', $extra='', $url=false, $localurl='') {
+		function _showEditableLink($path='', $extra='', $url=false, $localurl=falsfalsee) {
 			return edit::showEditableLink($path, $extra, $url, $localurl);			
 		}
 		
@@ -500,7 +500,7 @@
 			return edit::showHref($path, $localurl);
 		}
 
-		function _showUrl($path='', $localurl='') {
+		function _showUrl($path='', $localurl=false) {
 			return edit::showUrl($path, $localurl);
 		}
 
