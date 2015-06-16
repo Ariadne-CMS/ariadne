@@ -53,7 +53,8 @@
 	/**************************************************************************/
 
 	if (!isset($AR->host)) {
-		$url = new \arc\url\Url('localhost');
+		$url = new \arc\url\Url('');
+		$url->host = 'localhost';
 		if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
 			$url->host  = $_SERVER['HTTP_X_FORWARDED_HOST'];
 		} else if(isset($_SERVER['HTTP_HOST'])) {
