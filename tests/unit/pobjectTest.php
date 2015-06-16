@@ -30,6 +30,21 @@ class pobjectTest extends AriadneBaseTest
 
 		$parents = $obj->parents(TESTBASE.'projects/','system.get.path.phtml',array(),TESTBASE);
 		$this->assertCount(2,$parents);
+
+		$obj2 = current(
+			ar::get(TESTBASE)->call('system.get.phtml')
+		);
+		$parents2 = $obj2->parents('projects/','system.get.path.phtml',array(),TESTBASE);
+		$this->assertCount(2,$parents2);
+		$this->assertEquals($parents,$parents2);
+		$prep = array (
+			TESTBASE,
+			TESTBASE.'projects/',
+		);
+		$this->assertEquals($prep,$parents);
+
+		
+		
 	}
 }
 
