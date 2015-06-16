@@ -249,12 +249,21 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$top=$this->currentsection();
 		}
 
-		$target = $this;
+		$path=$this->store->make_path($this->path, $path);
+
+		if ($path != $this->path ) {
+			$target = current($this->get($path,"system.get.phtml"));
+		} else {
+			$target = $this;
+		}
+
 		$parents = array();
-		$parents[] = $this;
-		while ($target && $target->path != $top) {
-			$target = current($target->get($target->parent, "system.get.phtml"));
+		if(strpos($target->path, $top) === 0) {
 			$parents[] = $target;
+			while ($target && $target->path != $top) {
+				$target = current($target->get($target->parent, "system.get.phtml"));
+				$parents[] = $target;
+			}
 		}
 		$parents = array_reverse($parents);
 		$result = array();
@@ -265,11 +274,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		return $result;
-
-		/*
-		$path=$this->store->make_path($this->path, $path);
-		return $this->store->call($function, $args, $this->store->parents($path, $top));
-		*/
 	}
 
 	public function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
