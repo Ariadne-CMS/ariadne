@@ -247,6 +247,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		/* but this fix should be done in the store, not here */
 		if (!$top) {
 			$top=$this->currentsection();
+		} else {
+			$top=$this->store->make_top($this->path, $top);
 		}
 
 		$path=$this->store->make_path($this->path, $path);
@@ -258,7 +260,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		$parents = array();
-		if(strpos($target->path, $top) === 0) {
+		if (strpos($target->path, $top) === 0) {
 			$parents[] = $target;
 			while ($target && $target->path != $top) {
 				$target = current($target->get($target->parent, "system.get.phtml"));
