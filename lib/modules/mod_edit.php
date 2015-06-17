@@ -492,7 +492,7 @@
 			return edit::showLink($path, $extra, $url, $localurl);
 		}
 
-		function _showEditableLink($path='', $extra='', $url=false, $localurl=falsfalsee) {
+		function _showEditableLink($path='', $extra='', $url=false, $localurl=false) {
 			return edit::showEditableLink($path, $extra, $url, $localurl);			
 		}
 		
