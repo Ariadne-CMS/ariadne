@@ -246,9 +246,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		/* FIXME: $this->store->parents is too slow when a lot of objects are in ariadne (2million+) */
 		/* but this fix should be done in the store, not here */
 		if (!$top) {
-			$top=$this->currentsection();
+			$top = $this->currentsection();
 		} else {
-			$top=$this->store->make_top($this->path, $top);
+			$top = $this->store->make_path($this->path, $top);
 		}
 
 		$path=$this->store->make_path($this->path, $path);
