@@ -28,11 +28,13 @@ body.vedor-borders .uneditable {
 	outline: 1px dotted blue;
 }
 
-.editable {
+div.editable {
 	min-height: 1.5em;
 	min-width: 1.5em;
 }
-
+span.editable {
+	padding-right: 0.5em;
+}
 body.vedor-tags .editable br {
 	display: block; 
 	right: 0px;
