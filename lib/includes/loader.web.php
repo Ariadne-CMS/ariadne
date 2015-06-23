@@ -84,6 +84,7 @@
 		$http_post_file = Array('name' => '', 'type' => '', 'tmp_name' => '', 'error' => '', 'size' => '');
 		$subfields = explode('[', $field);
 		$field = array_shift($subfields);
+		$subfield = false;
 		foreach ($http_post_file as $key => $value) {
 			$value = &$_FILES[$field][$key];
 			foreach ($subfields as $subfield) {
