@@ -52,7 +52,7 @@ class puser extends pdir { // puser class definition
 			// salted password
 			$valid = password_verify($password, $this->data->password);
 			if ($valid == true){
-				$needsrehash = password_needs_rehash($this->data->password, PASSWORD_DEFAULT, $options);
+				$needsrehash = password_needs_rehash($this->data->password, PASSWORD_DEFAULT);
 			}
 		} else {
 			// old md5 password
