@@ -47,6 +47,7 @@ class puser extends pdir { // puser class definition
 	function CheckPassword($password) {
 		debug("puser: CheckPassword([password])","object");
 		$valid = true;
+		$needsrehash = false;
 	   if($this->data->password[0] === '$' ) {
 			// salted password
 			$valid = password_verify($password, $this->data->password);
@@ -59,8 +60,10 @@ class puser extends pdir { // puser class definition
 			$valid = ($password === $this->data->password);
 			$needsrehash = true;
 		}
-		if ( $needsrehash ) {
-			//FIXME implement this
+		if ( $valid && $needsrehash ) {
+			$data = current($this->get($this->path, 'system.get.data.phtml'));
+			$data->password = $this->hashPassword($password);
+			$this->store->save($this->path, $this->type, $data);
 		}
 		return $valid;
 	}
