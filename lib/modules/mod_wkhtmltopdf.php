@@ -4,6 +4,7 @@
 		protected $headers;
 		protected $cookies;
 		protected $options;
+		protected $cover;
 
 
 		public function __construct( $config = array() ) {
