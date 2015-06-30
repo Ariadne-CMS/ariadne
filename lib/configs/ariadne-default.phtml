@@ -96,16 +96,6 @@
 	}
 
 	/**************************************************************************/
-	/* password hashing algorithm                                             */
-	/* valid options are SHA512 and MD5                                       */
-	/* any value other then that will default to MD5                          */
-	/**************************************************************************/
-
-	if (!isset($AR->hashAlgorithm)){
-		$AR->hashAlgorithm = 'SHA512';
-	}
-
-	/**************************************************************************/
 	/* Fill in the full path to the webservers document root below            */
 	/* The default should work on most systems, but you can override it with  */
 	/* an exact path if you need to. e.g.                                     */
