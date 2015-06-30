@@ -1381,6 +1381,28 @@
 				$result = $child->validate( $inputs );
 				$valid  = array_merge( $valid, $result );
 			}
+
+			$value  = $this->getValue();
+			if ( is_array( $this->checks ) ) {
+				foreach( $this->checks as $check ) {
+					if ( is_array(ar_html_form::$checks[$check])
+						&& isset(ar_html_form::$checks[$check]['check'])
+					) {
+						$checkMethod = ar_html_form::$checks[$check]['check'];
+						$message = ar_html_form::$checks[$check]['message'];
+						if ( is_callable( $checkMethod ) ) {
+							if ( !$checkMethod( $value ) ) {
+								$valid[ $this->name ] = ar::error(
+									sprintf( $message, $value ),
+									$check
+								);
+							}
+						} else {
+							$valid[ $this->name ] = ar::error('incompatible check for this field',$check);
+						}
+					}
+				}
+			}
 			return $valid;
 		}
 
