@@ -1621,7 +1621,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
-	global $ARCurrent, $ARConfig, $AR;
+	global $ARCurrent, $ARConfig, $AR, $ARConfigChecked;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary","class");
 		$result = array();
 		if (!$top) {
@@ -1716,12 +1716,12 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 			}
 
-			if (!$arTemplateId && $arCallFunction != 'config.ini') {
+			if (!$arTemplateId && $ARConfigChecked) {
 				if ($ARConfig->cacheableLibraries[$checkpath]) {
 					foreach ($ARConfig->cacheableLibraries[$checkpath] as $library => $path) {
 						if (is_int($library) && !$librariesSeen[$path]) {
 							$librariesSeen[$path] = true;
-							if ($arCallFunction != 'config.ini') {
+							if ($ARConfigChecked) {
 								if (!$ARConfig->librariesCached[$checkpath][$path]) {
 									$this->loadLibraryCache($checkpath, $path);
 									unset($ARConfig->cacheableLibraries[$checkpath][$library]);
