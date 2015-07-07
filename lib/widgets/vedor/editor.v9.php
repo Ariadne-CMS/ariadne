@@ -2455,37 +2455,15 @@
 	var showTagBoundaries = false;
 
 	function showTagBoundariesToggle() {
-		var myStyleSheet = getLayoutStyleSheet();
-		var vdEditDoc = vdEditPane.contentWindow.document;
-
+		var vdEditDoc=vdEditPane.contentWindow.document;
 		if (showTagBoundaries) {
 			showTagBoundaries = false;
-			vdEditDoc.body.className = vdEditDoc.body.className.replace(/\bvdShowTags\b/, '');
+			vdEditDoc.body.classList.remove('vedor-tags');
 			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").classList.remove('vedor-selected') : '';
 		} else {
 			showTagBoundaries = true;
-			vdEditDoc.body.className += " vdShowTags";
+			vdEditDoc.body.classList.add('vedor-tags');
 			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").classList.add("vedor-selected") : '';
-		}
-
-		cssSetStyle( myStyleSheet, 'body.vdShowTags .editable br', 'display: block; right: 0px; margin: 0px; padding: 0px; font-size: 9px; content: "BR"; position: relative; height: 1em; margin-left: 100%;');
-		cssSetStyle( myStyleSheet, 'body.vdShowTags .editable br' + ':before', 'opacity: 0.6; position: relative; content: "' + 'br' + '"; margin-left: -20px; padding: 0px 3px; border: 1px dotted #444; font-size: 10px; color: #000; background-color: #999;' );
-
-		var tags = [];
-		var allTags = vdEditDoc.querySelectorAll(".editable *");
-		for (var i=0; i<allTags.length; i++) {
-			if (!skipShowTag(allTags[i].tagName)) {
-				var tagName = allTags[i].tagName.toLowerCase();
-				tags.push(tagName);
-			}
-		}
-		var blocktags = ["*", "h1", "h2", "h3", "p", "div", "table", "td", "a"];
-		for (var i=0; i<tags.length; i++) {
-			var tag = tags[i];
-			if (showTagBoundaries) {
-				cssSetStyle( myStyleSheet, 'body.vdShowTags .editable ' + tag + ':before', 'opacity: 0.6; position: relative; content: "' + tag + '"; vertical-align: middle; padding: 1px; height: 12px; margin-right: 2px; border: 1px dotted #444; font-size: 10px; color: #000; background-color: #999;' );
-				cssSetStyle( myStyleSheet, 'body.vdShowTags .editable ' + tag + ':after', 'opacity: 0.6; position: relative; content: "/' + tag + '"; vertical-align: middle; padding: 1px; height: 12px; margin-left: 2px; border: 1px dotted #444; font-size: 10px; color: #000; background-color: #999;' );
-			}
 		}
 	}
 

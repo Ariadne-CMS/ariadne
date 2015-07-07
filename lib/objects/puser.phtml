@@ -41,33 +41,34 @@ class puser extends pdir { // puser class definition
 
 	function hashPassword($password) {
 		global $AR;
-		if(isset($AR->hashAlgorithm) ) {
-			$algo = $AR->hashAlgorithm;
-		} else {
-			$algo = 'MD5';
-		}
-
-		$hash = false;
-
-		if (CRYPT_SHA512 == 1 && $algo === "SHA512") {
-			$hash = crypt($password, '$6$rounds=5000$' . sha1(time()) . '$');
-		} else {
-			// fall back to MD5, if SHA512 is not available, or not selected
-			$hash = crypt($password, '$1$' . sha1(time()) . '$');
-		}
-		return $hash;
+		return password_hash($password, PASSWORD_DEFAULT );
 	}
 
 	function CheckPassword($password) {
 		debug("puser: CheckPassword([password])","object");
+		$valid = true;
+		$needsrehash = false;
 	   if($this->data->password[0] === '$' ) {
 			// salted password
-			return $this->data->password === crypt($password,$this->data->password);
+			$valid = password_verify($password, $this->data->password);
+			if ($valid == true){
+				$needsrehash = password_needs_rehash($this->data->password, PASSWORD_DEFAULT);
+			}
 		} else {
 			// old md5 password
-			$password=md5($password);
-			return $password === $this->data->password;
+			$pwhash=md5($password);
+			$valid = ($pwhash === $this->data->password);
+			$needsrehash = true;
 		}
+		if ( $valid && $needsrehash ) {
+			$data = current($this->get($this->path, 'system.get.data.phtml'));
+			if ($data->password === $this->data->password ) {
+				// password in database is still the same
+				$data->password = $this->hashPassword($password);
+				$this->store->save($this->path, $this->type, $data);
+			}
+		}
+		return $valid;
 	}
 
 	function GetGrants($path, &$result) {
