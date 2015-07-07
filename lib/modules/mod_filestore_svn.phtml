@@ -297,6 +297,8 @@
 				$args[] = $this->get_path($svn, '', true);
 			}
 
+			$comment = str_replace("\r\n","\n", $comment);
+
 			$switches = $svn['switches'];
 			$switches['message'] = $comment;
 			try {
@@ -329,6 +331,8 @@
 			if ($revision != '') {
 				$switches['revision'] = 'BASE:'.$revision;
 			}
+
+			$switches['extensions'] = '--ignore-eol-style';
 
 			try {
 				$svn['instance']->diff->setOptions([ 'fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_RAW ]);
