@@ -332,8 +332,6 @@
 				$switches['revision'] = 'BASE:'.$revision;
 			}
 
-			$switches['extensions'] = '--ignore-eol-style';
-
 			try {
 				$svn['instance']->diff->setOptions([ 'fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_RAW ]);
 				$result = $svn['instance']->diff->run($args, $switches);
