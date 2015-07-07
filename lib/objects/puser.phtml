@@ -56,14 +56,17 @@ class puser extends pdir { // puser class definition
 			}
 		} else {
 			// old md5 password
-			$password=md5($password);
-			$valid = ($password === $this->data->password);
+			$pwhash=md5($password);
+			$valid = ($pwhash === $this->data->password);
 			$needsrehash = true;
 		}
 		if ( $valid && $needsrehash ) {
 			$data = current($this->get($this->path, 'system.get.data.phtml'));
-			$data->password = $this->hashPassword($password);
-			$this->store->save($this->path, $this->type, $data);
+			if ($data->password === $this->data->password ) {
+				// password in database is still the same
+				$data->password = $this->hashPassword($password);
+				$this->store->save($this->path, $this->type, $data);
+			}
 		}
 		return $valid;
 	}
