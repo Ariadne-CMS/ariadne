@@ -210,6 +210,12 @@
 							"operation" => "all/dummy.php",
 							"newversion" => "9.0"
 							));
+		case '9.0':
+				array_push($todo, array(
+							"description" => "Updating properties with scope, adding new properties",
+							"operation" => "9.1/upgrade.database.php",
+							"newversion" => "9.1-rc1.1"
+							));
 	}
 
 

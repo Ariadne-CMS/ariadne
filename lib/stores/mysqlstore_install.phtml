@@ -96,6 +96,13 @@ CREATE TABLE ".$this->tbl_prefix."types (
 				$indexstring.="AR_$name,";
 				$result="int default $default not null\n";
 				break;
+			case "decimal":
+				if (!isset($default)) {
+					$default = 0;
+				}
+				$indexstring.="AR_$name,";
+				$result="decimal($size) default $default not null\n";
+				break;
 			case "boolean":
 				if (!isset($default)) {
 					$default = 0;
@@ -271,6 +278,18 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		}
 		debug("create_property: $create_string","store");
 		return $result;
+	}
+
+	function has_property($property) {
+		$this->error="";
+		$eproperty=AddSlashes($property);
+		$query_string="select 1 from ".$this->tbl_prefix."prop_$eproperty limit 1";
+		debug($query_string,"store");
+		$qresult = $this->store_run_query($remove_string);
+		if (!$qresult) {
+			return false;
+		}
+		return true;	
 	}
 
 	function remove_property($property) {

@@ -15,6 +15,10 @@
 				'operator' => array(
 					'type' => 'string',
 					'size' => 255
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			),
 			'indexes' => array(
@@ -34,6 +38,10 @@
 					'type' => 'string',
 					'size' => 4,
 					'default' => 'none'
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -43,6 +51,10 @@
 				'value' => array(
 					'type' => 'string',
 					'size' => 255
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -57,6 +69,10 @@
 					'type' => 'string',
 					'size' => 4,
 					'default' => 'none'
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -70,8 +86,11 @@
 				'duration' => array(
 					'type' => 'number',
 					'size' => 1
-				)
-			)
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
+				)			)
 		);
 
 		$properties['login'] = array(
@@ -79,6 +98,10 @@
 				'value' => array(
 					'type' => 'string',
 					'size' => 128
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -88,6 +111,10 @@
 				'login' => array(
 					'type' => 'string',
 					'size' => 128
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -105,6 +132,10 @@
 				'muser' => array(
 					'type' => 'string',
 					'size' => 128
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			),
 			'indexes' => array(
@@ -119,6 +150,10 @@
 				'value' => array(
 					'type' => 'string',
 					'size' => 128
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -137,6 +172,10 @@
 					'type' => 'string',
 					'size' => 4,
 					'default' => 'none'
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -150,6 +189,10 @@
 				'end' => array(
 					'type' => 'number',
 					'size' => 1
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -159,6 +202,10 @@
 				'value' => array(
 					'type' => 'number',
 					'size' => 1
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -176,6 +223,10 @@
 				'display' => array(
 					'type' => 'string',
 					'size' => 50
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -185,6 +236,10 @@
 				'value' => array(
 					'type' => 'number',
 					'size' => 1
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -210,6 +265,10 @@
 				'country' => array(
 					'type' => 'string',
 					'size' => 50
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			),
 			'indexes' => array(
@@ -232,6 +291,10 @@
 				'protocol' => array(
 					'type' => 'string',
 					'size' => 10
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -245,6 +308,10 @@
 				'subtype' => array(
 					'type' => 'string',
 					'size' => 20
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -261,6 +328,10 @@
 						'type' => 'string',
 						'size' => 4,
 						'default' => 'none'
+					),
+					'scope' => array(
+						'type' => 'string',
+						'size' => 64
 					)
 				)
 			);
@@ -272,6 +343,57 @@
 				'path' => array(
 					'type' => 'string',
 					'size' => 255
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
+				)
+			)
+		);
+
+		$properties['geo'] = array(
+			'fields' => array(
+				'lat' => array(
+					'type' => 'decimal',
+					'size' => '10,8'
+				),
+				'long' => array(
+					'type' => 'decimal',
+					'size' => '11,8'
+				),
+				'zoom' => array(
+					'type' => 'number',
+					'size' => 1
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
+				)
+			)
+		);
+
+		$properties['tags'] = array(
+			'fields' => array(
+				'value' => array(
+					'type' => 'string',
+					'size' => 64
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
+				)
+			)
+		);
+
+		$properties['number'] = array(
+			'fields' => array(
+				'value' => array(
+					'type' => 'number',
+					'size' => 1
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -285,6 +407,10 @@
 				'value' => array(
 					'type' => 'string',
 					'size' => 255
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
@@ -298,6 +424,10 @@
 				'value' => array(
 					'type' => 'string',
 					'size' => 255
+				),
+				'scope' => array(
+					'type' => 'string',
+					'size' => 64
 				)
 			)
 		);
