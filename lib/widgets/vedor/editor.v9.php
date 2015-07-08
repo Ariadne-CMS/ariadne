@@ -2353,7 +2353,7 @@
 		if (sel) {
 			vdParent = vdSelection.getNode(sel);
 			while(vdParent) {
-				if (vdParent.className && vdParent.className.match(/\beditable\b/)) {
+				if (vdParent.classList && vdParent.classList.contains('editable')) {
 					return vdParent;
 				} else {
 					vdParent = vdParent.parentNode;
@@ -2523,7 +2523,7 @@
 		}
 		var parent = el.parentNode;
 		while (parent) {
-			if (parent.className.match(/menu/)) {
+			if (parent.classList.contains('menu')) {
 				return true;
 			}
 			parent = parent.parentNode;
@@ -2947,9 +2947,9 @@
 	function getUneditableParent(checkParent) {
 		var parent = checkParent;
 		while (parent) {
-			if (parent.className && parent.className.match(/\buneditable\b/)) {
+			if (parent.classList && parent.classList.contains('uneditable')) {
 				return parent;
-			} else if (parent.className && parent.className.match(/\beditable\b/)) {
+			} else if (parent.classList && parent.classList.contains('editable')) {
 				return false;
 			}
 			parent = parent.parentNode;
