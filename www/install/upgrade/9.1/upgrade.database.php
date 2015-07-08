@@ -18,7 +18,7 @@
 	}
 
 	updateDB($store, $properties);
-	updateDB($cacheStore, $cacheproperties);
+	updateDB($cachestore, $cacheproperties);
 
 ?>
 </pre>

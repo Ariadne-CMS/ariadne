@@ -287,7 +287,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 		$eproperty=AddSlashes($property);
 		$query_string="select 1 from ".$this->tbl_prefix."prop_$eproperty limit 1";
 		debug($query_string,"store");
-		$qresult = $this->store_run_query($remove_string);
+		$qresult = $this->store_run_query($query_string);
 		if (!$qresult) {
 			return false;
 		}

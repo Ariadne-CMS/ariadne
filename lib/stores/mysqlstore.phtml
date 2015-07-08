@@ -1077,12 +1077,13 @@ class mysqlstore extends store{
 
 		if ($object) {
 			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
-			$values = (array) $values + array( 'scope' => $scope );
-			if (is_array($values)) {
-				while (list($name, $value)=each($values)) {
-					$value = "'".addSlashes."'";
-					$query_string.="AR_".AddSlashes($name)."=$value and ";
-				}
+			if (!$values) {
+				$values = array();
+			}
+			$values += array( 'scope' => $scope );
+			while (list($name, $value)=each($values)) {
+				$value = "'".addSlashes."'";
+				$query_string.="AR_".AddSlashes($name)."=$value and ";
 			}
 			$query_string.="object=$object";
 			$qresult = $this->store_run_query($query_string);
@@ -1141,7 +1142,10 @@ class mysqlstore extends store{
 				}
 			} else {
 				$query_string="delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
-				$values = (array) $values + array( 'scope' => $scope );
+				if(!$values) {
+					$values = array();
+				}
+				$values += array( 'scope' => $scope );
 				while (list($name, $value)=each($values)) {
 					$value = "'".addSlashes($value)."'";
 					$query_string.="AR_".AddSlashes($name)."=$value and ";
