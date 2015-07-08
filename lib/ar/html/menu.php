@@ -148,7 +148,7 @@
 				$content = new ar_htmlNodes( $content );
 			}
 			$el = new ar_html_menuElement( $name, $attributes, $content );
-			$el->setAttribute('class', ['menuRoot' => 'menu-root'] );
+			$el->setAttribute('class', ['menuRoot' => 'menuRoot'] );
 			return $el;
 		}
 
