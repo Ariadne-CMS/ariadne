@@ -991,7 +991,10 @@ class postgresqlstore extends store {
 
 		if ($object) {
 			$query_string="select * from ".$this->tbl_prefix."prop_".pg_escape_string($property)." where ";
-			$values = (array) $values + array( 'scope' => $scope );
+			if ( !$values ) {
+				$values = array();
+			}
+			$values += array( 'scope' => $scope );
 			while (list($name, $value)=each($values)) {
 				$value = "'".pg_escape_string($value)."'";
 				$query_string.="AR_".pg_escape_string($name)."=$value and ";
@@ -1023,7 +1026,7 @@ class postgresqlstore extends store {
 		$object = (int)$object;
 
 		if ($object && is_array($values) && count($values) ) {
-			$values = (array) $values + array('scope' => $scope);
+			$values += array('scope' => $scope);
 			while (list($name, $value)=each($values)) {
 				if ($value != "") {
 					$query_names .= "AR_".pg_escape_string($name).", ";
@@ -1076,7 +1079,10 @@ class postgresqlstore extends store {
 				}
 			} else {
 				$query_string = "delete from ".$this->tbl_prefix."prop_".pg_escape_string($property)." where ";
-				$values = (array) $values + array('scope' => $scope);
+				if ( !$values ) {
+					$values = array();
+				}
+				$values += array('scope' => $scope);
 				while (list($name, $value) = each($values)) {
 					$value = "'".pg_escape_string($value)."'";
 					$query_string .= "AR_".pg_escape_string($name)."=$value and ";
