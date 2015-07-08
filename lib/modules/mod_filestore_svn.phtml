@@ -547,8 +547,7 @@
 							if ($filename[0] === '_') {
 								$filename = substr($filename, 1);
 								$result[$filename] = $value;
-							}
-							if ( $matchpath === $value['path'] ) {
+							} else if ( $matchpath === $value['path'] ) {
 								// dir entry
 								$result[''] = $value;
 							}
@@ -717,7 +716,6 @@
 			} catch(Exception $e) {
 				// ignore exception, only testing if the folder exists
 			}
-
 			if ($svnlist) {
 				return false;
 			} else {
