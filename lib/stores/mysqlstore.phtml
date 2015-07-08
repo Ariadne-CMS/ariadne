@@ -1046,7 +1046,7 @@ class mysqlstore extends store{
 		$text = preg_replace_callback(
 			"%[\\x80-\\xFF$allowedchars]%s",
 			function($matches) {
-				return dechex(ord($matches[0]));
+				return '_'.dechex(ord($matches[0]));
 			},
 			$text
 		);
