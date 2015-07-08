@@ -3326,12 +3326,21 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function html_to_text($text) {
-		//FIXME: rewrite 'e' modifiers to a callback replace
 		$trans = array_flip(get_html_translation_table(HTML_ENTITIES));
+		$cb  = function($matches) use ($trans) {
+			return strtr($matches[1],$trans);
+		};
 		//strip nonbreaking space, strip script and style blocks, strip html tags, convert html entites, strip extra white space
-		$search_clean = array("%&nbsp;%i", "%<(script|style)[^>]*>.*?<\/(script|style)[^>]*>%si", "%<[\/]*[^<>]*>%Usi", "%(\&[a-zA-Z0-9\#]+;)%es", "%\s+%");
-		$replace_clean = array(" ", " ", " ", "strtr('\\1',\$trans)", " ");
-		return preg_replace($search_clean, $replace_clean, $text);
+		$search_clean = array("%&nbsp;%i", "%<(script|style)[^>]*>.*?<\/(script|style)[^>]*>%si", "%<[\/]*[^<>]*>%Usi", "%\s+%");
+		$replace_clean = array(" ", " ", " ", " ");
+
+		$text = preg_replace_callback(
+			"%(\&[a-zA-Z0-9\#]+;)%s",
+			$cb,
+			$text
+		);
+		$text = preg_replace($search_clean, $replace_clean, $text);
+		return $text;
 	}
 
 	public function _html_to_text($text) {

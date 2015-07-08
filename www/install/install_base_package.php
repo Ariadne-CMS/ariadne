@@ -10,6 +10,7 @@
 	include_once( $store_config['code']."nls/".$AR->nls->default );
 	include_once($ariadne."/ar.php");
 	include_once($ariadne."/modules/mod_cache.php");
+	include($ariadne."/version.php");
 
 	/* instantiate the store */
 	$inst_store = $store_config["dbms"]."store";
@@ -39,6 +40,9 @@
 	} else {
 		$error=$axstore->error;
 	}
+
+	$version = $ARversion['version'];
+	ar::get('/system/ariadne/version/')->call('system.save.data.phtml', array('value' => $version));
 
 	$store->close();
 ?>
