@@ -16,7 +16,7 @@
 	}
 
 	function check_mysql() {
-		if(function_exists('mysql_connect')) {
+		if(function_exists('mysqli_connect')) {
 			return true;
 		}
 		return false;
@@ -290,22 +290,25 @@
 	}
 
 	function check_db_grants_mysql($conf) {
-		if (check_connect_db_mysql($conf) && check_select_db_mysql($conf)) {
+		$dbh = getConnection($conf);
+		if (!$dbh->connect_errno) {
 			$query = "SHOW GRANTS FOR CURRENT_USER();";
 
-			$result = mysql_query($query);
-			while ($row = mysql_fetch_row($result)) {
-				if (preg_match("/^GRANT ALL/", $row[0])) {
-					return true;
-				}
-				if (
-					preg_match("/^GRANT.*?SELECT.*?ON/", $row[0]) &&
-					preg_match("/^GRANT.*?INSERT.*?ON/", $row[0]) &&
-					preg_match("/^GRANT.*?UPDATE.*?ON/", $row[0]) &&
-					preg_match("/^GRANT.*?CREATE.*?ON/", $row[0]) &&
-					preg_match("/^GRANT.*?DELETE.*?ON/", $row[0])
-				) {
-					return true;
+			$result = $dbh->query($query);
+			if (!$dbh->errno ) {
+				while ($row = $result->fetch_row()){
+					if (preg_match("/^GRANT ALL/", $row[0])) {
+						return true;
+					}
+					if (
+						preg_match("/^GRANT.*?SELECT.*?ON/", $row[0]) &&
+						preg_match("/^GRANT.*?INSERT.*?ON/", $row[0]) &&
+						preg_match("/^GRANT.*?UPDATE.*?ON/", $row[0]) &&
+						preg_match("/^GRANT.*?CREATE.*?ON/", $row[0]) &&
+						preg_match("/^GRANT.*?DELETE.*?ON/", $row[0])
+					) {
+						return true;
+					}
 				}
 			}
 		}
@@ -325,11 +328,20 @@
 		return false;
 	}
 
-	function check_connect_db_mysql($conf) {
-		if(@mysql_pconnect($conf->host, $conf->user, $conf->password)) {
-			return true;
+	function getConnection($conf){
+		static $dbh;
+		if(!isset($dbh)) {
+			$dbh = new mysqli($conf->host, $conf->user, $conf->password, $conf->database);
 		}
-		return false;
+		return $dbh;
+	}
+
+	function check_connect_db_mysql($conf) {
+		$dbh = getConnection($conf);
+		if ($dbh->connect_errno) {
+			return false;
+		}
+		return true;
 	}
 
 	function check_connect_db_postgresql($conf) {
@@ -359,12 +371,7 @@
 	}
 
 	function check_select_db_mysql($conf) {
-		if (check_connect_db_mysql($conf)) {
-			if (mysql_select_db($conf->database)) {
-				return true;
-			}
-		}
-		return false;
+		return check_connect_db_mysql($conf); //connect also checks database
 	}
 
 	function check_select_db_postgresql($conf) {
@@ -386,13 +393,12 @@
 	}
 
 	function check_db_is_empty_mysql($conf) {
-		if (check_connect_db_mysql($conf)) {
-			if (check_select_db_mysql($conf)) {
-				$query = "SHOW TABLES;";
-				$result = mysql_query($query);
-				if (mysql_num_rows($result) == 0) {
-					return true;
-				}
+		$dbh = getConnection($conf);
+		if (!$dbh->connect_errno) {
+			$query = "SHOW TABLES;";
+			$result = $dbh->query($query);
+			if (!$dbh->errno && $result->num_rows == 0) {
+				return true;
 			}
 		}
 		return false;
