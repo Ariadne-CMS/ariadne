@@ -517,21 +517,6 @@ class axstore {
 			}
 			$path=preg_replace("/\{[0-9]:id\}/",strval($subid),$path);
 		}
-/*
-		if (is_array($properties)) {
-			$edq = AddSlashes('"');
-			$esq = AddSlashes("'");
-			foreach ($properties as $property => $property_records) {
-				foreach ($property_records as $record_id => $record) {
-					foreach ($record as $column => $column_data) {
-						$column_data = substr($column_data, 1, -1);
-						$properties[$property][$record_id][$column] = str_replace($edq, '"', str_replace($esq, "'", $column_data));
-					}
-				}
-			}
-
-		}
-*/
 		if ($id=$this->exists($path)) { //update
 			$this->_load_object_data($this->objects[$id]);
 			$object=$this->objects[$id];

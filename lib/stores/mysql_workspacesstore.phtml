@@ -884,7 +884,7 @@ class mysql_workspacesstore extends mysqlstore {
 				return false;
 			}
 
-			$properties = $this->load_properties($object['id']);
+			$properties = $this->load_properties($object['id'],'','%'); // get properties from all scopes
 			$this->save_properties($properties, $id);
 			foreach ($this->filestores as $fsName) {
 				debug("store::addObjectToLayer::filestore($fsName, id: ".$object['id'].")", "store");

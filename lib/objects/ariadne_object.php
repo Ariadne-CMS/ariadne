@@ -879,20 +879,20 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return true;
 	}
 
-	public function load_properties() {
-		return $this->store->load_properties($this->id);
+	public function load_properties($scope='') {
+		return $this->store->load_properties($this->id,'',$scope);
 	}
 
-	public function _load_properties() {
-		return $this->store->load_properties($this->id);
+	public function _load_properties($scope='') {
+		return $this->store->load_properties($this->id,'',$scope);
 	}
 
-	public function load_property($property) {
-		return $this->store->load_property($this->id,$property);
+	public function load_property($property, $scope='') {
+		return $this->store->load_property($this->id,$property,$scope);
 	}
 
-	public function _load_property($property) {
-		return $this->store->load_property($this->id,$property);
+	public function _load_property($property, $scope='') {
+		return $this->store->load_property($this->id,$property,$scope);
 	}
 
 	public function GetValidGrants($path="") {

@@ -1061,7 +1061,7 @@ class mysqlstore extends store{
 			$query_string="select name from ".$this->tbl_prefix."properties";
 			$qresult = $this->store_run_query($query_string);
 			while ($qresult && ($prop=@$qresult->fetch_array(MYSQLI_ASSOC))) {
-				if ($value=$this->load_property($object,$prop["name"],$values, $scope)) {
+				if ($value=$this->load_property($object,$prop["name"],$values,$scope)) {
 					$result[$prop["name"]]=$value;
 				}
 			}
@@ -1082,7 +1082,7 @@ class mysqlstore extends store{
 			}
 			$values += array( 'scope' => $scope );
 			while (list($name, $value)=each($values)) {
-				$value = "'".addSlashes."'";
+				$value = "'".addSlashes($value)."'";
 				$query_string.="AR_".AddSlashes($name)."=$value and ";
 			}
 			$query_string.="object=$object";
