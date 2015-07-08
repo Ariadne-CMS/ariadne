@@ -67,7 +67,7 @@
 		var existingFiles = filesExist(files);
 
 		if (!existingFiles) {
-			handleFiles(files, true);
+			return handleFiles(files, true);
 		}
 		console.log(existingFiles);
 
