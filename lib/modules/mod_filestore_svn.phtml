@@ -297,6 +297,8 @@
 				$args[] = $this->get_path($svn, '', true);
 			}
 
+			$comment = str_replace("\r\n","\n", $comment);
+
 			$switches = $svn['switches'];
 			$switches['message'] = $comment;
 			try {

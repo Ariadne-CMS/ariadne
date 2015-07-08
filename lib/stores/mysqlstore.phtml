@@ -1043,8 +1043,15 @@ class mysqlstore extends store{
 	**********************************************************************/
 
 		$allowedchars="_'-";
-		$search = array("%[\\x80-\\xFF$allowedchars]%es", "%\\s+%s");
-		$replace = array("'_'.dechex(ord('\\0'))", " ");
+		$text = preg_replace_callback(
+			"%[\\x80-\\xFF$allowedchars]%s",
+			function($matches) {
+				return '_'.dechex(ord($matches[0]));
+			},
+			$text
+		);
+		$search = array("%\\s+%s");
+		$replace = array(" ");
 		return preg_replace($search, $replace, $text);
 	}
 

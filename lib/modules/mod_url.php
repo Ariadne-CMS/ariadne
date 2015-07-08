@@ -30,15 +30,23 @@ class URL {
 			$rootURL = $me->make_url("/", "");
 
 			/* use the rootURL to rebuild the site URL */
-			$find[] = "%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%e";
-			$repl[] = "(\"\${2}\") ? \"{arSite/\\2}\" : \"{arSite}\"";
+			$page = preg_replace_callback(
+				"%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%",
+				function ($matches) {
+					return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
+				},
+				$page);
 
 			/*
 				a site has been configured so we can directly place
 				the nls_match2 after the siteURL
 			*/
-			$find[] = "%\\Q$siteURL\\E".$nls_match2."%e";
-			$repl[] = "(\"\${2}\") ? \"{arSite/\\2}\" : \"{arSite}\"";
+			$page = preg_replace_callback(
+				"%\\Q$siteURL\\E".$nls_match2."%",
+				function ($matches) {
+					return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
+				},
+				$page);
 		}
 
 		// change hardcoded links and images to use a placeholder for the root
@@ -93,11 +101,21 @@ class URL {
 			$root = substr($root, 0, -3);
 		}
 		if ($site && $site !== '/') {
-			$find[] = "%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%e";
-			$repl[] = "\$me->make_url('$site', '\\1')";
+			$page = preg_replace_callback(
+				"%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%",
+				function ($matches) use ($me, $site) {
+					return $me->make_url($site, $matches[1]);
+				},
+				$page
+			);
 
-			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e";
-			$repl[] = "\$me->make_url('$site', '\\1')";
+			$page = preg_replace_callback(
+				"%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%",
+				function ($matches) use ($me,$site) {
+					return $me->make_url($site, $matches[1]);
+				},
+				$page
+			);
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%";
 		$repl[] = $AR->host.$root."\\1";
@@ -105,8 +123,13 @@ class URL {
 		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%";
 		$repl[] = $AR->host.$me->store->get_config("root")."\\1";
 
-		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e";
-		$repl[] = "\$me->make_local_url('', '\\1')";
+		$page = preg_replace_callback(
+			"%\\{arCurrentPage(?:/([^}]+))?\\}%",
+			function($matches) use ($me) {
+				return $me->make_local_url('', $matches[1]);
+			},
+			$page
+		);
 
 		$find[] = "%\\{arSession\\}%";
 		$repl[] = $session;
