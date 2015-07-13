@@ -515,6 +515,9 @@
 		function svn_status($svn, $name='') {
 			$path = $this->get_path($svn, $name);
 
+			// strip away any strange double / or other 'unclean' stuff
+			$path = arc\path::collapse($path);
+
 			// Performance improvement to make svn_status
 			// faster. If there is not .svn dir, there is no SVN
 			// status.
