@@ -577,6 +577,7 @@
 			if ($revision != '') {
 				$switches['revision'] = $revision;
 			}
+			$switches['force'] = true;
 			$svn['instance']->update->_prepared = false;
 			try {
 				$result = $svn['instance']->update->run($args, $switches);
@@ -624,6 +625,9 @@
 			try {
 				$svnresult = $svn['instance']->proplist->run(array($name), $switches);
 			} catch(VersionControl_SVN_Exception $e) {
+				if ( $revision === 'BASE' ) {
+					return $this->svn_get_ariadne_props($svn, $name, 'HEAD');
+				}
 				return ar::error('svn exception',1322,$e);
 			}
 			$proplist = $svnresult['target'][0]['property'];
