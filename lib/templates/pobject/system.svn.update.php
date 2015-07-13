@@ -67,7 +67,7 @@
 					}
 
 					$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
-					if( ar_error::isError($props) {
+					if( ar_error::isError($props)) {
 						echo "<span>".$props->getMessage()."</span>";
 					} else if( $item["filestate"]  == "A" ) {
 						echo "<span class='svn_addtemplateline'>Added ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
