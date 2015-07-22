@@ -64,14 +64,29 @@
 			return $this->wrapped->__getFunctions();
 		}
 
+		public function _getTypes() {
+			return $this->wrapped->__getTypes();
+		}
+
 		public function _getLastResponse() {
 			return $this->wrapped->__getLastResponse();
+		}
+
+		public function _getLastResponseHeaders() {
+			return $this->wrapped->__getLastResponseHeaders();
 		}
 
 		public function _getLastRequest() {
 			return $this->wrapped->__getLastRequest();
 		}
 
+		public function _getLastRequestHeaders() {
+			return $this->wrapped->__getLastRequestHeaders();
+		}
+
+		public function _setCookie( $name, $value = null ) {
+			return $this->wrapped->__setCookie( $name, $value );
+		}
 	}
 
 	class ar_connect_soapServer extends arWrapper {

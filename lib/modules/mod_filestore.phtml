@@ -190,7 +190,7 @@
 				if ($this->exists($fsId, $fsName.".inc") ){
 					// new style template available
 					$path=$this->make_path($fsId, $fsName.".inc");
-					include($path);
+					$arTemplateFunction = ariadne_include_template($path);
 					if(is_callable($arTemplateFunction) ) {
 						$ARConfig->fsFunctions[$fsId][$fsName] = $arTemplateFunction;
 					}
@@ -515,4 +515,9 @@
 			return $result;
 		}
 
+	}
+
+	function ariadne_include_template($path){
+		include($path);
+		return $arTemplateFunction;
 	}

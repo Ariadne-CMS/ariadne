@@ -151,7 +151,7 @@
 		// check whether the editpane needs to be moved down
 		// to make room for the toolbars
 		var vdToolbars=document.getElementById('vdToolbars');
-		var ToolbarHeight=52;//vdToolbars.offsetHeight;
+		var ToolbarHeight=vdToolbars.offsetHeight ? vdToolbars.offsetHeight : 52;
 
 		if (window.getSelection ) { // FIXME: border in non-ie so we have to add 4
 			ToolbarHeight+=4;
@@ -443,6 +443,7 @@
 		initGroups(allScripts);
 
 		checkLoad();
+		checkDuplicateEditableIds(this);
 	}
 
 	function vdHandleBrokenWebkitSelect(event) {
@@ -1098,6 +1099,17 @@
 			document.body.className = document.body.className.replace( /\bvdEditorHidden\b/g, '' );
 		}
 	}
+
+	function checkDuplicateEditableIds(targetFrame) {
+		var idElements = targetFrame.contentDocument.querySelectorAll(".editable[id]");
+		for (var i=0; i<idElements.length; i++) {
+			var ids = targetFrame.contentDocument.querySelectorAll('.editable[id="' + idElements[i].id + '"]');
+			if (ids.length > 1 && (ids[0] == idElements[i])) {
+				alert("WARNING!!\n\nThe editable page contains duplicate field IDs.\nThis WILL cause problems if you save this page!");
+			}
+		}
+	}
+
 
 	function VD_NLS_onclick() {
 		vdEditPane.src=document.getElementById('VD_NLS_SELECT').value;
@@ -2341,7 +2353,7 @@
 		if (sel) {
 			vdParent = vdSelection.getNode(sel);
 			while(vdParent) {
-				if (vdParent.className && vdParent.className.match(/\beditable\b/)) {
+				if (vdParent.classList && vdParent.classList.contains('editable')) {
 					return vdParent;
 				} else {
 					vdParent = vdParent.parentNode;
@@ -2511,7 +2523,7 @@
 		}
 		var parent = el.parentNode;
 		while (parent) {
-			if (parent.className.match(/menu/)) {
+			if (parent.classList.contains('menu')) {
 				return true;
 			}
 			parent = parent.parentNode;
@@ -2875,7 +2887,7 @@
 					}
 				}
 				activeSection.style.top = top + 10 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
-				activeSection.style.left = newleft;
+				activeSection.style.left = newleft + "px";
 
 
 // FIXME: Android fix here
@@ -2935,9 +2947,9 @@
 	function getUneditableParent(checkParent) {
 		var parent = checkParent;
 		while (parent) {
-			if (parent.className && parent.className.match(/\buneditable\b/)) {
+			if (parent.classList && parent.classList.contains('uneditable')) {
 				return parent;
-			} else if (parent.className && parent.className.match(/\beditable\b/)) {
+			} else if (parent.classList && parent.classList.contains('editable')) {
 				return false;
 			}
 			parent = parent.parentNode;

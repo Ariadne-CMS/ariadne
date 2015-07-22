@@ -515,6 +515,9 @@
 		function svn_status($svn, $name='') {
 			$path = $this->get_path($svn, $name);
 
+			// strip away any strange double / or other 'unclean' stuff
+			$path = arc\path::collapse($path);
+
 			// Performance improvement to make svn_status
 			// faster. If there is not .svn dir, there is no SVN
 			// status.
@@ -549,8 +552,7 @@
 							if ($filename[0] === '_') {
 								$filename = substr($filename, 1);
 								$result[$filename] = $value;
-							}
-							if ( $matchpath === $value['path'] ) {
+							} else if ( $matchpath === $value['path'] ) {
 								// dir entry
 								$result[''] = $value;
 							}
@@ -575,6 +577,7 @@
 			if ($revision != '') {
 				$switches['revision'] = $revision;
 			}
+			$switches['force'] = true;
 			$svn['instance']->update->_prepared = false;
 			try {
 				$result = $svn['instance']->update->run($args, $switches);
@@ -622,6 +625,9 @@
 			try {
 				$svnresult = $svn['instance']->proplist->run(array($name), $switches);
 			} catch(VersionControl_SVN_Exception $e) {
+				if ( $revision === 'BASE' ) {
+					return $this->svn_get_ariadne_props($svn, $name, 'HEAD');
+				}
 				return ar::error('svn exception',1322,$e);
 			}
 			$proplist = $svnresult['target'][0]['property'];
@@ -719,7 +725,6 @@
 			} catch(Exception $e) {
 				// ignore exception, only testing if the folder exists
 			}
-
 			if ($svnlist) {
 				return false;
 			} else {

@@ -38,7 +38,29 @@
 	ldCheckAllowedMethods($_SERVER['REQUEST_METHOD']);
 
 	if (!isset($AR_PATH_INFO)) {
-		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
+		$path_info = $_SERVER['PATH_INFO'];
+
+		if ($path_info != '' ){
+			// we have a full path request
+			$AR_PATH_INFO = $path_info;
+		} else {
+			// we have a partial path request
+			$scriptname  = $_SERVER['PHP_SELF'];
+			$sitepath    = $_SERVER['ARSITEPATH'];
+			$matches     = array();
+			$pathMatchRe = "|(/-[^/]{4}-(?=/))?(/[a-z]{2}(?=/))?/(.*)|";
+			if (preg_match($pathMatchRe,$scriptname,$matches)) {
+				$session = $matches[1];
+				$nls     = $matches[2];
+				$path    = $matches[3];
+			} else {
+				$session = '';
+				$nls     = '';
+				$path    = substr($path,1);
+			}
+
+			$AR_PATH_INFO = $session . $nls . arc\path::collapse($sitepath) . $path;
+		}
 	}
 
 	if (!$AR_PATH_INFO) {

@@ -964,7 +964,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	public function load_properties($object, $values="") {
+	public function load_properties($object, $values="", $scope="") {
 		debug("load_properties($object, [values])","all");
 		if ($object) {
 			$query_string = "select name from ".$this->tbl_prefix."properties";
@@ -972,7 +972,7 @@ class postgresqlstore extends store {
 			$i = 0;
 			if($exec !== false){
 				while ($prop = @pg_fetch_array($exec, $i++)) {
-					if ($value = $this->load_property($object,$prop["name"],$values)) {
+					if ($value = $this->load_property($object,$prop["name"],$values,$scope)) {
 						$result[$prop["name"]] = $value;
 					}
 				}
@@ -982,7 +982,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	public function load_property($object, $property, $values="") {
+	public function load_property($object, $property, $values="", $scope="") {
 		debug("load_property($object, $property, [values])","all");
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
@@ -991,11 +991,13 @@ class postgresqlstore extends store {
 
 		if ($object) {
 			$query_string="select * from ".$this->tbl_prefix."prop_".pg_escape_string($property)." where ";
-			if (is_array($values)) {
-				while (list($name, $value)=each($values)) {
-					$value = "'".pg_escape_string($value)."'";
-					$query_string.="AR_".pg_escape_string($name)."=$value and ";
-				}
+			if ( !$values ) {
+				$values = array();
+			}
+			$values += array( 'scope' => $scope );
+			while (list($name, $value)=each($values)) {
+				$value = "'".pg_escape_string($value)."'";
+				$query_string.="AR_".pg_escape_string($name)."=$value and ";
 			}
 			$query_string.="object=$object";
 			$exec = @$this->store_run_query( $query_string);
@@ -1015,7 +1017,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	public function add_property($object, $property, $values) {
+	public function add_property($object, $property, $values, $scope="") {
 		debug("add_property($object, $property, [values])","all");
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
@@ -1023,7 +1025,8 @@ class postgresqlstore extends store {
 		$types_tbl = $this->tbl_prefix."types";
 		$object = (int)$object;
 
-		if ($object) {
+		if ($object && is_array($values) && count($values) ) {
+			$values += array('scope' => $scope);
 			while (list($name, $value)=each($values)) {
 				if ($value != "") {
 					$query_names .= "AR_".pg_escape_string($name).", ";
@@ -1049,7 +1052,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	public function del_property($object, $property="", $values="") {
+	public function del_property($object, $property="", $values="", $scope="") {
 		debug("del_property($object, $property, [values])","all");
 		$result=false;
 
@@ -1076,11 +1079,13 @@ class postgresqlstore extends store {
 				}
 			} else {
 				$query_string = "delete from ".$this->tbl_prefix."prop_".pg_escape_string($property)." where ";
-				if (is_array($values)) {
-					while (list($name, $value) = each($values)) {
-						$value = "'".pg_escape_string($value)."'";
-						$query_string .= "AR_".pg_escape_string($name)."=$value and ";
-					}
+				if ( !$values ) {
+					$values = array();
+				}
+				$values += array('scope' => $scope);
+				while (list($name, $value) = each($values)) {
+					$value = "'".pg_escape_string($value)."'";
+					$query_string .= "AR_".pg_escape_string($name)."=$value and ";
 				}
 				$query_string .= "object=$object";
 				$exec = $this->store_run_query( $query_string);

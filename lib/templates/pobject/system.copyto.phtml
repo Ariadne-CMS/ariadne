@@ -39,7 +39,7 @@
 								if ($defaultnls && !$this->data->$defaultnls) {
 									$this->data->nls->default=$ARConfig->nls->default;
 								}
-								$properties=$this->load_properties();
+								$properties=$this->load_properties('%'); // copy properties from all scopes
 								$ARCurrent->newpath=$this->store->save($target, $this->type, $this->data, $properties, $this->vtype, $this->priority);
 								if ($ARCurrent->newid=$this->exists($ARCurrent->newpath)) {
 

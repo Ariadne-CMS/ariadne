@@ -454,6 +454,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$context = $this->getContext();
 
 		$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+		if ( $arIsNewObject) {
+			$wf_object->arIsNewObject=$arIsNewObject;
+		}
 
 		// this makes sure the event handlers are run on $wf_object, so that $this->data changes don't change the data of the object to be saved
 		$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
@@ -482,10 +485,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$properties = $eventData->arProperties;
 		} else {
 			$properties = array();
-		}
-
-		if ( $arIsNewObject) {
-			$wf_object->arIsNewObject=$arIsNewObject;
 		}
 
 		// pass the current properties list to the workflow template
@@ -879,20 +878,20 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return true;
 	}
 
-	public function load_properties() {
-		return $this->store->load_properties($this->id);
+	public function load_properties($scope='') {
+		return $this->store->load_properties($this->id,'',$scope);
 	}
 
-	public function _load_properties() {
-		return $this->store->load_properties($this->id);
+	public function _load_properties($scope='') {
+		return $this->store->load_properties($this->id,'',$scope);
 	}
 
-	public function load_property($property) {
-		return $this->store->load_property($this->id,$property);
+	public function load_property($property, $scope='') {
+		return $this->store->load_property($this->id,$property,$scope);
 	}
 
-	public function _load_property($property) {
-		return $this->store->load_property($this->id,$property);
+	public function _load_property($property, $scope='') {
+		return $this->store->load_property($this->id,$property,$scope);
 	}
 
 	public function GetValidGrants($path="") {
