@@ -18,7 +18,7 @@
 	}
 	$language = preg_replace('/[^a-z0-9_]/i', '', $language);
 	$ARnls->load('', $language);
-	$ARnls->load('vedor-editor', $language);
+	$ARnls->load('vedor-editor-v9', $language);
 
 	$getargs = "?vdLanguage=" . RawURLEncode($language);
 	// CAS vars;
