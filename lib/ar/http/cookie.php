@@ -5,14 +5,14 @@
 	class ar_http_cookie extends arBase {
 
 		public static function get( $name = "ARUserCookie" ) {
-			return new ar_http_cookieStore( $_COOKIE[$name], array( 'name' => $name ) );
+			return new ar_http_cookieStore( $name, $_COOKIE[$name] );
 		}
 
 	}
 
 	class ar_http_cookieStore extends arBase implements arKeyValueStoreInterface {
 
-		protected $values = array();
+		public $values = array();
 		protected $name = 'ARUserCookie';
 		protected $configuration = array(
 			'expire' => null,
@@ -27,7 +27,13 @@
 				$name = 'ARUserCookie';
 			}
 			$this->name = $name;
-			$this->values = unserialize( $cookie );
+			try {
+				$this->values = json_decode($cookie);
+			} catch(Exception $e) {
+			}
+			if ( !isset($this->values) && isset($cookie) ) {
+				$this->values = $cookie;
+			}
 			$this->configure( $configuration );
 		}
 
@@ -61,7 +67,8 @@
 				$name = 'ARUserCookie';
 			}
 			$this->name = $name;
-			return setcookie( $this->name, serialize( $this->values ), $this->configuration['expire'],
+			//TODO/FIXME: test save with non-array/non-object value
+			return setcookie( $this->name, json_encode( $this->values ), $this->configuration['expire'],
 				$this->configuration['path'], $this->configuration['domain'], $this->configuration['secure'] );
 		}
 
