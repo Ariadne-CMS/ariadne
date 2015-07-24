@@ -1342,14 +1342,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 
+			if (!is_array($this->data->config->cacheSettings) ) {
+				$this->data->config->cacheSettings = array();
+			}
+
 			if ($this->data->config->cacheconfig) { // When removing this part, also fix the setting below.
 				$configcache->cache=$this->data->config->cacheconfig;
 			}
 
-			if (!is_array($this->data->config->cacheSettings)) {
-				$this->data->config->cacheSettings = array(
-					"serverCache" => $configcache->cache // attention: when removing the part above, this line needs fixing.
-				);
+			if (empty($this->data->config->cacheSettings)) {
+				$this->data->config->cacheSettings["serverCache"] = $this->data->config->cacheconfig;
 			}
 			foreach ($this->data->config->cacheSettings as $key => $value) {
 				$configcache->cacheSettings[$key] = $value;

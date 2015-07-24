@@ -348,7 +348,12 @@
 		}
 
 		public function __toString() {
-			return $this->code.": ".$this->message."\r\n";
+			$result = $this->code.": ".$this->message."\r\n";
+			$e = $this;
+			while ($e = $e->getPrevious()) {
+				$result .= $e->getCode().": ".$e->getMessage()."\r\n";
+			}
+			return $result;
 		}
 	}
 

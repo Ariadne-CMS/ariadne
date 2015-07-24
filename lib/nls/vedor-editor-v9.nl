@@ -61,7 +61,7 @@
 	$ARnls["vd.editor:link"]                        =    "Link";
 	$ARnls["vd.editor:logoff_question"]             =    "Weet u zeker dat u zich wilt afmelden?";
 	$ARnls["vd.editor:manage"]                      =    "Beheer";
-	$ARnls["vd.editor:manage_page"]                 =    "Pagina&quot;s";
+	$ARnls["vd.editor:manage_page"]                 =    "Pagina&rsquo;s";
 	$ARnls["vd.editor:max"]                         =    "Max";
 	$ARnls["vd.editor:menu"]                        =    "Menu";
 	$ARnls["vd.editor:merge"]                       =    "Voeg samen";

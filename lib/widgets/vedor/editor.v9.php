@@ -18,7 +18,7 @@
 	}
 	$language = preg_replace('/[^a-z0-9_]/i', '', $language);
 	$ARnls->load('', $language);
-	$ARnls->load('vedor-editor', $language);
+	$ARnls->load('vedor-editor-v9', $language);
 
 	$getargs = "?vdLanguage=" . RawURLEncode($language);
 	// CAS vars;
@@ -72,7 +72,7 @@
 	<title>Vedor WYSIWYG Editor</title>
 	<link rel="stylesheet" href="<?php echo $style_dir; ?>editor.v9.css" type="text/css">
 	<link rel="stylesheet" href="<?php echo $this->make_local_url(); ?>editor.overrides.css" type="text/css">
-	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
