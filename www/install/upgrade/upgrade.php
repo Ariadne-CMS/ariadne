@@ -39,7 +39,7 @@
 	require_once($store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
 
 	// set update in progress for faster checks
-	$AR->upgradeInProgress === true;
+	$AR->upgradeInProgress = true;
 
 	require_once(AriadneBasePath . "/stores/axstore.phtml");
 	require_once(AriadneBasePath . "/configs/axstore.phtml");
