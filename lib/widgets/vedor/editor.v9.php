@@ -1608,6 +1608,7 @@
 
 	function vdToggleInsert() {
 		var vdInsertPopup = document.getElementById('vdInsertPopup');
+		var vdEditDoc=vdEditPane.contentWindow.document;
 		if (vdInsertPopup.style.display=='none') {
 			vdInsertPopup.style.display='block';
 			var closeDropEvent;
