@@ -1080,7 +1080,9 @@ class mysqlstore extends store{
 			if (!$values) {
 				$values = array();
 			}
-			$values += array( 'scope' => $scope );
+			if( $scope !== '%' ) {
+				$values += array( 'scope' => $scope );
+			}
 			while (list($name, $value)=each($values)) {
 				$value = "'".addSlashes($value)."'";
 				$query_string.="AR_".AddSlashes($name)."=$value and ";
