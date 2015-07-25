@@ -546,4 +546,4 @@
 
 	}
 
-	spl_autoload_register('ar::autoload');
+	spl_autoload_register('ar::autoload',true,true);
