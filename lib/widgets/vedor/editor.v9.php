@@ -105,6 +105,7 @@
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/contextbar.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/toolbar.js"></script>
 <script ID="editorSettings" LANGUAGE="JavaScript">
+	var vdDebug = false;
 	var rootURL='<?php echo $this->store->get_config("root"); ?>';
 	var objectPath='<?php echo $this->path; ?>';
 	var sitePath='<?php echo $this->currentsite(); ?>';
@@ -132,7 +133,7 @@
 	var vdMetaDataSlideEnabled=false;
 	var vdHtmlContextHides=false;
 	var vdTableDesigner;
-
+	var vdLanguages = <?php echo json_encode($AR->nls->list); ?>;
 
 	var vdHandles;
 
@@ -406,7 +407,11 @@
 					var vedorPath 		= allScripts[i].getAttribute("data-vedor-path");
 					var vedorUrl  		= allScripts[i].getAttribute("data-vedor-url");
 					var vedorParentUrl	= allScripts[i].getAttribute("data-vedor-parent-url");
-					var vedorNlsList	= allScripts[i].getAttribute("data-vedor-nls-list");
+					try {
+						var vedorNlsList	= JSON.parse(allScripts[i].getAttribute("data-vedor-nls-list"));
+					} catch(e) {
+						var vedorNlsList	= [];	
+					}
 					var vedorLanguage	= allScripts[i].getAttribute("data-vedor-language");
 					var vedorUrlNls		= allScripts[i].getAttribute("data-vedor-url-nls");
 					var vedorSiteNls	= allScripts[i].getAttribute("data-vedor-site-nls");
@@ -431,9 +436,9 @@
 					}
 				break;
 				default:
-					if (allScripts[i].getAttribute("type") && allScripts[i].getAttribute("type").match(/^vedor/)) {
+					if ( vdDebug && allScripts[i].getAttribute("type") && allScripts[i].getAttribute("type").match(/^vedor/)) {
 						console.log("unhandled script");
-						console.log(allScripts[i]);
+						console.log(allScripts[i].getAttribute('type'));
 					}
 				break;
 			}
@@ -713,29 +718,36 @@
 		}
 
 		// reset nls
-		var nlsselect=document.getElementById('VD_NLS_SELECT');
-		if (nlsselect) {
-			var vedorLanguageList = document.getElementById('vedorLanguage').querySelectorAll('.vedor-list-items');
-			if ( nlslist && nlslist.length>1 ) {
-				vedorLanguageList.innerHTML = '';
-				for ( var i in nlslist ) {
-					var item = muze.html.el('li',
-						muze.html.el('label',
-							muze.html.el('input', { type: 'radio', name: 'language', value: i, checked: ( i == language ) }, nlslist[i] )
-						)
-					);
-					// FIXME: Deze appendchild moest ergens anders heen, maar waar?
-					// vedorLanguageList.appendChild(item);
-				}
-				//loadOptions('VD_NLS_SELECT', nlsOptions, nlsOptionsSelected);
-				document.getElementById('vedorLanguage').style.display = 'list-item';
-			} else {
-				document.getElementById('vedorLanguage').style.display = 'none';
+		var vedorLanguageList = document.getElementById('vedorLanguageList');
+		if ( vedorLanguageList && nlslist && Object.keys(nlslist).length>1 ) {
+			vedorLanguageList.innerHTML = '';
+			for ( var i in nlslist ) {
+				var item = muze.html.el('li',
+					muze.html.el(
+						'button',
+						{
+							'data-vedor-link': i, 
+							'data-vedor-language': nlslist[i], 
+							'data-vedor-action': 'vedor-switch-language',
+							class:'vedor-language-select' + ( vdLanguages[language] == nlslist[i] ? ' vedor-selected' : '' ) 
+						},
+						nlslist[i])
+				);
+				// FIXME: Deze appendchild moest ergens anders heen, maar waar?
+				vedorLanguageList.appendChild(item);
 			}
+			//loadOptions('VD_NLS_SELECT', nlsOptions, nlsOptionsSelected);
+			var languageButton = document.getElementById('vedorLanguage');
+			languageButton.style.display = 'list-item';
+			if ( languageButton.style.display!='list-item' ) { //Chrome sucks
+				languageButton.style.cssText = 'display: list-item;';
+			}
+		} else {
+			document.getElementById('vedorLanguage').style.display = 'none';
 		}
 		vdUndoHandler.reset();
 		//if ( url ) {
-		//	document.getElementById('vdMetaFrame').src = url + 'vd.meta.phtml?vdLanguage=<?php echo RawUrlEncode($language); ?>';
+		//	document.getElementById('vdMetaFrame').src = url + 'dialog.vedor-meta.html?vdLanguage=<?php echo RawUrlEncode($language); ?>';
 		//} else {
 		//	document.getElementById('vdMetaFrame').src = 'about:blank';
 		//}
@@ -2160,7 +2172,9 @@
 			editable = elm;
 
 			registerDataField(elm.id, elm.getAttribute("data-vedor-field"), elm.getAttribute("data-vedor-path"), elm.getAttribute("data-vedor-id"));
-			// console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
+			if ( vdDebug ) {
+				 console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
+			}
 
 			muze.event.attach(editable, 'focus', checkChangeStart);
 			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
@@ -2196,8 +2210,9 @@
 			editable = elm;
 
 			registerDataField(elm.id, elm.getAttribute("data-vedor-field"), elm.getAttribute("data-vedor-path"), elm.getAttribute("data-vedor-id"));
-			// console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
-
+			if (vdDebug) {
+				 console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
+			}
 			muze.event.attach(editable, 'focus', checkChangeStart);
 			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
 			muze.event.attach(editable, 'mousedown', function() {
@@ -2783,8 +2798,9 @@
 		//window.setTimeout(hideIt, 200);
 
 		var activeSection = document.getElementById(currentContext);
-		// console.log(activeSection);
-
+		if ( vdDebug ) {
+			console.log(activeSection);
+		}
 		if (activeSection && !vdHideToolbars) {
 				var htmlContext = activeSection.querySelectorAll("div.vedor-toolbar-status")[0];
 				if ( htmlContext ) {
@@ -3352,7 +3368,7 @@
 	</div>
 </div>
 <div id="vdMetaDataSlide" style="height: 220px; display: none;" unselectable="on" style="display: none; -webkit-overflow-scrolling:touch; overflow: scroll;">
-	<iframe id="vdMetaFrame" src="<?php echo $this->make_local_url(); ?>vd.meta.phtml?vdLanguage=<?php echo RawUrlEncode($language); ?>" unselectable="on"></iframe>
+	<iframe id="vdMetaFrame" src="<?php echo $this->make_local_url(); ?>dialog.vedor-meta.html?vdLanguage=<?php echo RawUrlEncode($language); ?>" unselectable="on"></iframe>
 </div>
 <div id="vdMetaDataSlider" style="display: none;" unselectable="on"></div>
 <iframe id="vdEditPane" src="<?php
@@ -3688,6 +3704,10 @@
 					vdContext.className += " active";
 				}
 			}
+		},
+		"vedor-switch-language" : function(el) {
+			var newURL = el.dataset.vedorLink;
+			browseTo(newURL);
 		}
 	};
 	vedor.editor.toolbars = {};
@@ -3906,6 +3926,14 @@
 			lastSelection = vdSelectionState.get();
 		});
 
+		function unselectItems(list) {
+			for ( var i=0, l=list.length; i<l; i++ ) {
+				list[i].classList.remove('vedor-selected');
+			}
+		}
+		function selectItem(item) {
+			item.classList.add('vedor-selected');
+		}
 
 		document.body.onclick = function(evt) {
 			if (lastSelection) {
@@ -3917,28 +3945,17 @@
 				el = el.parentNode;
 			}
 			if ( el.tagName == 'BUTTON' ) {
-				var action = vedor.editor.actions[el.getAttribute("data-vedor-action")];
-				if (action) {
-					var result = action(el);
-					if (!result) {
-						return;
-					}
-				}
-
-				switch(el.getAttribute("data-vedor-action")) {
-					case null:
-					break;
-					default:
-						var action = vedor.editor.actions[el.getAttribute("data-vedor-action")];
-						if (action) {
-							var result = action(el);
-							if (!result) {
-								return;
-							}
-						} else {
-							console.log(el.getAttribute("data-vedor-action") + " not yet implemented");
+				var action = el.dataset.vedorAction;
+				if ( action ) { // find the matching callback function and run it
+					var actionCallback = vedor.editor.actions[action];
+					if (actionCallback) {
+						var result = actionCallback(el);
+						if (!result) {
+							return;
 						}
-					break;
+					} else {
+						console.log(action + " not yet implemented");
+					}
 				}
 
 				evt.target.blur();
@@ -3946,37 +3963,31 @@
 				var section = getSection(el);
 				if ( !section ) {
 					var sections = toolbar.querySelectorAll('.vedor-toolbar-section.vedor-selected, .vedor-toolbar-status');
-					for ( var i=0, l=sections.length; i<l; i++ ) {
-						sections[i].className = sections[i].className.replace(/\bvedor-selected\b/,'');
-					}
+					unselectItems(sections);
 					var selectedSectionButtons = toolbar.querySelectorAll('ul.vedor-buttons button.vedor-selected');
-					for ( var i=0, l=selectedSectionButtons.length; i<l; i++ ) {
-						selectedSectionButtons[i].className = selectedSectionButtons[i].className.replace(/\bvedor-selected\b/,'');
-					}
+					unselectItems(selectedSectionButtons);
 					if ( !selectedSectionButtons[0] || el != selectedSectionButtons[0] ) {
-						el.className += ' vedor-selected';
+						selectItem(el);
 						var rel = el.dataset.vedorSection;
 						if ( rel ) {
-							var target = toolbar.querySelectorAll('.vedor-toolbar-section.' + rel );
-							if ( target && target[0] ) {
-								target[0].className += ' vedor-selected';
-								lastSection = target[0];
-								lastSection.querySelectorAll("LI > *")[0].focus();
+							var target = toolbar.querySelector('.vedor-toolbar-section.' + rel );
+							if ( target ) {
+								selectItem(target);
+								lastSection = target;
+								lastSection.querySelector("LI > *").focus();
 							}
 						}
 					} else {
-						var status = toolbar.querySelectorAll('.vedor-toolbar-status')[0];
+						var status = toolbar.querySelector('.vedor-toolbar-status');
 						if ( status ) {
-							status.className += ' vedor-selected';
+							selectItem(status);
 						}
 					}
 				} else {
 					var selectedSectionButtons = section.querySelectorAll('.vedor-selected');
-					for ( var i=0, l=selectedSectionButtons.length; i<l; i++ ) {
-						selectedSectionButtons[i].className = selectedSectionButtons[i].className.replace(/\bvedor-selected\b/,'');
-					}
+					unselectItems(selectedSectionButtons);
 					if ( !selectedSectionButtons[0] || el != selectedSectionButtons[0] ) {
-						el.className += ' vedor-selected';
+						selectItem(el);
 					}
 				}
 			}
