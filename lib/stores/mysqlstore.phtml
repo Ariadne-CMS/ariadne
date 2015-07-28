@@ -40,6 +40,7 @@ class mysqlstore extends store{
 	protected $cachedQueries;
 	protected $filestores;
 	protected static $connections = array();
+	protected $propertyRegister;
 	
 	public $total = 0;
 
@@ -1057,12 +1058,19 @@ class mysqlstore extends store{
 
 
 	public function load_properties($object, $values="", $scope="") {
-		if ($object) {
+		if(!isset($this->propertyRegister)) {
 			$query_string="select name from ".$this->tbl_prefix."properties";
 			$qresult = $this->store_run_query($query_string);
+			$register = array();
 			while ($qresult && ($prop=@$qresult->fetch_array(MYSQLI_ASSOC))) {
-				if ($value=$this->load_property($object,$prop["name"],$values,$scope)) {
-					$result[$prop["name"]]=$value;
+				$register[] = $prop['name'];
+			}
+			$this->propertyRegister = $register;
+		}
+		if ($object) {
+			foreach($this->propertyRegister as $prop) {
+				if ($value=$this->load_property($object,$prop,$values,$scope)) {
+					$result[$prop]=$value;
 				}
 			}
 		}
@@ -1080,7 +1088,9 @@ class mysqlstore extends store{
 			if (!$values) {
 				$values = array();
 			}
-			$values += array( 'scope' => $scope );
+			if( $scope !== '%' ) {
+				$values += array( 'scope' => $scope );
+			}
 			while (list($name, $value)=each($values)) {
 				$value = "'".addSlashes($value)."'";
 				$query_string.="AR_".AddSlashes($name)."=$value and ";

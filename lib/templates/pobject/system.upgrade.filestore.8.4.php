@@ -2,8 +2,9 @@
 /******************************************************************
   upgrades filestore data of file
  ******************************************************************/
+global $AR;
 
-if ($this->CheckLogin("admin"))
+if ($AR->upgradeInProgress === true || $this->CheckLogin("admin"))
 {
 	ob_end_flush();
 
