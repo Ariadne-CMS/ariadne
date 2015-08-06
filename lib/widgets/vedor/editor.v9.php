@@ -2801,6 +2801,85 @@
 	var toolbarTimer = false;
 	var skipContextUpdate = false;
 
+	function getToolbarPosition(sel) {
+		var range = sel; //.getRangeAt(0);
+		if ( !range ) {
+			return null;
+		}
+		var rects = range.getClientRects();
+		if ( !rects.length ) {
+			return null;
+		}
+		var ltop = rects[0].top;
+		var lleft = rects[0].left;
+		var rleft = rects[rects.length-1].right;
+		var rtop = rects[rects.length-1].bottom; 
+		if ( lleft == 0 && rleft == 0 && ltop == 0 && rtop == 0 ) {
+			pos = vdSelection.parentNode(sel).getBoundingClientRect();
+			lleft = pos.left;
+			ltop = pos.top;
+			rleft = pos.right;
+			rtop = pos.bottom;
+		}
+		var parent = vdSelection.getNode(sel);
+		if ( parent.getAttribute("data-vedor-selectable")) {
+			pos = parent.getBoundingClientRect();
+			lleft = pos.left;
+			ltop = pos.top;
+			rleft = pos.right;
+			rtop = pos.bottom;
+		}
+		var top = Math.max(ltop, rtop);
+		var left = lleft + ((rleft - lleft) / 2);
+		return { top: top, left: left };
+	}
+
+	function repositionToolbar() {
+		var sel = vdSelectionState.get();
+		var currentContext = getVedorEditorContext();
+		var activeSection = document.getElementById(currentContext);
+		var pos = getToolbarPosition(sel);
+		if ( !pos ) {
+			return;
+		}
+		var top = pos.top;
+		var left = pos.left;
+
+		var activeToolbar = activeSection.querySelectorAll("div.vedor-toolbar")[0];
+
+		top += vdEditPane.offsetTop;
+
+		newleft = left - (activeToolbar.offsetWidth/2);
+
+		if (newleft < 0) {
+			markerLeft = activeToolbar.offsetWidth/2 + newleft;
+			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
+			newleft = 0;
+		} else if (newleft + activeToolbar.offsetWidth > vdEditPane.offsetWidth) {
+			var delta = newleft + activeToolbar.offsetWidth - vdEditPane.offsetWidth;
+			markerLeft = activeToolbar.offsetWidth/2 + delta;
+			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
+
+			newleft = vdEditPane.offsetWidth - activeToolbar.offsetWidth;
+		} else {
+			activeToolbar.getElementsByClassName("marker")[0].style.left = "50%";
+		}
+
+		// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
+		var fullHeight = vdEditPane.contentWindow.document.documentElement.clientHeight ? vdEditPane.contentWindow.document.documentElement.clientHeight : vdEditPane.contentWindow.document.body.clientHeight
+		if (top > (fullHeight - (activeSection.scrollHeight * 2))) {
+			mintop = Math.min(ltop, rtop);
+			mintop -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
+
+			top = fullHeight - (activeSection.scrollHeight * 2);
+			if (top < mintop) {
+				top = mintop;
+			}
+		}
+		activeSection.style.top = top + 10 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
+		activeSection.style.left = newleft + "px";
+	}
+
 	function showVedorEditorContext() {
 		var currentContext = getVedorEditorContext();
 
@@ -2834,102 +2913,14 @@
 				activeSection.className += " active";
 				hideIt(); // window.setTimeout(hideIt, 200);
 
+
 				var sel = vdSelectionState.get();
 				var parent = vdSelection.getNode(sel);
 				if (parent == vdEditPane.contentWindow.document) {
 					return;
 				}
-				if (sel.collapsed) {
-					var parent = vdSelection.getNode(sel);
-					vdSelection.setHTMLText(sel, "<span id='vdBookmarkLeft'></span><span id='vdBookmarkRight'></span>");
-				} else {
-					vedor.editor.bookmarks.set(sel);
-				}
 
-				var bmLeft = vdEditPane.contentWindow.document.getElementById("vdBookmarkLeft");
-				var obj = bmLeft;
-
-				if (!obj) {
-					return;
-				}
-
-				var lleft = 0, ltop = 0;
-				ltop += obj.offsetHeight;
-				do {
-					lleft += obj.offsetLeft;
-					ltop += obj.offsetTop;
-				} while (obj = obj.offsetParent);
-
-				var bmRight = vdEditPane.contentWindow.document.getElementById("vdBookmarkRight");
-				obj = bmRight;
-				var rleft = 0, rtop = 0;
-				rtop += obj.offsetHeight;
-				do {
-					rleft += obj.offsetLeft;
-					rtop += obj.offsetTop;
-				} while (obj = obj.offsetParent);
-
-				bmRight.parentNode.removeChild(bmRight);
-				bmLeft.parentNode.removeChild(bmLeft);
-
-				if ( lleft == 0 && rleft == 0 && ltop == 0 && rtop == 0 ) {
-					pos = vdSelection.parentNode(sel).getBoundingClientRect();
-					lleft = pos.left;
-					ltop = pos.top;
-					rleft = pos.right;
-					rtop = pos.bottom;
-				}
-
-				if ( parent.getAttribute("data-vedor-selectable")) {
-					pos = parent.getBoundingClientRect();
-					lleft = pos.left;
-					ltop = pos.top;
-					rleft = pos.right;
-					rtop = pos.bottom;
-				}
-
-				var top = Math.max(ltop, rtop);
-				var left = lleft + ((rleft - lleft) / 2);
-
-				var activeToolbar = activeSection.querySelectorAll("div.vedor-toolbar")[0];
-
-				top += vdEditPane.offsetTop;
-
-				if (!parent.getAttribute("data-vedor-selectable")) {
-					top -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
-					left -= vdEditPane.contentWindow.document.body.scrollLeft ? vdEditPane.contentWindow.document.body.scrollLeft : vdEditPane.contentWindow.pageXOffset;
-				}
-
-				newleft = left - (activeToolbar.offsetWidth/2);
-
-				if (newleft < 0) {
-					markerLeft = activeToolbar.offsetWidth/2 + newleft;
-					activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
-					newleft = 0;
-				} else if (newleft + activeToolbar.offsetWidth > vdEditPane.offsetWidth) {
-					var delta = newleft + activeToolbar.offsetWidth - vdEditPane.offsetWidth;
-					markerLeft = activeToolbar.offsetWidth/2 + delta;
-					activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
-
-					newleft = vdEditPane.offsetWidth - activeToolbar.offsetWidth;
-				} else {
-					activeToolbar.getElementsByClassName("marker")[0].style.left = "50%";
-				}
-
-				// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
-				var fullHeight = vdEditPane.contentWindow.document.documentElement.clientHeight ? vdEditPane.contentWindow.document.documentElement.clientHeight : vdEditPane.contentWindow.document.body.clientHeight
-				if (top > (fullHeight - (activeSection.scrollHeight * 2))) {
-					mintop = Math.min(ltop, rtop);
-					mintop -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
-
-					top = fullHeight - (activeSection.scrollHeight * 2);
-					if (top < mintop) {
-						top = mintop;
-					}
-				}
-				activeSection.style.top = top + 10 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
-				activeSection.style.left = newleft + "px";
-
+				repositionToolbar();
 
 // FIXME: Android fix here
 //				// restore selection triggers contextupdate, which triggers restore selection - this hopefully prevents that loop.
@@ -3780,13 +3771,7 @@
 
 		var initEditPaneEvents = function() {
 			var scrollTimer = false;
-			muze.event.attach(document.getElementById("vdEditPane").contentWindow, "scroll", function() {
-				if (scrollTimer) {
-					window.clearTimeout(scrollTimer);
-				}
-				scrollTimer = window.setTimeout(vdEditPane_DisplayChanged, 50);
-			});
-
+			muze.event.attach(document.getElementById("vdEditPane").contentWindow, "scroll", muze.throttle(repositionToolbar, 10));
 			muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
 				var key = event.keyCode || event.which;
 				if (key == 66 && event.ctrlKey) { // Ctrl-B

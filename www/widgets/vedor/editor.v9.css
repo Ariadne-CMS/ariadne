@@ -149,6 +149,7 @@ a:hover span.deltag {
 		height: 100%;
 		background-color: #CCCDCE;
 		clear: both;
+		overflow: hidden;
 	}
 
 	.antline {
