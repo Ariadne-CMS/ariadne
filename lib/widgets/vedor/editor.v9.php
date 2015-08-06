@@ -304,7 +304,7 @@
 		var type=image.getAttribute('ar:type');
 		if (!type || type=='undefined') {
 			// type='Origineel'; // FIXME: gewoon de eerste in de lijst selecteren?
-			type = document.querySelectorAll("#vdImageType option")[0].value;
+			type = document.querySelector("#vdImageType option").value;
 		}
 		vdSetProperty('vdImageType',type);
 		var alt=image.getAttribute('alt');
@@ -314,7 +314,7 @@
 		vdSetProperty('vdImageAlign', align);
 
 		// Set the parent icon for alignment as well;
-		var currentIcon = document.querySelectorAll("div.vedor-image-align button.vedor-selected i")[0];
+		var currentIcon = document.querySelector("div.vedor-image-align button.vedor-selected i");
 		if (currentIcon) {
 			var icons = document.querySelectorAll("button[data-vedor-section=vedor-image-align] i");
 			for (var i=0; i<icons.length; i++) {
@@ -2704,12 +2704,36 @@
 		}
 	}
 
+	function selectStyle(select, node) {
+		for ( var i=0, l=select.options.length; i<l; i++ ) {
+			var val = select.options[i].value;
+			var info = val.split('.');
+			var tag = info[0];
+			var className = info[1];
+			var n = node;
+			while ( n && n.classList && !n.classList.contains('editable') ) {
+				if ( n.tagName == tag ) {
+					if ( !className || node.classList.contains(className) ) {
+						select.options[i].selected = true;
+						return n;
+					}
+				}
+				n = n.parentElement;
+			}
+		}
+	}
+
 	function initTextProperties() {
+
 		var sel = vdSelectionState.get();
 		if (sel) {
 			var parent = vdSelection.getNode(sel);
 			if (parent || parent.getAttribute || parent.getAttribute("contenteditable")) {
 				var parentStyles = getAllStyles(parent);
+				var textFormat = document.querySelectorAll(".vedor-text-format select");
+				for ( var i=0, l=textFormat.length; i<l; i++ ) {
+					selectStyle(textFormat[i], parent);
+				}
 
 				var textAlign = document.querySelectorAll(".vedor-text-align[data-type=vedor-buttongroup-radio]");
 				for (var i=0; i<textAlign.length;i++) {
@@ -3754,53 +3778,55 @@
 		var lastEl = null;
 		var lastSection = document.querySelectorAll('.vedor-toolbar-status')[0];
 
-		var scrollTimer = false;
-		muze.event.attach(document.getElementById("vdEditPane").contentWindow, "scroll", function() {
-			if (scrollTimer) {
-				window.clearTimeout(scrollTimer);
-			}
-			scrollTimer = window.setTimeout(vdEditPane_DisplayChanged, 50);
-		});
+		var initEditPaneEvents = function() {
+			var scrollTimer = false;
+			muze.event.attach(document.getElementById("vdEditPane").contentWindow, "scroll", function() {
+				if (scrollTimer) {
+					window.clearTimeout(scrollTimer);
+				}
+				scrollTimer = window.setTimeout(vdEditPane_DisplayChanged, 50);
+			});
 
-		muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
-			var key = event.keyCode || event.which;
-			if (key == 66 && event.ctrlKey) { // Ctrl-B
-				VD_BOLD_onclick();
-				muze.event.cancel(event);
-			} else if (key == 27) { // ESC
-				vdHideToolbars = true;
-				updateHtmlContext();
-				muze.event.cancel(event);
-			} else if (key == 73 && event.ctrlKey) { // Ctrl-I
-				VD_ITALIC_onclick();
-				muze.event.cancel(event);
-			} else if (key == 83 && event.ctrlKey) { // Ctrl-S
-				SAVE_onclick();
-				muze.event.cancel(event);
-			} else if (key == 32 && event.ctrlKey) { // Ctrl-space
-				vdHideToolbars = false;
-				updateHtmlContext();
-				var activeToolbar = document.querySelectorAll(".vedor-section.active")[0];
-				if (activeToolbar) {
-					var firstButton = activeToolbar.querySelectorAll("button")[0];
-					if (firstButton) {
-						firstButton.focus();
+			muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
+				var key = event.keyCode || event.which;
+				if (key == 66 && event.ctrlKey) { // Ctrl-B
+					VD_BOLD_onclick();
+					muze.event.cancel(event);
+				} else if (key == 27) { // ESC
+					vdHideToolbars = true;
+					updateHtmlContext();
+					muze.event.cancel(event);
+				} else if (key == 73 && event.ctrlKey) { // Ctrl-I
+					VD_ITALIC_onclick();
+					muze.event.cancel(event);
+				} else if (key == 83 && event.ctrlKey) { // Ctrl-S
+					SAVE_onclick();
+					muze.event.cancel(event);
+				} else if (key == 32 && event.ctrlKey) { // Ctrl-space
+					vdHideToolbars = false;
+					updateHtmlContext();
+					var activeToolbar = document.querySelectorAll(".vedor-section.active")[0];
+					if (activeToolbar) {
+						var firstButton = activeToolbar.querySelectorAll("button")[0];
+						if (firstButton) {
+							firstButton.focus();
+						}
 					}
-				}
 
-				var toolbarTarget = document.querySelectorAll(".vedor-section.active .vedor-buttons > li")[0];
-				
-				if (toolbarTarget) {
-					toolbarTarget.focus();
+					var toolbarTarget = document.querySelectorAll(".vedor-section.active .vedor-buttons > li")[0];
+					
+					if (toolbarTarget) {
+						toolbarTarget.focus();
+					}
+					muze.event.cancel(event);
+				} else if (key == 77 && event.ctrlKey) { // Ctrl-M
+					document.querySelector("#vedor-main-toolbar button").focus();
+					muze.event.cancel(event);
+				} else {
+					vdHideToolbars = true;
 				}
-				muze.event.cancel(event);
-			} else if (key == 77 && event.ctrlKey) { // Ctrl-M
-				document.querySelector("#vedor-main-toolbar button").focus();
-				muze.event.cancel(event);
-			} else {
-				vdHideToolbars = true;
-			}
-		});
+			});
+		};
 
 		muze.event.attach(window, "keydown", function(event) {
 			var key = event.keyCode || event.which;
@@ -3907,8 +3933,9 @@
 		}
 
 
-		muze.event.attach(vdEditPane.contentWindow, "load", function() {
+		muze.event.attach(vdEditPane, "load", function() {
 			vdEditPane.contentWindow.document.body.focus();
+			initEditPaneEvents();
 			muze.event.attach(vdEditPane.contentWindow.document, "click", function(event) {
 				if (vdHideToolbars) {
 					vdHideToolbars = false;
