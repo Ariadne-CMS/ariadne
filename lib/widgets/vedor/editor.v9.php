@@ -716,7 +716,11 @@
 				vedor.editor.toolbars[i].reset();
 			}
 		}
-
+		if ( nlslist && nlslist[language] ) {
+			language = nlslist[language]; // oldstyle url => Language
+		} else {
+			language = vdLanguages[language]; // newstyle nls => Language
+		}
 		// reset nls
 		var vedorLanguageList = document.getElementById('vedorLanguageList');
 		if ( vedorLanguageList && nlslist && Object.keys(nlslist).length>1 ) {
@@ -729,7 +733,7 @@
 							'data-vedor-link': i, 
 							'data-vedor-language': nlslist[i], 
 							'data-vedor-action': 'vedor-switch-language',
-							class:'vedor-language-select' + ( vdLanguages[language] == nlslist[i] ? ' vedor-selected' : '' ) 
+							class:'vedor-language-select' + ( language == nlslist[i] ? ' vedor-selected' : '' ) 
 						},
 						nlslist[i])
 				);
@@ -2807,13 +2811,36 @@
 			return null;
 		}
 		var rects = range.getClientRects();
+		var parent = vdSelection.getNode(sel);
 		if ( !rects.length ) {
-			return null;
+			// insert element at range and get its position, other options aren't exact enough
+			var span = vdEditPane.contentDocument.createElement('span');
+			if ( span.getClientRects ) {
+				// Ensure span has dimensions and position by
+				// adding a zero-width space character
+				span.appendChild( vdEditPane.contentDocument.createTextNode("\u200b") );
+				range.insertNode(span);
+				rects = span.getClientRects();
+				var spanParent = span.parentNode;
+				spanParent.removeChild(span);
+				// Glue any broken text nodes back together
+				spanParent.normalize();
+			}
 		}
-		var ltop = rects[0].top;
-		var lleft = rects[0].left;
-		var rleft = rects[rects.length-1].right;
-		var rtop = rects[rects.length-1].bottom; 
+		if ( rects.length ) {
+			var ltop = rects[0].top;
+			var lleft = rects[0].left;
+			var rleft = rects[rects.length-1].right;
+			var rtop = rects[rects.length-1].bottom; 
+		}
+		if ( !rects.length || parent.getAttribute("data-vedor-selectable") ) {
+			pos = parent.getBoundingClientRect();
+			lleft = pos.left;
+			ltop = pos.top;
+			rleft = pos.right;
+			rtop = pos.bottom;
+		}
+		// fallback... if nothing else works
 		if ( lleft == 0 && rleft == 0 && ltop == 0 && rtop == 0 ) {
 			pos = vdSelection.parentNode(sel).getBoundingClientRect();
 			lleft = pos.left;
@@ -2821,17 +2848,9 @@
 			rleft = pos.right;
 			rtop = pos.bottom;
 		}
-		var parent = vdSelection.getNode(sel);
-		if ( parent.getAttribute("data-vedor-selectable")) {
-			pos = parent.getBoundingClientRect();
-			lleft = pos.left;
-			ltop = pos.top;
-			rleft = pos.right;
-			rtop = pos.bottom;
-		}
 		var top = Math.max(ltop, rtop);
 		var left = lleft + ((rleft - lleft) / 2);
-		return { top: top, left: left };
+		return { top: top, left: left, ltop: ltop, lleft: lleft, rtop: rtop, rleft: rleft };
 	}
 
 	function repositionToolbar() {
@@ -2840,6 +2859,7 @@
 		var activeSection = document.getElementById(currentContext);
 		var pos = getToolbarPosition(sel);
 		if ( !pos ) {
+			hideIt();
 			return;
 		}
 		var top = pos.top;
@@ -2849,16 +2869,16 @@
 
 		top += vdEditPane.offsetTop;
 
-		newleft = left - (activeToolbar.offsetWidth/2);
+		var newleft = left - (activeToolbar.offsetWidth/2);
 
 		if (newleft < 0) {
-			markerLeft = activeToolbar.offsetWidth/2 + newleft;
-			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
+			var markerLeft = activeToolbar.offsetWidth/2 + newleft;
+			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft+'px';
 			newleft = 0;
 		} else if (newleft + activeToolbar.offsetWidth > vdEditPane.offsetWidth) {
 			var delta = newleft + activeToolbar.offsetWidth - vdEditPane.offsetWidth;
 			markerLeft = activeToolbar.offsetWidth/2 + delta;
-			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
+			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft+'px';
 
 			newleft = vdEditPane.offsetWidth - activeToolbar.offsetWidth;
 		} else {
@@ -2868,7 +2888,7 @@
 		// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
 		var fullHeight = vdEditPane.contentWindow.document.documentElement.clientHeight ? vdEditPane.contentWindow.document.documentElement.clientHeight : vdEditPane.contentWindow.document.body.clientHeight
 		if (top > (fullHeight - (activeSection.scrollHeight * 2))) {
-			mintop = Math.min(ltop, rtop);
+			mintop = Math.min(pos.ltop, pos.rtop);
 			mintop -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
 
 			top = fullHeight - (activeSection.scrollHeight * 2);
