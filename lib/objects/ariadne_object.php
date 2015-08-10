@@ -373,7 +373,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						if (is_array($value)) {
 							foreach($value as $valkey => $valvalue ) {
 								$properties["custom"][$i]["name"]=$name;
-								$properties["custom"][$i]["value"]=$value;
+								$properties["custom"][$i]["value"]=$valvalue;
 								$properties["custom"][$i]["nls"]=$nls;
 								$i++;
 							}
