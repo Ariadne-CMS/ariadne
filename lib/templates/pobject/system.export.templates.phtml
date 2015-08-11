@@ -1,7 +1,7 @@
 <?php
 global $ARBeenHere, $AR;
 
-  if ($this->CheckLogin("read") && !$ARCurrent->options["without_templates"]) {
+  if (!$ARCurrent->options["without_templates"] && $this->CheckLogin("read")) {
 
 		if (($this->newObject->arIsNewObject &&
 				($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&

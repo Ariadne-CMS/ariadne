@@ -1,5 +1,5 @@
 <?php
- if ($this->CheckConfig("read") && !$ARCurrent->options["without_files"]) {
+ if (!$ARCurrent->options["without_files"] && $this->CheckConfig("read") ) {
 	if (($this->newObject->arIsNewObject &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->newObject->type)) ||
