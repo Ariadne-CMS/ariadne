@@ -1100,7 +1100,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$ARConfigChecked = $realConfigChecked;
 		}
 
-		if (!$this->CheckAdmin($AR->user) && !$AR->user->grants[$this->path]) {
+		$isadmin = $this->CheckAdmin($AR->user);
+
+		if (!$isadmin && !$AR->user->grants[$this->path]) {
 			$AR->user->grants[$this->path]=$this->GetValidGrants();
 		}
 		if ($AR->user->data->login!="public") {
@@ -1111,13 +1113,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$grants=$AR->user->grants[$this->path];
 		if ( 	( !$grants[$grant]
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
-				) && !$this->CheckAdmin($AR->user) ) {
+				) && !$isadmin ) {
 			// do login
 			$arLoginMessage = $ARnls["accessdenied"];
 			ldAccessDenied($this->path, $arLoginMessage);
 			$result=false;
 		} else {
-			$result=($grants || $this->CheckAdmin($AR->user));
+			$result=($grants || $isadmin);
 		}
 
 		$ARCurrent->arLoginSilent=1;
