@@ -994,7 +994,9 @@ class postgresqlstore extends store {
 			if ( !$values ) {
 				$values = array();
 			}
-			$values += array( 'scope' => $scope );
+			if ($scope !== '%' ) {
+				$values += array( 'scope' => $scope );
+			}
 			while (list($name, $value)=each($values)) {
 				$value = "'".pg_escape_string($value)."'";
 				$query_string.="AR_".pg_escape_string($name)."=$value and ";

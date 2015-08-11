@@ -65,10 +65,10 @@ class axstore {
 						$this->ofile=fopen($this->tempdir."/objects.data", "rb");
 						if ($this->ofile) {
 							$currentoffset=ftell($this->ofile);
-							while ($rline=fgets($this->ofile, 3000)) {
+							while ($rline=fgets($this->ofile, 8192)) {
 								$line=trim($rline);
-								while (strlen($rline)==3000-1) {
-									$rline=fgets($this->ofile, 3000);
+								while (strlen($rline)==8192-1) {
+									$rline=fgets($this->ofile, 8192);
 									$line.=trim($rline);
 								}
 								$data=explode("&", $line);
