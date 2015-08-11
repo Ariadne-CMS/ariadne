@@ -1208,11 +1208,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	global $ARConfig;
 		$path = $this->make_path($path);
 		if ($ARConfig->cache[$path]) {
-			foreach ($ARConfig->cache as $cachepath => $cache) {
-				if (strpos($cachepath, $path) === 0) {
-					unset($ARConfig->cache[$cachepath]);
-					unset($ARConfig->pinpcache[$cachepath]);
-				}
+			$path = preg_quote($path,'/');
+			$keys = preg_grep('/'.$path.'/',array_keys($ARConfig->cache));
+			foreach ($keys as $cachepath) {
+				unset($ARConfig->cache[$cachepath]);
+				unset($ARConfig->pinpcache[$cachepath]);
 			}
 		}
 	}
@@ -1220,14 +1220,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	public function clearChildConfigs($path='') {
 	global $ARConfig;
 		$path = $this->make_path($path);
-		$pathlength = strlen($path);
 		if ($ARConfig->cache[$path]) {
-			foreach ($ARConfig->cache as $cachepath => $cache) {
-				if (strpos($cachepath, $path) === 0 && strlen($cachepath)>$pathlength) {
-					unset($ARConfig->cache[$cachepath]);
-					unset($ARConfig->pinpcache[$cachepath]);
-					unset($ARConfig->libraries[$cachepath]);
-				}
+			$path = preg_quote($path,'/');
+			$keys = preg_grep('/'.$path.'./',array_keys($ARConfig->cache));
+			foreach($keys as $cachepath) {
+				unset($ARConfig->cache[$cachepath]);
+				unset($ARConfig->pinpcache[$cachepath]);
+				unset($ARConfig->libraries[$cachepath]);
 			}
 		}
 	}
