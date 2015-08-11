@@ -50,7 +50,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	public function call($arCallFunction="view.html", $arCallArgs="") {
+	public function call($arCallFunction="view.html", $arCallArgs=array()) {
 	/***********************************************************************
 	  call tries to find the template ($arCallFunction) for the current
 	  object. If it is not defined there, call will search the superclasses
@@ -109,7 +109,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// tree selected defaults)
 		if ($ARCurrent->nls) {
 			$this->reqnls=$ARCurrent->nls;
-		} else if ($ARConfig->cache[$this->path] && $ARConfig->cache[$this->path]->nls->default) {
+		} else if (isset($ARConfig->cache[$this->path]) && $ARConfig->cache[$this->path]->nls->default) {
 			$this->reqnls = $ARConfig->cache[$this->path]->nls->default;
 		} else {
 			$this->reqnls=$AR->nls->default;
@@ -176,27 +176,32 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
 				$arResult = $this;
 			} else {
-				while ($arType != "ariadne_object") {
-					// if it is a subtype object, disk templates do not exists, 
-					$subcpos = strpos($arType, '.');
-					if ($subcpos) {
-						// subtype, skip looking for templates
-						$arSuper = substr($arType, 0, $subcpos);
+				$libtemplate = strpos($arCallFunction,":");
+				$codedir = $this->store->get_config("code");
+
+				// if it is a subtype object, disk templates do not exists,
+				$subcpos = strpos($arType, '.');
+				if ($subcpos !== false ) {
+					// subtype, skip looking for templates
+					$arSuper = substr($arType, 0, $subcpos);
+					if(!isset($AR->superClass[$arType])){
 						$AR->superClass[$arType]=$arSuper;
-						$arType=$arSuper;
-						continue;
 					}
+					$arType=$arSuper;
+				}
+
+				while ($arType !== "ariadne_object") {
 
 					// search for the template, stop at the root class ('ariadne_object')
 					// (this should not happen, as pobject must have a 'default.phtml')
-					$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
-					if (file_exists($arCallTemplate)) {
+					$arCallTemplate=$codedir."templates/".$arType."/".$arCallFunction;
+					if ($libtemplate === false && file_exists($arCallTemplate)) {
 						//debug('found '.$arCallTemplate, 'all');
 						// template found
 						$arCallFunction = $arCallFunctionOrig;
 						include($arCallTemplate);
 						break;
-					} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
+					} else if (file_exists($codedir."templates/".$arType."/default.phtml")) {
 						//debug('found default.phtml', 'all');
 						// template not found, but we did find a 'default.phtml'
 						include($this->store->get_config("code")."templates/".$arType."/default.phtml");
@@ -205,7 +210,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						if (!($arSuper=$AR->superClass[$arType])) {
 							// no template found, no default.phtml found, try superclass.
 
-							if (!class_exists($arType)) {
+							if (!class_exists($arType, false)) {
 								// the given class was not yet loaded, so do that now
 								$this->store->newobject('','',$arType,new object);
 							}
@@ -1072,6 +1077,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if ($user->data->groups['/system/groups/admin/']) {
 			return true;
 		}
+		return false;
 	}
 
 	public function CheckLogin($grant, $modifier=ARTHISTYPE) {
@@ -1085,7 +1091,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		/* load config cache */
-		if (!$ARConfig->cache[$this->path]) {
+		if (!isset($ARConfig->cache[$this->path])) {
 			// since this is usually run before CheckConfig, make sure
 			// it doesn't set cache time
 			$realConfigChecked = $ARConfigChecked;
@@ -1094,7 +1100,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$ARConfigChecked = $realConfigChecked;
 		}
 
-		if (!$this->CheckAdmin($AR->user) && !$AR->user->grants[$this->path]) {
+		$isadmin = $this->CheckAdmin($AR->user);
+
+		if (!$isadmin && !$AR->user->grants[$this->path]) {
 			$AR->user->grants[$this->path]=$this->GetValidGrants();
 		}
 		if ($AR->user->data->login!="public") {
@@ -1105,13 +1113,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$grants=$AR->user->grants[$this->path];
 		if ( 	( !$grants[$grant]
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
-				) && !$this->CheckAdmin($AR->user) ) {
+				) && !$isadmin ) {
 			// do login
 			$arLoginMessage = $ARnls["accessdenied"];
 			ldAccessDenied($this->path, $arLoginMessage);
 			$result=false;
 		} else {
-			$result=($grants || $this->CheckAdmin($AR->user));
+			$result=($grants || $isadmin);
 		}
 
 		$ARCurrent->arLoginSilent=1;
@@ -1393,7 +1401,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	global $ARConfig, $ARConfigChecked, $ARCurrent;
 		$path=$this->make_path($path);
 		// debug("loadConfig($path)");
-		if (!$ARConfig->cache[$path] ) {
+		if (!isset($ARConfig->cache[$path]) ) {
 			$allnls = $ARCurrent->allnls;
 			$ARCurrent->allnls = true;
 			$configChecked = $ARConfigChecked;
@@ -1483,7 +1491,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						if ($subcpos = strpos($arType, '.')) {
 							$arSuper = substr($arType, 0, $subcpos);
 						} else {
-							if (!class_exists($arType)) {
+							if (!class_exists($arType, false)) {
 								// the given class was not yet loaded, so do that now
 								$arTemp=$this->store->newobject('','',$arType,new object);
 							} else {
@@ -1639,7 +1647,7 @@ debug("loadLibrary: loading cache for $this->path");
 				$arLibrary = $context['arLibrary'];
 				$arLibraryPath = $context['arLibraryPath'];
 			} else {
-				$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
+				$config = (isset($ARConfig->cache[$path])) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 				$arLibraryPath = $config->libraries[$arLibrary];
 			}
 			$arCallFunction = substr($arCallFunction, $libpos+1);
@@ -1885,12 +1893,11 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				$ARCurrent->nolangcheck=1;
 			}
-			if (	(	$config->cache && ($config->cache!=-1) ) &&
+			if (	(	$config->cache && ($config->cache > 0) ) &&
 					(	$arCallFunction	&& !$ARConfigChecked		) &&
 					( 	!$nocache 									) &&
 					(	$AR->OS=="UNIX" ||
-						( 	(count($_POST)==0) &&
-							(count($_GET)==0) 			) 	) &&
+							(count($_GET)==0) 			 	) &&
 					( 	$AR->user->data->login=="public" )
 			   ) {
 				// caching is on and enabled in loader and user is public and template is not 'protected'.

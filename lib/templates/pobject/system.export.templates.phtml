@@ -1,95 +1,97 @@
 <?php
 global $ARBeenHere, $AR;
-
-  if ($this->CheckLogin("read") && !$ARCurrent->options["without_templates"]) {
-
+$templates=$this->data->config->pinp;
+if (! ( $templates && is_array($templates) && !empty($templates) ) && !$ARCurrent->options["force"]) {
+	// object doesn't have templates, taking a shortcut by shuffeling the checks
+} else {
+	if (!$ARCurrent->options["without_templates"] && $this->CheckLogin("read")) {
 		if (($this->newObject->arIsNewObject &&
-				($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
-				$parentobj->CheckLogin("add", $this->type)) ||
-				(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
+			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+			$parentobj->CheckLogin("add", $this->type)) ||
+			(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
 
-				$orig_filestore=$this->store->get_filestore("templates");
+			$orig_filestore=$this->store->get_filestore("templates");
 
-				$new_filestore=$this->newObject->store->get_filestore("templates");
-				/* 
-					if we have to do a forced update, we have to remove all 
-					files in the new_filestore first
-				*/
-				if ($ARCurrent->options["force"]) {
-					$new_filestore->purge($this->newObject->id);
-					unset($this->newObject->data->config->templates);
-					unset($this->newObject->data->config->pinp);
-					$save=1;
-				}
+			$new_filestore=$this->newObject->store->get_filestore("templates");
+			/* 
+				if we have to do a forced update, we have to remove all 
+				files in the new_filestore first
+			 */
+			if ($ARCurrent->options["force"]) {
+				$new_filestore->purge($this->newObject->id);
+				unset($this->newObject->data->config->templates);
+				unset($this->newObject->data->config->pinp);
+				$save=1;
+			}
 
-				if ($this->data->config->pinp) {
-					$templates=$this->data->config->pinp;
-					reset($templates);
-					display("\n	exporting/importing templates\n");
-					while (is_array($templates) && (list($type, $functions)=each($templates))) {
-						while (is_array($functions) && (list($function, $languages)=each($functions))) {
-							while (is_array($languages) && (list($language, $file)=each($languages))) {
-								display("	template [$type][$function][$language]\n");
-								$tmtime = $orig_filestore->mtime($this->id, "$type.$function.$language.pinp");
-								$tdata = $orig_filestore->read($this->id, "$type.$function.$language.pinp");
+			if ($this->data->config->pinp) {
+				$templates=$this->data->config->pinp;
+				reset($templates);
+				display("\n	exporting/importing templates\n");
+				while (is_array($templates) && (list($type, $functions)=each($templates))) {
+					while (is_array($functions) && (list($function, $languages)=each($functions))) {
+						while (is_array($languages) && (list($language, $file)=each($languages))) {
+							display("	template [$type][$function][$language]\n");
+							$tmtime = $orig_filestore->mtime($this->id, "$type.$function.$language.pinp");
+							$tdata = $orig_filestore->read($this->id, "$type.$function.$language.pinp");
 
-								if ($this->data->config->templates[$type][$function][$language]) {
-									$default = true;
+							if ($this->data->config->templates[$type][$function][$language]) {
+								$default = true;
+							} else {
+								$default = false;
+							}
+							$save = 1;
+							$this->newObject->data->config->pinp[$type][$function][$language] = $this->newObject->id;
+							if ($default) {
+								$this->newObject->data->config->templates[$type][$function][$language] = $this->newObject->id;
+							}
+							$new_filestore->write($tdata, $this->newObject->id, "$type.$function.$language.pinp");
+							$new_filestore->touch($this->newObject->id, "$type.$function.$language.pinp", $tmtime);
+
+							if ($ARCurrent->AXAction == "import") {
+								unset($ARBeenHere[$this->newObject->path]);
+
+								include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
+
+								$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
+								$compiled = $pinp->compile(strtr($tdata,"\r",""));
+								if ($pinp->error) {
+									$this->newObject->error = $pinp->error;
 								} else {
-									$default = false;
+									$new_filestore->write($compiled, $this->newObject->id, "$type.$function.$language");
+									$new_filestore->touch($this->newObject->id, "$type.$function.$language", $tmtime);
+
+									$templateCode = $new_filestore->templateCodeFunction($this->newObject->id, $type.".".$function.".".$language); 
+
+									// generating optimized template code
+									$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
+
+									$new_filestore->write($optimized, $this->newObject->id, $type.".".$function.".".$language.".inc");
+									$new_filestore->touch($this->newObject->id,  $type.".".$function.".".$language.".inc", $tmtime);
 								}
-								$save = 1;
-								$this->newObject->data->config->pinp[$type][$function][$language] = $this->newObject->id;
-								if ($default) {
-									$this->newObject->data->config->templates[$type][$function][$language] = $this->newObject->id;
-								}
-								$new_filestore->write($tdata, $this->newObject->id, "$type.$function.$language.pinp");
-								$new_filestore->touch($this->newObject->id, "$type.$function.$language.pinp", $tmtime);
-
-								if ($ARCurrent->AXAction == "import") {
-									unset($ARBeenHere[$this->newObject->path]);
-
-									include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
-
-									$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
-									$compiled = $pinp->compile(strtr($tdata,"\r",""));
-									if ($pinp->error) {
-										$this->newObject->error = $pinp->error;
-									} else {
-										$new_filestore->write($compiled, $this->newObject->id, "$type.$function.$language");
-										$new_filestore->touch($this->newObject->id, "$type.$function.$language", $tmtime);
-
-										$templateCode = $new_filestore->templateCodeFunction($this->newObject->id, $type.".".$function.".".$language); 
-
-										// generating optimized template code
-										$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
-
-										$new_filestore->write($optimized, $this->newObject->id, $type.".".$function.".".$language.".inc");
-										$new_filestore->touch($this->newObject->id,  $type.".".$function.".".$language.".inc", $tmtime);
-									}
-								}
+							}
 
 
-								if ($this->newObject->error) {
-									display("	error: ".$this->newObject->error."(".$this->newObject->id.")\n");
-									$this->newObject->error = "";
-								}
+							if ($this->newObject->error) {
+								display("	error: ".$this->newObject->error."(".$this->newObject->id.")\n");
+								$this->newObject->error = "";
 							}
 						}
 					}
 				}
-
 				if ($save) {
 					$this->newObject->store->save(
-						$this->newObject->path,
-						$this->newObject->type,
-						$this->newObject->data,
-						$this->newObject->properties,
-						$this->newObject->vtype,
-						$this->newObject->priority,
-						$this->newObject->axflags);
+							$this->newObject->path,
+							$this->newObject->type,
+							$this->newObject->data,
+							$this->newObject->properties,
+							$this->newObject->vtype,
+							$this->newObject->priority,
+							$this->newObject->axflags);
 				}
+			}
 		}
- }
-  
+	}
+}
+
 ?>

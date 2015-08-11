@@ -1,47 +1,56 @@
 <?php
- if ($this->CheckConfig("read") && !$ARCurrent->options["without_files"]) {
-	if (($this->newObject->arIsNewObject &&
-			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
-			$parentobj->CheckLogin("add", $this->newObject->type)) ||
-			(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
 
-		if ($ARCurrent->AXAction == "import") {
-			if( $ARCurrent->AXHeader["version"] < 4 ) {
-				// export contains non nls'd files upgrade first"
-				$this->call('system.upgrade.filestore.8.4.php');
-			}
-		}
+	$orig_filestore=$this->store->get_filestore("files");
+	$orig_files=$orig_filestore->ls($this->id);
 
-		 $orig_filestore=$this->store->get_filestore("files");
-		 $orig_files=$orig_filestore->ls($this->id);
-		 if (is_array($orig_files)) {
-			$new_filestore=$this->newObject->store->get_filestore("files");
+	if( ( !is_array($orig_files) || empty($orig_files)) && !$ARCurrent->options["force"]){
+		// shortcut, we have almost nothing to do,  reversing some checks
+	} else {
+		if (!$ARCurrent->options["without_files"] && $this->CheckConfig("read") ) {
+			if (
+				(
+					$this->newObject->arIsNewObject &&
+					( $parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+					$parentobj->CheckLogin("add", $this->newObject->type)
+				) ||
+				(
+					!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))
+			) {
 
-			if ($ARCurrent->options["force"]) {
-				$new_filestore->purge($this->newObject->id);
+				if ($ARCurrent->options["force"]) {
+					$new_filestore->purge($this->newObject->id);
+				}
 
-			}
+				if (is_array($orig_files)) {
+					if ($ARCurrent->AXAction == "import") {
+						if( $ARCurrent->AXHeader["version"] < 4 ) {
+							// export contains non nls'd files upgrade first"
+							$this->call('system.upgrade.filestore.8.4.php');
+						}
+					}
 
+					$new_filestore=$this->newObject->store->get_filestore("files");
 
-			while (list(,$file)=each($orig_files)) {
-				display("\n");
-				if ($new_filestore->exists($this->newObject->id, $file) &&
-					( $new_filestore->mtime($this->newObject->id, $file) >=
-						$orig_filestore->mtime($this->id, $file))) {
-							display("	file($file) no update");
-				} else {
-					$srcStream = $orig_filestore->get_stream($this->id, $file);
-					if (is_resource($srcStream) ){
-						$result = $new_filestore->copy_stream_to_store($srcStream, $this->newObject->id, $file);
+					foreach($orig_files as $file){
+						display("\n");
+						if ($new_filestore->exists($this->newObject->id, $file) &&
+							( $new_filestore->mtime($this->newObject->id, $file) >=
+							$orig_filestore->mtime($this->id, $file))) {
+								display("	file($file) no update");
+							} else {
+								$srcStream = $orig_filestore->get_stream($this->id, $file);
+								if (is_resource($srcStream) ){
+									$result = $new_filestore->copy_stream_to_store($srcStream, $this->newObject->id, $file);
 
-						fclose($srcStream);
-						display("	file($file) created");
-					} else {
-						display("	file($file) ERROR: Could not open file");
+									fclose($srcStream);
+									display("	file($file) created");
+								} else {
+									display("	file($file) ERROR: Could not open file");
+								}
+							}
 					}
 				}
 			}
-		 }
+		}
 	}
- }
 ?>
