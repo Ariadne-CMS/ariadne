@@ -1893,12 +1893,11 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				$ARCurrent->nolangcheck=1;
 			}
-			if (	(	$config->cache && ($config->cache!=-1) ) &&
+			if (	(	$config->cache && ($config->cache > 0) ) &&
 					(	$arCallFunction	&& !$ARConfigChecked		) &&
 					( 	!$nocache 									) &&
 					(	$AR->OS=="UNIX" ||
-						( 	(count($_POST)==0) &&
-							(count($_GET)==0) 			) 	) &&
+							(count($_GET)==0) 			 	) &&
 					( 	$AR->user->data->login=="public" )
 			   ) {
 				// caching is on and enabled in loader and user is public and template is not 'protected'.
