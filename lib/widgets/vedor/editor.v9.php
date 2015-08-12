@@ -309,8 +309,18 @@
 		vdSetProperty('vdImageType',type);
 		var alt=image.getAttribute('alt');
 		vdSetProperty('vdImageAlt',alt);
+		var title=image.getAttribute('title');
+		vdSetProperty('vdImageAlt',title);
 
-		var align = image.getAttribute("align");
+		var align = "none";
+		if (image.classList.contains("vdLeft")) {
+			align = "left";
+		} else if (image.classList.contains("vdRight")) {
+			align = "right";
+		} else if (image.classList.contains("vdCenter")) {
+			align = "center";
+		}
+
 		vdSetProperty('vdImageAlign', align);
 
 		// Set the parent icon for alignment as well;
@@ -632,21 +642,20 @@
 			currentImage.setAttribute('ar:type',type);
 			if (tbContentEditOptions['image']['styles'][type]) {
 				var className = currentImage.className;
-				var classAlign = currentImage.className.match(/\b(vdLeft|vdCenter|vdRight)\b/);
 				currentImage.className=tbContentEditOptions['image']['styles'][type]['class'];
-				if (classAlign) {
-					currentImage.className += ' '+classAlign;
-				}
 				var temp=new String(currentImage.src);
 				temp=temp.substr(0, temp.lastIndexOf('/')+1)+tbContentEditOptions['image']['styles'][type]['template'];
 				currentImage.src=temp;
 			}
 			var align=vdGetProperty('vdImageAlign');
-			if (align=='none') {
-				currentImage.removeAttribute('align');
-			} else {
-				currentImage.setAttribute('align',align);
+			if (align=='left') {
+				currentImage.classList.add("vdLeft");
+			} else if (align == "right") {
+				currentImage.classList.add("vdRight");
+			} else if (align == "center") {
+				currentImage.classList.add("vdCenter");
 			}
+
 			var alt=vdGetProperty('vdImageAlt');
 			if (alt) {
 				currentImage.setAttribute('alt',alt);
@@ -659,20 +668,6 @@
 			} else {
 				currentImage.removeAttribute('title');
 			}
-			vdStoreUndo();
-		}
-	}
-
-	function vdSetImageClass() {
-		if (currentImage) {
-			var align=vdGetProperty('vdImageAlignClass');
-			currentImage.removeAttribute('align');
-			var className = currentImage.className;
-			className = className.replace(/\b(vdLeft|vdCenter|vdRight)\b/ig, '');
-			if ( align!='none' ) {
-				className += ' '+align;
-			}
-			currentImage.className = className;
 			vdStoreUndo();
 		}
 	}
@@ -1330,63 +1325,21 @@
 			window.el=el;
 			elIMG = vdSelectionState.getControlNode(el);
 			if (elIMG) {
-				window.elIMG=elIMG;
 				if (elIMG && elIMG.tagName=='IMG') {
-					src=new String(elIMG.src);
-					if (src.substring(0,rootURL.length)==rootURL) {
-						src=src.substring(rootURL.length);
-					} else { // htmledit component automatically adds http://
-						if (src.substring(0,rootURL.length)==rootURL) {
-							src=src.substring(rootURL.length);
-						} else {
-							var temp=new String('http:///');
-							if (src.substring(0,temp.length)==temp) {
-								src=src.substring(temp.length-1);
-							}
-						}
-					}
-					args['src'] = src;
-					args['align'] = elIMG.align;
-					args['alt'] = elIMG.alt;
-					args['title'] = elIMG.title;
-					args['ar:type'] = elIMG.getAttribute('ar:type');
-					args['ar:path'] = elIMG.getAttribute('ar:path');
+					window.elIMG=elIMG;
 				} else {
 					window.elIMG=false;
 					window.rg=el;
-					src = objectPath;
-					args['src'] = src;
-					args['align'] = "";
-					args['alt'] = "";
-					args['title'] = "";
-					var type = document.querySelectorAll("#vdImageType option")[0].value;
-					if (tbContentEditOptions['image']['default']) {
-						type = tbContentEditOptions['image']['default'];
-					}
-					args['ar:type'] = type;
-					args['class'] = tbContentEditOptions['image']['styles'][type]['class'];
 				}
 			} else {
 				window.elIMG=false;
 				window.rg=el;
-				src = objectPath;
-				args['src'] = src;
-				args['hspace'] = "";
-				args['vspace'] = "";
-				args['align'] = "";
-				args['name'] = "";
-				args['border'] = "";
-				var type = document.querySelectorAll("#vdImageType option")[0].value;
-				if (tbContentEditOptions['image']['default']) {
-					type = tbContentEditOptions['image']['default'];
-				}
-
-				args['ar:type'] = type;
-				args['class'] = tbContentEditOptions['image']['styles'][type]['class'];
 			}
-			args['editOptions']=tbContentEditOptions;
-			args['stylesheet']=tbContentEditOptions['css']['stylesheet'];
-			// args = new Array();
+
+			var type = document.querySelector("#vdImageType option").value;
+			if (tbContentEditOptions['image']['default']) {
+				type = tbContentEditOptions['image']['default'];
+			}
 
 			var url = objectURL + 'dialog.browse.php<?php echo $getargs; ?>&viewmode=icons&root=' + (tbContentEditOptions['photobook']['location'] ? tbContentEditOptions['photobook']['location'] : sitePath + "images/") + '&extraroots=' + sitePath + '&path=' + (tbContentEditOptions['photobook']['location'] ? tbContentEditOptions['photobook']['location'] : sitePath + "images/") + '&pathmode=siterelative';
 			muze.dialog.open( url, 'sitemap', { windowFeatures : muze.ariadne.explore.windowprops['dialog_browse'] } )
@@ -1458,14 +1411,9 @@
 			if (arr['ar:type'] && arr['ar:type']!='undefined') {
 				src+=tbContentEditOptions['image']['styles'][arr['ar:type']]['template'];
 			}
-			if (window.elIMG) { // insert a new img
+			if (window.elIMG) { // modify existing image;
 				elIMG=window.elIMG;
 				elIMG.src=src;
-				if (arr['align']=='none') {
-					elIMG.align='';
-				} else if (arr['align']) {
-					elIMG.align=arr['align'];
-				}
 				if (arr['alt']) {
 					elIMG.alt=arr['alt'];
 				}
@@ -1483,12 +1431,9 @@
 				if (arr['class']) {
 					elIMG.className = arr['class'];
 				}
-			} else {
+			} else { // insert a new image;
 				el=window.el;
 				temp='<IMG SRC="'+src+'"';
-				if (arr['align']) {
-					temp+=' ALIGN='+arr['align'];
-				}
 				if (arr['alt']) {
 					temp+=' ALT="'+arr['alt']+'"';
 				}
