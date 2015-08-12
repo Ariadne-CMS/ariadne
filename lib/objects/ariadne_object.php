@@ -1699,7 +1699,7 @@ debug("loadLibrary: loading cache for $this->path");
 						if ($subcpos = strpos($arType, '.')) {
 							$arSuper = substr($arType, 0, $subcpos);
 						} else {
-							if (!class_exists($arType)) {
+							if (!class_exists($arType, false )) {
 								// the given class was not yet loaded, so do that now
 								$arTemp=$this->store->newobject('','',$arType,new object);
 							} else {
