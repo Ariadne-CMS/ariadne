@@ -1714,9 +1714,10 @@ debug("loadLibrary: loading cache for $this->path");
 			}
 			if ($inLibrary) {
 
-				list($basetype,) = explode('.', $ARConfig->cache[$checkpath]->type,2);
-				//debug("getPinpTemplate; INLIBRARY $checkpath; ".$basetype);
-				if ($basetype == 'psection') {
+				// faster matching on psection, prefix doesn't have to be a valid type
+				$basetype = substr($ARConfig->cache[$checkpath]->type,0,8);
+
+				if ($prefix === 'psection') {
 					// debug("BREAKING; $arTemplateId");
 					// break search operation when we have found a
 					// psection object
