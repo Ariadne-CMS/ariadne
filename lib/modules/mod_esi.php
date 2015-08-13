@@ -97,7 +97,6 @@ class ESI {
 			// $pathInfo = str_replace($scriptName, '', $urlArr['path']);
 			$pathInfo = substr($urlArr['path'], strpos($urlArr['path'], $scriptName)+strlen($scriptName), strlen($urlArr['path']));
 			$pathInfo = str_replace("//", "/", $pathInfo);
-			error_log("PI [$pathInfo] [$scriptName] [" . $urlArr['path'] . "]");
 
 			ob_start();
 				ldProcessRequest($pathInfo);
