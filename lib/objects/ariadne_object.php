@@ -1715,7 +1715,7 @@ debug("loadLibrary: loading cache for $this->path");
 			if ($inLibrary) {
 
 				// faster matching on psection, prefix doesn't have to be a valid type
-				$basetype = substr($ARConfig->cache[$checkpath]->type,0,8);
+				$prefix = substr($ARConfig->cache[$checkpath]->type,0,8);
 
 				if ($prefix === 'psection') {
 					// debug("BREAKING; $arTemplateId");
