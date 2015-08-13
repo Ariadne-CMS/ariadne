@@ -10,7 +10,7 @@ class error {
 	}
 
 	function isError($ob) {
-		return (is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
+		return (is_a($ob, 'error') || is_a($ob, 'PEAR_Error') || is_a($ob,'ar_error')) ;
 	}
 
 	function raiseError($message, $code) {
