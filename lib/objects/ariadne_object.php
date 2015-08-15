@@ -1350,20 +1350,28 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 
-			if (!is_array($this->data->config->cacheSettings) ) {
-				$this->data->config->cacheSettings = array();
+			$localcachesettings = $this->data->config->cacheSettings;
+			if (!is_array($localcachesettings) ){
+				$localcachesettings = array();
+			}
+
+			if (!is_array($configcache->cacheSettings) ) {
+				$configcache->cacheSettings = array();
 			}
 
 			if ($this->data->config->cacheconfig) { // When removing this part, also fix the setting below.
 				$configcache->cache=$this->data->config->cacheconfig;
 			}
 
-			if (empty($this->data->config->cacheSettings)) {
-				$this->data->config->cacheSettings["serverCache"] = $this->data->config->cacheconfig;
+			if (!isset($localcachesettings['serverCache']) && isset($this->data->config->cacheconfig)) {
+				$localcachesettings["serverCache"] = $this->data->config->cacheconfig;
 			}
-			foreach ($this->data->config->cacheSettings as $key => $value) {
-				$configcache->cacheSettings[$key] = $value;
+
+			if ($localcachesettings['serverCache'] != 0 ) {
+				$localcachesettings['serverCacheDefault'] = $localcachesettings['serverCache'];
 			}
+
+			$configcache->cacheSettings = $localcachesettings + $configcache->cacheSettings;
 
 			// store the current object type
 			$configcache->type = $this->type;

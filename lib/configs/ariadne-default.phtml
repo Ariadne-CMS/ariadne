@@ -209,6 +209,8 @@
 	$ARConfig->cache[".."]->mimetypes['^text/html']  = "ppage";
 	$ARConfig->cache[".."]->mimetypes['.*']          = "pfile";
 
+	$ARConfig->cache[".."]->cacheSettings['serverCacheDefault'] = -1;
+
 	/* what to generate on a mkdir in ftp context *****************************/
 	// FIXME: build a better system for this, type dependant?
 	$ARConfig->cache[".."]->FTP['mkdir']="pdir";
