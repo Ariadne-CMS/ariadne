@@ -1261,6 +1261,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$initialNLS = $ARCurrent->nls;
 		$initialConfigChecked = $ARConfigChecked;
 
+		$ARConfig->cache[$this->path]->inConfigIni = true;
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
 			//debug("pobject::getConfig() loaded config.ini @ ".$this->path);
 			// debug("getConfig:checkconfig einde");
@@ -1280,6 +1281,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
 		}
+		$ARConfig->cache[$this->path]->inConfigIni = false;
 		$this->clearChildConfigs( $this->path ); // remove any config data for child objects, since these are set before their parent config was set
 		$ARConfigChecked = $initialConfigChecked;
 		$ARCurrent->nls = $initialNLS;
@@ -2035,7 +2037,7 @@ debug("loadLibrary: loading cache for $this->path");
 								if (!is_array($ARCurrent->cacheCallChainSettings)) {
 									$ARCurrent->cacheCallChainSettings = array();
 								}
-								if ($arCallFunction != "config.ini") {
+								if ($ARConfig->cache[$this->path]->inConfigIni == false) {
 									$ARCurrent->cacheCallChainSettings[$this->id] = $config->cacheSettings;
 								}
 
