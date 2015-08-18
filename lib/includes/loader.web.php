@@ -1122,6 +1122,7 @@
 				$cacheSetting = 0; // Default = inherit;
 				if( is_array($ARCurrent->cacheCallChainSettings)) {
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
+						// FIXME: also 'resolve' $serverCachePrivate
 						$serverCache = $pathCacheSetting['serverCache'];
 
 						if ($serverCache == 0 || !isset($serverCache)) {
@@ -1147,6 +1148,13 @@
 					}
 				}
 				// header("X-Ariadne-Cache-Setting: $cacheSetting");
+				if ($session_id && $cacheSetting > 0) {
+					// we have a session id, can we cache ?
+					// FIXME: add support for $serverCachePrivate in the config and cache dialog
+					if ( ! ( $serverCachePrivate === 1  || $ARCurrent->arDoCachePrivate != false ) ) {
+						$cacheSetting = -1;
+					}
+				}
 
 				if ($cacheSetting > 0) {
 					// If we are allowed to cache, write the image now.
