@@ -962,7 +962,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 					if (is_array($AR->user->data->config->groups)) {
 						foreach ($AR->user->data->config->groups as $groupPath => $groupId) {
-							if (!$AR->user->group[$groupPath]) {
+							if (!$AR->user->groups[$groupPath]) {
 								$AR->user->groups[$groupPath] = current($this->get($groupPath, "system.get.phtml"));
 							}
 						}
