@@ -719,7 +719,6 @@
 				header("X-Ariadne-Cache: Hit");
 				ldHeader("HTTP/1.1 304 Not Modified");
 			} else {
-				header("X-Ariadne-Cache: Hit");
 				if (file_exists($cachedheader)) {
 					// Cache header file also contains information about Cache-control;
 					$filedata = file($cachedheader);
