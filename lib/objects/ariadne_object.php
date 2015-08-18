@@ -2275,7 +2275,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function savecache($time="") {
-		global $ARCurrent, $ARnls;
+		global $ARCurrent, $ARnls, $DB;
 		$result = false;
 		$this->error = '';
 		if (!$time) {
@@ -2300,7 +2300,7 @@ debug("loadLibrary: loading cache for $this->path");
 					$image = URL::RAWtoAR($image, $imageNLS);
 				}
 
-				if( $time > 0 ) {
+				if( $time > 0  && $DB["wasUsed"] == 0) {
 					$pcache=$this->store->get_filestore("privatecache");
 					$pcache->write($image, $this->id, $file);
 					$time=time()+($time*3600);
@@ -2347,16 +2347,19 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function savedatacache($name,$data,$time="") {
+		global $DB;
 		$this->error = '';
 		if (!$time) {
 			$time=2; // 'freshness' in hours.
 		}
 		$pcache=$this->store->get_filestore("privatecache");
-		$pcache->write(serialize($data), $this->id, $name);
-		$time=time()+($time*3600);
-		if (!$pcache->touch($this->id, $name, $time)) {
-			$this->error = ar::error('Could not touch '.$name, 1113);
-			return false;
+		if( $time > 0  && $DB["wasUsed"] == 0) {
+			$pcache->write(serialize($data), $this->id, $name);
+			$time=time()+($time*3600);
+			if (!$pcache->touch($this->id, $name, $time)) {
+				$this->error = ar::error('Could not touch '.$name, 1113);
+				return false;
+			}
 		}
 		return true;
 	}
