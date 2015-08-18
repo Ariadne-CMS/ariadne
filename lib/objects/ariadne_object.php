@@ -1901,16 +1901,6 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				$ARCurrent->nolangcheck=1;
 			}
-			if (	(	$config->cache && ($config->cache > 0) ) &&
-					(	$arCallFunction	&& !$ARConfigChecked		) &&
-					( 	!$nocache 									) &&
-					(	$AR->OS=="UNIX" ||
-							(count($_GET)==0) 			 	) &&
-					( 	$AR->user->data->login=="public" )
-			   ) {
-				// caching is on and enabled in loader and user is public and template is not 'protected'.
-				$ARCurrent->cachetime=$config->cache;
-			}
 
 			if (!$ARCurrent->arDontCache) {
 				if (!is_array($ARCurrent->cacheConfigChainSettings)) {
