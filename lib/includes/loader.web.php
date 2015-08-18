@@ -1124,15 +1124,16 @@
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
 						$serverCache = $pathCacheSetting['serverCache'];
 
+						if ($serverCache == 0 || !isset($serverCache)) {
+							// This path does not want to play;
+							$serverCache = $pathCacheSetting['serverCacheDefault'];
+						}
+
 						if ($serverCache == -2) {
 							// Sorry, we meant that the cache image should be valid forever;
 							$serverCache = 999;
 						}
 
-						if ($serverCache == 0 || !isset($serverCache)) {
-							// This path does not want to play;
-							continue;
-						}
 						if ($cacheSetting == 0) {
 							$cacheSetting = $serverCache;
 						} else {
