@@ -1902,13 +1902,6 @@ debug("loadLibrary: loading cache for $this->path");
 				$ARCurrent->nolangcheck=1;
 			}
 
-			if (!$ARCurrent->arDontCache) {
-				if (!is_array($ARCurrent->cacheConfigChainSettings)) {
-					$ARCurrent->cacheConfigChainSettings = array();
-				}
-				$ARCurrent->cacheConfigChainSettings[$this->path] = $config->cacheSettings;
-			}
-
 			/*
 				Set ARConfigChecked to true to indicate that we have been here
 				earlier.
