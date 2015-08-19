@@ -1148,7 +1148,7 @@
 					}
 				}
 				// header("X-Ariadne-Cache-Setting: $cacheSetting");
-				if ($session_id && $cacheSetting > 0) {
+				if ($ARCurrent->session->id && $cacheSetting > 0) {
 					// we have a session id, can we cache ?
 					// FIXME: add support for $serverCachePrivate in the config and cache dialog
 					if ( ! ( $serverCachePrivate === 1  || $ARCurrent->arDoCachePrivate != false ) ) {
