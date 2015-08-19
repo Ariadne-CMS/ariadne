@@ -719,7 +719,6 @@
 				header("X-Ariadne-Cache: Hit");
 				ldHeader("HTTP/1.1 304 Not Modified");
 			} else {
-				header("X-Ariadne-Cache: Hit");
 				if (file_exists($cachedheader)) {
 					// Cache header file also contains information about Cache-control;
 					$filedata = file($cachedheader);
@@ -1075,7 +1074,7 @@
 
 			$image_len = strlen($image);
 
-			if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
+			if ($ARCurrent->session && $ARCurrent->session->id) {
 				$ldCacheFilename = "/session".$ldCacheFilename;
 				$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
 			} else {
@@ -1121,19 +1120,22 @@
 				// > 0: Refresh on request. The number is the amount of hours that the cache is 'fresh'. This can be a fraction/float value;
 
 				$cacheSetting = 0; // Default = inherit;
+				$serverCachePrivate = 0; // do not allow caching of  sessions
 				if( is_array($ARCurrent->cacheCallChainSettings)) {
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
+						// FIXME: also 'resolve' $serverCachePrivate
 						$serverCache = $pathCacheSetting['serverCache'];
+
+						if ($serverCache == 0 || !isset($serverCache)) {
+							// This path does not want to play;
+							$serverCache = $pathCacheSetting['serverCacheDefault'];
+						}
 
 						if ($serverCache == -2) {
 							// Sorry, we meant that the cache image should be valid forever;
 							$serverCache = 999;
 						}
 
-						if ($serverCache == 0 || !isset($serverCache)) {
-							// This path does not want to play;
-							continue;
-						}
 						if ($cacheSetting == 0) {
 							$cacheSetting = $serverCache;
 						} else {
@@ -1147,6 +1149,13 @@
 					}
 				}
 				// header("X-Ariadne-Cache-Setting: $cacheSetting");
+				if ($ARCurrent->session->id && $cacheSetting > 0) {
+					// we have a session id, can we cache ?
+					// FIXME: add support for $serverCachePrivate in the config and cache dialog
+					if ( ! ( $serverCachePrivate === 1  || $ARCurrent->arDoCachePrivate != false ) ) {
+						$cacheSetting = -1;
+					}
+				}
 
 				if ($cacheSetting > 0) {
 					// If we are allowed to cache, write the image now.
