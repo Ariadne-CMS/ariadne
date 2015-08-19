@@ -962,7 +962,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 					if (is_array($AR->user->data->config->groups)) {
 						foreach ($AR->user->data->config->groups as $groupPath => $groupId) {
-							if (!$AR->user->group[$groupPath]) {
+							if (!$AR->user->groups[$groupPath]) {
 								$AR->user->groups[$groupPath] = current($this->get($groupPath, "system.get.phtml"));
 							}
 						}
@@ -1260,6 +1260,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$initialNLS = $ARCurrent->nls;
 		$initialConfigChecked = $ARConfigChecked;
 
+		$ARConfig->cache[$this->path]->inConfigIni = true;
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
 			//debug("pobject::getConfig() loaded config.ini @ ".$this->path);
 			// debug("getConfig:checkconfig einde");
@@ -1279,6 +1280,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
 		}
+		$ARConfig->cache[$this->path]->inConfigIni = false;
 		$this->clearChildConfigs( $this->path ); // remove any config data for child objects, since these are set before their parent config was set
 		$ARConfigChecked = $initialConfigChecked;
 		$ARCurrent->nls = $initialNLS;
@@ -1349,20 +1351,28 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 
-			if (!is_array($this->data->config->cacheSettings) ) {
-				$this->data->config->cacheSettings = array();
+			$localcachesettings = $this->data->config->cacheSettings;
+			if (!is_array($localcachesettings) ){
+				$localcachesettings = array();
+			}
+
+			if (!is_array($configcache->cacheSettings) ) {
+				$configcache->cacheSettings = array();
 			}
 
 			if ($this->data->config->cacheconfig) { // When removing this part, also fix the setting below.
 				$configcache->cache=$this->data->config->cacheconfig;
 			}
 
-			if (empty($this->data->config->cacheSettings)) {
-				$this->data->config->cacheSettings["serverCache"] = $this->data->config->cacheconfig;
+			if (!isset($localcachesettings['serverCache']) && isset($this->data->config->cacheconfig)) {
+				$localcachesettings["serverCache"] = $this->data->config->cacheconfig;
 			}
-			foreach ($this->data->config->cacheSettings as $key => $value) {
-				$configcache->cacheSettings[$key] = $value;
+
+			if ($localcachesettings['serverCache'] != 0 ) {
+				$localcachesettings['serverCacheDefault'] = $localcachesettings['serverCache'];
 			}
+
+			$configcache->cacheSettings = $localcachesettings + $configcache->cacheSettings;
 
 			// store the current object type
 			$configcache->type = $this->type;
@@ -1893,23 +1903,6 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				$ARCurrent->nolangcheck=1;
 			}
-			if (	(	$config->cache && ($config->cache > 0) ) &&
-					(	$arCallFunction	&& !$ARConfigChecked		) &&
-					( 	!$nocache 									) &&
-					(	$AR->OS=="UNIX" ||
-							(count($_GET)==0) 			 	) &&
-					( 	$AR->user->data->login=="public" )
-			   ) {
-				// caching is on and enabled in loader and user is public and template is not 'protected'.
-				$ARCurrent->cachetime=$config->cache;
-			}
-
-			if (!$ARCurrent->arDontCache) {
-				if (!is_array($ARCurrent->cacheConfigChainSettings)) {
-					$ARCurrent->cacheConfigChainSettings = array();
-				}
-				$ARCurrent->cacheConfigChainSettings[$this->path] = $config->cacheSettings;
-			}
 
 			/*
 				Set ARConfigChecked to true to indicate that we have been here
@@ -1959,8 +1952,7 @@ debug("loadLibrary: loading cache for $this->path");
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 					$arTemplates=$this->store->get_filestore("templates");
 					if (
-						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc") ||
-						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])
+						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc")
 					) {
 						// check if the requested language exists, if not do not display anything,
 						// unless otherwise indicated by $ARCurrent->allnls
@@ -2045,7 +2037,7 @@ debug("loadLibrary: loading cache for $this->path");
 								if (!is_array($ARCurrent->cacheCallChainSettings)) {
 									$ARCurrent->cacheCallChainSettings = array();
 								}
-								if ($arCallFunction != "config.ini") {
+								if ($ARConfig->cache[$this->path]->inConfigIni == false) {
 									$ARCurrent->cacheCallChainSettings[$this->id] = $config->cacheSettings;
 								}
 
@@ -2283,7 +2275,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function savecache($time="") {
-		global $ARCurrent, $ARnls;
+		global $ARCurrent, $ARnls, $DB;
 		$result = false;
 		$this->error = '';
 		if (!$time) {
@@ -2308,7 +2300,7 @@ debug("loadLibrary: loading cache for $this->path");
 					$image = URL::RAWtoAR($image, $imageNLS);
 				}
 
-				if( $time > 0 ) {
+				if( $time > 0  && $DB["wasUsed"] == 0) {
 					$pcache=$this->store->get_filestore("privatecache");
 					$pcache->write($image, $this->id, $file);
 					$time=time()+($time*3600);
@@ -2355,16 +2347,19 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function savedatacache($name,$data,$time="") {
+		global $DB;
 		$this->error = '';
 		if (!$time) {
 			$time=2; // 'freshness' in hours.
 		}
 		$pcache=$this->store->get_filestore("privatecache");
-		$pcache->write(serialize($data), $this->id, $name);
-		$time=time()+($time*3600);
-		if (!$pcache->touch($this->id, $name, $time)) {
-			$this->error = ar::error('Could not touch '.$name, 1113);
-			return false;
+		if( $time > 0  && $DB["wasUsed"] == 0) {
+			$pcache->write(serialize($data), $this->id, $name);
+			$time=time()+($time*3600);
+			if (!$pcache->touch($this->id, $name, $time)) {
+				$this->error = ar::error('Could not touch '.$name, 1113);
+				return false;
+			}
 		}
 		return true;
 	}
