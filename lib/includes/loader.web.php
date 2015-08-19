@@ -1120,6 +1120,7 @@
 				// > 0: Refresh on request. The number is the amount of hours that the cache is 'fresh'. This can be a fraction/float value;
 
 				$cacheSetting = 0; // Default = inherit;
+				$serverCachePrivate = 0; // do not allow caching of  sessions
 				if( is_array($ARCurrent->cacheCallChainSettings)) {
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
 						// FIXME: also 'resolve' $serverCachePrivate
