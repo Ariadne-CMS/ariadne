@@ -1074,7 +1074,7 @@
 
 			$image_len = strlen($image);
 
-			if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
+			if ($ARCurrent->session && $ARCurrent->session->id) {
 				$ldCacheFilename = "/session".$ldCacheFilename;
 				$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
 			} else {
