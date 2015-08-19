@@ -1209,7 +1209,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$path = $this->make_path($path);
 		if ($ARConfig->cache[$path]) {
 			$path = preg_quote($path,'/');
-			$keys = preg_grep('/'.$path.'/',array_keys($ARConfig->cache));
+			$keys = preg_grep('/^'.$path.'/',array_keys($ARConfig->cache));
 			foreach ($keys as $cachepath) {
 				unset($ARConfig->cache[$cachepath]);
 				unset($ARConfig->pinpcache[$cachepath]);
@@ -1222,7 +1222,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$path = $this->make_path($path);
 		if ($ARConfig->cache[$path]) {
 			$path = preg_quote($path,'/');
-			$keys = preg_grep('/'.$path.'./',array_keys($ARConfig->cache));
+			$keys = preg_grep('/^'.$path.'./',array_keys($ARConfig->cache));
 			foreach($keys as $cachepath) {
 				unset($ARConfig->cache[$cachepath]);
 				unset($ARConfig->pinpcache[$cachepath]);
