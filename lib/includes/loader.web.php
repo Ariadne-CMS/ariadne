@@ -1052,8 +1052,8 @@
 						$browserCacheNoTransform = $browserCacheNoTransform || $pathCacheSetting['browserCacheNoTransform']; // If anyone says 'no-transform', make it so.
 						$browserCacheProxyRevalidate = $browserCacheProxyRevalidate || $pathCacheSetting['browserCacheProxyRevalidate']; // If anyone says 'proxy-revalidate', make it so.
 
-						$browserCacheMaxAge = isset($pathCacheSetting['browserCacheMaxAge']) ? min($browserCacheMaxAge, $pathCacheSetting['browserCacheMaxAge']) : $browserCacheMaxAge;
-						$browserCacheSMaxAge = isset($pathCacheSetting['browserCacheSMaxAge']) ? min($browserCacheSMaxAge, $pathCacheSetting['browserCacheSMaxAge']) : $browserCacheSMaxAge;
+						$browserCacheMaxAge = (isset($pathCacheSetting['browserCacheMaxAge']) && $pathCacheSetting['browserCacheMaxAge'] !== '') ? min($browserCacheMaxAge, $pathCacheSetting['browserCacheMaxAge']) : $browserCacheMaxAge;
+						$browserCacheSMaxAge = (isset($pathCacheSetting['browserCacheSMaxAge']) && $pathCacheSetting['browserCacheSMaxAge'] !== '') ? min($browserCacheSMaxAge, $pathCacheSetting['browserCacheSMaxAge']) : $browserCacheSMaxAge;
 					}
 				}
 

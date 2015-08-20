@@ -91,7 +91,7 @@ class mysql_workspacesstore extends mysqlstore {
 			";
 			$query_result = $this->store_run_query($query_string);
 			if ($query_result) {
-				while ( $row = $objects["list"]->fetch_array(MYSQLI_ASSOC) ) {
+				while ( $row = $query_result->fetch_array(MYSQLI_ASSOC) ) {
 					$record = array();
 					foreach ($row as $key => $value) {
 						if (!is_numeric($key)) {
@@ -146,7 +146,7 @@ class mysql_workspacesstore extends mysqlstore {
 
 		$query_result = $this->store_run_query($query_string);
 		if ($query_result) {
-			while ( $row = $objects["list"]->fetch_array(MYSQLI_ASSOC) ) {
+			while ( $row = $query_result->fetch_array(MYSQLI_ASSOC) ) {
 				if ($row['parent']) {
 					return true;
 				}
