@@ -1,7 +1,5 @@
 <?php
 
-	debug("ARnls lib: hr","all");
-
 	$ARnls["aboutariadne"]                          =    "O Ariadne";
 	$ARnls["accessdenied"]                          =    "Pristup nije dopušten";
 	$ARnls["add"]                                   =    "Dodaj";

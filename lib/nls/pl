@@ -2,7 +2,6 @@
 
 	// Polish Language ver. 1.1 beta for Ariadne 2.4 RC1
 	// by Lukasz Keler <kelcon (at) poczta.fm>
-	debug("ARnls lib: pl","all");
 
 	$ARnls["aboutariadne"]                          =    "O Ariadne";
 	$ARnls["accessdenied"]                          =    "Dostęp wzbroniony";
