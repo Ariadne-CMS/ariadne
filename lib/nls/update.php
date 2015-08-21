@@ -1,10 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-	function debug() {
-		// fake debug funtion used in nls files
-	}
-
 	$languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en', 'pt');
 	$modules=Array('','ariadne.','vedor-editor-v9.');
 	$target='./';
