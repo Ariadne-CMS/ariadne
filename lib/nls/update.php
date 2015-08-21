@@ -20,10 +20,11 @@
 		foreach ($languages as $language) {
 			$file = $module.$language;
 			echo "Updating ".$file."\n";
-			if (file_exists($file)) {
-				include($file);
+			if (!file_exists($file)) {
+				continue;
 			}
 
+			include($file);
 			$content = "<"."?php\n\n";
 			if ( file_exists($module.$language.".head") ) {
 				$content .= file_get_contents($module.$language.".head");
