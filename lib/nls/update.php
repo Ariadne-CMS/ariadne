@@ -6,7 +6,7 @@
 	}
 
 	$languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en');
-	$modules=Array('','ariadne.','vedor-editor.');
+	$modules=Array('','ariadne.','vedor-editor-v9.');
 	$target='./';
 	define('NLSESCAPE', "\"\\\n\r");
 
