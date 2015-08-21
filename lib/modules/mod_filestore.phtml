@@ -165,11 +165,10 @@
 			return $result;
 		}
 
-		public function templateCodeFunction($fsId, $fsName) {
+		public function templateCodeFunction($code) {
 				$template = 
 				' $local = new ar_core_pinpSandbox($AR_this); '.
-				' ?'.'>'.
-				$this->read($fsId, $fsName).
+				' ?'.'>'.$code.
 				'<'.'?php ';
 			return $template;
 		}

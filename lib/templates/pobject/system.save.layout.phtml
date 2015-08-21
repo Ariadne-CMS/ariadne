@@ -63,11 +63,7 @@
 				if ($mtime) {
 					$templates->touch($this->id, $file.".pinp", $mtime);
 				}
-				$templates->write($compiled, $this->id, $file);
-				if ($mtime) {
-					$templates->touch($this->id, $file, $mtime);
-				}
-				$templateCode = $templates->templateCodeFunction($this->id, $file); 
+				$templateCode = $templates->templateCodeFunction($compiled);
 
 				// generating optimized template code
 				$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';

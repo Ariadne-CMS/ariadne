@@ -58,10 +58,7 @@ if (! ( $templates && is_array($templates) && !empty($templates) ) && !$ARCurren
 								if ($pinp->error) {
 									$this->newObject->error = $pinp->error;
 								} else {
-									$new_filestore->write($compiled, $this->newObject->id, "$type.$function.$language");
-									$new_filestore->touch($this->newObject->id, "$type.$function.$language", $tmtime);
-
-									$templateCode = $new_filestore->templateCodeFunction($this->newObject->id, $type.".".$function.".".$language); 
+									$templateCode = $new_filestore->templateCodeFunction($compiled);
 
 									// generating optimized template code
 									$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
