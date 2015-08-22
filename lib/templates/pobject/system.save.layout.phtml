@@ -59,6 +59,10 @@
 
 
 				$file=$type.".".$function.".".$language;
+
+				// cleanup old file format
+				$templates->remove($this->id, $file);
+
 				$templates->write($template, $this->id, $file.".pinp");
 				if ($mtime) {
 					$templates->touch($this->id, $file.".pinp", $mtime);
@@ -72,6 +76,7 @@
 				if ($mtime) {
 					$templates->touch($this->id, $file.".inc", $mtime);
 				}
+
 				if ($default) { // add pinp template from default templates list
 					$this->data->config->templates[$type][$function][$language]=$this->id;
 				} else { // remove pinp template from default templates list
