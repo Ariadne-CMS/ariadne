@@ -29,6 +29,7 @@ var selectable = function() {
 	var selecting = false;
 	var containerDiv;
 	var filterClass = "selectable";
+	var touchSupport = true;
 	
 	var selectPositions = {
 		x1 : 0,
@@ -262,9 +263,18 @@ var selectable = function() {
 				container = document.getElementById(container);
 			}
 
+			if (options && options.filterClass) {
+				filterClass = options.filterClass;
+			}
+			if (options && (typeof(options.touchSupport) !== 'undefined')) {
+				touchSupport = options.touchSupport;
+			}
+
 			if (window.addEventListener) {
 				container.addEventListener("mousedown", handleMouseDown, false);
-				container.addEventListener("touchstart", handleMouseDown, false);
+				if (touchSupport) {
+					container.addEventListener("touchstart", handleMouseDown, false);
+				}
 			} else if (window.attachEvent) {
 				container.attachEvent("mousedown", handleMouseDown);
 			}
@@ -272,16 +282,15 @@ var selectable = function() {
 			if (window.addEventListener) {
 				document.body.addEventListener("mousemove", handleMouseMove, false);
 				document.body.addEventListener("mouseup", handleMouseUp, false);
-				document.body.addEventListener("touchmove", handleMouseMove, false);
-				document.body.addEventListener("touchend", handleMouseUp, false);
+				if (touchSupport) {
+					document.body.addEventListener("touchmove", handleMouseMove, false);
+					document.body.addEventListener("touchend", handleMouseUp, false);
+				}
 			} else if (window.attachEvent) {
 				document.body.attachEvent("mousemove", handleMouseMove);
 				document.body.attachEvent("mouseup", handleMouseUp);
 			}
 			
-			if (options && options.filterClass) {
-				filterClass = options.filterClass;
-			}
 
 			// Add helpder div to body;
 			helperDiv = document.createElement("DIV");

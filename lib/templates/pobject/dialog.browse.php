@@ -62,6 +62,12 @@
 
 		/* retrieve HTTP GET variables */
 		// FIXME: Er moet ook iets van een root zijn voor dit dialoog.
+
+		$pathmode = $this->getvar("pathmode");
+		if (!$pathmode && !$this->CheckAdmin($AR->user)) {
+			$pathmode = "siterelative";
+		}
+
 		$root = $this->getvar("root");
 		if (!$root) {
 			$root = '/';
@@ -208,7 +214,7 @@
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.tree.init, muze.ariadne.explore.tree, true);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.splitpane.init);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.searchbar.init);
-	YAHOO.util.Event.onDOMReady(function() {selectable.init("archildren", {filterClass:["explore_item","yui-dt-rec"]})});
+	YAHOO.util.Event.onDOMReady(function() {selectable.init("archildren", {filterClass:["explore_item","yui-dt-rec"],touchSupport:false})});
 </script>
 
 <script type="text/javascript">
