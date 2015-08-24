@@ -32,7 +32,7 @@
 		if (!linkURL) {
 			linkURL = objectURL;
 		}
-		window.open( linkURL + "dialog.browse.php?root=<?php echo urlencode($root); ?>", "browse", "height=480,width=750");
+		window.open( linkURL + "dialog.browse.php?pathmode=siterelative&root=<?php echo urlencode($root); ?>", "browse", "height=480,width=750");
 		return false;
 	}
 
