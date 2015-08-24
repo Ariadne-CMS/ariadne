@@ -6,7 +6,6 @@
 		Andres Marcos Bianciotto <abianciotto@e-volution.com>
 
 	*****************************************************************************/
-	debug("ARnls lib: es","all");
 
 	$ARnls["aboutariadne"]                          =    "Acerca de Ariadne";
 	$ARnls["accessdenied"]                          =    "Acceso Denegado";

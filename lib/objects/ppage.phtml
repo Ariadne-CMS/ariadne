@@ -33,11 +33,9 @@
 
 		******************************************************************/
 
-debug("ppage: Load","object");
-global $AR;
-require_once($AR->dir->install."/lib/objects/pobject.phtml");
-require_once($AR->dir->install."/lib/modules/mod_url.php");
-require_once($AR->dir->install."/lib/modules/mod_page.php");
+require_once(AriadneBasePath."/objects/pobject.phtml");
+require_once(AriadneBasePath."/modules/mod_url.php");
+require_once(AriadneBasePath."/modules/mod_page.php");
 
 class ppage extends pobject { // ppage class definition
 

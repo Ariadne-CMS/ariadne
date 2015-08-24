@@ -33,14 +33,11 @@
 
     ******************************************************************/
 
-debug("puser: Load","object");
-global $AR;
-require_once($AR->dir->install."/lib/objects/pdir.phtml");
+require_once(AriadneBasePath."/objects/pdir.phtml");
 
 class puser extends pdir { // puser class definition
 
 	function hashPassword($password) {
-		global $AR;
 		return password_hash($password, PASSWORD_DEFAULT );
 	}
 

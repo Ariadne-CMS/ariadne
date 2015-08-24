@@ -33,9 +33,7 @@
 
     ******************************************************************/
 
-debug("pshadowuser: Load","object");
-global $AR;
-include_once($AR->dir->install."/lib/objects/puser.phtml");
+require_once(AriadneBasePath."/objects/puser.phtml");
 
 class pshadowuser extends puser {  // pshadowuser class definition
 
