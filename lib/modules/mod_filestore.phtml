@@ -338,8 +338,12 @@
 			$newid = $this->addObjectToLayer( $newid );
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
-			if (copy($source, $target)) {
-				$result=unlink($source);
+
+			$result = rename($source, $target);
+			if($result != true) {
+				if (copy($source, $target)) {
+					$result=unlink($source);
+				}
 			}
 			return $result;
 		}
