@@ -76,8 +76,9 @@
 
 			// Set up runtime options. 
 			$this->svn_options = array(
-				'fetchmode'		=> VERSIONCONTROL_SVN_FETCHMODE_ARRAY, 
-				'binaryPath'		=> $AR->SVN->path
+				'fetchmode'         => VERSIONCONTROL_SVN_FETCHMODE_ARRAY,
+				'binaryPath'        => $AR->SVN->path,
+				'useEscapeshellcmd' => false,
 			);
 
 		}
