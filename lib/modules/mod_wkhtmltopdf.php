@@ -39,7 +39,7 @@
 
 			$execString = $this->config['cmd'];
 			foreach ($this->options as $name => $value) {
-				if ( is_bool( $name ) ) {
+				if ( is_bool( $value ) ) {
 					$execString .= " --$name";
 				} else {
 					$execString .= " --$name " . escapeshellarg( $value );
