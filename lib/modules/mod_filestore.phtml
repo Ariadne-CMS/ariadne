@@ -173,13 +173,6 @@
 			return $template;
 		}
 
-		protected function importOLD($fsId, $fsName) {
-			// this looks scary, and maybe it is...
-			$template = $this->templateCodeFunction($fsId, $fsName);
-			$newTemplate = create_function('&$AR_this', $template );
-			return $newTemplate;;
-		}
-
 		public function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
 			// this looks scary, and maybe it is...
 			// first check the cached templates
@@ -193,9 +186,6 @@
 					if(is_callable($arTemplateFunction) ) {
 						$ARConfig->fsFunctions[$fsId][$fsName] = $arTemplateFunction;
 					}
-				} else {
-					// old style template, import it
-					$ARConfig->fsFunctions[$fsId][$fsName] = $this->importOLD($fsId, $fsName);
 				}
 			}
 			// now call the function...
@@ -347,8 +337,12 @@
 			$newid = $this->addObjectToLayer( $newid );
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
-			if (copy($source, $target)) {
-				$result=unlink($source);
+
+			$result = rename($source, $target);
+			if($result != true) {
+				if (copy($source, $target)) {
+					$result=unlink($source);
+				}
 			}
 			return $result;
 		}
