@@ -10,7 +10,11 @@ body .editable a {
 body .uneditable {
 	outline: 0px dotted blue;
 }
-
+body.vedor-footer-space::after {
+	content: "";
+	display: block;
+	height: 132px;
+}
 body.vedor-borders .editable,
 body.vedor-borders .editable_border,
 body.vedor-borders .editable th,
