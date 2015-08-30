@@ -511,7 +511,7 @@
 			updateHtmlContext();
 
 			addBordersStyleSheet(vdEditDoc);
-			VD_DETAILS_onclick(getOption('borders'));
+			VD_DETAILS_onclick(getOption('borders')!==false);
 			if ( vdEditDoc ) {
 				vdEditDoc.documentElement.classList.add('vedor-editor');
 				vdEditDoc.body.classList.add('vedor-editor');
@@ -2848,7 +2848,9 @@
 
 	function repositionToolbar() {
 		var sel = vdSelectionState.get();
-		var currentContext = getVedorEditorContext();
+		if ( !currentContext ) {
+			currentContext = getVedorEditorContext();
+		}
 		var activeSection = document.getElementById(currentContext);
 		var pos = getToolbarPosition(sel);
 		if ( !pos || !activeSection ) {
@@ -2926,8 +2928,9 @@
 		}
 	}
 
+	var currentContext = '';
 	function showVedorEditorContext() {
-		var currentContext = getVedorEditorContext();
+		currentContext = getVedorEditorContext();
 
 		var sections = document.querySelectorAll("section.vedor-section");
 		for (var i=0; i<sections.length; i++) {
