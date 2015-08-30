@@ -1646,6 +1646,9 @@ debug("loadLibrary: loading cache for $this->path");
 			$top = '/';
 		}
 		$path = $this->make_path($path);
+		if (!is_array($arSuperContext)) {
+			$arSuperContext = array();
+		}
 
 		if (($libpos=strpos($arCallFunction,":"))!==false && $libpos!==strpos($arCallFunction, "::")) {
 			// template of a specific library defined via call("library:template");

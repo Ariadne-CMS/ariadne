@@ -64,6 +64,13 @@
 	recurse($files);
 
 	sort($needsUpgrade);
+
+	// in large instalations, the store mysql connction has timed out by now, restarting store
+	global $store,$store_config;
+	$inst_store = $store_config["dbms"]."store";
+	$store=new $inst_store($root,$store_config);
+
+
 	foreach($needsUpgrade as $objID) {
 		print "Searching for $objID\n";
 		$result = ar::get('/')->find("id == $objID")->call('system.get.phtml');

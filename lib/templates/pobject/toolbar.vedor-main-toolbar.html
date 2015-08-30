@@ -45,11 +45,9 @@
 			<li class="vedor-seperator"></li>
 			<li id="vedorLanguage" style="display: none !important;">
 				<div class="vedor-list">
-					<button class="vedor-expands" data-vedor-action="vedor-language">
+					<button class="vedor-expands" data-vedor-section="vedor-language">
 						<i class="fa fa-flag"></i><?php echo $ARnls['vd.editor:language']; ?>
 					</button>
-					<ul id="VD_NLS_SELECT" class="vedor-list-items">
-					</ul>
 				</div>
 			</li>
 		</ul>
@@ -120,6 +118,10 @@
 					<i class="fa fa-lock"></i><?php echo $ARnls['vd.editor:dock_toolbars']; ?>
 				</button>
 			</li>
+			</ul>
+		</div>
+		<div class="vedor-toolbar-section vedor-language">
+			<ul id="vedorLanguageList">
 			</ul>
 		</div>
 		<div class="vedor-toolbar-section vedor-toolbar-status vedor-selected">

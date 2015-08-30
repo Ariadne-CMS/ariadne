@@ -12,8 +12,6 @@
 
 	***************************************************************************/
 
-	debug("ARnls lib: de","all");
-
 	$ARnls["aboutariadne"]                          =    "Über Ariadne";
 	$ARnls["accessdenied"]                          =    "Zugriff verweigert";
 	$ARnls["add"]                                   =    "Neu";

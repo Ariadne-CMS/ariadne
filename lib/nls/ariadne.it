@@ -101,6 +101,7 @@
 //	$ARnls["ariadne:logoff"]                        =    "Log off"; // value from english
 //	$ARnls["ariadne:mimetype"]                      =    "MIME Type"; // value from english
 //	$ARnls["ariadne:mogrify"]                       =    "Mogrify"; // value from english
+//	$ARnls["ariadne:morethanacms"]                  =    "more than a cms"; // value from english
 //	$ARnls["ariadne:move"]                          =    "Move"; // value from english
 	$ARnls["ariadne:new"]                           =    "Nuovo oggetto";
 //	$ARnls["ariadne:new:add_language"]              =    "Add language"; // value from english

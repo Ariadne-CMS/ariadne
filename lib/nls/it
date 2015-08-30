@@ -4,8 +4,6 @@
         // Traduzione italiana a cura di Dino Gerlando Termini
         // M.B.I. S.r.l - dtermini@mbigroup.it
 
-	debug("ARnls lib: it","all");
-
 	$ARnls["aboutariadne"]                          =    "Su Ariadne";
 	$ARnls["accessdenied"]                          =    "Accesso negato";
 	$ARnls["add"]                                   =    "Aggiungi";
