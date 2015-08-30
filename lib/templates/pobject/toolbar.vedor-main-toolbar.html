@@ -21,8 +21,8 @@
 				</button>
 			</li>
 			<li>
-				<button data-vedor-section="vedor-view" class="vedor-expands">
-					<i class="fa fa-ellipsis-v"></i><?php echo $ARnls['vd.editor:show_more']; ?>
+				<button data-vedor-section="vedor-options" class="vedor-expands">
+					<i class="fa fa-ellipsis-v"></i><?php echo $ARnls['vd.editor:options']; ?>
 				</button>
 			</li>
 			<li class="vedor-seperator"></li>
@@ -87,7 +87,7 @@
 			</li>
 			</ul>
 		</div>
-		<div class="vedor-toolbar-section vedor-view">
+		<div class="vedor-toolbar-section vedor-options">
 			<ul>
 			<li>
 				<button data-vedor-action="vedor-borders" id="VD_DETAILS">
@@ -113,6 +113,11 @@
 			<li style="display: none !important;">
 				<button data-vedor-action="vedor-context">
 					<i class="fa fa-gears"></i><?php echo $ARnls['vd.editor:context_menu']; ?>
+				</button>
+			</li>
+			<li>
+				<button data-vedor-action="vedor-dock-toolbars" id="vdDockToolbars">
+					<i class="fa fa-lock"></i><?php echo $ARnls['vd.editor:dock_toolbars']; ?>
 				</button>
 			</li>
 			</ul>

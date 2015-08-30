@@ -1,5 +1,4 @@
 <?php
-    // beun oplossing om om keepurl heen te werken
 	global $ARCurrent,$ARnls;
 	$js_root = $AR->dir->www."js/";
 	$image_dir=$AR->dir->www.'widgets/vedor/images/';
@@ -480,6 +479,10 @@
 
 			addBordersStyleSheet(vdEditDoc);
 			VD_DETAILS_onclick(showBorders);
+			if ( vdEditDoc ) {
+				vdEditDoc.documentElement.classList.add('vedor-editor');
+				vdEditDoc.body.classList.add('vedor-editor');
+			}
 
 			if (tbContentEditOptions['grants']) {
 				if (tbContentEditOptions['grants']['add']) {
@@ -2818,13 +2821,16 @@
 			if ( span.getClientRects ) {
 				// Ensure span has dimensions and position by
 				// adding a zero-width space character
-				span.appendChild( vdEditPane.contentDocument.createTextNode("\u200b") );
-				range.insertNode(span);
-				rects = span.getClientRects();
-				var spanParent = span.parentNode;
-				spanParent.removeChild(span);
-				// Glue any broken text nodes back together
-				spanParent.normalize();
+				try {
+					span.appendChild( vdEditPane.contentDocument.createTextNode("\u200b") );
+					range.insertNode(span);
+					rects = span.getClientRects();
+					var spanParent = span.parentNode;
+					spanParent.removeChild(span);
+					// Glue any broken text nodes back together
+					spanParent.normalize();
+				} catch(e) {
+				}
 			}
 		}
 		if ( rects.length ) {
@@ -2834,7 +2840,7 @@
 			var rtop = rects[rects.length-1].bottom; 
 		}
 		if ( !rects.length || parent.getAttribute("data-vedor-selectable") ) {
-			pos = parent.getBoundingClientRect();
+			pos = parent && parent.getBoundingClientRect ? parent.getBoundingClientRect() : { left: 0, top: 0, right: 0, bottom: 0};
 			lleft = pos.left;
 			ltop = pos.top;
 			rleft = pos.right;
@@ -2842,7 +2848,11 @@
 		}
 		// fallback... if nothing else works
 		if ( lleft == 0 && rleft == 0 && ltop == 0 && rtop == 0 ) {
-			pos = vdSelection.parentNode(sel).getBoundingClientRect();
+			parent = vdSelection.parentNode(sel);
+			if ( !parent || !parent.getBoundingClientRect ) {
+				return false;
+			}
+			pos = parent.getBoundingClientRect();
 			lleft = pos.left;
 			ltop = pos.top;
 			rleft = pos.right;
@@ -2858,13 +2868,13 @@
 		var currentContext = getVedorEditorContext();
 		var activeSection = document.getElementById(currentContext);
 		var pos = getToolbarPosition(sel);
-		if ( !pos ) {
-			hideIt();
+		if ( !pos || !activeSection ) {
+			hideToolbar(true);
 			return;
 		}
 		var top = pos.top;
 		var left = pos.left;
-
+			
 		var activeToolbar = activeSection.querySelectorAll("div.vedor-toolbar")[0];
 
 		top += vdEditPane.offsetTop;
@@ -2886,18 +2896,51 @@
 		}
 
 		// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
-		var fullHeight = vdEditPane.contentWindow.document.documentElement.clientHeight ? vdEditPane.contentWindow.document.documentElement.clientHeight : vdEditPane.contentWindow.document.body.clientHeight
-		if (top > (fullHeight - (activeSection.scrollHeight * 2))) {
-			mintop = Math.min(pos.ltop, pos.rtop);
-			mintop -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
-
-			top = fullHeight - (activeSection.scrollHeight * 2);
-			if (top < mintop) {
+		// check the position 
+		// - if toolbar bottom <= editor pane bottom, no problem
+		// - if toolbar can be repositioned, no problem
+		// - if edit pane content can be scrolled down, no problem
+		// - else: add space on the bottom so that you can scroll down
+		var editPaneRect = vdEditPane.getBoundingClientRect();
+		var toolbarRect = activeSection.getBoundingClientRect();
+		if ( top + toolbarRect.height > editPaneRect.height ) {
+			// toolbar extends beyond bottom edge if not repositioned
+			var mintop = Math.min(pos.ltop, pos.rtop);
+			if ( mintop + toolbarRect.height <= editPaneRect.height ) {
+				// toolbar can be repositioned
+				// FIXME: min top should be position of the cursor, not selection
+				top = editPaneRect.height - toolbarRect.height;
+			} else {
 				top = mintop;
+				var scrollHeight = Math.max(vdEditPane.contentDocument.body.scrollHeight, vdEditPane.contentDocument.body.clientHeight);
+				var scrollTop    = Math.max(vdEditPane.contentDocument.body.scrollTop, vdEditPane.contentDocument.documentElement.scrollTop);
+				if ( scrollTop >= (scrollHeight - vdEditPane.contentDocument.body.clientHeight - toolbarRect.height ) ) {
+					// no more scroll space, so add it.
+					vdEditPane.contentDocument.body.classList.add('vedor-footer-space');
+				}
 			}
 		}
-		activeSection.style.top = top + 10 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
+		if ( vdEditPane.contentDocument.body.classList.contains('vedor-footer-space') ) {
+			var scrollHeight = Math.max(vdEditPane.contentDocument.body.scrollHeight, vdEditPane.contentDocument.body.clientHeight);
+			var scrollTop    = Math.max(vdEditPane.contentDocument.body.scrollTop, vdEditPane.contentDocument.documentElement.scrollTop);
+			if ( scrollTop < (scrollHeight - vdEditPane.contentDocument.body.clientHeight - toolbarRect.height - 132 )) {
+				vdEditPane.contentDocument.body.classList.remove('vedor-footer-space');
+			}
+		}
+		activeSection.style.top = top + 10 + "px"; // 10 is the height of the marker arrow
 		activeSection.style.left = newleft + "px";
+	}
+
+	function hideToolbar(clearFooter) {
+		var sections = document.querySelectorAll("section.vedor-section");
+		for (var j=0; j<sections.length; j++) {
+			if (!(sections[j].className.match(/active/))) {
+				sections[j].style.left = "-10000px";
+			}
+		}
+		if ( clearFooter && vdEditPane.contentDocument.body.classList.contains('vedor-footer-space') ) {
+			vdEditPane.contentDocument.body.classList.remove('vedor-footer-space');
+		}
 	}
 
 	function showVedorEditorContext() {
@@ -2910,14 +2953,6 @@
 
 		initContextProperties(currentContext);
 
-		var hideIt = function() {
-			var sections = document.querySelectorAll("section.vedor-section");
-			for (var j=0; j<sections.length; j++) {
-				if (!(sections[j].className.match(/active/))) {
-					sections[j].style.left = "-10000px";
-				}
-			}
-		}
 		//window.setTimeout(hideIt, 200);
 
 		var activeSection = document.getElementById(currentContext);
@@ -2931,7 +2966,7 @@
 				}
 				// activeSection.style.display = "block";
 				activeSection.className += " active";
-				hideIt(); // window.setTimeout(hideIt, 200);
+				hideToolbar(); // window.setTimeout(hideIt, 200);
 
 
 				var sel = vdSelectionState.get();
@@ -2950,7 +2985,7 @@
 				}
 				window.setTimeout(function() { skipContextUpdate = false;}, 20);
 		} else {
-			hideIt();
+			hideToolbar(true);
 		}
 
 		if (document.getElementById("VD_DETAILS")) {
@@ -3743,6 +3778,13 @@
 		"vedor-switch-language" : function(el) {
 			var newURL = el.dataset.vedorLink;
 			browseTo(newURL);
+		},
+		"vedor-dock-toolbars" : function(el) {
+			if ( document.body.classList.contains('vedor-toolbars-docked') ) {
+				document.body.classList.remove('vedor-toolbars-docked');
+			} else {
+				document.body.classList.add('vedor-toolbars-docked');
+			}
 		}
 	};
 	vedor.editor.toolbars = {};

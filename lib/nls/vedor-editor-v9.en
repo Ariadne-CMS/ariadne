@@ -91,12 +91,14 @@
 	$ARnls["vd.editor:select"]                      =    "Select";
 	$ARnls["vd.editor:selectall"]                   =    "Select All";
 	$ARnls["vd.editor:selecttag"]                   =    "Select HTML element";
+	$ARnls["vd.editor:options"]			=    "Options";
 	$ARnls["vd.editor:show"]                        =    "Show";
 	$ARnls["vd.editor:show_borders"]                =    "Borders";
 	$ARnls["vd.editor:show_boundaries"]             =    "Boundaries";
 	$ARnls["vd.editor:show_metadata"]               =    "Metadata";
 	$ARnls["vd.editor:show_more"]                   =    "Show&hellip;";
 	$ARnls["vd.editor:show_tags_stack"]             =    "HTML Context";
+	$ARnls["vd.editor:dock_toolbars"]		=    "Dock Toolbars";
 	$ARnls["vd.editor:sitemap"]                     =    "Sitemap";
 	$ARnls["vd.editor:slide"]                       =    "Slide";
 	$ARnls["vd.editor:slideshow"]                   =    "Slideshow";
