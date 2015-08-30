@@ -482,14 +482,16 @@ a:hover span.deltag {
 			border: 0px;
 			list-style: none;
 			white-space: nowrap;
+			display: inline-block;
+		}
+		ul.vedor-buttons > li:first-child {
+			float: left;
 		}
 		.vedor-toolbar-section > ul > li.vedor-text-format {
 			margin-right: 4px;
 		}
 		.vedor-toolbar li {
-			xdisplay: inline-block;
 			position: relative;
-			float: left;
 		}
 		#vdTablePopup {
 			left: 40px;
@@ -864,7 +866,11 @@ a:hover span.deltag {
 			height: 250px;
 			margin-left: -200px;
 		}
-
+		body.vedor-toolbars-docked #editorPane .vedor-section.active {
+			position: fixed !important;
+			left: 445px !important;
+			top: 0 !important;
+		}
 #vdContextBar {
 	display: block;
 	max-width: 240px;
@@ -916,7 +922,7 @@ a:hover span.deltag {
 	border: 0px;
 }
 #vedor-main-toolbar .vedor-buttons {
-	white-space: normal;
+	white-space: nowrap;
 }
 #vedor-main-toolbar > .vedor-toolbar > ul.vedor-buttons > li.vedor-seperator {
 	border-right: 1px solid #ddd;
