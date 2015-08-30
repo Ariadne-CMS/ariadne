@@ -3673,6 +3673,7 @@
 					el.classList.remove('vedor-selected');
 				}
 			}
+			window_onresize();
 		},
 		"vedor-properties" : function(el) {
 			VD_META_onclick();
@@ -4054,6 +4055,7 @@
 						selectItem(el);
 					}
 				}
+				window_onresize();
 			}
 		}
 	})();
