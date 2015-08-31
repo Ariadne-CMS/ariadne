@@ -44,5 +44,23 @@
 	$version = $ARversion['version'];
 	ar::get('/system/ariadne/version/')->call('system.save.data.phtml', array('value' => $version));
 
+
+	$ax_config["writeable"]=false;
+	$ax_config["database"]="packages/lib.ax";
+	set_time_limit(0);
+	$inst_store = $ax_config["dbms"]."store";
+	$axstore=new $inst_store("", $ax_config);
+	if (!$axstore->error) {
+		$ARCurrent->importStore=&$store;
+		$args="srcpath=/&destpath=/";
+		$axstore->call("system.export.phtml", $args,
+			$axstore->get("/"));
+		$error=$axstore->error;
+		$axstore->close();
+	} else {
+		$error=$axstore->error;
+		echo $error;
+	}
+
 	$store->close();
 ?>
