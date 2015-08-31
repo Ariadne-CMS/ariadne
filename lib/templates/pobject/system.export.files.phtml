@@ -17,6 +17,7 @@
 					!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))
 			) {
 
+				$new_filestore=$this->newObject->store->get_filestore("files");
 				if ($ARCurrent->options["force"]) {
 					$new_filestore->purge($this->newObject->id);
 				}
@@ -29,7 +30,6 @@
 						}
 					}
 
-					$new_filestore=$this->newObject->store->get_filestore("files");
 
 					foreach($orig_files as $file){
 						display("\n");
