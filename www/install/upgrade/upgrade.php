@@ -200,12 +200,12 @@
 							"operation" => "9.0/upgrade.database.php",
 							"newversion" => '9.0-rc1'
 						));
-		case '9.0-rc1.7':
+		case '9.0-rc1.7': // because of previous released upgrade scripts
 		case '9.0-rc1':
 				array_push($todo, array(
 							"description" => "Installing missing objects",
 							"operation" => "9.0/install.missing.data.php",
-							"newversion" => "9.0-rc2.1"
+							"newversion" => "9.0"
 							));
 		case '9.0-rc2.1':
 				array_push($todo, array(
@@ -223,7 +223,13 @@
 				array_push($todo, array(
 							"description" => "Update libraries for muze and vedor",
 							"operation" => "all/upgrade.muze.libs.php",
-							"newversion" => "9.1-rc1.2"
+							"newversion" => "9.1"
+							));
+		case '9.1-rc1.2':
+				array_push($todo, array(
+							"description" => "Bumping revision to 9.1",
+							"operation" => "all/dummy.php",
+							"newversion" => "9.1"
 							));
 	
 	}
