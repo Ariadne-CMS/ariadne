@@ -1,4 +1,109 @@
 ========================
+Changes Ariadne 9.1
+========================
+
+- sessions are no longer cached, even if it is a public session, unless
+  you manually ar::putvar('arDoCachePrivate', true);
+- refactored SVN support, updated to latest SVN format
+- made backend UI more responsive, more touch friendly and added better support for https
+- added onbeforeclearprivatecache and onclearprivatecache events
+- onbeforecall can now set the return value of the call
+- added muze.bus.js, a cross browser window application bus, used by Helene
+- removed support for output compression in Ariadne, use your favourite
+  webserver plugin to do this from now on
+- improved password hashing, auto-updates to newest version
+- added support for cover image in mod_wkhtmltopdf
+- added geo, tags and number properties
+- added scope to all properties
+- added support for simpler webserver config files by rewriting the URL in the loader
+- ar::error() now also prints the code and messages of previous exceptions
+- made numerous performance and disk usage improvements
+- ariadne now sends correct mimetype headers by default, depending on the extension of a template. You no longer need to send these manually.
+
+ar('html/form') Improvements
+----------------------------
+- added form validation for fieldsets
+- added support for conditional form fields
+- form input names now follow PHP when special characters are rewritten
+
+Vedor Editor Improvements
+-------------------------
+- allow inserting and editing active gadgets, e.g. RSS feeds.
+- added support for custom properties, not visible on the page
+- improved support for FireFox (missing onSelectionChange event)
+- improved visibility of empty editable fields
+- improved performance and positioning of hovering toolbars
+- added a language select toolbar, if more than one language is available
+- browse dialog now follows the UI language
+- browse dialog is now relative to the current site
+- added option to dock hovering toolbars
+- option settings are now stored in localStorage
+
+Muze libraries
+--------------
+- muze.cms/base
+    - added priority to base.menu-item.html, to allow sorting the menu
+    - removed vedor editor attributes in the content templates, when not in edit mode
+- muze.cms/gadgets/image-gallery
+    - fixed layout on mobile devices
+- added muze.cms/gadgets/search, shows items matching a given query
+- moved muze.cms/vedor to seperate library tree
+
+-muze.dev/helene
+    - improved styling of warnings and errors to make them more visible
+    - added merge dialog to prevent overwriting changes by others
+    - fixed collapse toggle
+    - improved crossbrowser layout
+    - added cross window application bus to update the debugger live
+    - templates are now listed alphabetically
+    - added dutch translations
+    - templates now use \r\n line endings, to conform with the form submit standard
+    - added an 'add template' link in each template list block
+- muze.dev/docify
+    - made code more re-usable and less likely to conflict with layout templates
+- muze.dev/debugger
+    - debugger now live reloads on each template save
+
+- muze.layout/base-layout:
+    - added support for nice 404 pages
+    - added manifest to better manage loading of plugins and dependencies
+- added muze.layout/stub-layout to start from 'scratch' while using muze.cms layout plugins
+- added muze.layout/plugins/image-gallery/
+- added muze.layout/plugins/fancybox/
+- added muze.layout/plugins/jquery/
+
+- added muze.rad/router/
+    - simple application router for use in user.notfound.html / onnotfound event handler
+
+Vedor libraries
+---------------
+This is a new set of libraries specifically made to improve / enhance the Vedor Editor. It includes:
+- vedor/editor/ - the integration code to start using the editor
+- vedor/editor-plugins/base-form/ - formbuilder toolkit
+- vedor/editor-plugins/sortable/ - drag/drop ordering of menu items, forms, etc.
+- vedor/editor-plugins/browsable/ - changing images or other content using the browse dialog
+- vedor/editor-plugins/objectlist/ - making editable lists of styled content
+- vedor/editor-plugins/gadgets/ - inserting and managing ariadne gadgets
+- vedor/editor-plugins/fixes/ - a set of browser specific workarounds and fixes
+
+Scaffolds
+---------
+- Added Coffeehouse scaffold, showing off a modern responsive design, sortable repeating content items, formmanagement in the vedor editor and more.
+- Added Sublime scaffold
+- Added Empty project scaffold, to ease starting from 'scratch'
+
+bugfixes
+--------
+- fixed cache being too eager to cache in active sessions
+- fixed attribute parsing in mod_htmlparser and mod_htmlcleaner
+- fixed string code support for ar::error, as PHP \Exception forces int
+- fixed session cookie handling when hideSessionIDFromURL is active
+- fixed relative path handling of parents() call
+- added missing methods in ar('connect/soap'), now fully compatible with PHP's SoapClient
+- fixed arIsNewObject flag in the onbeforesave event
+- fixed ar('http/cookie') getting/setting complex values
+
+========================
 Changes in Ariadne 9.0
 ========================
 

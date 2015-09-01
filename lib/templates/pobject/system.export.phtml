@@ -2,6 +2,7 @@
 	if ($this->CheckLogin("read")) {
 		global $AR;
 		$saved_object = array();
+		$ARCurrent->grants_list = array();
 
 		if (!function_exists('display')) {
 			function display($str) {
