@@ -2669,7 +2669,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 			$arTemplates=$this->store->get_filestore("templates");
-			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) {
+			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc")) {
 				debug("call_super: found template ".$template["arCallTemplate"]." on object with id ".$template["arTemplateId"]);
 				$arLibrary = $template['arLibrary'];
 				debug("call_super: found template on ".$template["arTemplateId"]);
