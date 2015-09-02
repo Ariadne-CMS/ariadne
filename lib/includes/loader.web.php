@@ -1034,7 +1034,7 @@
 				} else {
 					// Without session and all other corner cases;
 					$browserCachePrivate = false;
-					$browserCacheMaxAge = 1800;
+					$defaultMaxAge = 1800;
 					$browserCacheNoStore = false;
 					$browserCacheNoCache = false;
 					$browserCacheMustRevalidate = false;
@@ -1052,10 +1052,27 @@
 						$browserCacheNoTransform = $browserCacheNoTransform || $pathCacheSetting['browserCacheNoTransform']; // If anyone says 'no-transform', make it so.
 						$browserCacheProxyRevalidate = $browserCacheProxyRevalidate || $pathCacheSetting['browserCacheProxyRevalidate']; // If anyone says 'proxy-revalidate', make it so.
 
-						$browserCacheMaxAge = (isset($pathCacheSetting['browserCacheMaxAge']) && $pathCacheSetting['browserCacheMaxAge'] !== '') ? min($browserCacheMaxAge, $pathCacheSetting['browserCacheMaxAge']) : $browserCacheMaxAge;
-						$browserCacheSMaxAge = (isset($pathCacheSetting['browserCacheSMaxAge']) && $pathCacheSetting['browserCacheSMaxAge'] !== '') ? min($browserCacheSMaxAge, $pathCacheSetting['browserCacheSMaxAge']) : $browserCacheSMaxAge;
+						if (isset($pathCacheSetting['browserCacheMaxAge'])) {
+							if (isset($browserCacheMaxAge)) {
+								$browserCacheMaxAge = min($browserCacheMaxAge, $pathCacheSetting['browserCacheMaxAge']);
+							} else {
+								$browserCacheMaxAge = $pathCacheSetting['browserCacheMaxAge'];
+							}
+						}
+
+						if (isset($pathCacheSetting['browserCacheSMaxAge'])) {
+							if (isset($browserCacheSMaxAge)) {
+								$browserCacheSMaxAge = min($browserCacheSMaxAge, $pathCacheSetting['browserCacheSMaxAge']);
+							} else {
+								$browserCacheSMaxAge = $pathCacheSetting['browserCacheSMaxAge'];
+							}
+						}
 					}
-				}
+
+					if (!isset($browserCacheMaxAge) && isset($defaultMaxAge)) {
+						$browserCacheMaxAge = $defaultMaxAge;
+					}
+				}	
 
 				ldSetBrowserCache(
 					array(
