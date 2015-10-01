@@ -120,6 +120,9 @@
 		$AR->dir->root = $AR->dir->docroot.$AR->dir->www;
 	}
 	$AR->dir->root = (string)\arc\path::collapse($AR->dir->root);
+	if ($AR->dir->docroot[0] !== '/') {
+	    $AR->dir->root = substr($AR->dir->root, 1);
+	}
 
 	/**************************************************************************/
 	/* Only change this if you have made your own loader                      */
