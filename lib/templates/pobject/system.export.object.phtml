@@ -6,7 +6,6 @@
 		$cpath = $this->parent;
 		$newcpath=$this->store->make_path($destpath.substr($this->path, strlen($rootpath)), '..');
 		if($cpath != '..' && !$ARCurrent->importStore->exists($newcpath)) {
-			echo "==".$cpath.":".$newcpath."\n";
 			$arguments = $arCallArgs;
 			$arguments["setDummyObject"] = true;
 			$temp_obj=current($this->store->call("system.export.object.extract.phtml",
