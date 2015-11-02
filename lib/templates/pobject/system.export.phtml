@@ -1,7 +1,17 @@
 <?php
 	if ($this->CheckLogin("read")) {
 		global $AR;
+
 		$saved_object = array();
+		if ( !is_array($exclude_list) ) {
+			$exclude_list = array();
+		}
+
+		$clearcachePath = false;
+		$items_processed = 0;
+		$items_to_process = 0;
+
+
 		$ARCurrent->grants_list = array();
 
 		if (!function_exists('display')) {
@@ -45,6 +55,167 @@
 			$ARCurrent->AXAction = "import";
 			$ARCurrent->AXHeader = &$this->store->header;
 		}
+
+		$exportObject = function ($me) use (&$exportObject, &$saved_object, &$exclude_list, &$clearcachePath, &$items_processed, &$items_to_process) {
+			global $ARCurrent;
+
+			$object = $me->call('system.export.object.extract.phtml',$arCallArgs);
+
+			$cpath = $object->parent;
+			$newcpath=$object->store->make_path($destpath.substr($object->path, strlen($rootpath)), '..');
+			if($cpath != '..' && !$ARCurrent->importStore->exists($newcpath)) {
+				$arguments = $arCallArgs;
+				$arguments["setDummyObject"] = true;
+				$temp_obj=current($object->store->call("system.export.object.extract.phtml",
+							$arguments,
+							$object->store->get($cpath)));
+				$temp_obj->axflags |= AX_DUMMY;
+				$temp_obj->call($exportObject ,$arCallArgs);
+
+			}
+
+			if ($object->parent != '..' && !$object->exists($object->parent)) {
+				display("Found orphaned node '".$object->path."' (skipping)\n");
+				continue;
+			}
+			$newpath=$destpath.substr($object->path, strlen($rootpath));
+			$oldpath=$object->path;
+			$update_obj = false;
+			$save_obj = true;
+
+			if (is_array($exclude_list)) {
+				foreach($exclude_list as $key => $excl_path) {
+					if (substr($newpath, 0, strlen($excl_path)) == $excl_path) {
+						$save_obj = false;
+						display("Skipping path because it is in the exclude list\n");
+						break;
+					}
+				}
+			}
+
+			if ($save_obj) {
+				display("processing($newpath)	");
+				if ($ARCurrent->options["without_data"]) {
+					display("no data for (".$object->path.")");
+					$object->axflags |= AX_WITHOUT_DATA;
+				}
+
+				if ($ARCurrent->options["without_templates"]) {
+					unset($object->data->config->privatetemplates);
+					unset($object->data->config->templates);
+					unset($object->data->config->pinp);
+					$object->axflags |= AX_WITHOUT_TEMPLATES;
+				}
+
+				if ($ARCurrent->options["without_files"]) {
+					$object->axflags |= AX_WITHOUT_FILES;
+				}
+
+				if (!$saved_object[$object->id]) {
+					if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
+						$saved_object[$object->id]=$newpath;
+						// we may never overwrite an existing object with a
+						// dummy object
+						if (!($object->axflags & AX_DUMMY) && 
+								!($object->axflags & AX_WITHOUT_DATA)) {
+
+							$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
+										$ARCurrent->importStore->get($newpath)));
+
+							if (
+									($object->lastchanged > $oldObject->lastchanged) || 
+									( ( $oldObject->axflags & AX_DUMMY) && !($object->axflags & AX_DUMMY) )) {
+								display("(updating)");
+								$save_obj = true;
+							} else {
+								$save_obj = false;
+								display("(ok)");
+								unset($oldObject);	// no update needed
+							}
+						} else {
+							display("(no overwrite)");
+							$save_obj = false;
+						}
+					}
+
+
+					if ($save_obj) {
+						$clearcachePath = getCommonParent($clearcachePath,$newpath,$object->store);
+
+						// next one has to be linked
+						$saved_object[$object->id]=$newpath;
+
+						if ($ARCurrent->importStore->exists($newpath)) {
+
+							$ARCurrent->importStore->call(
+									"system.export.update.phtml", 
+									array("newObject" => $object),
+									$ARCurrent->importStore->get($newpath));
+
+
+						} else {
+							$impObject = clone $object;
+							display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
+							$impObject->arIsNewObject = true;
+							$impObject->path = $newpath;
+							if ($newpath!="/") {
+								$impObject->parent = $object->store->make_path($newpath, "..");
+							} else {
+								$impObject->parent = "..";
+							}
+							$impObject->store = $ARCurrent->importStore;
+							$impObject->call("system.import.phtml", $arCallArgs);
+							if ($impObject->error) {
+								display("\n	ERROR (".$impObject->error.")\n");
+								$exclude_list[] = $impObject->path;
+								continue;
+							}
+						}
+					}
+
+					if (!($object->axflags & AX_DUMMY)) {
+						$clearcachePath = getCommonParent($clearcachePath,$newpath,$object->store);
+
+						$object->newObject=current(
+								$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
+									$ARCurrent->importStore->get($newpath)));
+
+						if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
+							// (update or set templates and files)
+							$object->call("system.export.templates.phtml", $arCallArgs);
+						}
+						if (!($object->axflags & AX_WITHOUT_FILES)) {
+							$object->call("system.export.files.phtml", $arCallArgs);
+						}
+					}
+
+				} else {
+					if (!$ARCurrent->importStore->exists($newpath)) {
+						display("(linking)");
+						$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
+					}
+				}
+				display("\n");
+
+				$check_path = $me->store->make_path($newpath, "..");
+				$nextid_checks = $ARCurrent->nextid_checks;
+				if ($oldpath!=$srcpath && !$nextid_checks[$check_path]) {
+					$nextid_checks[$check_path] = true;
+					$nextid = $me->store->get_nextid($object->store->make_path($oldpath, ".."));
+					if ($nextid > 1) {
+						$ARCurrent->importStore->set_nextid($check_path, $nextid);
+						display("setting nextid ($nextid)\n");
+					}
+					$ARCurrent->nextid_checks = $nextid_checks;
+				}
+			} else {
+				display("	skipping ($newpath)\n");
+			}
+
+			$items_processed++;
+			progress($items_processed, $items_to_process);
+
+		};
 
 		/* create a dummy object for later use */
 		$dummy = new pobject;
@@ -148,7 +319,7 @@
 			progress(0, $items_to_process);
 			$arCallArgs['items_to_process'] = $items_to_process;
 
-			$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,0,0));
+			$this->store->call($exportObject ,$arCallArgs,$this->store->find($srcpath,$criteria,0,0));
 			if (!$ARCurrent->options["without_grants"]) {
 				// reset config
 				$destobj = current($ARCurrent->importStore->call("system.get.phtml", $arguments,
