@@ -58,6 +58,11 @@
 
 		$exportObject = function ($me) use (&$exportObject, &$saved_object, &$exclude_list, &$clearcachePath, &$items_processed, &$items_to_process) {
 			global $ARCurrent;
+			$arCallArgs  = $me->getvar('arCallArgs');
+			$destpath    = $arCallArgs['destpath'];
+			$srcpath     = $arCallArgs['srcpath'];
+			$rootpath    = $arCallArgs['rootpath'];
+
 
 			$object = $me->call('system.export.object.phtml',$arCallArgs);
 
@@ -317,7 +322,6 @@
 				$items_to_process = $this->count_find($srcpath, $query);
 			}
 			progress(0, $items_to_process);
-			$arCallArgs['items_to_process'] = $items_to_process;
 
 			$this->store->call($exportObject ,$arCallArgs,$this->store->find($srcpath,$criteria,0,0));
 			if (!$ARCurrent->options["without_grants"]) {
