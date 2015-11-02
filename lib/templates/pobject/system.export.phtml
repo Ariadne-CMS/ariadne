@@ -59,14 +59,14 @@
 		$exportObject = function ($me) use (&$exportObject, &$saved_object, &$exclude_list, &$clearcachePath, &$items_processed, &$items_to_process) {
 			global $ARCurrent;
 
-			$object = $me->call('system.export.object.extract.phtml',$arCallArgs);
+			$object = $me->call('system.export.object.phtml',$arCallArgs);
 
 			$cpath = $object->parent;
 			$newcpath=$object->store->make_path($destpath.substr($object->path, strlen($rootpath)), '..');
 			if($cpath != '..' && !$ARCurrent->importStore->exists($newcpath)) {
 				$arguments = $arCallArgs;
 				$arguments["setDummyObject"] = true;
-				$temp_obj=current($object->store->call("system.export.object.extract.phtml",
+				$temp_obj=current($object->store->call("system.export.object.phtml",
 							$arguments,
 							$object->store->get($cpath)));
 				$temp_obj->axflags |= AX_DUMMY;
