@@ -223,8 +223,7 @@
 		$dummy->nls = new object;
 		$dummy->axflags = true;
 		$dummy->type = "pobject";
-		reset($AR->nls->list);
-		while (list($key, $val)=each($AR->nls->list)) {
+		foreach($AR->nls->list as $key => $value){
 			$dummy->$key=new object;
 			$dummy->$key->name="Dummy node";
 			$dummy->nls->list[$key]=$val;
