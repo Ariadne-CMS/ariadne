@@ -204,23 +204,12 @@
 
 				} else {
 					if (!$ARCurrent->importStore->exists($newpath)) {
+						// FIXME:hardlink support is deprecated
 						display("(linking)");
 						$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
 					}
 				}
 				display("\n");
-
-				$check_path = $me->store->make_path($newpath, "..");
-				$nextid_checks = $ARCurrent->nextid_checks;
-				if ($oldpath!=$srcpath && !$nextid_checks[$check_path]) {
-					$nextid_checks[$check_path] = true;
-					$nextid = $me->store->get_nextid($object->store->make_path($oldpath, ".."));
-					if ($nextid > 1) {
-						$ARCurrent->importStore->set_nextid($check_path, $nextid);
-						display("setting nextid ($nextid)\n");
-					}
-					$ARCurrent->nextid_checks = $nextid_checks;
-				}
 			} else {
 				display("	skipping ($newpath)\n");
 			}
