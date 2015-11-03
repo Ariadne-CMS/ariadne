@@ -88,13 +88,12 @@
 			$update_obj = false;
 			$save_obj = true;
 
-			if (is_array($exclude_list)) {
-				foreach($exclude_list as $key => $excl_path) {
-					if (substr($newpath, 0, strlen($excl_path)) == $excl_path) {
-						$save_obj = false;
-						display("Skipping path because it is in the exclude list\n");
-						break;
-					}
+			if(count($exclude_list)){
+				$rpath = preg_quote($newpath,'/');
+				$keys = preg_grep('/^'.$rpath.'/',$exclude_list);
+				if(count($keys)) {
+					display("Skipping path because it is in the exclude list\n");
+					return;
 				}
 			}
 
