@@ -81,7 +81,7 @@
 
 			if ($object->parent != '..' && !$object->exists($object->parent)) {
 				display("Found orphaned node '".$object->path."' (skipping)\n");
-				continue;
+				return;
 			}
 			$newpath=$destpath.substr($object->path, strlen($rootpath));
 			$oldpath=$object->path;
@@ -173,7 +173,7 @@
 							if ($impObject->error) {
 								display("\n	ERROR (".$impObject->error.")\n");
 								$exclude_list[] = $impObject->path;
-								continue;
+								return;
 							}
 						}
 					}
