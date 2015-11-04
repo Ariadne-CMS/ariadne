@@ -399,7 +399,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			$rowresult['default'] = $row['default'];
 
 			// parse type
-			preg_match('/([a-z]+)(\(([0-9]+)\))?/i',$row['type'],$parsed);
+			preg_match('/([a-z]+)(\(([,0-9]+)\))?/i',$row['type'],$parsed);
 			$rowresult['type'] = $parsed[1];
 			if(isset($parsed[3]) && $parsed[3] !== '' ) {
 				$rowresult['typelength'] = $parsed[3];
