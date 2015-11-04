@@ -748,6 +748,10 @@ class hn_captcha
 			static $gd_version_number = null;
 			if($gd_version_number === null)
 			{
+			   if (!extension_loaded('gd')) {
+                              $gd_version_number = 0;
+			   }
+
 			   ob_start();
 			   phpinfo(8);
 			   $module_info = ob_get_contents();
@@ -758,7 +762,7 @@ class hn_captcha
 			   }
 			   else
 			   {
-				   $gd_version_number = 0;
+				   $gd_version_number = 1; // default to 1 if the extension is there.
 			   }
 			}
 			return $gd_version_number;
