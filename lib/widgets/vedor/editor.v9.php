@@ -499,6 +499,9 @@
 			vdSelectionState.init(vdEditPane.contentWindow);
 			selectionchange.start(vdEditPane.contentWindow.document); // onselectionchange event for Firefox
 
+			//FIXME: is this the right place? Or should this be done in initEditable?
+			arObjectRegistry=new Array();
+
 			initEditable();
 
 			vedor.editor.bookmarks.init(vdEditPane.contentWindow);
