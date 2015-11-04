@@ -131,6 +131,15 @@ class mysqlstore extends store{
 		$count = $objects["list"]->num_rows;
 		while ( $row = $objects["list"]->fetch_array(MYSQLI_ASSOC) ) {
 			$multiCall = false;
+			if(!isset($row['object'])) {
+				// fetch object from db
+				$res = $this->get($row['path']);
+				if(!$res['list']) {
+					continue;
+				}
+				$row = $res['list']->fetch_array(MYSQLI_ASSOC);
+			}
+
 			$object = $this->newobject( 
 				$row["path"], $row["parent"], $row["type"], 
 				unserialize($row["object"]), $row["id"], $row["lastchanged"], 
@@ -307,7 +316,7 @@ class mysqlstore extends store{
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		$result["method"]="ls";
 		$result["path"]=$path; 
 		$result["list"]= $this->store_run_query($query_string);
