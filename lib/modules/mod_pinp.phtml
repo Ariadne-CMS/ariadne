@@ -184,6 +184,8 @@ class scanner {
 				case YY_STATE_HTML:
 					if (ord($yych) == 0) {
 						return PT_EOF;
+					} else if (ord($yych == 12)) {
+						return PT_EOF;
 					} else {
 						$matches='';
 						$scan_buffer = substr($YYBUFFER, $YYCURSOR, -1);
@@ -218,7 +220,7 @@ class scanner {
 							}
 						} else {
 							$result = $scan_buffer;
-							$YYCURSOR = strlen($YYBUFFER);
+							$YYCURSOR = strlen($YYBUFFER)-1; // disregard the added "\0"
 							return PT_UNPARSED;
 						}
 					}

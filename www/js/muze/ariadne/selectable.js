@@ -56,14 +56,14 @@ var selectable = function() {
 		selectPositions.x2 = selectPositions.x1 + 1;
 		selectPositions.y2 = selectPositions.y1 + 1;
 
-		offsetParent = containerDiv;
-		while(offsetParent) {
-			selectPositions.x1 -= offsetParent.scrollLeft;
-			selectPositions.x2 -= offsetParent.scrollLeft;
-			selectPositions.y1 -= offsetParent.scrollTop;
-			selectPositions.y2 -= offsetParent.scrollTop;
-			offsetParent = offsetParent.offsetParent;
-		}
+//		offsetParent = containerDiv;
+//		while(offsetParent) {
+//			selectPositions.x1 -= offsetParent.scrollLeft;
+//			selectPositions.x2 -= offsetParent.scrollLeft;
+//			selectPositions.y1 -= offsetParent.scrollTop;
+//			selectPositions.y2 -= offsetParent.scrollTop;
+//			offsetParent = offsetParent.offsetParent;
+//		}
 		
 		updateHelper();
 
@@ -103,12 +103,12 @@ var selectable = function() {
 		selectPositions.x2 = moveevent.pageX ? moveevent.pageX : moveevent.clientX;
 		selectPositions.y2 = moveevent.pageY ? moveevent.pageY : moveevent.clientY;
 
-		offsetParent = containerDiv;
-		while(offsetParent) {
-			selectPositions.x2 -= offsetParent.scrollLeft;
-			selectPositions.y2 -= offsetParent.scrollTop;
-			offsetParent = offsetParent.offsetParent;
-		}
+//		offsetParent = containerDiv;
+//		while(offsetParent) {
+//			selectPositions.x2 -= offsetParent.scrollLeft;
+//			selectPositions.y2 -= offsetParent.scrollTop;
+//			offsetParent = offsetParent.offsetParent;
+//		}
 
 		updateHelper();
 		updateSelection();
