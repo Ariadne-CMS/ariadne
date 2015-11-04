@@ -22,7 +22,7 @@ CREATE TABLE ".$this->tbl_prefix."nodes (
 	KEY object (object),
 	KEY parent (parent),
 	KEY (priority)
-)";
+) ENGINE " . $this->engine ;
 
 		$queries[1]["msg"]="creating objects table.";
 		$queries[1]["query_string"]="
@@ -34,13 +34,14 @@ CREATE TABLE ".$this->tbl_prefix."objects (
 	lastchanged TIMESTAMP,
 	PRIMARY KEY (id),
 	KEY lastchanged (lastchanged)
-)";
+) ENGINE " . $this->engine ;
 		$queries[2]["msg"]="creating properties table.";
 		$queries[2]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."properties (
 	name varchar(21) DEFAULT '' NOT NULL,
 	PRIMARY KEY (name)
-)";
+) ENGINE " . $this->engine ;
+
 		$queries[4]["msg"]="creating types table.";
 		$queries[4]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."types (
@@ -48,7 +49,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	implements varchar(32) DEFAULT '' NOT NULL,
 	KEY type (type),
 	KEY implements (implements)
-)";
+) ENGINE " . $this->engine ;
 
 		while ((list($key, $query)=each($queries)) && (!$error)) {
 			if ($query["msg"]) {
@@ -119,8 +120,14 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	}
 	
 	function alter_property($property, $definition) {
+		if ( ! $this->has_property ( $property ) ) {
+			return $this->create_property($property, $definition);
+		}
 		$table = $this->tbl_prefix."prop_".AddSlashes($property);
 		$tablespec = $this->getTableDefinition($table);
+		$indexspec = $this->getIndexDefinition($table);
+		$ftindex   = array();
+		$autoindex = array();
 		foreach ($definition['fields'] as $name => $typedef) {
 			$alter_string="alter table ".$table." ";
 
@@ -130,8 +137,13 @@ CREATE TABLE ".$this->tbl_prefix."types (
 				error($this->error);
 				break;
 			}
-
 			$tname =  "AR_".$name;
+			if ($typedef['type'] != 'text') {
+				$autoindex[] = $name;
+			} else {
+				$ftindex[] = $name;
+			}
+
 			$currentSpec = $tablespec[$tname];
 			if ( isset($currentSpec) ) {
 				if(
@@ -167,6 +179,56 @@ CREATE TABLE ".$this->tbl_prefix."types (
 				$qresult = $this->store_run_query($alter_string);
 				echo $alter_string."\n";
 
+				if (!$qresult ) {
+					error($this->error);
+				}
+			}
+		}
+		// get indexes
+		// match default index
+		// match indexes
+		if($definition['indexes'] != 'none' && !is_array($definition['indexes']) ){
+			// automatic index creation, stub data
+			$definition['indexes'][0] = $autoindex;
+		}
+		if(is_array($definition['indexes']) && count($definition['indexes'])){
+			// indexes are explicit defined
+			foreach($definition['indexes'] as $key => $indexdef) {
+				$indexname = 'id'.$key;
+				$trans = array_map(function($name) { return 'AR_'. $name ; }, $indexdef);
+				$diff = array_diff_assoc($trans,$indexspec[$indexname]);
+				if( count($diff) != 0 ){
+					if(isset($indexspec[$indexname])) {
+						$query = "alter table $table drop index $indexname";
+						$qresult = $this->store_run_query($query);
+						if (!$qresult ) {
+							error($this->error);
+						}
+					}
+
+					$query = "alter table $table add index $indexname (".join(',',$trans).")";
+					$qresult = $this->store_run_query($query);
+					if (!$qresult ) {
+						error($this->error);
+					}
+				} 
+			}
+		}
+		if(count($ftindex)){
+			$ftindex = array_map(function($name) { return 'AR_'. $name ; }, $ftindex);
+			$curindex =(array)$indexspec['fti'];
+			$diff = array_diff_assoc($ftindex, $curindex);
+			if(  count($diff) != 0 ){
+				if(isset($indexspec['fti'])){
+					$query = "alter table $table drop index fti";
+					$qresult = $this->store_run_query($query);
+					if (!$qresult ) {
+						error($this->error);
+					}
+				}
+
+				$query = "alter table $table add fulltext index fti (".join(',',$ftindex).")";
+				$qresult = $this->store_run_query($query);
 				if (!$qresult ) {
 					error($this->error);
 				}
@@ -263,9 +325,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 					$create_string.=$indexstring;
 					// finally add the index on the object field and close the query.
 					$create_string.="index object(object) )\n";
-					if ($ftindexstring) {
-						$create_string .= " ENGINE = MyISAM";
-					}
+					$create_string .= " ENGINE = ". $this->engine;
 					$this->store_run_query($create_string);
 
 					$query_string="insert ignore into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
@@ -400,13 +460,24 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			$rowresult['default'] = $row['default'];
 
 			// parse type
-			preg_match('/([a-z]+)(\(([0-9]+)\))?/i',$row['type'],$parsed);
+			preg_match('/([a-z]+)(\(([,0-9]+)\))?/i',$row['type'],$parsed);
 			$rowresult['type'] = $parsed[1];
 			if(isset($parsed[3]) && $parsed[3] !== '' ) {
 				$rowresult['typelength'] = $parsed[3];
 			}
 
 			$result[$row['field']] = $rowresult;
+		}
+		return $result;
+
+	}
+	protected function getIndexDefinition($table){
+		$result = array();
+		$qresult = $this->store_run_query('show index from '.$table);
+		while($qresult && $row = $qresult->fetch_assoc()) {
+			$row = array_change_key_case ( $row, CASE_LOWER);
+			// -1 because the definition is 0 based, and the db 1 based
+			$result[$row['key_name']][$row['seq_in_index'] -1] = $row['column_name'];
 		}
 		return $result;
 
