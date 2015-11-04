@@ -118,11 +118,7 @@
 				if (!isset($saved_object[$object->id])) {
 					if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
 
-						// on import we need hardlink support for users
-						// FIXME: make importing user hardlinks supported by upgrading hardlinks to shortcuts
-						if( $ARCurrent->AXAction == "import" ) {
-							$saved_object[$object->id]=$newpath;
-						}
+						$saved_object[$object->id]=$newpath;
 
 						// we may never overwrite an existing object with a
 						// dummy object
@@ -153,9 +149,7 @@
 						$clearcachePath = getCommonParent($clearcachePath,$newpath,$object->store);
 
 						// next one has to be linked
-						if( $ARCurrent->AXAction == "import" ) {
-							$saved_object[$object->id]=$newpath;
-						}
+						$saved_object[$object->id]=$newpath;
 
 						if ($ARCurrent->importStore->exists($newpath)) {
 
