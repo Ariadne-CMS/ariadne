@@ -120,6 +120,9 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	}
 	
 	function alter_property($property, $definition) {
+		if ( ! $this->has_property ( $property ) ) {
+			return $this->create_property($property, $definition);
+		}
 		$table = $this->tbl_prefix."prop_".AddSlashes($property);
 		$tablespec = $this->getTableDefinition($table);
 		foreach ($definition['fields'] as $name => $typedef) {
