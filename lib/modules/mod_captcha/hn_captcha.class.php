@@ -748,18 +748,12 @@ class hn_captcha
 			static $gd_version_number = null;
 			if($gd_version_number === null)
 			{
-			   ob_start();
-			   phpinfo(8);
-			   $module_info = ob_get_contents();
-			   ob_end_clean();
-			   if(preg_match("/\bgd\s+version\b[^\d\n\r]+?([\d\.]+)/i", $module_info, $matches))
-			   {
-				   $gd_version_number = $matches[1];
-			   }
-			   else
-			   {
-				   $gd_version_number = 0;
-			   }
+				if (extension_loaded('gd'))
+				{
+					$gd_version_number = 2;
+				} else {
+					$gd_version_number = 0;
+				}
 			}
 			return $gd_version_number;
 		}
