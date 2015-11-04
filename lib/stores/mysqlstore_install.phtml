@@ -125,6 +125,9 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		}
 		$table = $this->tbl_prefix."prop_".AddSlashes($property);
 		$tablespec = $this->getTableDefinition($table);
+		$indexspec = $this->getIndexDefinition($table);
+		$ftindex   = array();
+		$autoindex = array();
 		foreach ($definition['fields'] as $name => $typedef) {
 			$alter_string="alter table ".$table." ";
 
@@ -134,8 +137,13 @@ CREATE TABLE ".$this->tbl_prefix."types (
 				error($this->error);
 				break;
 			}
-
 			$tname =  "AR_".$name;
+			if ($typedef['type'] != 'text') {
+				$autoindex[] = $name;
+			} else {
+				$ftindex[] = $name;
+			}
+
 			$currentSpec = $tablespec[$tname];
 			if ( isset($currentSpec) ) {
 				if(
@@ -171,6 +179,58 @@ CREATE TABLE ".$this->tbl_prefix."types (
 				$qresult = $this->store_run_query($alter_string);
 				echo $alter_string."\n";
 
+				if (!$qresult ) {
+					error($this->error);
+				}
+			}
+		}
+		// get indexes
+		// match default index
+		// match indexes
+		if($definition['indexes'] != 'none' && !is_array($definition['indexes']) ){
+			// automatic index creation, stub data
+			$definition['indexes'][0] = $autoindex;
+		}
+		if(is_array($definition['indexes']) && count($definition['indexes'])){
+			// indexes are explicit defined
+			foreach($definition['indexes'] as $key => $indexdef) {
+				$indexname = 'id'.$key;
+				$trans = array_map(function($name) { return 'AR_'. $name ; }, $indexdef);
+				$diff = array_diff_assoc($trans,$indexspec[$indexname]);
+				if( count($diff) != 0 ){
+					if(isset($indexspec[$indexname])) {
+						$query = "alter table $table drop index $indexname";
+						$qresult = $this->store_run_query($query);
+						if (!$qresult ) {
+							error($this->error);
+						}
+					}
+
+					$query = "alter table $table add index $indexname (".join(',',$trans).")";
+					$qresult = $this->store_run_query($query);
+					if (!$qresult ) {
+						error($this->error);
+					}
+				} 
+			}
+		}
+		if(count($ftindex)){
+			$ftindex = array_map(function($name) { return 'AR_'. $name ; }, $ftindex);
+			$curindex =(array)$indexspec['fti'];
+			$diff = array_diff_assoc($ftindex, $curindex);
+			if(  count($diff) != 0 ){
+				if(isset($indexspec['fti'])){
+					$query = "alter table $table drop index fti";
+					$qresult = $this->store_run_query($query);
+					if (!$qresult ) {
+						error($this->error);
+					}
+					var_dump($query);
+				}
+
+				$query = "alter table $table add fulltext index fti (".join(',',$ftindex).")";
+				var_dump($query);
+//				$qresult = $this->store_run_query($query);
 				if (!$qresult ) {
 					error($this->error);
 				}
