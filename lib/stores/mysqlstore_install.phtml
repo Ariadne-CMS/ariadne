@@ -225,12 +225,10 @@ CREATE TABLE ".$this->tbl_prefix."types (
 					if (!$qresult ) {
 						error($this->error);
 					}
-					var_dump($query);
 				}
 
 				$query = "alter table $table add fulltext index fti (".join(',',$ftindex).")";
-				var_dump($query);
-//				$qresult = $this->store_run_query($query);
+				$qresult = $this->store_run_query($query);
 				if (!$qresult ) {
 					error($this->error);
 				}
