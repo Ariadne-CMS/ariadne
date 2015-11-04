@@ -410,6 +410,17 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		return $result;
 
 	}
+	protected function getIndexDefinition($table){
+		$result = array();
+		$qresult = $this->store_run_query('show index from '.$table);
+		while($qresult && $row = $qresult->fetch_assoc()) {
+			$row = array_change_key_case ( $row, CASE_LOWER);
+			// -1 because the definition is 0 based, and the db 1 based
+			$result[$row['key_name']][$row['seq_in_index'] -1] = $row['column_name'];
+		}
+		return $result;
+
+	}
 
 	/*
 	 * update ndoes table to minimal path length
