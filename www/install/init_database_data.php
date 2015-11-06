@@ -412,6 +412,9 @@
 					'type' => 'string',
 					'size' => 64
 				)
+			),
+			'indexes' => array(
+				0 => array( 0 => 'value', 1 => 'name')
 			)
 		);
 
@@ -429,6 +432,9 @@
 					'type' => 'string',
 					'size' => 64
 				)
+			),
+			'indexes' => array(
+				0 => array( 0 => 'value', 1 => 'name')
 			)
 		);
 ?>
