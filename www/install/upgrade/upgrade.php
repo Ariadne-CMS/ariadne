@@ -232,6 +232,12 @@
 							"operation" => "all/dummy.php",
 							"newversion" => "9.2"
 							));
+		case '9.2':
+				array_push($todo, array(
+							"description" => "Updating properties, adding new properties",
+							"operation" => "9.1/upgrade.database.php",
+							"newversion" => "9.3"
+							));
 	
 	}
 
