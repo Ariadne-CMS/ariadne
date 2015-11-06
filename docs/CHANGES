@@ -1,4 +1,30 @@
 ========================
+Changes Ariadne 9.3
+========================
+This release is mainly targeted on bug fixes and performance improvements
+
+Bug fixes
+- fix various issues in cache validity calculation
+- bug fixes in the workspace store
+- fixes mod_captcha gd detection
+- specify MySQL database engine instead of letting MySQL pick one
+- on store upgrade, also add/modify indexes
+- windows compatibility in the default settings for ariadne
+- offset calculations in the backend when there is a scroll offset
+- pinp parser bug
+
+performance improvements:
+- speed up password check for the user public by hardcoding the result
+- make find work with large result sets, switch export to use this new behaviour
+- specify MySQL database engine instead of letting MySQL decide
+
+========================
+Changes Ariadne 9.2
+========================
+
+- fix for call_super and ar::callSuper()
+
+========================
 Changes Ariadne 9.1
 ========================
 
