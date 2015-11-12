@@ -60,6 +60,7 @@ muze.namespace("muze.ariadne.explore", function() {
 			'dialog_search'                   : windowprops_common + ',height=500,width=700',
 			'help_about'                      : windowprops_common + ',height=375,width=600',
 			'dialog_browse'                   : windowprops_common + ',height=550,width=780',
+			'dialog_hyperlink'                : windowprops_common + windowsize_large,
 			'help'                            : windowprops_full,
 			'_new'                            : windowprops_full,
 
