@@ -45,11 +45,14 @@
 		}
 
 		public function onTemplateSaved($id, $type, $name) {
-			$query = "template.value='$id:$type:$name'";
-
+			$query = "template.value='$id:$type:$name' order by none";
 			$objects = $this->cachestore->find("/", $query, 0, 0);
 
-			$result = $this->cachestore->call("system.get.filename.phtml","",$objects);
+			$template = function($object) {
+				return $object->data->filename;
+			};
+
+			$result = $this->cachestore->call($template,array(),$objects);
 			$result = array_unique($result);
 
 			foreach ($result as $filename) {
@@ -58,10 +61,14 @@
 		}
 
 		public function onObjectSaved($id) {
-			$query = "objectref.value='$id'";
+			$query = "objectref.value='$id' order by none";
 			$objects = $this->cachestore->find("/", $query, 0, 0);
 
-			$result = $this->cachestore->call("system.get.filename.phtml","",$objects);
+			$template = function($object) {
+				return $object->data->filename;
+			};
+
+			$result = $this->cachestore->call($template,array(),$objects);
 			$result = array_unique($result);
 
 			foreach ($result as $filename) {
@@ -72,10 +79,11 @@
 		public function invalidate($filename) {
 			global $store;
 			$absFilename = $store->get_config("files")."cache/".$filename;
+			$stamp = time();
 
 			if (file_exists($absFilename)) {
-				if (filemtime($absFilename) > time()) {
-					touch($absFilename, time() + 1); // set mtime to now; this means the cache image is now invalid;
+				if (filemtime($absFilename) > $stamp + 2) {  // do not touch file which will expire soon
+					touch($absFilename, $stamp + 1); // set mtime to now; this means the cache image is now invalid;
 				}
 			}
 		}
