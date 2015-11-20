@@ -440,17 +440,17 @@
 		public function make_path($id, $name="", $write=false) {
 			// calculate path based on $id and $name
 			$path=$this->root;
-			if (!file_exists($path) && $write) {
+			if ($write && !file_exists($path) ) {
 				@mkdir($path, DIRMODE); // Supress error, can trigger with race condition.
 			}	
 			while ($id) {
 				$next=floor($id/PATHTICLESIZE);
 				$part=$id%PATHTICLESIZE;
 				$path.="/$part";
-				if (!file_exists($path) && $write) {
-					@mkdir($path, DIRMODE); // Supress error, can trigger with race condition.
-				}
 				$id=$next;
+			}
+			if ($write && !file_exists($path)) {
+				@mkdir($path, DIRMODE, true); // Supress error, can trigger with race condition.
 			}
 			$path.="/";
 			if ($name) {
