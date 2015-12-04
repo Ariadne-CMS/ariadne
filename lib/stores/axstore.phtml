@@ -65,12 +65,8 @@ class axstore {
 						$this->ofile=fopen($this->tempdir."/objects.data", "rb");
 						if ($this->ofile) {
 							$currentoffset=ftell($this->ofile);
-							while ($rline=fgets($this->ofile, 8192)) {
+							while ($rline=fgets($this->ofile)) {
 								$line=trim($rline);
-								while (strlen($rline)==8192-1) {
-									$rline=fgets($this->ofile, 8192);
-									$line.=trim($rline);
-								}
 								$data=explode("&", $line);
 								if (sizeof($data)>=7) {
 									$class = $data[1];
@@ -110,7 +106,7 @@ class axstore {
 							// read nodes data
 							$fp_nodes=fopen($this->tempdir."/nodes.data", "rb");
 							if ($fp_nodes) {
-								while ($data=fgets($fp_nodes, 3000)) {
+								while ($data=fgets($fp_nodes)) {
 									$data=explode("&", $data);
 									$node=new object;
 									$node->path=$data[0];
@@ -731,11 +727,7 @@ class axstore {
 	function _load_object_data($object) {
 		if ($object && !$object->data) {
 			fseek($object->storage->fp, $object->storage->offset);
-			$rline=fgets($object->storage->fp, 3000);
-			while (strlen($rline)==3000-1) {
-				$line.=$rline;
-				$rline=fgets($object->storage->fp, 3000);
-			}
+			$rline=fgets($object->storage->fp);
 			$line.=$rline;
 
 			if ($line && sizeof($fdata=explode("&", $line))) {
@@ -792,13 +784,8 @@ class axstore {
 					while (list($path, $node)=each($this->nodes)) {
 						if (!$node->object->written_to_file) {
 							fseek($node->object->storage->fp, $node->object->storage->offset);
-							$temp_line=fgets($node->object->storage->fp, 3000);
+							$temp_line=fgets($node->object->storage->fp);
 							$object_line=trim($temp_line);
-							while (strlen($temp_line)==3000-1) {
-								$temp_line=fgets($node->object->storage->fp, 3000);
-								$object_line.=trim($temp_line);
-							}
-
 							$object_line.="\n";
 
 							$node->object->written_to_file=true;

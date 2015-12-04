@@ -208,11 +208,6 @@
 							"newversion" => "9.0"
 							));
 		case '9.0-rc2.1':
-				array_push($todo, array(
-							"description" => "Bumping revision to 9.0",
-							"operation" => "all/dummy.php",
-							"newversion" => "9.0"
-							));
 		case '9.0':
 				array_push($todo, array(
 							"description" => "Updating properties with scope, adding new properties",
@@ -220,18 +215,27 @@
 							"newversion" => "9.1-rc1.1"
 							));
 		case '9.1-rc1.1':
+		case '9.1-rc1.2':
+		case '9.1':
+		case '9.2':
+				array_push($todo, array(
+							"description" => "Updating properties, adding new properties",
+							"operation" => "9.1/upgrade.database.php",
+							"newversion" => "9.3-rc1"
+							));
+		case '9.3-rc1':
 				array_push($todo, array(
 							"description" => "Update libraries for muze and vedor",
 							"operation" => "all/upgrade.muze.libs.php",
-							"newversion" => "9.2"
+							"newversion" => "9.3"
 							));
-		case '9.1-rc1.2':
-		case '9.1':
+				/* for future use
 				array_push($todo, array(
 							"description" => "Bumping revision to 9.2",
 							"operation" => "all/dummy.php",
 							"newversion" => "9.2"
-							));
+						));
+				 */
 	
 	}
 

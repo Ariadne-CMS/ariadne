@@ -68,8 +68,7 @@
 					if ($compiler->error) {
 						showCompilerError($compiler, $path.$file);
 					} else {
-						$templateStore->write($pinp_code_compiled_new,$objectID,$templateName);
-						$templateCode = $templateStore->templateCodeFunction($objectID, $templateName);
+						$templateCode = $templateStore->templateCodeFunction($pinp_code_compiled_new);
 						$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
 						$templateStore->write($optimized, $objectID, $templateName.".inc");
 					}

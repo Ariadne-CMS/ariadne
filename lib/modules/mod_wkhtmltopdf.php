@@ -121,6 +121,7 @@
 				case 'ignore-load-errors':
 				case 'lowquality':
 				case 'no-background':
+				case 'print-media-type':
 					$this->options[ $name ] = true;
 				break;
 				case 'copies':
