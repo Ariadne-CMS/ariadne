@@ -215,17 +215,18 @@
 							"newversion" => "9.1-rc1.1"
 							));
 		case '9.1-rc1.1':
-				array_push($todo, array(
-							"description" => "Update libraries for muze and vedor",
-							"operation" => "all/upgrade.muze.libs.php",
-							"newversion" => "9.2"
-							));
 		case '9.1-rc1.2':
 		case '9.1':
 		case '9.2':
 				array_push($todo, array(
 							"description" => "Updating properties, adding new properties",
 							"operation" => "9.1/upgrade.database.php",
+							"newversion" => "9.3-rc1"
+							));
+		case '9.3-rc1':
+				array_push($todo, array(
+							"description" => "Update libraries for muze and vedor",
+							"operation" => "all/upgrade.muze.libs.php",
 							"newversion" => "9.3"
 							));
 				/* for future use
