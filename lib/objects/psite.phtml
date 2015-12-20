@@ -33,9 +33,7 @@
 
     ******************************************************************/
 
-debug("psite: Load","object");
-global $AR;
-include_once($AR->dir->install."/lib/objects/psection.phtml");
+require_once(AriadneBasePath."/objects/psection.phtml");
 
 class psite extends psection {  // psite class definition
 

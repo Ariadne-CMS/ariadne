@@ -1,7 +1,5 @@
 <?php
 
-	debug("ARnls lib: nl","all");
-
 	$ARnls["aboutariadne"]                          =    "Over Ariadne";
 	$ARnls["accessdenied"]                          =    "Toegang geweigerd";
 	$ARnls["add"]                                   =    "Voeg toe";

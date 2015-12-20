@@ -4,8 +4,8 @@
 	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		$this->_load('mod_edit.php');
 		edit::setEditMode(true);
-		edit::reset();
 		$this->call('view.html', $arCallArgs);
+		edit::reset();
 		edit::init();
 	}
 ?>

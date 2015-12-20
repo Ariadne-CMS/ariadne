@@ -1,5 +1,4 @@
 <?php
-    // beun oplossing om om keepurl heen te werken
 	global $ARCurrent,$ARnls;
 	$js_root = $AR->dir->www."js/";
 	$image_dir=$AR->dir->www.'widgets/vedor/images/';
@@ -18,7 +17,7 @@
 	}
 	$language = preg_replace('/[^a-z0-9_]/i', '', $language);
 	$ARnls->load('', $language);
-	$ARnls->load('vedor-editor', $language);
+	$ARnls->load('vedor-editor-v9', $language);
 
 	$getargs = "?vdLanguage=" . RawURLEncode($language);
 	// CAS vars;
@@ -72,7 +71,7 @@
 	<title>Vedor WYSIWYG Editor</title>
 	<link rel="stylesheet" href="<?php echo $style_dir; ?>editor.v9.css" type="text/css">
 	<link rel="stylesheet" href="<?php echo $this->make_local_url(); ?>editor.overrides.css" type="text/css">
-	<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -105,6 +104,7 @@
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/contextbar.js"></script>
 	<script type="text/javascript" src="<?php echo $js_root; ?>vedor/editor/toolbar.js"></script>
 <script ID="editorSettings" LANGUAGE="JavaScript">
+	var vdDebug = false;
 	var rootURL='<?php echo $this->store->get_config("root"); ?>';
 	var objectPath='<?php echo $this->path; ?>';
 	var sitePath='<?php echo $this->currentsite(); ?>';
@@ -132,7 +132,7 @@
 	var vdMetaDataSlideEnabled=false;
 	var vdHtmlContextHides=false;
 	var vdTableDesigner;
-
+	var vdLanguages = <?php echo json_encode($AR->nls->list); ?>;
 
 	var vdHandles;
 
@@ -151,7 +151,7 @@
 		// check whether the editpane needs to be moved down
 		// to make room for the toolbars
 		var vdToolbars=document.getElementById('vdToolbars');
-		var ToolbarHeight=52;//vdToolbars.offsetHeight;
+		var ToolbarHeight=vdToolbars.offsetHeight ? vdToolbars.offsetHeight : 52;
 
 		if (window.getSelection ) { // FIXME: border in non-ie so we have to add 4
 			ToolbarHeight+=4;
@@ -303,17 +303,27 @@
 		var type=image.getAttribute('ar:type');
 		if (!type || type=='undefined') {
 			// type='Origineel'; // FIXME: gewoon de eerste in de lijst selecteren?
-			type = document.querySelectorAll("#vdImageType option")[0].value;
+			type = document.querySelector("#vdImageType option").value;
 		}
 		vdSetProperty('vdImageType',type);
 		var alt=image.getAttribute('alt');
 		vdSetProperty('vdImageAlt',alt);
+		var title=image.getAttribute('title');
+		vdSetProperty('vdImageAlt',title);
 
-		var align = image.getAttribute("align");
+		var align = "none";
+		if (image.classList.contains("vdLeft")) {
+			align = "left";
+		} else if (image.classList.contains("vdRight")) {
+			align = "right";
+		} else if (image.classList.contains("vdCenter")) {
+			align = "center";
+		}
+
 		vdSetProperty('vdImageAlign', align);
 
 		// Set the parent icon for alignment as well;
-		var currentIcon = document.querySelectorAll("div.vedor-image-align button.vedor-selected i")[0];
+		var currentIcon = document.querySelector("div.vedor-image-align button.vedor-selected i");
 		if (currentIcon) {
 			var icons = document.querySelectorAll("button[data-vedor-section=vedor-image-align] i");
 			for (var i=0; i<icons.length; i++) {
@@ -406,7 +416,11 @@
 					var vedorPath 		= allScripts[i].getAttribute("data-vedor-path");
 					var vedorUrl  		= allScripts[i].getAttribute("data-vedor-url");
 					var vedorParentUrl	= allScripts[i].getAttribute("data-vedor-parent-url");
-					var vedorNlsList	= allScripts[i].getAttribute("data-vedor-nls-list");
+					try {
+						var vedorNlsList	= JSON.parse(allScripts[i].getAttribute("data-vedor-nls-list"));
+					} catch(e) {
+						var vedorNlsList	= [];	
+					}
 					var vedorLanguage	= allScripts[i].getAttribute("data-vedor-language");
 					var vedorUrlNls		= allScripts[i].getAttribute("data-vedor-url-nls");
 					var vedorSiteNls	= allScripts[i].getAttribute("data-vedor-site-nls");
@@ -431,9 +445,9 @@
 					}
 				break;
 				default:
-					if (allScripts[i].getAttribute("type") && allScripts[i].getAttribute("type").match(/^vedor/)) {
+					if ( vdDebug && allScripts[i].getAttribute("type") && allScripts[i].getAttribute("type").match(/^vedor/)) {
 						console.log("unhandled script");
-						console.log(allScripts[i]);
+						console.log(allScripts[i].getAttribute('type'));
 					}
 				break;
 			}
@@ -443,6 +457,7 @@
 		initGroups(allScripts);
 
 		checkLoad();
+		checkDuplicateEditableIds(this);
 	}
 
 	function vdHandleBrokenWebkitSelect(event) {
@@ -454,12 +469,38 @@
 		}
 	}
 
+	function storeOption(option, value) {
+		try {
+			var options = JSON.parse(localStorage['vedorOptions']);
+		} catch(e) {
+		}
+		if ( !options ) {
+			options = {};
+		}
+		options[option] = value;
+		localStorage['vedorOptions'] = JSON.stringify(options);
+	}
+	
+	function getOption(option) {
+		try {
+			var options = JSON.parse(localStorage['vedorOptions']);
+		} catch(e) {
+		}
+		if ( !options ) {
+			options = {}
+		}
+		return options[option];
+	}
+
 	function init() {
 			vdSelectionState = vedor.editor.selection;
 			vdSelection = vedor.dom.selection;
 
 			vdSelectionState.init(vdEditPane.contentWindow);
 			selectionchange.start(vdEditPane.contentWindow.document); // onselectionchange event for Firefox
+
+			//FIXME: is this the right place? Or should this be done in initEditable?
+			arObjectRegistry=new Array();
 
 			initEditable();
 
@@ -472,7 +513,12 @@
 
 			updateHtmlContext();
 
-			VD_DETAILS_onclick(showBorders);
+			addBordersStyleSheet(vdEditDoc);
+			VD_DETAILS_onclick(getOption('borders')!==false);
+			if ( vdEditDoc ) {
+				vdEditDoc.documentElement.classList.add('vedor-editor');
+				vdEditDoc.body.classList.add('vedor-editor');
+			}
 
 			if (tbContentEditOptions['grants']) {
 				if (tbContentEditOptions['grants']['add']) {
@@ -603,7 +649,18 @@
 					vedor.editor.toolbars[i].init();
 				}
 			}
-
+			if ( getOption('tagBoundaries') ) {
+				vedor.editor.actions['vedor-show-tags'](document.getElementById('vdShowTagBoundaries'));
+			}
+			if ( getOption('properties') ) {
+				vedor.editor.actions['vedor-properties'](document.getElementById('VD_META'));
+			}
+			if ( getOption('tagStack')===false ) { // default is on, this toggles it
+				vedor.editor.actions['vedor-show-tags-stack'](document.getElementById('vdShowTagStack'));
+			}
+			if ( getOption('dockToolbars') ) {
+				vedor.editor.actions['vedor-dock-toolbars'](document.getElementById('vdDockToolbars'));
+			}
 			window.onresize=window_onresize;
 			vdEditPane.contentWindow.document.body.onbeforeunload = handleBeforeUnload; // must be set this way, don't use addEventListener/attachEvent
 			vdEditPane.contentWindow.document.body.onunload = handleUnload;
@@ -625,21 +682,20 @@
 			currentImage.setAttribute('ar:type',type);
 			if (tbContentEditOptions['image']['styles'][type]) {
 				var className = currentImage.className;
-				var classAlign = currentImage.className.match(/\b(vdLeft|vdCenter|vdRight)\b/);
 				currentImage.className=tbContentEditOptions['image']['styles'][type]['class'];
-				if (classAlign) {
-					currentImage.className += ' '+classAlign;
-				}
 				var temp=new String(currentImage.src);
 				temp=temp.substr(0, temp.lastIndexOf('/')+1)+tbContentEditOptions['image']['styles'][type]['template'];
 				currentImage.src=temp;
 			}
 			var align=vdGetProperty('vdImageAlign');
-			if (align=='none') {
-				currentImage.removeAttribute('align');
-			} else {
-				currentImage.setAttribute('align',align);
+			if (align=='left') {
+				currentImage.classList.add("vdLeft");
+			} else if (align == "right") {
+				currentImage.classList.add("vdRight");
+			} else if (align == "center") {
+				currentImage.classList.add("vdCenter");
 			}
+
 			var alt=vdGetProperty('vdImageAlt');
 			if (alt) {
 				currentImage.setAttribute('alt',alt);
@@ -652,20 +708,6 @@
 			} else {
 				currentImage.removeAttribute('title');
 			}
-			vdStoreUndo();
-		}
-	}
-
-	function vdSetImageClass() {
-		if (currentImage) {
-			var align=vdGetProperty('vdImageAlignClass');
-			currentImage.removeAttribute('align');
-			var className = currentImage.className;
-			className = className.replace(/\b(vdLeft|vdCenter|vdRight)\b/ig, '');
-			if ( align!='none' ) {
-				className += ' '+align;
-			}
-			currentImage.className = className;
 			vdStoreUndo();
 		}
 	}
@@ -709,31 +751,42 @@
 				vedor.editor.toolbars[i].reset();
 			}
 		}
-
+		if ( nlslist && nlslist[language] ) {
+			language = nlslist[language]; // oldstyle url => Language
+		} else {
+			language = vdLanguages[language]; // newstyle nls => Language
+		}
 		// reset nls
-		var nlsselect=document.getElementById('VD_NLS_SELECT');
-		if (nlsselect) {
-			var vedorLanguageList = document.getElementById('vedorLanguage').querySelectorAll('.vedor-list-items');
-			if ( nlslist && nlslist.length>1 ) {
-				vedorLanguageList.innerHTML = '';
-				for ( var i in nlslist ) {
-					var item = muze.html.el('li',
-						muze.html.el('label',
-							muze.html.el('input', { type: 'radio', name: 'language', value: i, checked: ( i == language ) }, nlslist[i] )
-						)
-					);
-					// FIXME: Deze appendchild moest ergens anders heen, maar waar?
-					// vedorLanguageList.appendChild(item);
-				}
-				//loadOptions('VD_NLS_SELECT', nlsOptions, nlsOptionsSelected);
-				document.getElementById('vedorLanguage').style.display = 'list-item';
-			} else {
-				document.getElementById('vedorLanguage').style.display = 'none';
+		var vedorLanguageList = document.getElementById('vedorLanguageList');
+		if ( vedorLanguageList && nlslist && Object.keys(nlslist).length>1 ) {
+			vedorLanguageList.innerHTML = '';
+			for ( var i in nlslist ) {
+				var item = muze.html.el('li',
+					muze.html.el(
+						'button',
+						{
+							'data-vedor-link': i, 
+							'data-vedor-language': nlslist[i], 
+							'data-vedor-action': 'vedor-switch-language',
+							class:'vedor-language-select' + ( language == nlslist[i] ? ' vedor-selected' : '' ) 
+						},
+						nlslist[i])
+				);
+				// FIXME: Deze appendchild moest ergens anders heen, maar waar?
+				vedorLanguageList.appendChild(item);
 			}
+			//loadOptions('VD_NLS_SELECT', nlsOptions, nlsOptionsSelected);
+			var languageButton = document.getElementById('vedorLanguage');
+			languageButton.style.display = 'inline-block';
+			if ( languageButton.style.display!='inline-block' ) { //Chrome sucks
+				languageButton.style.cssText = 'display: inline-block;';
+			}
+		} else {
+			document.getElementById('vedorLanguage').style.display = 'none';
 		}
 		vdUndoHandler.reset();
 		//if ( url ) {
-		//	document.getElementById('vdMetaFrame').src = url + 'vd.meta.phtml?vdLanguage=<?php echo RawUrlEncode($language); ?>';
+		//	document.getElementById('vdMetaFrame').src = url + 'dialog.vedor-meta.html?vdLanguage=<?php echo RawUrlEncode($language); ?>';
 		//} else {
 		//	document.getElementById('vdMetaFrame').src = 'about:blank';
 		//}
@@ -1098,6 +1151,17 @@
 		}
 	}
 
+	function checkDuplicateEditableIds(targetFrame) {
+		var idElements = targetFrame.contentDocument.querySelectorAll(".editable[id]");
+		for (var i=0; i<idElements.length; i++) {
+			var ids = targetFrame.contentDocument.querySelectorAll('.editable[id="' + idElements[i].id + '"]');
+			if (ids.length > 1 && (ids[0] == idElements[i])) {
+				alert("WARNING!!\n\nThe editable page contains duplicate field IDs.\nThis WILL cause problems if you save this page!");
+			}
+		}
+	}
+
+
 	function VD_NLS_onclick() {
 		vdEditPane.src=document.getElementById('VD_NLS_SELECT').value;
 	}
@@ -1301,67 +1365,21 @@
 			window.el=el;
 			elIMG = vdSelectionState.getControlNode(el);
 			if (elIMG) {
-				window.elIMG=elIMG;
 				if (elIMG && elIMG.tagName=='IMG') {
-					src=new String(elIMG.src);
-					if (src.substring(0,rootURL.length)==rootURL) {
-						src=src.substring(rootURL.length);
-					} else { // htmledit component automatically adds http://
-						if (src.substring(0,rootURL.length)==rootURL) {
-							src=src.substring(rootURL.length);
-						} else {
-							var temp=new String('http:///');
-							if (src.substring(0,temp.length)==temp) {
-								src=src.substring(temp.length-1);
-							}
-						}
-					}
-					args['src'] = src;
-					args['border'] = elIMG.border;
-					args['hspace'] = elIMG.hspace;
-					args['vspace'] = elIMG.vspace;
-					args['align'] = elIMG.align;
-					args['name'] = elIMG.alt;
-					args['ar:type'] = elIMG.getAttribute('ar:type');
-					args['ar:path'] = elIMG.getAttribute('ar:path');
+					window.elIMG=elIMG;
 				} else {
 					window.elIMG=false;
 					window.rg=el;
-					src = objectPath;
-					args['src'] = src;
-					args['hspace'] = "";
-					args['vspace'] = "";
-					args['align'] = "";
-					args['name'] = "";
-					args['border'] = "";
-					var type = document.querySelectorAll("#vdImageType option")[0].value;
-					if (tbContentEditOptions['image']['default']) {
-						type = tbContentEditOptions['image']['default'];
-					}
-					args['ar:type'] = type;
-					args['class'] = tbContentEditOptions['image']['styles'][type]['class'];
 				}
 			} else {
 				window.elIMG=false;
 				window.rg=el;
-				src = objectPath;
-				args['src'] = src;
-				args['hspace'] = "";
-				args['vspace'] = "";
-				args['align'] = "";
-				args['name'] = "";
-				args['border'] = "";
-				var type = document.querySelectorAll("#vdImageType option")[0].value;
-				if (tbContentEditOptions['image']['default']) {
-					type = tbContentEditOptions['image']['default'];
-				}
-
-				args['ar:type'] = type;
-				args['class'] = tbContentEditOptions['image']['styles'][type]['class'];
 			}
-			args['editOptions']=tbContentEditOptions;
-			args['stylesheet']=tbContentEditOptions['css']['stylesheet'];
-			// args = new Array();
+
+			var type = document.querySelector("#vdImageType option").value;
+			if (tbContentEditOptions['image']['default']) {
+				type = tbContentEditOptions['image']['default'];
+			}
 
 			var url = objectURL + 'dialog.browse.php<?php echo $getargs; ?>&viewmode=icons&root=' + (tbContentEditOptions['photobook']['location'] ? tbContentEditOptions['photobook']['location'] : sitePath + "images/") + '&extraroots=' + sitePath + '&path=' + (tbContentEditOptions['photobook']['location'] ? tbContentEditOptions['photobook']['location'] : sitePath + "images/") + '&pathmode=siterelative';
 			muze.dialog.open( url, 'sitemap', { windowFeatures : muze.ariadne.explore.windowprops['dialog_browse'] } )
@@ -1433,50 +1451,42 @@
 			if (arr['ar:type'] && arr['ar:type']!='undefined') {
 				src+=tbContentEditOptions['image']['styles'][arr['ar:type']]['template'];
 			}
-			if (window.elIMG) { // insert a new img
+			if (window.elIMG) { // modify existing image;
 				elIMG=window.elIMG;
 				elIMG.src=src;
-				elIMG.border=arr['border'];
-				elIMG.hspace=arr['hspace'];
-				elIMG.vspace=arr['vspace'];
-				if (arr['align']=='none') {
-					elIMG.align='';
-				} else {
-					elIMG.align=arr['align'];
+				if (arr['alt']) {
+					elIMG.alt=arr['alt'];
 				}
-				elIMG.alt=arr['name'];
-				elIMG.setAttribute('ar:type',arr['ar:type']);
+				if (arr['title']) {
+					elIMG.title=arr['title'];
+				}
+				if (arr['ar:type']) {
+					elIMG.setAttribute('ar:type',arr['ar:type']);
+				}
 				if (arr['path']) {
 					elIMG.setAttribute('ar:path',arr['path']);
 				} else {
 					elIMG.setAttribute('ar:path',arr['ar:path']);
 				}
-				elIMG.className = arr['class'];
-			} else {
+				if (arr['class']) {
+					elIMG.className = arr['class'];
+				}
+			} else { // insert a new image;
 				el=window.el;
 				temp='<IMG SRC="'+src+'"';
-				if (arr['border']!='') {
-					temp+=' BORDER='+arr['border'];
+				if (arr['alt']) {
+					temp+=' ALT="'+arr['alt']+'"';
 				}
-				if (arr['hspace']!='') {
-					temp+=' HSPACE='+arr['hspace'];
+				if (arr['alt']) {
+					temp+=' TITLE="'+arr['title']+'"';
 				}
-				if (arr['vspace']!='') {
-					temp+=' VSPACE='+arr['vspace'];
-				}
-				if (arr['align']!='') {
-					temp+=' ALIGN='+arr['align'];
-				}
-				if (arr['name']!='') {
-					temp+=' ALT="'+arr['name']+'"';
-				}
-				if (arr['class']!='') {
+				if (arr['class']) {
 					temp+=' CLASS="'+arr['class']+'"';
 				}
-				if (arr['ar:type']!='') {
+				if (arr['ar:type']) {
 					temp+=' ar:type="'+arr['ar:type']+'"';
 				}
-				if (arr['path']!='') {
+				if (arr['path']) {
 					temp+=' ar:path="'+arr['path']+'"';
 				} else if (arr['ar:path']!='') {
 					temp+=' ar:path="'+arr['ar:path']+'"';
@@ -1595,6 +1605,7 @@
 
 	function vdToggleInsert() {
 		var vdInsertPopup = document.getElementById('vdInsertPopup');
+		var vdEditDoc=vdEditPane.contentWindow.document;
 		if (vdInsertPopup.style.display=='none') {
 			vdInsertPopup.style.display='block';
 			var closeDropEvent;
@@ -2146,7 +2157,9 @@
 			editable = elm;
 
 			registerDataField(elm.id, elm.getAttribute("data-vedor-field"), elm.getAttribute("data-vedor-path"), elm.getAttribute("data-vedor-id"));
-			// console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
+			if ( vdDebug ) {
+				 console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
+			}
 
 			muze.event.attach(editable, 'focus', checkChangeStart);
 			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
@@ -2182,8 +2195,9 @@
 			editable = elm;
 
 			registerDataField(elm.id, elm.getAttribute("data-vedor-field"), elm.getAttribute("data-vedor-path"), elm.getAttribute("data-vedor-id"));
-			// console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
-
+			if (vdDebug) {
+				 console.log("registered " + elm.id + ":" + elm.getAttribute("data-vedor-field") +":"+ elm.getAttribute("data-vedor-path") +":"+ elm.getAttribute("data-vedor-id"));
+			}
 			muze.event.attach(editable, 'focus', checkChangeStart);
 			muze.event.attach(editable, 'blur', checkChangeEnd); // Blur is written here in lowercase, in this case firefox only supports lowercase!
 			muze.event.attach(editable, 'mousedown', function() {
@@ -2340,7 +2354,7 @@
 		if (sel) {
 			vdParent = vdSelection.getNode(sel);
 			while(vdParent) {
-				if (vdParent.className && vdParent.className.match(/\beditable\b/)) {
+				if (vdParent.classList && vdParent.classList.contains('editable')) {
 					return vdParent;
 				} else {
 					vdParent = vdParent.parentNode;
@@ -2416,152 +2430,42 @@
 		}
 	}
 
-	function getLayoutStyleSheet() {
-		vdEditDoc = vdEditPane.contentWindow.document;
-		var myStyleSheet = vdEditDoc.styleSheets[0];
-
-		for (var i = 0, l = vdEditDoc.styleSheets.length; i < l; i++) {
-			if (vdEditDoc.styleSheets[i].href && vdEditDoc.styleSheets[i].href.match(/.*\/layout\.css$/)) {
-				myStyleSheet = vdEditDoc.styleSheets[i];
-				break;
-			}
-		}
-		return myStyleSheet;
-	}
+	function addBordersStyleSheet(doc) {
+		var head = doc.getElementsByTagName('head')[0];
+		var myStyle  = doc.createElement('link');
+		myStyle.id   = "vedorBorders"
+		myStyle.rel  = 'stylesheet';
+		myStyle.href = '<?php echo $AR->dir->www; ?>widgets/vedor/borders.css';
+		var head = doc.getElementsByTagName('HEAD')[0];
+		head.insertBefore(myStyle, head.firstChild); // always insert as first stylesheet, so other stylesheets may override it			
+	};
 
 	function VD_DETAILS_onclick(borders) {
-		if ( !document.documentMode || document.documentMode > 5 ) {
-			var outlineStyle = 'outline: 1px dotted #CCC; min-height: 1.5em;';
-			var highlightStyle = 'outline: 1px dotted blue !important;';
-			var showOutline = function(ob) {
-				ob.style.outline = '1px dotted #CCC';
-				ob.style.minHeight = '1.5em';
-			};
-			var hideOutline = function(ob) {
-				ob.style.outline = '';
-				ob.style.minHeight = '';
-			};
-		} else {
-			var outlineStyle = 'border: 1px dotted #CCC; min-height: 1.5em;';
-			var highlightStyel = 'border: 1px dotted blue !important;';
-			var showOutline = function( ob ) {
-				ob.style.border = '1px dotted #CCC';
-				ob.style.minHeight = '1.5em';
-			};
-			var hideOutline = function( ob ) {
-				ob.style.border = '';
-				ob.style.minHeight = '';
-			};
-		}
-
 		if (borders===false) {
 			showBorders=true;
 		} else if (borders===true) {
 			showBorders=false;
 		}
 		var vdEditDoc=vdEditPane.contentWindow.document;
-		var foundit=false;
-		var foundtable=false;
-		var foundanchor=false;
-		var founduneditable=false;
-		if (document.getElementById("VD_DETAILS")) {
-			document.getElementById('VD_DETAILS').className = document.getElementById('VD_DETAILS').className.replace(/\bvedor-selected\b/, '');
-		}
 		if (showBorders) {
 			showBorders=false;
 			if (document.getElementById("VD_DETAILS")) {
-				document.getElementById('VD_DETAILS').className = document.getElementById('VD_DETAILS').className.replace(/\bvedor-selected\b/, '');
+				document.getElementById('VD_DETAILS').classList.remove('vedor-selected');
 			}
+			vdEditDoc.body.classList.remove('vedor-borders');
 		} else {
 			showBorders=true;
 			if (document.getElementById("VD_DETAILS")) {
-				document.getElementById('VD_DETAILS').className += ' vedor-selected';
+				document.getElementById('VD_DETAILS').classList.add('vedor-selected');
 			}
+			vdEditDoc.body.classList.add('vedor-borders');
 		}
-		// first show borders on editable sections
-
-		var myStyleSheet = getLayoutStyleSheet();
-
-		if (myStyleSheet) {
-			if ( myStyleSheet.rules || myStyleSheet.cssRules ) {
-
-				var myRules;
-				if( myStyleSheet.cssRules ) {
-					myRules = myStyleSheet.cssRules;
-				} else { // IE
-					myRules = myStyleSheet.rules;
-				}
-				for (var i=0; i<myRules.length; i++) {
-					if (myRules[i].selectorText) {
-						if (myRules[i].selectorText.match(/.*\.editable A/)) {
-							if (!showBorders) { //myRules[i].style.borderBottomWidth=="1px") {
-								myRules[i].style.borderBottomWidth='0px';
-							} else {
-								myRules[i].style.borderBottomWidth='1px';
-							}
-							var foundanchor=true;
-						} else if (myRules[i].selectorText.match(/.*\.editable.*/) || myRules[i].selectorText.match(/.*\.editable_border.*/)) {
-							myRules[i].style.borderWidth='0px';
-							if (!showBorders) { //myRules[i].style.borderWidth=="1px") {
-								if ( myRules[i].selectorText.match(/.* td.*/i) ) {
-									myRules[i].style.height='auto';
-									foundtable=true;
-								}
-								hideOutline(myRules[i]);
-								showBorders=false;
-							} else {
-								if ( myRules[i].selectorText.match(/.* td.*/i) ) {
-									myRules[i].style.height='1.5em';
-									foundtable=true;
-								}
-								showOutline( myRules[i] );
-								showBorders=true;
-							}
-							foundit=true;
-						} else if (myRules[i].selectorText.match(/.*\.uneditable.*/)) {
-							myRules[i].style.borderWidth='0px';
-							if (!showBorders) { //myRules[i].style.borderWidth=="1px") {
-								hideOutline( myRules[i] );
-								showBorders=false;
-							} else {
-								showOutline( myRules[i] );
-								showBorders=true;
-							}
-							myRules[i].style.display = 'inline-block';
-							founduneditable=true;
-						}
-					}
-				}
-			}
-			if (!foundit && showBorders) {
-				// append all styles with borders set
-				var list = ['.editable','.editable TABLE','.editable TH'];
-				for (var i = 0; i<list.length; i++) {
-					cssSetStyle( myStyleSheet, list[i], outlineStyle);
-				}
-			}
-			if (!foundtable) {
-				cssSetStyle( myStyleSheet, '.editable td', outlineStyle);
-			}
-			if (!founduneditable) {
-				var list = ['.uneditable'];
-				for (var i = 0; i<list.length; i++) {
-					if (showBorders) {
-						cssSetStyle( myStyleSheet, list[i], highlightStyle );
-					}
-					cssSetStyle( myStyleSheet, list[i], 'display: inline-block;');
-				}
-			}
-			if (!foundanchor && showBorders) {
-				// not found
-				cssSetStyle( myStyleSheet, '.editable A', 'border-bottom: 1px dotted #CCCCCC;' );
-				cssSetStyle( myStyleSheet, '.editable A:link', 'border-bottom: 0px;' );
-				cssSetStyle( myStyleSheet, '.editable A:visited', 'border-bottom: 0px;' );
-			}
-			cssSetStyle( myStyleSheet, '[data-vedor-selectable]', 'outline: 1px dotted #CCCCCC;');
-
-			if (vdHandles) {
-				vdShowHandles();
+		storeOption('borders', showBorders);
+		if (document.getElementById("VD_DETAILS")) {
+			if ( showBorders ) {
+				document.getElementById('VD_DETAILS').classList.add('vedor-selected');
+			} else {
+				document.getElementById('VD_DETAILS').classList.remove('vedor-selected');
 			}
 		}
 	}
@@ -2569,38 +2473,17 @@
 	var showTagBoundaries = false;
 
 	function showTagBoundariesToggle() {
-		var myStyleSheet = getLayoutStyleSheet();
-		var vdEditDoc = vdEditPane.contentWindow.document;
-
+		var vdEditDoc=vdEditPane.contentWindow.document;
 		if (showTagBoundaries) {
 			showTagBoundaries = false;
-			vdEditDoc.body.className = vdEditDoc.body.className.replace(/\bvdShowTags\b/, '');
+			vdEditDoc.body.classList.remove('vedor-tags');
 			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").classList.remove('vedor-selected') : '';
 		} else {
 			showTagBoundaries = true;
-			vdEditDoc.body.className += " vdShowTags";
+			vdEditDoc.body.classList.add('vedor-tags');
 			document.getElementById("vdShowTagBoundaries") ? document.getElementById("vdShowTagBoundaries").classList.add("vedor-selected") : '';
 		}
-
-		cssSetStyle( myStyleSheet, 'body.vdShowTags .editable br', 'display: block; right: 0px; margin: 0px; padding: 0px; font-size: 9px; content: "BR"; position: relative; height: 1em; margin-left: 100%;');
-		cssSetStyle( myStyleSheet, 'body.vdShowTags .editable br' + ':before', 'opacity: 0.6; position: relative; content: "' + 'br' + '"; margin-left: -20px; padding: 0px 3px; border: 1px dotted #444; font-size: 10px; color: #000; background-color: #999;' );
-
-		var tags = [];
-		var allTags = vdEditDoc.querySelectorAll(".editable *");
-		for (var i=0; i<allTags.length; i++) {
-			if (!skipShowTag(allTags[i].tagName)) {
-				var tagName = allTags[i].tagName.toLowerCase();
-				tags.push(tagName);
-			}
-		}
-		var blocktags = ["*", "h1", "h2", "h3", "p", "div", "table", "td", "a"];
-		for (var i=0; i<tags.length; i++) {
-			var tag = tags[i];
-			if (showTagBoundaries) {
-				cssSetStyle( myStyleSheet, 'body.vdShowTags .editable ' + tag + ':before', 'opacity: 0.6; position: relative; content: "' + tag + '"; vertical-align: middle; padding: 1px; height: 12px; margin-right: 2px; border: 1px dotted #444; font-size: 10px; color: #000; background-color: #999;' );
-				cssSetStyle( myStyleSheet, 'body.vdShowTags .editable ' + tag + ':after', 'opacity: 0.6; position: relative; content: "/' + tag + '"; vertical-align: middle; padding: 1px; height: 12px; margin-left: 2px; border: 1px dotted #444; font-size: 10px; color: #000; background-color: #999;' );
-			}
-		}
+		storeOption('tagBoundaries', showTagBoundaries);
 	}
 
 	function skipShowTag(tag) {
@@ -2617,12 +2500,14 @@
 			vdMetaDataSlideEnabled = false;
 			document.getElementById('VD_META').classList.remove('vedor-selected');
 			document.body.classList.remove("vedor-properties");
+			storeOption('properties', false);
 		} else {
 			document.getElementById('vdMetaDataSlide').style.display='';
 			document.getElementById('vdMetaDataSlider').style.display='';
 			vdMetaDataSlideEnabled = true;
 			document.getElementById('VD_META').classList.add('vedor-selected');
 			document.body.classList.add("vedor-properties");
+			storeOption('properties', true);
 		}
 		window_onresize();
 	}
@@ -2647,7 +2532,7 @@
 		}
 		var parent = el.parentNode;
 		while (parent) {
-			if (parent.className.match(/menu/)) {
+			if (parent.classList.contains('menu')) {
 				return true;
 			}
 			parent = parent.parentNode;
@@ -2812,12 +2697,36 @@
 		}
 	}
 
+	function selectStyle(select, node) {
+		for ( var i=0, l=select.options.length; i<l; i++ ) {
+			var val = select.options[i].value;
+			var info = val.split('.');
+			var tag = info[0];
+			var className = info[1];
+			var n = node;
+			while ( n && n.classList && !n.classList.contains('editable') ) {
+				if ( n.tagName == tag ) {
+					if ( !className || node.classList.contains(className) ) {
+						select.options[i].selected = true;
+						return n;
+					}
+				}
+				n = n.parentElement;
+			}
+		}
+	}
+
 	function initTextProperties() {
+
 		var sel = vdSelectionState.get();
 		if (sel) {
 			var parent = vdSelection.getNode(sel);
 			if (parent || parent.getAttribute || parent.getAttribute("contenteditable")) {
 				var parentStyles = getAllStyles(parent);
+				var textFormat = document.querySelectorAll(".vedor-text-format select");
+				for ( var i=0, l=textFormat.length; i<l; i++ ) {
+					selectStyle(textFormat[i], parent);
+				}
 
 				var textAlign = document.querySelectorAll(".vedor-text-align[data-type=vedor-buttongroup-radio]");
 				for (var i=0; i<textAlign.length;i++) {
@@ -2885,8 +2794,146 @@
 	var toolbarTimer = false;
 	var skipContextUpdate = false;
 
+	function getToolbarPosition(sel) {
+		var range = sel; //.getRangeAt(0);
+		if ( !range ) {
+			return null;
+		}
+		var rects = range.getClientRects();
+		var parent = vdSelection.getNode(sel);
+		if ( !rects.length ) {
+			// insert element at range and get its position, other options aren't exact enough
+			var span = vdEditPane.contentDocument.createElement('span');
+			if ( span.getClientRects ) {
+				// Ensure span has dimensions and position by
+				// adding a zero-width space character
+				try {
+					span.appendChild( vdEditPane.contentDocument.createTextNode("\u200b") );
+					range.insertNode(span);
+					rects = span.getClientRects();
+					var spanParent = span.parentNode;
+					spanParent.removeChild(span);
+					// Glue any broken text nodes back together
+					spanParent.normalize();
+				} catch(e) {
+				}
+			}
+		}
+		if ( rects.length ) {
+			var ltop = rects[0].top;
+			var lleft = rects[0].left;
+			var rleft = rects[rects.length-1].right;
+			var rtop = rects[rects.length-1].bottom; 
+		}
+		if ( !rects.length || parent.getAttribute("data-vedor-selectable") ) {
+			pos = parent && parent.getBoundingClientRect ? parent.getBoundingClientRect() : { left: 0, top: 0, right: 0, bottom: 0};
+			lleft = pos.left;
+			ltop = pos.top;
+			rleft = pos.right;
+			rtop = pos.bottom;
+		}
+		// fallback... if nothing else works
+		if ( lleft == 0 && rleft == 0 && ltop == 0 && rtop == 0 ) {
+			parent = vdSelection.parentNode(sel);
+			if ( !parent || !parent.getBoundingClientRect ) {
+				return false;
+			}
+			pos = parent.getBoundingClientRect();
+			lleft = pos.left;
+			ltop = pos.top;
+			rleft = pos.right;
+			rtop = pos.bottom;
+		}
+		var top = Math.max(ltop, rtop);
+		var left = lleft + ((rleft - lleft) / 2);
+		return { top: top, left: left, ltop: ltop, lleft: lleft, rtop: rtop, rleft: rleft };
+	}
+
+	function repositionToolbar() {
+		var sel = vdSelectionState.get();
+		if ( !currentContext ) {
+			currentContext = getVedorEditorContext();
+		}
+		var activeSection = document.getElementById(currentContext);
+		var pos = getToolbarPosition(sel);
+		if ( !pos || !activeSection ) {
+			hideToolbar(true);
+			return;
+		}
+		var top = pos.top;
+		var left = pos.left;
+			
+		var activeToolbar = activeSection.querySelectorAll("div.vedor-toolbar")[0];
+
+		top += vdEditPane.offsetTop;
+
+		var newleft = left - (activeToolbar.offsetWidth/2);
+
+		if (newleft < 0) {
+			var markerLeft = activeToolbar.offsetWidth/2 + newleft;
+			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft+'px';
+			newleft = 0;
+		} else if (newleft + activeToolbar.offsetWidth > vdEditPane.offsetWidth) {
+			var delta = newleft + activeToolbar.offsetWidth - vdEditPane.offsetWidth;
+			markerLeft = activeToolbar.offsetWidth/2 + delta;
+			activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft+'px';
+
+			newleft = vdEditPane.offsetWidth - activeToolbar.offsetWidth;
+		} else {
+			activeToolbar.getElementsByClassName("marker")[0].style.left = "50%";
+		}
+
+		// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
+		// check the position 
+		// - if toolbar bottom <= editor pane bottom, no problem
+		// - if toolbar can be repositioned, no problem
+		// - if edit pane content can be scrolled down, no problem
+		// - else: add space on the bottom so that you can scroll down
+		var editPaneRect = vdEditPane.getBoundingClientRect();
+		var toolbarRect = activeSection.getBoundingClientRect();
+		if ( top + toolbarRect.height > editPaneRect.height ) {
+			// toolbar extends beyond bottom edge if not repositioned
+			var mintop = Math.min(pos.ltop, pos.rtop);
+			if ( mintop + toolbarRect.height <= editPaneRect.height ) {
+				// toolbar can be repositioned
+				// FIXME: min top should be position of the cursor, not selection
+				top = editPaneRect.height - toolbarRect.height;
+			} else {
+				top = mintop;
+				var scrollHeight = Math.max(vdEditPane.contentDocument.body.scrollHeight, vdEditPane.contentDocument.body.clientHeight);
+				var scrollTop    = Math.max(vdEditPane.contentDocument.body.scrollTop, vdEditPane.contentDocument.documentElement.scrollTop);
+				if ( scrollTop >= (scrollHeight - vdEditPane.contentDocument.body.clientHeight - toolbarRect.height ) ) {
+					// no more scroll space, so add it.
+					vdEditPane.contentDocument.body.classList.add('vedor-footer-space');
+				}
+			}
+		}
+		if ( vdEditPane.contentDocument.body.classList.contains('vedor-footer-space') ) {
+			var scrollHeight = Math.max(vdEditPane.contentDocument.body.scrollHeight, vdEditPane.contentDocument.body.clientHeight);
+			var scrollTop    = Math.max(vdEditPane.contentDocument.body.scrollTop, vdEditPane.contentDocument.documentElement.scrollTop);
+			if ( scrollTop < (scrollHeight - vdEditPane.contentDocument.body.clientHeight - toolbarRect.height - 132 )) {
+				vdEditPane.contentDocument.body.classList.remove('vedor-footer-space');
+			}
+		}
+		activeSection.style.top = top + 10 + "px"; // 10 is the height of the marker arrow
+		activeSection.style.left = newleft + "px";
+	}
+
+	function hideToolbar(clearFooter) {
+		var sections = document.querySelectorAll("section.vedor-section");
+		for (var j=0; j<sections.length; j++) {
+			if (!(sections[j].className.match(/active/))) {
+				sections[j].style.left = "-10000px";
+			}
+		}
+		if ( clearFooter && vdEditPane.contentDocument.body.classList.contains('vedor-footer-space') ) {
+			vdEditPane.contentDocument.body.classList.remove('vedor-footer-space');
+		}
+	}
+
+	var currentContext = '';
 	function showVedorEditorContext() {
-		var currentContext = getVedorEditorContext();
+		currentContext = getVedorEditorContext();
 
 		var sections = document.querySelectorAll("section.vedor-section");
 		for (var i=0; i<sections.length; i++) {
@@ -2895,19 +2942,12 @@
 
 		initContextProperties(currentContext);
 
-		var hideIt = function() {
-			var sections = document.querySelectorAll("section.vedor-section");
-			for (var j=0; j<sections.length; j++) {
-				if (!(sections[j].className.match(/active/))) {
-					sections[j].style.left = "-10000px";
-				}
-			}
-		}
 		//window.setTimeout(hideIt, 200);
 
 		var activeSection = document.getElementById(currentContext);
-		// console.log(activeSection);
-
+		if ( vdDebug ) {
+			console.log(activeSection);
+		}
 		if (activeSection && !vdHideToolbars) {
 				var htmlContext = activeSection.querySelectorAll("div.vedor-toolbar-status")[0];
 				if ( htmlContext ) {
@@ -2915,104 +2955,16 @@
 				}
 				// activeSection.style.display = "block";
 				activeSection.className += " active";
-				hideIt(); // window.setTimeout(hideIt, 200);
+				hideToolbar(); // window.setTimeout(hideIt, 200);
+
 
 				var sel = vdSelectionState.get();
 				var parent = vdSelection.getNode(sel);
 				if (parent == vdEditPane.contentWindow.document) {
 					return;
 				}
-				if (sel.collapsed) {
-					var parent = vdSelection.getNode(sel);
-					vdSelection.setHTMLText(sel, "<span id='vdBookmarkLeft'></span><span id='vdBookmarkRight'></span>");
-				} else {
-					vedor.editor.bookmarks.set(sel);
-				}
 
-				var bmLeft = vdEditPane.contentWindow.document.getElementById("vdBookmarkLeft");
-				var obj = bmLeft;
-
-				if (!obj) {
-					return;
-				}
-
-				var lleft = 0, ltop = 0;
-				ltop += obj.offsetHeight;
-				do {
-					lleft += obj.offsetLeft;
-					ltop += obj.offsetTop;
-				} while (obj = obj.offsetParent);
-
-				var bmRight = vdEditPane.contentWindow.document.getElementById("vdBookmarkRight");
-				obj = bmRight;
-				var rleft = 0, rtop = 0;
-				rtop += obj.offsetHeight;
-				do {
-					rleft += obj.offsetLeft;
-					rtop += obj.offsetTop;
-				} while (obj = obj.offsetParent);
-
-				bmRight.parentNode.removeChild(bmRight);
-				bmLeft.parentNode.removeChild(bmLeft);
-
-				if ( lleft == 0 && rleft == 0 && ltop == 0 && rtop == 0 ) {
-					pos = vdSelection.parentNode(sel).getBoundingClientRect();
-					lleft = pos.left;
-					ltop = pos.top;
-					rleft = pos.right;
-					rtop = pos.bottom;
-				}
-
-				if ( parent.getAttribute("data-vedor-selectable")) {
-					pos = parent.getBoundingClientRect();
-					lleft = pos.left;
-					ltop = pos.top;
-					rleft = pos.right;
-					rtop = pos.bottom;
-				}
-
-				var top = Math.max(ltop, rtop);
-				var left = lleft + ((rleft - lleft) / 2);
-
-				var activeToolbar = activeSection.querySelectorAll("div.vedor-toolbar")[0];
-
-				top += vdEditPane.offsetTop;
-
-				if (!parent.getAttribute("data-vedor-selectable")) {
-					top -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
-					left -= vdEditPane.contentWindow.document.body.scrollLeft ? vdEditPane.contentWindow.document.body.scrollLeft : vdEditPane.contentWindow.pageXOffset;
-				}
-
-				newleft = left - (activeToolbar.offsetWidth/2);
-
-				if (newleft < 0) {
-					markerLeft = activeToolbar.offsetWidth/2 + newleft;
-					activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
-					newleft = 0;
-				} else if (newleft + activeToolbar.offsetWidth > vdEditPane.offsetWidth) {
-					var delta = newleft + activeToolbar.offsetWidth - vdEditPane.offsetWidth;
-					markerLeft = activeToolbar.offsetWidth/2 + delta;
-					activeToolbar.getElementsByClassName("marker")[0].style.left = markerLeft;
-
-					newleft = vdEditPane.offsetWidth - activeToolbar.offsetWidth;
-				} else {
-					activeToolbar.getElementsByClassName("marker")[0].style.left = "50%";
-				}
-
-				// Move the toolbar to beneath the top of the selection if the toolbar goes out of view;
-				var fullHeight = vdEditPane.contentWindow.document.documentElement.clientHeight ? vdEditPane.contentWindow.document.documentElement.clientHeight : vdEditPane.contentWindow.document.body.clientHeight
-				if (top > (fullHeight - (activeSection.scrollHeight * 2))) {
-					mintop = Math.min(ltop, rtop);
-					mintop -= vdEditPane.contentWindow.document.body.scrollTop ? vdEditPane.contentWindow.document.body.scrollTop : vdEditPane.contentWindow.pageYOffset;
-
-					top = fullHeight - (activeSection.scrollHeight * 2);
-					if (top < mintop) {
-						top = mintop;
-					}
-				}
-				activeSection.style.top = top + 10 + "px"; // 80 is the height of the main vedor toolbar if the toolbars are directly under the document - not used since they moved to editorPane
-				activeSection.style.left = newleft;
-
+				repositionToolbar();
 
 // FIXME: Android fix here
 //				// restore selection triggers contextupdate, which triggers restore selection - this hopefully prevents that loop.
@@ -3022,7 +2974,7 @@
 				}
 				window.setTimeout(function() { skipContextUpdate = false;}, 20);
 		} else {
-			hideIt();
+			hideToolbar(true);
 		}
 
 		if (document.getElementById("VD_DETAILS")) {
@@ -3071,9 +3023,9 @@
 	function getUneditableParent(checkParent) {
 		var parent = checkParent;
 		while (parent) {
-			if (parent.className && parent.className.match(/\buneditable\b/)) {
+			if (parent.classList && parent.classList.contains('uneditable')) {
 				return parent;
-			} else if (parent.className && parent.className.match(/\beditable\b/)) {
+			} else if (parent.classList && parent.classList.contains('editable')) {
 				return false;
 			}
 			parent = parent.parentNode;
@@ -3475,7 +3427,7 @@
 	</div>
 </div>
 <div id="vdMetaDataSlide" style="height: 220px; display: none;" unselectable="on" style="display: none; -webkit-overflow-scrolling:touch; overflow: scroll;">
-	<iframe id="vdMetaFrame" src="<?php echo $this->make_local_url(); ?>vd.meta.phtml?vdLanguage=<?php echo RawUrlEncode($language); ?>" unselectable="on"></iframe>
+	<iframe id="vdMetaFrame" src="<?php echo $this->make_local_url(); ?>dialog.vedor-meta.html?vdLanguage=<?php echo RawUrlEncode($language); ?>" unselectable="on"></iframe>
 </div>
 <div id="vdMetaDataSlider" style="display: none;" unselectable="on"></div>
 <iframe id="vdEditPane" src="<?php
@@ -3717,6 +3669,7 @@
 		"vedor-show-tags-stack" : function(el) {
 			var tagStackToolbars = document.querySelectorAll('.vedor-toolbar-status');
 			showTagStack = !showTagStack;
+			storeOption('tagStack', showTagStack);
 			for ( var i=0,l=tagStackToolbars.length; i<l; i++ ) {
 				if ( showTagStack ) {
 					tagStackToolbars[i].classList.remove('vedor-hidden');
@@ -3726,6 +3679,7 @@
 					el.classList.remove('vedor-selected');
 				}
 			}
+			window_onresize();
 		},
 		"vedor-properties" : function(el) {
 			VD_META_onclick();
@@ -3806,10 +3760,27 @@
 			var vdContext = document.getElementById("vdContextBar");
 			if (vdContext) {
 				if (vdContext.className.match(/active/)) {
-					vdContext.className = vdContext.className.replace(/\bactive\b/);
+					vdContext.classList.remove('active');
+					storeOption('contextBar', false);
 				} else {
-					vdContext.className += " active";
+					vdContext.classList.add('active');
+					storeOption('contextBar', true);
 				}
+			}
+		},
+		"vedor-switch-language" : function(el) {
+			var newURL = el.dataset.vedorLink;
+			browseTo(newURL);
+		},
+		"vedor-dock-toolbars" : function(el) {
+			if ( document.body.classList.contains('vedor-toolbars-docked') ) {
+				document.body.classList.remove('vedor-toolbars-docked');
+				storeOption('dockToolbars', false);
+				el.classList.remove('vedor-selected');
+			} else {
+				document.body.classList.add('vedor-toolbars-docked');
+				storeOption('dockToolbars', true);
+				el.classList.add('vedor-selected');
 			}
 		}
 	};
@@ -3857,53 +3828,49 @@
 		var lastEl = null;
 		var lastSection = document.querySelectorAll('.vedor-toolbar-status')[0];
 
-		var scrollTimer = false;
-		muze.event.attach(document.getElementById("vdEditPane").contentWindow, "scroll", function() {
-			if (scrollTimer) {
-				window.clearTimeout(scrollTimer);
-			}
-			scrollTimer = window.setTimeout(vdEditPane_DisplayChanged, 50);
-		});
-
-		muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
-			var key = event.keyCode || event.which;
-			if (key == 66 && event.ctrlKey) { // Ctrl-B
-				VD_BOLD_onclick();
-				muze.event.cancel(event);
-			} else if (key == 27) { // ESC
-				vdHideToolbars = true;
-				updateHtmlContext();
-				muze.event.cancel(event);
-			} else if (key == 73 && event.ctrlKey) { // Ctrl-I
-				VD_ITALIC_onclick();
-				muze.event.cancel(event);
-			} else if (key == 83 && event.ctrlKey) { // Ctrl-S
-				SAVE_onclick();
-				muze.event.cancel(event);
-			} else if (key == 32 && event.ctrlKey) { // Ctrl-space
-				vdHideToolbars = false;
-				updateHtmlContext();
-				var activeToolbar = document.querySelectorAll(".vedor-section.active")[0];
-				if (activeToolbar) {
-					var firstButton = activeToolbar.querySelectorAll("button")[0];
-					if (firstButton) {
-						firstButton.focus();
+		var initEditPaneEvents = function() {
+			var scrollTimer = false;
+			muze.event.attach(document.getElementById("vdEditPane").contentWindow, "scroll", muze.throttle(repositionToolbar, 10));
+			muze.event.attach(document.getElementById("vdEditPane").contentWindow, "keydown", function(event) {
+				var key = event.keyCode || event.which;
+				if (key == 66 && event.ctrlKey) { // Ctrl-B
+					VD_BOLD_onclick();
+					muze.event.cancel(event);
+				} else if (key == 27) { // ESC
+					vdHideToolbars = true;
+					updateHtmlContext();
+					muze.event.cancel(event);
+				} else if (key == 73 && event.ctrlKey) { // Ctrl-I
+					VD_ITALIC_onclick();
+					muze.event.cancel(event);
+				} else if (key == 83 && event.ctrlKey) { // Ctrl-S
+					SAVE_onclick();
+					muze.event.cancel(event);
+				} else if (key == 32 && event.ctrlKey) { // Ctrl-space
+					vdHideToolbars = false;
+					updateHtmlContext();
+					var activeToolbar = document.querySelectorAll(".vedor-section.active")[0];
+					if (activeToolbar) {
+						var firstButton = activeToolbar.querySelectorAll("button")[0];
+						if (firstButton) {
+							firstButton.focus();
+						}
 					}
-				}
 
-				var toolbarTarget = document.querySelectorAll(".vedor-section.active .vedor-buttons > li")[0];
-				
-				if (toolbarTarget) {
-					toolbarTarget.focus();
+					var toolbarTarget = document.querySelectorAll(".vedor-section.active .vedor-buttons > li")[0];
+					
+					if (toolbarTarget) {
+						toolbarTarget.focus();
+					}
+					muze.event.cancel(event);
+				} else if (key == 77 && event.ctrlKey) { // Ctrl-M
+					document.querySelector("#vedor-main-toolbar button").focus();
+					muze.event.cancel(event);
+				} else {
+					vdHideToolbars = true;
 				}
-				muze.event.cancel(event);
-			} else if (key == 77 && event.ctrlKey) { // Ctrl-M
-				document.querySelector("#vedor-main-toolbar button").focus();
-				muze.event.cancel(event);
-			} else {
-				vdHideToolbars = true;
-			}
-		});
+			});
+		};
 
 		muze.event.attach(window, "keydown", function(event) {
 			var key = event.keyCode || event.which;
@@ -4010,8 +3977,9 @@
 		}
 
 
-		muze.event.attach(vdEditPane.contentWindow, "load", function() {
+		muze.event.attach(vdEditPane, "load", function() {
 			vdEditPane.contentWindow.document.body.focus();
+			initEditPaneEvents();
 			muze.event.attach(vdEditPane.contentWindow.document, "click", function(event) {
 				if (vdHideToolbars) {
 					vdHideToolbars = false;
@@ -4029,6 +3997,14 @@
 			lastSelection = vdSelectionState.get();
 		});
 
+		function unselectItems(list) {
+			for ( var i=0, l=list.length; i<l; i++ ) {
+				list[i].classList.remove('vedor-selected');
+			}
+		}
+		function selectItem(item) {
+			item.classList.add('vedor-selected');
+		}
 
 		document.body.onclick = function(evt) {
 			if (lastSelection) {
@@ -4040,28 +4016,17 @@
 				el = el.parentNode;
 			}
 			if ( el.tagName == 'BUTTON' ) {
-				var action = vedor.editor.actions[el.getAttribute("data-vedor-action")];
-				if (action) {
-					var result = action(el);
-					if (!result) {
-						return;
-					}
-				}
-
-				switch(el.getAttribute("data-vedor-action")) {
-					case null:
-					break;
-					default:
-						var action = vedor.editor.actions[el.getAttribute("data-vedor-action")];
-						if (action) {
-							var result = action(el);
-							if (!result) {
-								return;
-							}
-						} else {
-							console.log(el.getAttribute("data-vedor-action") + " not yet implemented");
+				var action = el.dataset.vedorAction;
+				if ( action ) { // find the matching callback function and run it
+					var actionCallback = vedor.editor.actions[action];
+					if (actionCallback) {
+						var result = actionCallback(el);
+						if (!result) {
+							return;
 						}
-					break;
+					} else {
+						console.log(action + " not yet implemented");
+					}
 				}
 
 				evt.target.blur();
@@ -4069,39 +4034,34 @@
 				var section = getSection(el);
 				if ( !section ) {
 					var sections = toolbar.querySelectorAll('.vedor-toolbar-section.vedor-selected, .vedor-toolbar-status');
-					for ( var i=0, l=sections.length; i<l; i++ ) {
-						sections[i].className = sections[i].className.replace(/\bvedor-selected\b/,'');
-					}
+					unselectItems(sections);
 					var selectedSectionButtons = toolbar.querySelectorAll('ul.vedor-buttons button.vedor-selected');
-					for ( var i=0, l=selectedSectionButtons.length; i<l; i++ ) {
-						selectedSectionButtons[i].className = selectedSectionButtons[i].className.replace(/\bvedor-selected\b/,'');
-					}
+					unselectItems(selectedSectionButtons);
 					if ( !selectedSectionButtons[0] || el != selectedSectionButtons[0] ) {
-						el.className += ' vedor-selected';
+						selectItem(el);
 						var rel = el.dataset.vedorSection;
 						if ( rel ) {
-							var target = toolbar.querySelectorAll('.vedor-toolbar-section.' + rel );
-							if ( target && target[0] ) {
-								target[0].className += ' vedor-selected';
-								lastSection = target[0];
-								lastSection.querySelectorAll("LI > *")[0].focus();
+							var target = toolbar.querySelector('.vedor-toolbar-section.' + rel );
+							if ( target ) {
+								selectItem(target);
+								lastSection = target;
+								lastSection.querySelector("LI > *").focus();
 							}
 						}
 					} else {
-						var status = toolbar.querySelectorAll('.vedor-toolbar-status')[0];
+						var status = toolbar.querySelector('.vedor-toolbar-status');
 						if ( status ) {
-							status.className += ' vedor-selected';
+							selectItem(status);
 						}
 					}
 				} else {
 					var selectedSectionButtons = section.querySelectorAll('.vedor-selected');
-					for ( var i=0, l=selectedSectionButtons.length; i<l; i++ ) {
-						selectedSectionButtons[i].className = selectedSectionButtons[i].className.replace(/\bvedor-selected\b/,'');
-					}
+					unselectItems(selectedSectionButtons);
 					if ( !selectedSectionButtons[0] || el != selectedSectionButtons[0] ) {
-						el.className += ' vedor-selected';
+						selectItem(el);
 					}
 				}
+				window_onresize();
 			}
 		}
 	})();

@@ -17,10 +17,10 @@
 
 		public static function configure( $option, $value ) {
 			switch ( $option ) {
-				case 'autoparse' :
+				case 'autoparse':
 					self::$autoparse = (bool) $value;
 				break;
-				case 'indent' :
+				case 'indent':
 					if ( is_bool( $value ) ) {
 						self::$indenting = (bool) $value;
 					} else if ( is_string( $value ) ) {
@@ -30,13 +30,13 @@
 						self::$indenting = false;
 					}
 				break;
-				case 'comments' :
+				case 'comments':
 					self::$comments = (bool)$value;
 				break;
 				case 'strict':
 					self::$strict = (bool)$value;
 				break;
-				case 'preserveWhiteSpace' :
+				case 'preserveWhiteSpace':
 					self::$preserveWhiteSpace = (bool) $value;
 				break;
 			}
@@ -64,7 +64,7 @@
 				$standalone = '';
 			}
 			return new ar_xmlNode('<?xml version="' . self::value($version)
-				. '" encoding="' . self::value($encoding) . '"' . $standalone . ' ?>');
+				. '" encoding="' . self::value($encoding) . '"' . $standalone . ' ?'.'>');
 		}
 
 		public static function comment( $comment ) {
@@ -201,7 +201,6 @@
 				$uri = $DOMElement->lookupNamespaceURI( $node->localName );
 				if ($allns[$node->localName]!=$uri && $node->localName!='xmlns') {
 					$declaredns['xmlns:'.$node->localName] = $uri;
-					//$allns[$node->localName] = $uri;
 				}
 			}
 
@@ -209,7 +208,6 @@
 			$dns = $DOMElement->getAttribute('xmlns');
 			if ($dns) {
 				$declaredns['xmlns'] = $dns;
-				//$allns['{default}'] = $dns;
 			}
 
 			$result = $declaredns;
@@ -535,19 +533,19 @@
 
 		public function __get( $name ) {
 			switch ( $name ) {
-				case 'parentNode' :
+				case 'parentNode':
 					return $this->parentNode;
 				break;
-				case 'firstChild' :
+				case 'firstChild':
 					return $this[0];
 				break;
-				case 'lastChild' :
+				case 'lastChild':
 					return $this[count($this)-1];
 				break;
-				case 'childNodes' :
+				case 'childNodes':
 					return $this;
 				break;
-				case 'nodeValue' :
+				case 'nodeValue':
 					if ( count($this)==1 ) {
 						return $this[0]->nodeValue;
 					} else {
@@ -558,7 +556,7 @@
 						return $result;
 					}
 				break;
-				case 'attributes' :
+				case 'attributes':
 					if ( count($this)==1 ) {
 						return $this[0]->attributes;
 					} else {
@@ -571,7 +569,7 @@
 						return $result;
 					}
 				break;
-				default :
+				default:
 					if (!isset($this->parentNode) && !$this->isDocumentFragment ) {
 						$result = array();
 						foreach ($this as $node) {
@@ -623,16 +621,16 @@
 
 		public function __set( $name, $value ) {
 			switch( $name ) {
-				case 'parentNode' :
+				case 'parentNode':
 					$this->setParentNode($value);
 				break;
-				default :
+				default:
 					if (is_numeric($name)) {
 						$node = $this->childNodes[$name];
 						$this->replaceChild($node, $value);
 					} else {
 						switch ( $name ) {
-							case 'nodeValue' :
+							case 'nodeValue':
 								foreach( $this->childNodes as $node ) {
 									$node->nodeValue = $value;
 								}
@@ -916,17 +914,17 @@
 				case 'parentNode':
 					return $this->parentNode;
 				break;
-				case 'previousSibling' :
+				case 'previousSibling':
 					if (isset($this->parentNode)) {
 						return $this->parentNode->childNodes->getPreviousSibling($this);
 					}
 				break;
-				case 'nextSibling' :
+				case 'nextSibling':
 					if (isset($this->parentNode)) {
 						return $this->parentNode->childNodes->getNextSibling($this);
 					}
 				break;
-				case 'nodeValue' :
+				case 'nodeValue':
 					return $this->nodeValue;
 				break;
 			}
@@ -934,10 +932,10 @@
 
 		function __set( $name, $value ) {
 			switch ($name) {
-				case 'nodeValue' :
+				case 'nodeValue':
 					$this->nodeValue = $value;
 				break;
-				case 'parentNode' :
+				case 'parentNode':
 					if ( $value === $this || !( $value instanceof ar_xmlElement ) ) {
 						$this->parentNode = null;
 					} else {
@@ -1098,23 +1096,23 @@
 
 		function __get( $name ) {
 			switch( $name ) {
-				case 'parentNode' :
+				case 'parentNode':
 					return $this->parentNode;
 				break;
-				case 'firstChild' :
+				case 'firstChild':
 					if (isset($this->childNodes) && count($this->childNodes)) {
 						return $this->childNodes[0];
 					}
 				break;
-				case 'lastChild' :
+				case 'lastChild':
 					if (isset($this->childNodes) && count($this->childNodes)) {
 						return $this->childNodes[count($this->childNodes)-1];
 					}
 				break;
-				case 'childNodes' :
+				case 'childNodes':
 					return $this->childNodes;
 				break;
-				case 'nodeValue' :
+				case 'nodeValue':
 					//echo get_class($this->childNodes[0]).'('.$this->childNodes[0].')';
 					if (isset($this->childNodes) && count($this->childNodes) ) {
 						return $this->childNodes->nodeValue;
@@ -1146,7 +1144,7 @@
 					}
 					$this->appendChild( $value );
 				break;
-				case 'childNodes' :
+				case 'childNodes':
 					if ( !isset($value) ) {
 						$value = $this->getNodeList();
 					} else if ( !($value instanceof ar_xmlNodes) ) {
@@ -1251,23 +1249,28 @@
 				$nodeValue = call_user_func( $type, $source );
 			} else {
 				switch ($type) {
-					case 'int'    : $nodeValue = (int) $nodeValue;
+					case 'int':
+						$nodeValue = (int) $nodeValue;
 					break;
-					case 'float'  : $nodeValue = (float) $nodeValue;
+					case 'float':
+						$nodeValue = (float) $nodeValue;
 					break;
-					case 'string' : $nodeValue = (string) $nodeValue;
+					case 'string':
+						$nodeValue = (string) $nodeValue;
 					break;
-					case 'bool'   : $nodeValue = (bool) $nodeValue;
+					case 'bool':
+						$nodeValue = (bool) $nodeValue;
 					break;
-					case 'url' : $nodeValue = ar::url( $nodeValue );
+					case 'url':
+						$nodeValue = ar::url( $nodeValue );
 					break;
-					case 'xml' :
-					case 'html' :
-							if ($source instanceof ar_xmlNode || $source instanceof ar_xmlNodes) {
-								$nodeValue = (string) $source;
-							}
+					case 'xml':
+					case 'html':
+						if ($source instanceof ar_xmlNode || $source instanceof ar_xmlNodes) {
+							$nodeValue = (string) $source;
+						}
 					break;
-					default       :
+					default:
 						if ( is_string($type) && class_exists($type) && ar_pinp::isAllowed($type, '__construct') ) {
 							$nodeValue = new $type($nodeValue);
 						}

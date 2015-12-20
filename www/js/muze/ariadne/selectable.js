@@ -29,6 +29,7 @@ var selectable = function() {
 	var selecting = false;
 	var containerDiv;
 	var filterClass = "selectable";
+	var touchSupport = true;
 	
 	var selectPositions = {
 		x1 : 0,
@@ -45,10 +46,24 @@ var selectable = function() {
 			clearSelection();
 		}
 		
-		selectPositions.x1 = event.pageX ? event.pageX : event.clientX;
-		selectPositions.y1 = event.pageY ? event.pageY : event.clientY;
+		var downevent = event;
+		if (event.touches && event.touches[0]) {
+			downevent = event.touches[0];
+		}
+
+		selectPositions.x1 = downevent.pageX ? downevent.pageX : downevent.clientX;
+		selectPositions.y1 = downevent.pageY ? downevent.pageY : downevent.clientY;
 		selectPositions.x2 = selectPositions.x1 + 1;
 		selectPositions.y2 = selectPositions.y1 + 1;
+
+//		offsetParent = containerDiv;
+//		while(offsetParent) {
+//			selectPositions.x1 -= offsetParent.scrollLeft;
+//			selectPositions.x2 -= offsetParent.scrollLeft;
+//			selectPositions.y1 -= offsetParent.scrollTop;
+//			selectPositions.y2 -= offsetParent.scrollTop;
+//			offsetParent = offsetParent.offsetParent;
+//		}
 		
 		updateHelper();
 
@@ -64,7 +79,7 @@ var selectable = function() {
 		
 		containerDiv.style.MozUserSelect = "none";
 	}
-
+	
 	var cancelWhenSelecting = function(event) {
 		if (selecting) {
 			event.returnVale = false;
@@ -80,11 +95,25 @@ var selectable = function() {
 
 		// console.log("mouse move");
 			
-		selectPositions.x2 = event.pageX ? event.pageX : event.clientX;
-		selectPositions.y2 = event.pageY ? event.pageY : event.clientY;
-			
+		var moveevent = event;
+		if (event.touches && event.touches[0]) {
+			moveevent = event.touches[0];
+		}
+
+		selectPositions.x2 = moveevent.pageX ? moveevent.pageX : moveevent.clientX;
+		selectPositions.y2 = moveevent.pageY ? moveevent.pageY : moveevent.clientY;
+
+//		offsetParent = containerDiv;
+//		while(offsetParent) {
+//			selectPositions.x2 -= offsetParent.scrollLeft;
+//			selectPositions.y2 -= offsetParent.scrollTop;
+//			offsetParent = offsetParent.offsetParent;
+//		}
+
 		updateHelper();
 		updateSelection();
+
+		event.preventDefault();
 	}
 	
 	var checkClass = function(elm) {
@@ -234,8 +263,18 @@ var selectable = function() {
 				container = document.getElementById(container);
 			}
 
+			if (options && options.filterClass) {
+				filterClass = options.filterClass;
+			}
+			if (options && (typeof(options.touchSupport) !== 'undefined')) {
+				touchSupport = options.touchSupport;
+			}
+
 			if (window.addEventListener) {
 				container.addEventListener("mousedown", handleMouseDown, false);
+				if (touchSupport) {
+					container.addEventListener("touchstart", handleMouseDown, false);
+				}
 			} else if (window.attachEvent) {
 				container.attachEvent("mousedown", handleMouseDown);
 			}
@@ -243,14 +282,15 @@ var selectable = function() {
 			if (window.addEventListener) {
 				document.body.addEventListener("mousemove", handleMouseMove, false);
 				document.body.addEventListener("mouseup", handleMouseUp, false);
+				if (touchSupport) {
+					document.body.addEventListener("touchmove", handleMouseMove, false);
+					document.body.addEventListener("touchend", handleMouseUp, false);
+				}
 			} else if (window.attachEvent) {
 				document.body.attachEvent("mousemove", handleMouseMove);
 				document.body.attachEvent("mouseup", handleMouseUp);
 			}
 			
-			if (options && options.filterClass) {
-				filterClass = options.filterClass;
-			}
 
 			// Add helpder div to body;
 			helperDiv = document.createElement("DIV");

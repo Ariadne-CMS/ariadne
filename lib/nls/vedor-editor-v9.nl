@@ -61,7 +61,7 @@
 	$ARnls["vd.editor:link"]                        =    "Link";
 	$ARnls["vd.editor:logoff_question"]             =    "Weet u zeker dat u zich wilt afmelden?";
 	$ARnls["vd.editor:manage"]                      =    "Beheer";
-	$ARnls["vd.editor:manage_page"]                 =    "Pagina&quot;s";
+	$ARnls["vd.editor:manage_page"]                 =    "Pagina&rsquo;s";
 	$ARnls["vd.editor:max"]                         =    "Max";
 	$ARnls["vd.editor:menu"]                        =    "Menu";
 	$ARnls["vd.editor:merge"]                       =    "Voeg samen";
@@ -92,11 +92,13 @@
 	$ARnls["vd.editor:selectall"]                   =    "Selecteer alles";
 	$ARnls["vd.editor:selecttag"]                   =    "Selecteer HTML element";
 	$ARnls["vd.editor:show"]                        =    "Toon";
+	$ARnls["vd.editor:options"]			=    "Opties";
 	$ARnls["vd.editor:show_borders"]                =    "Hulplijnen";
 	$ARnls["vd.editor:show_boundaries"]             =    "HTML tags";
 	$ARnls["vd.editor:show_metadata"]               =    "Metadata";
 	$ARnls["vd.editor:show_more"]                   =    "Toon&hellip;";
 	$ARnls["vd.editor:show_tags_stack"]             =    "HTML context";
+	$ARnls["vd.editor:dock_toolbars"]		=    "Fixeer toolbars";
 	$ARnls["vd.editor:sitemap"]                     =    "Sitemap";
 	$ARnls["vd.editor:slide"]                       =    "Slide";
 	$ARnls["vd.editor:slideshow"]                   =    "Slideshow";

@@ -76,8 +76,9 @@
 
 			// Set up runtime options. 
 			$this->svn_options = array(
-				'fetchmode'		=> VERSIONCONTROL_SVN_FETCHMODE_ARRAY, 
-				'binaryPath'		=> $AR->SVN->path
+				'fetchmode'         => VERSIONCONTROL_SVN_FETCHMODE_ARRAY,
+				'binaryPath'        => $AR->SVN->path,
+				'useEscapeshellcmd' => false,
 			);
 
 		}
@@ -105,6 +106,7 @@
 					"info", 
 					"list", 
 					"log",
+					"mkdir",
 					"propdel",
 					"propget",
 					"proplist",
@@ -295,6 +297,8 @@
 			} else {
 				$args[] = $this->get_path($svn, '', true);
 			}
+
+			$comment = str_replace("\r\n","\n", $comment);
 
 			$switches = $svn['switches'];
 			$switches['message'] = $comment;
@@ -512,6 +516,9 @@
 		function svn_status($svn, $name='') {
 			$path = $this->get_path($svn, $name);
 
+			// strip away any strange double / or other 'unclean' stuff
+			$path = arc\path::collapse($path);
+
 			// Performance improvement to make svn_status
 			// faster. If there is not .svn dir, there is no SVN
 			// status.
@@ -546,8 +553,7 @@
 							if ($filename[0] === '_') {
 								$filename = substr($filename, 1);
 								$result[$filename] = $value;
-							}
-							if ( $matchpath === $value['path'] ) {
+							} else if ( $matchpath === $value['path'] ) {
 								// dir entry
 								$result[''] = $value;
 							}
@@ -572,6 +578,7 @@
 			if ($revision != '') {
 				$switches['revision'] = $revision;
 			}
+			$switches['force'] = true;
 			$svn['instance']->update->_prepared = false;
 			try {
 				$result = $svn['instance']->update->run($args, $switches);
@@ -619,6 +626,9 @@
 			try {
 				$svnresult = $svn['instance']->proplist->run(array($name), $switches);
 			} catch(VersionControl_SVN_Exception $e) {
+				if ( $revision === 'BASE' ) {
+					return $this->svn_get_ariadne_props($svn, $name, 'HEAD');
+				}
 				return ar::error('svn exception',1322,$e);
 			}
 			$proplist = $svnresult['target'][0]['property'];
@@ -716,7 +726,6 @@
 			} catch(Exception $e) {
 				// ignore exception, only testing if the folder exists
 			}
-
 			if ($svnlist) {
 				return false;
 			} else {
@@ -725,8 +734,11 @@
 				$switches['message'] = "Repository creation";
 				$switches['parents'] = true;
 				$svn['instance']->import->_prepared = false;
+				$args = array (
+					$repository
+				);
 				try {
-					$result = $svn['instance']->import->run($args, $switches);
+					$result = $svn['instance']->mkdir->run($args, $switches);
 				} catch(VersionControl_SVN_Exception $e) {
 					return ar::error('svn exception',1323,$e);
 				}

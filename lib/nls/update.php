@@ -1,12 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-	function debug() {
-		// fake debug funtion used in nls files
-	}
-
-	$languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en');
-	$modules=Array('','ariadne.','vedor-editor.');
+	$languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en', 'pt');
+	$modules=Array('','ariadne.','vedor-editor-v9.');
 	$target='./';
 	define('NLSESCAPE', "\"\\\n\r");
 
@@ -20,10 +16,11 @@
 		foreach ($languages as $language) {
 			$file = $module.$language;
 			echo "Updating ".$file."\n";
-			if (file_exists($file)) {
-				include($file);
+			if (!file_exists($file)) {
+				continue;
 			}
 
+			include($file);
 			$content = "<"."?php\n\n";
 			if ( file_exists($module.$language.".head") ) {
 				$content .= file_get_contents($module.$language.".head");

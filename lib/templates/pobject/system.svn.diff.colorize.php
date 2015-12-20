@@ -25,7 +25,7 @@
 				case "I": // Index:
 					$template = substr($line, strpos($line, " ")+1);
 					$props = $fstore->svn_get_ariadne_props($svn, $template);
-					if( count($props) ) {
+					if( !ar_error::isError($props) && count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
 					}
 					$status .= "\n<span class='svndiff_indexline'>".htmlspecialchars($line)."</span>\n";
@@ -36,7 +36,7 @@
 					$nextspace = strpos($line, "\t", $firstspace);
 					$template = substr($line, $firstspace, $nextspace-$firstspace);
 					$props = $fstore->svn_get_ariadne_props($svn, $template);
-					if( count($props) ) {
+					if( !ar_error::isError($props) && count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
 					}
 					$status .= "<span class='svndiff_headline'>".htmlspecialchars($line)."</span>\n";
@@ -45,7 +45,7 @@
 					$nextspace = strpos($line, "\t", $firstspace);
 					$template = substr($line, $firstspace, $nextspace-$firstspace);
 					$props = $fstore->svn_get_ariadne_props($svn, $template);
-					if( count($props) ) {
+					if( !ar_error::isError($props) && count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
 					}
 					$status .= "<span class='svndiff_headline'>".htmlspecialchars($line)."</span>\n";

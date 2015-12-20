@@ -2,6 +2,11 @@
 
 	global $auth_config,$store_config,$cache_config,$session_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader,$ARnls;
 
+	// declare default object,
+	if (!class_exists('object',false)) {
+		class object { }           // do not change
+	}
+
 	if(!defined('AriadneBasePath') ) {
 		define('AriadneBasePath', $ariadne);
 	}
@@ -10,6 +15,7 @@
 
 	require_once(AriadneBasePath."/../vendor/autoload.php");
 	require_once(AriadneBasePath.'/configs/ariadne.phtml');
+	require_once(AriadneBasePath.'/configs/ariadne-default.phtml');
 	require_once(AriadneBasePath."/configs/sessions.phtml");
 	require_once(AriadneBasePath."/configs/cache.phtml");
 	require_once(AriadneBasePath."/configs/authentication.phtml");

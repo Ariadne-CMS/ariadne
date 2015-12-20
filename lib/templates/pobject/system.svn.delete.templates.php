@@ -20,17 +20,14 @@
 			$templatestore=$this->store->get_filestore("templates");
 
 			foreach ($templates as $path) {
-				// _pobject.print_r.html.any.pinp
+				// pobject.print_r.html.any.pinp
 				$filename = basename($path);
 
-				$underscore = substr($filename, 0, 1);
 				$pinp = substr($filename, -5);
 
-				if ($underscore != "_" || $pinp != ".pinp") {
+				if ($pinp != ".pinp") {
 					continue; // not a template
 				}
-
-				$filename = substr($filename, 1);
 
 				if ($templates_info[$filename]) {
 					$type = $templates_info[$filename]['type'];

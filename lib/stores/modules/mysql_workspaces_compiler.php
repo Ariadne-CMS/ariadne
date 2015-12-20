@@ -101,8 +101,9 @@ class mysql_workspaces_compiler extends mysql_compiler {
 		}
 
 		$select_query  = "select distinct($nodes.path), $nodes.id as nodeId, $nodes.layer as nodeLayer, $nodes.parent, $nodes.priority, ";
-		$select_query .= " $objects.object, $objects.id, $objects.type, $objects.vtype ";
-		$select_query .= " from $tables $join $query ";
+		$select_query .= "$objects.object, $objects.id, $objects.type, $objects.vtype, ";
+		$select_query .= "UNIX_TIMESTAMP($objects.lastchanged) as lastchanged  ";
+		$select_query .= "from ($tables) $join $query ";
 		$select_query .= $orderby." ".$this->limit_s;
 
 		$count_query   = "select count(distinct($objects.id)) as count from $tables ".$query;

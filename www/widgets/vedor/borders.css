@@ -1,0 +1,587 @@
+body .editable,
+body .editable_border,
+body .editable th,
+body .editable td {
+	outline: 0px dotted #CCC;
+}
+body .editable a {
+	border-bottom: 0px dotted #CCC;
+}
+body .uneditable {
+	outline: 0px dotted blue;
+}
+body.vedor-footer-space::after {
+	content: "";
+	display: block;
+	height: 132px;
+}
+body.vedor-borders .editable,
+body.vedor-borders .editable_border,
+body.vedor-borders .editable th,
+body.vedor-borders .editable td {
+	outline: 1px dotted #CCC;
+}
+body.vedor-borders .editable a {
+	border-bottom: 1px dotted #CCC;
+}
+body.vedor-borders .editable A:link,
+body.vedor-borders .editable A:visited {
+	border-bottom: 0px;
+}
+body.vedor-borders .uneditable {
+	outline: 1px dotted blue;
+}
+
+div.editable {
+	min-height: 1.5em;
+	min-width: 1.5em;
+}
+span.editable {
+	padding-right: 0.5em;
+}
+body.vedor-tags .editable br {
+	display: block; 
+	right: 0px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 9px;
+	content: "BR";
+	position: relative;
+	height: 1em;
+	margin-left: 100%;
+	white-space: nowrap;
+}
+body.vedor-tags .editable *:before,
+body.vedor-tags .editable *:after {
+	opacity: 0.6;
+	position: relative;
+	vertical-align: middle;
+	padding: 1px;
+	height: 12px;
+	border: 1px dotted #444;
+	font-size: 10px;
+	color: #000;
+	background-color: #999;
+	white-space: nowrap;
+}
+body.vedor-tags .editable *:before {
+	content: "?";
+	margin-right: 2px;
+}
+body.vedor-tags .editable *:after {
+	content: "/?";
+	margin-left: 2px;
+}
+body.vedor-tags .editable br:after {
+	content: "";
+	display: none;
+}
+body.vedor-tags .editable br:before {
+	content: "BR";
+	margin-left: -20px;
+	padding: 0px 3px;
+}
+
+body.vedor-tags .editable h1:before {
+	content: "H1";
+}
+body.vedor-tags .editable h2:before {
+	content: "H2";
+}
+body.vedor-tags .editable h3:before {
+	content: "H3";
+}
+body.vedor-tags .editable h4:before {
+	content: "H4";
+}
+body.vedor-tags .editable h5:before {
+	content: "H5";
+}
+body.vedor-tags .editable h6:before {
+	content: "H6";
+}
+body.vedor-tags .editable p:before {
+	content: "P";
+}
+body.vedor-tags .editable div:before {
+	content: "DIV";
+}
+body.vedor-tags .editable span:before {
+	content: "SPAN";
+}
+body.vedor-tags .editable table:before {
+	content: "TABLE";
+}
+body.vedor-tags .editable td:before {
+	content: "TD";
+}
+body.vedor-tags .editable a:before {
+	content: "A";
+}
+body.vedor-tags .editable th:before {
+	content: "TH";
+}
+body.vedor-tags .editable tr:before {
+	content: "TR";
+}
+body.vedor-tags .editable col:before {
+	content: "COL";
+}
+body.vedor-tags .editable colgroup:before {
+	content: "COLGROUP";
+}
+body.vedor-tags .editable form:before {
+	content: "FORM";
+}
+body.vedor-tags .editable input:before {
+	content: "INPUT";
+}
+body.vedor-tags .editable fieldset:before {
+	content: "FIELDSET";
+}
+body.vedor-tags .editable button:before {
+	content: "BUTTON";
+}
+body.vedor-tags .editable textarea:before {
+	content: "TEXTAREA";
+}
+body.vedor-tags .editable b:before {
+	content: "B";
+}
+body.vedor-tags .editable strong:before {
+	content: "STRONG";
+}
+body.vedor-tags .editable i:before {
+	content: "I";
+}
+body.vedor-tags .editable em:before {
+	content: "EM";
+}
+body.vedor-tags .editable code:before {
+	content: "CODE";
+}
+body.vedor-tags .editable blockquote:before {
+	content: "BLOCKQUOTE";
+}
+body.vedor-tags .editable pre:before {
+	content: "PRE";
+}
+body.vedor-tags .editable iframe:before {
+	content: "IFRAME";
+}
+body.vedor-tags .editable script:before {
+	content: "SCRIPT";
+}
+body.vedor-tags .editable img:before {
+	content: "IMG";
+}
+body.vedor-tags .editable abbr:before {
+	content: "ABBR";
+}
+body.vedor-tags .editable address:before {
+	content: "ADDRESS";
+}
+body.vedor-tags .editable big:before {
+	content: "BIG";
+}
+body.vedor-tags .editable caption:before {
+	content: "CAPTION";
+}
+body.vedor-tags .editable center:before {
+	content: "CENTER";
+}
+body.vedor-tags .editable cite:before {
+	content: "CITE";
+}
+body.vedor-tags .editable dd:before {
+	content: "DD";
+}
+body.vedor-tags .editable del:before {
+	content: "DEL";
+}
+body.vedor-tags .editable dfn:before {
+	content: "DFN";
+}
+body.vedor-tags .editable dir:before {
+	content: "DIR";
+}
+body.vedor-tags .editable dl:before {
+	content: "DL";
+}
+body.vedor-tags .editable dt:before {
+	content: "DT";
+}
+body.vedor-tags .editable font:before {
+	content: "FONT";
+}
+body.vedor-tags .editable hr:before {
+	content: "HR";
+}
+body.vedor-tags .editable ins:before {
+	content: "INS";
+}
+body.vedor-tags .editable kbd:before {
+	content: "KBD";
+}
+body.vedor-tags .editable label:before {
+	content: "LABEL";
+}
+body.vedor-tags .editable li:before {
+	content: "LI";
+}
+body.vedor-tags .editable map:before {
+	content: "MAP";
+}
+body.vedor-tags .editable menu:before {
+	content: "MENU";
+}
+body.vedor-tags .editable noscript:before {
+	content: "NOSCRIPT";
+}
+body.vedor-tags .editable ol:before {
+	content: "OL";
+}
+body.vedor-tags .editable object:before {
+	content: "OBJECT";
+}
+body.vedor-tags .editable q:before {
+	content: "Q";
+}
+body.vedor-tags .editable samp:before {
+	content: "SAMP";
+}
+body.vedor-tags .editable select:before {
+	content: "SELECT";
+}
+body.vedor-tags .editable small:before {
+	content: "SMALL";
+}
+body.vedor-tags .editable strike:before {
+	content: "STRIKE";
+}
+body.vedor-tags .editable sub:before {
+	content: "SUB";
+}
+body.vedor-tags .editable sup:before {
+	content: "SUP";
+}
+body.vedor-tags .editable tt:before {
+	content: "TT";
+}
+body.vedor-tags .editable u:before {
+	content: "U";
+}
+body.vedor-tags .editable ul:before {
+	content: "UL";
+}
+body.vedor-tags .editable var:before {
+	content: "VAR";
+}
+
+/* HTML 5 */
+body.vedor-tags .editable article:before {
+	content: "ARTICLE";
+}
+body.vedor-tags .editable footer:before {
+	content: "FOOTER";
+}
+body.vedor-tags .editable header:before {
+	content: "HEADER";
+}
+body.vedor-tags .editable hgroup:before {
+	content: "HGROUP";
+}
+body.vedor-tags .editable nav:before {
+	content: "NAV";
+}
+body.vedor-tags .editable section:before {
+	content: "SECTION";
+}
+body.vedor-tags .editable figcaption:before {
+	content: "FIGCAPTION";
+}
+body.vedor-tags .editable figure:before {
+	content: "FIGURE";
+}
+body.vedor-tags .editable main:before {
+	content: "MAIN";
+}
+body.vedor-tags .editable data:before {
+	content: "DATA";
+}
+body.vedor-tags .editable time:before {
+	content: "TIME";
+}
+body.vedor-tags .editable mark:before {
+	content: "MARK";
+}
+body.vedor-tags .editable audio:before {
+	content: "AUDIO";
+}
+body.vedor-tags .editable track:before {
+	content: "TRACK";
+}
+body.vedor-tags .editable video:before {
+	content: "VIDEO";
+}
+body.vedor-tags .editable canvas:before {
+	content: "CANVAS";
+}
+body.vedor-tags .editable output:before {
+	content: "OUTPUT";
+}
+body.vedor-tags .editable details:before {
+	content: "DETAILS";
+}
+
+body.vedor-tags .editable h1:after {
+	content: "/H1";
+}
+body.vedor-tags .editable h2:after {
+	content: "/H2";
+}
+body.vedor-tags .editable h3:after {
+	content: "/H3";
+}
+body.vedor-tags .editable h4:after {
+	content: "/H4";
+}
+body.vedor-tags .editable h5:after {
+	content: "/H5";
+}
+body.vedor-tags .editable h6:after {
+	content: "/H6";
+}
+body.vedor-tags .editable p:after {
+	content: "/P";
+}
+body.vedor-tags .editable div:after {
+	content: "/DIV";
+}
+body.vedor-tags .editable span:after {
+	content: "/SPAN";
+}
+body.vedor-tags .editable table:after {
+	content: "/TABLE";
+}
+body.vedor-tags .editable td:after {
+	content: "/TD";
+}
+body.vedor-tags .editable a:after {
+	content: "/A";
+}
+body.vedor-tags .editable th:after {
+	content: "/TH";
+}
+body.vedor-tags .editable tr:after {
+	content: "/TR";
+}
+body.vedor-tags .editable col:after {
+	content: "/COL";
+}
+body.vedor-tags .editable colgroup:after {
+	content: "/COLGROUP";
+}
+body.vedor-tags .editable form:after {
+	content: "/FORM";
+}
+body.vedor-tags .editable input:after {
+	content: "/INPUT";
+}
+body.vedor-tags .editable fieldset:after {
+	content: "/FIELDSET";
+}
+body.vedor-tags .editable button:after {
+	content: "/BUTTON";
+}
+body.vedor-tags .editable textarea:after {
+	content: "/TEXTAREA";
+}
+body.vedor-tags .editable b:after {
+	content: "/B";
+}
+body.vedor-tags .editable strong:after {
+	content: "/STRONG";
+}
+body.vedor-tags .editable i:after {
+	content: "/I";
+}
+body.vedor-tags .editable em:after {
+	content: "/EM";
+}
+body.vedor-tags .editable code:after {
+	content: "/CODE";
+}
+body.vedor-tags .editable blockquote:after {
+	content: "/BLOCKQUOTE";
+}
+body.vedor-tags .editable pre:after {
+	content: "/PRE";
+}
+body.vedor-tags .editable iframe:after {
+	content: "/IFRAME";
+}
+body.vedor-tags .editable script:after {
+	content: "/SCRIPT";
+}
+body.vedor-tags .editable img:after {
+	content: "/IMG";
+}
+body.vedor-tags .editable abbr:after {
+	content: "/ABBR";
+}
+body.vedor-tags .editable address:after {
+	content: "/ADDRESS";
+}
+body.vedor-tags .editable big:after {
+	content: "/BIG";
+}
+body.vedor-tags .editable caption:after {
+	content: "/CAPTION";
+}
+body.vedor-tags .editable center:after {
+	content: "/CENTER";
+}
+body.vedor-tags .editable cite:after {
+	content: "/CITE";
+}
+body.vedor-tags .editable dd:after {
+	content: "/DD";
+}
+body.vedor-tags .editable del:after {
+	content: "/DEL";
+}
+body.vedor-tags .editable dfn:after {
+	content: "/DFN";
+}
+body.vedor-tags .editable dir:after {
+	content: "/DIR";
+}
+body.vedor-tags .editable dl:after {
+	content: "/DL";
+}
+body.vedor-tags .editable dt:after {
+	content: "/DT";
+}
+body.vedor-tags .editable font:after {
+	content: "/FONT";
+}
+body.vedor-tags .editable hr:after {
+	content: "/HR";
+}
+body.vedor-tags .editable ins:after {
+	content: "/INS";
+}
+body.vedor-tags .editable kbd:after {
+	content: "/KBD";
+}
+body.vedor-tags .editable label:after {
+	content: "/LABEL";
+}
+body.vedor-tags .editable li:after {
+	content: "/LI";
+}
+body.vedor-tags .editable map:after {
+	content: "/MAP";
+}
+body.vedor-tags .editable menu:after {
+	content: "/MENU";
+}
+body.vedor-tags .editable noscript:after {
+	content: "/NOSCRIPT";
+}
+body.vedor-tags .editable ol:after {
+	content: "/OL";
+}
+body.vedor-tags .editable object:after {
+	content: "/OBJECT";
+}
+body.vedor-tags .editable q:after {
+	content: "/Q";
+}
+body.vedor-tags .editable samp:after {
+	content: "/SAMP";
+}
+body.vedor-tags .editable select:after {
+	content: "/SELECT";
+}
+body.vedor-tags .editable small:after {
+	content: "/SMALL";
+}
+body.vedor-tags .editable strike:after {
+	content: "/STRIKE";
+}
+body.vedor-tags .editable sub:after {
+	content: "/SUB";
+}
+body.vedor-tags .editable sup:after {
+	content: "/SUP";
+}
+body.vedor-tags .editable tt:after {
+	content: "/TT";
+}
+body.vedor-tags .editable u:after {
+	content: "/U";
+}
+body.vedor-tags .editable ul:after {
+	content: "/UL";
+}
+body.vedor-tags .editable var:after {
+	content: "/VAR";
+}
+
+/* HTML 5 */
+body.vedor-tags .editable article:after {
+	content: "/ARTICLE";
+}
+body.vedor-tags .editable footer:after {
+	content: "/FOOTER";
+}
+body.vedor-tags .editable header:after {
+	content: "/HEADER";
+}
+body.vedor-tags .editable hgroup:after {
+	content: "/HGROUP";
+}
+body.vedor-tags .editable nav:after {
+	content: "/NAV";
+}
+body.vedor-tags .editable section:after {
+	content: "/SECTION";
+}
+body.vedor-tags .editable figcaption:after {
+	content: "/FIGCAPTION";
+}
+body.vedor-tags .editable figure:after {
+	content: "/FIGURE";
+}
+body.vedor-tags .editable main:after {
+	content: "/MAIN";
+}
+body.vedor-tags .editable data:after {
+	content: "/DATA";
+}
+body.vedor-tags .editable time:after {
+	content: "/TIME";
+}
+body.vedor-tags .editable mark:after {
+	content: "/MARK";
+}
+body.vedor-tags .editable audio:after {
+	content: "/AUDIO";
+}
+body.vedor-tags .editable track:after {
+	content: "/TRACK";
+}
+body.vedor-tags .editable video:after {
+	content: "/VIDEO";
+}
+body.vedor-tags .editable canvas:after {
+	content: "/CANVAS";
+}
+body.vedor-tags .editable output:after {
+	content: "/OUTPUT";
+}
+body.vedor-tags .editable details:after {
+	content: "/DETAILS";
+}

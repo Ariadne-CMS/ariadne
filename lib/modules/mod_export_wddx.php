@@ -123,7 +123,7 @@ class export_wddx {
 	}
 
 	function export_properties($fp,&$object) {
-		$properties=$object->load_properties();
+		$properties=$object->load_properties('%'); // get properties for all scopes
 		export_wddx::export_data($fp,"properties",$properties);
 	}
 

@@ -1,8 +1,17 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		/* return the old flow information */
+		global $ARnls;
+
+		$language=$AR->user->data->language;
+		if (!$AR->nls->list[$language]) {
+			$language='en';
+		}
+		$language = preg_replace('/[^a-z0-9_]/i', '', $language);
+		include($this->store->get_config("code")."nls/vedor-editor-v9.".$language);
+
 		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) { ?>
-			<input type="submit" value="<?php echo $ARnls['ariadne:new']; ?>" onclick="muze.ariadne.explore.arshow('dialog.add',muze.ariadne.explore.tree.loaderUrl + muze.ariadne.registry.get('path') + 'dialog.add.php'); return false;">
+			<input type="submit" value="<?php echo $ARnls['vd.editor:new']; ?>" onclick="muze.ariadne.explore.arshow('dialog.add',muze.ariadne.explore.tree.loaderUrl + muze.ariadne.registry.get('path') + 'dialog.add.php'); return false;">
 <?php 		} 
 	}
 ?>

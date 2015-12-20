@@ -149,6 +149,7 @@ a:hover span.deltag {
 		height: 100%;
 		background-color: #CCCDCE;
 		clear: both;
+		overflow: hidden;
 	}
 
 	.antline {
@@ -481,14 +482,16 @@ a:hover span.deltag {
 			border: 0px;
 			list-style: none;
 			white-space: nowrap;
+			display: inline-block;
+		}
+		ul.vedor-buttons > li:first-child {
+			float: left;
 		}
 		.vedor-toolbar-section > ul > li.vedor-text-format {
 			margin-right: 4px;
 		}
 		.vedor-toolbar li {
-			xdisplay: inline-block;
 			position: relative;
-			float: left;
 		}
 		#vdTablePopup {
 			left: 40px;
@@ -581,6 +584,11 @@ a:hover span.deltag {
 		.vedor-toolbar-section ul {
 			background: linear-gradient(to bottom, #EEE 0%, #DDD 100%);
 			padding: 4px 2px;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-ms-box-sizing: border-box;
+			box-sizing: border-box;
+			width: 100%;
 		}
 		.vedor-toolbar-section.vedor-selected {
 			display: block;
@@ -863,6 +871,27 @@ a:hover span.deltag {
 			height: 250px;
 			margin-left: -200px;
 		}
+		body.vedor-toolbars-docked #editorPane .vedor-section.active {
+			position: fixed !important;
+			left: 440px !important;
+			top: 0 !important;
+		}
+		body.vedor-toolbars-docked #editorPane .vedor-section.active div.vedor-toolbar {
+			border-left: 0;
+			border-right: 0;
+			border-bottom: 0;
+			box-shadow: 0 0 0;
+		}
+		body.vedor-toolbars-docked #editorPane .vedor-section.active div.vedor-toolbar-section {
+			border: 1px solid #aaa;
+			border-top: 0;
+			-webkit-box-shadow: 0px 0px 4px #CCC;
+			-moz-box-shadow: 0px 0px 4px #CCC;
+			box-shadow: 0px 0px 4px #CCC;
+		}
+		body.vedor-toolbars-docked #editorPane .vedor-section.active ul.vedor-buttons>li:first-child {
+			border-left: 1px solid #ddd;			
+		}
 
 #vdContextBar {
 	display: block;
@@ -915,7 +944,7 @@ a:hover span.deltag {
 	border: 0px;
 }
 #vedor-main-toolbar .vedor-buttons {
-	white-space: normal;
+	white-space: nowrap;
 }
 #vedor-main-toolbar > .vedor-toolbar > ul.vedor-buttons > li.vedor-seperator {
 	border-right: 1px solid #ddd;

@@ -147,8 +147,9 @@
 			} else {
 				$content = new ar_htmlNodes( $content );
 			}
-
-			return new ar_html_menuElement( $name, $attributes, $content );
+			$el = new ar_html_menuElement( $name, $attributes, $content );
+			$el->setAttribute('class', ['menuRoot' => 'menuRoot'] );
+			return $el;
 		}
 
 		public static function element() {

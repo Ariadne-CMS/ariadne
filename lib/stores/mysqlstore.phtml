@@ -40,6 +40,7 @@ class mysqlstore extends store{
 	protected $cachedQueries;
 	protected $filestores;
 	protected static $connections = array();
+	protected $propertyRegister;
 	
 	public $total = 0;
 
@@ -49,7 +50,7 @@ class mysqlstore extends store{
 			// cached connection available
 			$dbh = self::$connections[$host][$user][$db];
 		} else {
-			$dbh = new mysqli($host, $user, $password, $database);
+			$dbh = @new mysqli($host, $user, $password, $database);
 			if ($dbh->connect_errno) {
 				die("Error " . $this->dbh->connect_error);
 			}
@@ -130,6 +131,15 @@ class mysqlstore extends store{
 		$count = $objects["list"]->num_rows;
 		while ( $row = $objects["list"]->fetch_array(MYSQLI_ASSOC) ) {
 			$multiCall = false;
+			if(!isset($row['object'])) {
+				// fetch object from db
+				$res = $this->get($row['path']);
+				if(!$res['list']) {
+					continue;
+				}
+				$row = $res['list']->fetch_array(MYSQLI_ASSOC);
+			}
+
 			$object = $this->newobject( 
 				$row["path"], $row["parent"], $row["type"], 
 				unserialize($row["object"]), $row["id"], $row["lastchanged"], 
@@ -306,7 +316,7 @@ class mysqlstore extends store{
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		$result["method"]="ls";
 		$result["path"]=$path; 
 		$result["list"]= $this->store_run_query($query_string);
@@ -1043,26 +1053,40 @@ class mysqlstore extends store{
 	**********************************************************************/
 
 		$allowedchars="_'-";
-		$search = array("%[\\x80-\\xFF$allowedchars]%es", "%\\s+%s");
-		$replace = array("'_'.dechex(ord('\\0'))", " ");
+		$text = preg_replace_callback(
+			"%[\\x80-\\xFF$allowedchars]%s",
+			function($matches) {
+				return '_'.dechex(ord($matches[0]));
+			},
+			$text
+		);
+		$search = array("%\\s+%s");
+		$replace = array(" ");
 		return preg_replace($search, $replace, $text);
 	}
 
 
-	public function load_properties($object, $values="") {
-		if ($object) {
+	public function load_properties($object, $values="", $scope="") {
+		if(!isset($this->propertyRegister)) {
 			$query_string="select name from ".$this->tbl_prefix."properties";
 			$qresult = $this->store_run_query($query_string);
+			$register = array();
 			while ($qresult && ($prop=@$qresult->fetch_array(MYSQLI_ASSOC))) {
-				if ($value=$this->load_property($object,$prop["name"],$values)) {
-					$result[$prop["name"]]=$value;
+				$register[] = $prop['name'];
+			}
+			$this->propertyRegister = $register;
+		}
+		if ($object) {
+			foreach($this->propertyRegister as $prop) {
+				if ($value=$this->load_property($object,$prop,$values,$scope)) {
+					$result[$prop]=$value;
 				}
 			}
 		}
 		return $result;
 	}
 
-	public function load_property($object, $property, $values="") {
+	public function load_property($object, $property, $values="", $scope="") {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -1070,11 +1094,15 @@ class mysqlstore extends store{
 
 		if ($object) {
 			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
-			if (is_array($values)) {
-				while (list($name, $value)=each($values)) {
-					$value = "'".addSlashes."'";
-					$query_string.="AR_".AddSlashes($name)."=$value and ";
-				}
+			if (!$values) {
+				$values = array();
+			}
+			if( $scope !== '%' ) {
+				$values += array( 'scope' => $scope );
+			}
+			while (list($name, $value)=each($values)) {
+				$value = "'".addSlashes($value)."'";
+				$query_string.="AR_".AddSlashes($name)."=$value and ";
 			}
 			$query_string.="object=$object";
 			$qresult = $this->store_run_query($query_string);
@@ -1092,30 +1120,29 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	public function add_property($object, $property, $values) {
+	public function add_property($object, $property, $values, $scope='') {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		if ($object) {
-			if (count($values)) {
-				while (list($name, $value)=each($values)) {
-					if ($value!="") {
-						$query_names.="AR_".AddSlashes($name).", ";
-						$query_values.= "'".AddSlashes($value) ."', ";
-					}
+		if ($object && is_array($values) && count($values) ) {
+			$values = (array) $values + array('scope' => $scope);
+			while (list($name, $value)=each($values)) {
+				if ($value!="") {
+					$query_names.="AR_".AddSlashes($name).", ";
+					$query_values.= "'".AddSlashes($value) ."', ";
 				}
-				$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
-										$query_names."object ) values ( ".$query_values."$object )";
-				$this->store_run_query($query_string);
-				$result=$this->dbh->affected_rows;
 			}
+			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
+									$query_names."object ) values ( ".$query_values."$object )";
+			$this->store_run_query($query_string);
+			$result=$this->dbh->affected_rows;
 		}
 		return $result;
 	}
 
-	public function del_property($object, $property="", $values="") {
+	public function del_property($object, $property="", $values="", $scope="") {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -1134,11 +1161,13 @@ class mysqlstore extends store{
 				}
 			} else {
 				$query_string="delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
-				if (is_array($values)) {
-					while (list($name, $value)=each($values)) {
-						$value = "'".addSlashes($value)."'";
-						$query_string.="AR_".AddSlashes($name)."=$value and ";
-					}
+				if(!$values) {
+					$values = array();
+				}
+				$values += array( 'scope' => $scope );
+				while (list($name, $value)=each($values)) {
+					$value = "'".addSlashes($value)."'";
+					$query_string.="AR_".AddSlashes($name)."=$value and ";
 				}
 				$query_string.="object=$object";
 				$qresult = $this->store_run_query($query_string);

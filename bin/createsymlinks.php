@@ -10,11 +10,15 @@
 	$COLS = 50;
 	$silent = false;
 
-	if (($argv[1] == '--silent') || ($argv[1] == '-s')) {
+	$options = getopt("hsv", array("help", "silent", "verbose"));
+
+	if (isset($options['silent']) || isset($options['s'])) {
 		$silent = true;
-	} else if (($argv[1] == '--verbose') || ($argv[1] == '-v')) {
+	}
+	if (isset($options['verbose']) || isset($options['v'])) {
 		$verbose = true;
-	} else if (($argv[1] == '--help') || ($argv[1] == '-h')) {
+	}
+	if (isset($options['help']) || isset($options['h'])) {
 		echo "Usage:\n" . ltrim($argv[0], "./") . " [options]\n\n";
 		echo str_pad("-h, --help", 25) . "This message\n";
 		echo str_pad("-s, --silent", 25) . "Don't produce any output on console\n";

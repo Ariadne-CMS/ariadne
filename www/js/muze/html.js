@@ -18,7 +18,11 @@ muze.namespace('muze.html', function() {
 					name = 'htmlFor';
 				break;
 			}
-			el[ name ] = value;
+			if ( name.substr(0,5)=='data-' ) {
+				el.setAttribute(name, value);
+			} else {
+				el[ name ] = value;
+			}
 		}
 	}
 	
