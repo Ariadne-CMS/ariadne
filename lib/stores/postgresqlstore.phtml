@@ -112,7 +112,7 @@ class postgresqlstore extends store {
 			$object = $this->newobject($row["path"],
 					$row["parent"],
 					$row["type"],
-					unserialize($row["object"]),
+					$this->unserialize($row["object"], $row['path']),
 					$row["id"],
 					$row["lastchanged"],
 					$row["vtype"],
@@ -475,7 +475,7 @@ class postgresqlstore extends store {
 		}
 		$eparent   = pg_escape_string($parent);
 		$epath     = pg_escape_string($path);
-		$edata     = pg_escape_string(serialize($data));
+		$edata     = pg_escape_string($this->serialize($data, $path));
 		$etype     = pg_escape_string($type);
 		$epriority = (int)$priority;
 

@@ -92,6 +92,14 @@ class mysqlstore extends store{
 
 		$password = $config["password"];
 		$config["password"]="";
+
+		if(is_array($config['crypto'])) {
+			$crypto = $config['crypto'];
+			// hide crypto configuration from var_dump e.d.
+			$config['crypto'] = function () use ($crypto) {
+				return $crypto;
+			};
+		}
 		$this->config=$config;
 
 		/* Include module mysql_compiler */
@@ -142,7 +150,7 @@ class mysqlstore extends store{
 
 			$object = $this->newobject( 
 				$row["path"], $row["parent"], $row["type"], 
-				unserialize($row["object"]), $row["id"], $row["lastchanged"], 
+				$this->unserialize($row["object"], $row["path"]), $row["id"], $row["lastchanged"],
 				$row["vtype"], strlen($row["object"]), $row["priority"]
 			);
 			if ($template instanceof ar_listExpression) { // optimization, prevents extra item() call
@@ -553,7 +561,7 @@ class mysqlstore extends store{
 		$epath=AddSlashes($path);
 		$efilename=AddSlashes(basename($path));
 
-		$edata=AddSlashes(serialize($data));
+		$edata=AddSlashes($this->serialize($data, $path));
 		$etype=AddSlashes($type);
 		$epriority=(int)$priority;
 
