@@ -89,6 +89,9 @@
 		protected $current = 0;
 
 		public function __construct( $text, $configuration = array() ) {
+			if( $configuration['delimiter'] == '') {
+				unset($configuration['delimiter']);
+			}
 			$this->configuration = $configuration + $this->configuration;
 			if ( !is_array($text) ) {
 				$lines = array();

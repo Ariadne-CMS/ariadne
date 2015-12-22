@@ -165,20 +165,12 @@
 			return $result;
 		}
 
-		public function templateCodeFunction($fsId, $fsName) {
+		public function templateCodeFunction($code) {
 				$template = 
 				' $local = new ar_core_pinpSandbox($AR_this); '.
-				' ?'.'>'.
-				$this->read($fsId, $fsName).
+				' ?'.'>'.$code.
 				'<'.'?php ';
 			return $template;
-		}
-
-		protected function importOLD($fsId, $fsName) {
-			// this looks scary, and maybe it is...
-			$template = $this->templateCodeFunction($fsId, $fsName);
-			$newTemplate = create_function('&$AR_this', $template );
-			return $newTemplate;;
 		}
 
 		public function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
@@ -190,13 +182,10 @@
 				if ($this->exists($fsId, $fsName.".inc") ){
 					// new style template available
 					$path=$this->make_path($fsId, $fsName.".inc");
-					include($path);
+					$arTemplateFunction = ariadne_include_template($path);
 					if(is_callable($arTemplateFunction) ) {
 						$ARConfig->fsFunctions[$fsId][$fsName] = $arTemplateFunction;
 					}
-				} else {
-					// old style template, import it
-					$ARConfig->fsFunctions[$fsId][$fsName] = $this->importOLD($fsId, $fsName);
 				}
 			}
 			// now call the function...
@@ -348,8 +337,12 @@
 			$newid = $this->addObjectToLayer( $newid );
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
-			if (copy($source, $target)) {
-				$result=unlink($source);
+
+			$result = rename($source, $target);
+			if($result != true) {
+				if (copy($source, $target)) {
+					$result=unlink($source);
+				}
 			}
 			return $result;
 		}
@@ -447,17 +440,17 @@
 		public function make_path($id, $name="", $write=false) {
 			// calculate path based on $id and $name
 			$path=$this->root;
-			if (!file_exists($path) && $write) {
+			if ($write && !file_exists($path) ) {
 				@mkdir($path, DIRMODE); // Supress error, can trigger with race condition.
 			}	
 			while ($id) {
 				$next=floor($id/PATHTICLESIZE);
 				$part=$id%PATHTICLESIZE;
 				$path.="/$part";
-				if (!file_exists($path) && $write) {
-					@mkdir($path, DIRMODE); // Supress error, can trigger with race condition.
-				}
 				$id=$next;
+			}
+			if ($write && !file_exists($path)) {
+				@mkdir($path, DIRMODE, true); // Supress error, can trigger with race condition.
 			}
 			$path.="/";
 			if ($name) {
@@ -515,4 +508,9 @@
 			return $result;
 		}
 
+	}
+
+	function ariadne_include_template($path){
+		include($path);
+		return $arTemplateFunction;
 	}

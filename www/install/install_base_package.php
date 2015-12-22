@@ -10,6 +10,7 @@
 	include_once( $store_config['code']."nls/".$AR->nls->default );
 	include_once($ariadne."/ar.php");
 	include_once($ariadne."/modules/mod_cache.php");
+	include($ariadne."/version.php");
 
 	/* instantiate the store */
 	$inst_store = $store_config["dbms"]."store";
@@ -38,6 +39,27 @@
 		$axstore->close();
 	} else {
 		$error=$axstore->error;
+	}
+
+	$version = $ARversion['version'];
+	ar::get('/system/ariadne/version/')->call('system.save.data.phtml', array('value' => $version));
+
+
+	$ax_config["writeable"]=false;
+	$ax_config["database"]="packages/lib.ax";
+	set_time_limit(0);
+	$inst_store = $ax_config["dbms"]."store";
+	$axstore=new $inst_store("", $ax_config);
+	if (!$axstore->error) {
+		$ARCurrent->importStore=&$store;
+		$args="srcpath=/&destpath=/";
+		$axstore->call("system.export.phtml", $args,
+			$axstore->get("/"));
+		$error=$axstore->error;
+		$axstore->close();
+	} else {
+		$error=$axstore->error;
+		echo $error;
 	}
 
 	$store->close();

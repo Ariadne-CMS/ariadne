@@ -432,7 +432,7 @@
 	class ar_html_formInput {
 
 		protected $form;
-		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value, $title, $help;
+		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $conditional, $checks, $value, $title, $help;
 
 		public function __construct($field, $form) {
 			$this->form		= $form;
@@ -446,6 +446,8 @@
 			$this->required = isset($field->required) ? $field->required : false;
 			$this->checks   = isset($field->checks) ? $field->checks : array();
 			$this->title    = isset($field->title) ? $field->title : null;
+			$this->conditional = isset($field->conditional) ? $field->conditional : false;
+
 			$this->help		= isset($field->help) ? $field->help : null;
 
 			if ( isset($this->checks) && !is_array($this->checks) ) {
@@ -619,9 +621,49 @@
 			return ar_html::el('div', $content, $attributes);
 		}
 
+		public function validateConditional() {
+			$conditionMet = true;
+			if ($this->conditional) {
+				$conditionMet = false;
+				if (is_string($this->conditional)) {
+					try {
+						$condition = json_decode($this->conditional, true);
+					} catch(Exception $e) {
+						$condition = array();
+					}
+				}
+
+				foreach ($condition as $key => $value) {
+					if (is_string($value)) {
+						$checkValues = array($value);
+					} else {
+						$checkValues = $value;
+					}
+
+					foreach ($checkValues as $checkValue) {
+						$conditionValue = $this->form->getValue($key);
+
+						if (
+							$conditionValue == $checkValue || 
+							(is_array($conditionValue) && $conditionValue[$checkValue])
+						) {
+							$conditionMet = true;
+						}
+					}
+				}
+			}
+
+			return $conditionMet;
+		}
+
 		public function validate() {
 			$result = array();
+			if (!$this->validateConditional()) {
+				return $result;
+			}
+
 			$value  = $this->getValue();
+
 			if ( $this->required && ( !isset($value) || $value === '' ) ) {
 				$result[ $this->name ] = ar::error( 'Required input missing', 'required' );
 			} else if ( is_array( $this->checks ) ) {
@@ -1332,9 +1374,34 @@
 
 		public function validate( $inputs = null ) {
 			$valid = array();
+			if (!$this->validateConditional()) {
+				return $valid;
+			}
 			foreach ( $this->children as $key => $child ) {
 				$result = $child->validate( $inputs );
 				$valid  = array_merge( $valid, $result );
+			}
+
+			$value  = $this->getValue();
+			if ( is_array( $this->checks ) ) {
+				foreach( $this->checks as $check ) {
+					if ( is_array(ar_html_form::$checks[$check])
+						&& isset(ar_html_form::$checks[$check]['check'])
+					) {
+						$checkMethod = ar_html_form::$checks[$check]['check'];
+						$message = ar_html_form::$checks[$check]['message'];
+						if ( is_callable( $checkMethod ) ) {
+							if ( !$checkMethod( $value ) ) {
+								$valid[ $this->name ] = ar::error(
+									sprintf( $message, $value ),
+									$check
+								);
+							}
+						} else {
+							$valid[ $this->name ] = ar::error('incompatible check for this field',$check);
+						}
+					}
+				}
 			}
 			return $valid;
 		}

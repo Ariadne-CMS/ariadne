@@ -2,7 +2,6 @@
 
 <phpunit backupGlobals="false"
          bootstrap="tests/bootstrap.php"
-         strict="true"
          verbose="true"
          timeoutForSmallTests="10">
   <testsuites>
@@ -10,4 +9,9 @@
       <directory suffix="Test.php">tests/unit/</directory>
     </testsuite>
   </testsuites>
+  <php>
+	<ini name="auto_globals_jit" value="Off" />
+	<env name="svnrepo" value="https://svn.muze.nl/svn/test/" />
+  </php>
+   
 </phpunit>

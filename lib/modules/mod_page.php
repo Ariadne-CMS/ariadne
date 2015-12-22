@@ -256,7 +256,8 @@ class page {
 					'^arargs:.*' => false,
 					'^class' => array(
 						'htmlblock[ ]*uneditable[ ]*' => false
-					)
+					),
+					'^data-vedor-*' => false
 				)
 			),
 			'delete_emptied' => array(

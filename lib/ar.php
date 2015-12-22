@@ -333,9 +333,9 @@
 
 		public static function raiseError($message, $code, $previous = null) {
 			if (self::$throwExceptions) {
-				throw new ar_error($message, (int)$code, $previous);
+				throw new ar_error($message, $code, $previous);
 			} else {
-				return new ar_error($message, (int)$code, $previous);
+				return new ar_error($message, $code, $previous);
 			}
 		}
 
@@ -348,7 +348,12 @@
 		}
 
 		public function __toString() {
-			return $this->code.": ".$this->message."\r\n";
+			$result = $this->code.": ".$this->message."\r\n";
+			$e = $this;
+			while ($e = $e->getPrevious()) {
+				$result .= $e->getCode().": ".$e->getMessage()."\r\n";
+			}
+			return $result;
 		}
 	}
 
@@ -541,4 +546,4 @@
 
 	}
 
-	spl_autoload_register('ar::autoload');
+	spl_autoload_register('ar::autoload',true,true);

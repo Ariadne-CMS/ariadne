@@ -13,6 +13,18 @@
 				if (substr($newURL, -1) != '/') {
 					$newURL .= '/';
 				}
+
+				// Check for data->value separately.
+				$page = $this->data->value;
+				if ($page && is_string($page)) {
+					$regexp = '|' . str_replace('|', '\|', $oldURL) . '|';
+					$page = preg_replace($regexp, $newURL, $page);
+					if ($page != $this->data->value) {
+						$this->data->value = $page;
+						$dosave = true;
+					}
+				}
+
 				foreach ($nls_list as $nls => $nls_name) {
 					if ($this->data->$nls) {
 						$nls_fields = array( 'page' , 'summary' );

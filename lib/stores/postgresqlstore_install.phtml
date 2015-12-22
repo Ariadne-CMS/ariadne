@@ -122,6 +122,38 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 					$result .= $alter . ' set  not null';
 				}
 				break;
+			case "text":
+				if (!isset($default)) {
+					$default = "";
+				}
+				$typestr    = "text ";
+				$defaultstr = "DEFAULT '$default' ";
+				$nullstr    = "not null";
+
+				if ($alter == null) {
+					$result= $typestr.$defaultstr.$nullstr;
+				} else {
+					$result  = $alter . ' type ' . $typestr . ', ';
+					$result .= $alter . ' set  ' . $defaultstr . ', ';
+					$result .= $alter . ' set  ' . $nullstr;
+				}
+				break;
+			case "decimal":
+				if (!isset($default)) {
+					$default = 0;
+				}
+				$typestr    = "decimal($size) ";
+				$defaultstr = "DEFAULT $default ";
+				$nullstr    = "not null";
+
+				if ($alter == null) {
+					$result= $typestr.$defaultstr.$nullstr;
+				} else {
+					$result  = $alter . ' type ' . $typestr . ', ';
+					$result .= $alter . ' set  ' . $defaultstr . ', ';
+					$result .= $alter . ' set  ' . $nullstr;
+				}
+				break;
 		}
 		return $result;
 	}
@@ -248,6 +280,18 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 		}
 		debug("create_property: $create_string","store");
 		return $result;
+	}
+
+	function has_property($property) {
+		$this->error="";
+		$eproperty=AddSlashes($property);
+		$query_string="select 1 from ".$this->tbl_prefix."prop_$eproperty limit 1";
+		debug($query_string,"store");
+		$qresult = $this->store_run_query($query_string);
+		if (!$qresult) {
+			return false;
+		}
+		return true;	
 	}
 
 	function remove_property($property) {

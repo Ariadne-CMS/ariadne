@@ -42,6 +42,17 @@
 		}
 
 		public static function getvar( $name = null, $method = null) {
+			/*
+				The full list of field-name characters that PHP converts to _ (underscore) is the following (not just dot):
+
+				chr(32) ( ) (space)
+				chr(46) (.) (dot)
+				chr(91) ([) (open square bracket)
+				chr(128) - chr(159) (various)
+				PHP irreversibly modifies field names containing these characters in an attempt to maintain compatibility with the deprecated register_globals feature.
+			*/
+			$name = preg_replace("/[ \.\[\x80-\x9f]/", "_", $name);
+
 			switch($method) {
 				case 'GET' :
 					$result = isset($name) ? $_GET[$name] : $_GET;

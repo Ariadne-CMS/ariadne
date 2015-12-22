@@ -1,7 +1,18 @@
 <?php
 	if ($this->CheckLogin("read")) {
 		global $AR;
+
 		$saved_object = array();
+		if ( !is_array($exclude_list) ) {
+			$exclude_list = array();
+		}
+
+		$clearcachePath = false;
+		$items_processed = 0;
+		$items_to_process = 0;
+
+
+		$ARCurrent->grants_list = array();
 
 		if (!function_exists('display')) {
 			function display($str) {
@@ -25,7 +36,7 @@
 			function getCommonParent($base,$match,$store) {
 
 				// if base is false, $match is the best parent
-				if ( $base === false ) {
+				if ( $base == false ) {
 					return $match;
 				}
 
@@ -45,13 +56,168 @@
 			$ARCurrent->AXHeader = &$this->store->header;
 		}
 
+		$exportObject = function ($me) use (&$exportObject, &$saved_object, &$exclude_list, &$clearcachePath, &$items_processed, &$items_to_process) {
+			global $ARCurrent;
+			$arCallArgs  = $me->getvar('arCallArgs');
+			$destpath    = $arCallArgs['destpath'];
+			$srcpath     = $arCallArgs['srcpath'];
+			$rootpath    = $arCallArgs['rootpath'];
+
+
+			$object = $me->call('system.export.object.phtml',$arCallArgs);
+
+			$cpath = $object->parent;
+			$newcpath=$object->store->make_path($destpath.substr($object->path, strlen($rootpath)), '..');
+			if($cpath != '..' && !$ARCurrent->importStore->exists($newcpath)) {
+				$arguments = $arCallArgs;
+				$arguments["setDummyObject"] = true;
+				$temp_obj=current($object->store->call("system.export.object.phtml",
+							$arguments,
+							$object->store->get($cpath)));
+				$temp_obj->axflags |= AX_DUMMY;
+				$temp_obj->call($exportObject ,$arCallArgs);
+
+			}
+
+			if ($object->parent != '..' && !$object->exists($object->parent)) {
+				display("Found orphaned node '".$object->path."' (skipping)\n");
+				return;
+			}
+			$newpath=$destpath.substr($object->path, strlen($rootpath));
+			$oldpath=$object->path;
+			$update_obj = false;
+			$save_obj = true;
+
+			if(count($exclude_list)){
+				$rpath = preg_quote($newpath,'/');
+				$keys = preg_grep('/^'.$rpath.'/',$exclude_list);
+				if(count($keys)) {
+					display("Skipping path because it is in the exclude list\n");
+					return;
+				}
+			}
+
+			if ($save_obj) {
+				display("processing($newpath)	");
+				if ($ARCurrent->options["without_data"]) {
+					display("no data for (".$object->path.")");
+					$object->axflags |= AX_WITHOUT_DATA;
+				}
+
+				if ($ARCurrent->options["without_templates"]) {
+					unset($object->data->config->privatetemplates);
+					unset($object->data->config->templates);
+					unset($object->data->config->pinp);
+					$object->axflags |= AX_WITHOUT_TEMPLATES;
+				}
+
+				if ($ARCurrent->options["without_files"]) {
+					$object->axflags |= AX_WITHOUT_FILES;
+				}
+
+				if (!isset($saved_object[$object->id])) {
+					if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
+
+						$saved_object[$object->id]=$newpath;
+
+						// we may never overwrite an existing object with a
+						// dummy object
+						if (!($object->axflags & AX_DUMMY) && 
+								!($object->axflags & AX_WITHOUT_DATA)) {
+
+							$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
+										$ARCurrent->importStore->get($newpath)));
+
+							if (
+									($object->lastchanged > $oldObject->lastchanged) || 
+									( ( $oldObject->axflags & AX_DUMMY) && !($object->axflags & AX_DUMMY) )) {
+								display("(updating)");
+								$save_obj = true;
+							} else {
+								$save_obj = false;
+								display("(ok)");
+								unset($oldObject);	// no update needed
+							}
+						} else {
+							display("(no overwrite)");
+							$save_obj = false;
+						}
+					}
+
+
+					if ($save_obj) {
+						$clearcachePath = getCommonParent($clearcachePath,$newpath,$object->store);
+
+						// next one has to be linked
+						$saved_object[$object->id]=$newpath;
+
+						if ($ARCurrent->importStore->exists($newpath)) {
+
+							$ARCurrent->importStore->call(
+									"system.export.update.phtml", 
+									array("newObject" => $object),
+									$ARCurrent->importStore->get($newpath));
+
+
+						} else {
+							$impObject = clone $object;
+							display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
+							$impObject->arIsNewObject = true;
+							$impObject->path = $newpath;
+							if ($newpath!="/") {
+								$impObject->parent = $object->store->make_path($newpath, "..");
+							} else {
+								$impObject->parent = "..";
+							}
+							$impObject->store = $ARCurrent->importStore;
+							$impObject->call("system.import.phtml", $arCallArgs);
+							if ($impObject->error) {
+								display("\n	ERROR (".$impObject->error.")\n");
+								$exclude_list[] = $impObject->path;
+								return;
+							}
+						}
+					}
+
+					if (!($object->axflags & AX_DUMMY)) {
+						$clearcachePath = getCommonParent($clearcachePath,$newpath,$object->store);
+
+						$object->newObject=current(
+								$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
+									$ARCurrent->importStore->get($newpath)));
+
+						if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
+							// (update or set templates and files)
+							$object->call("system.export.templates.phtml", $arCallArgs);
+						}
+						if (!($object->axflags & AX_WITHOUT_FILES)) {
+							$object->call("system.export.files.phtml", $arCallArgs);
+						}
+					}
+
+				} else {
+					if (!$ARCurrent->importStore->exists($newpath)) {
+						// FIXME:hardlink support is deprecated
+						display("(linking)");
+						$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
+					}
+				}
+				display("\n");
+			} else {
+				display("	skipping ($newpath)\n");
+			}
+
+			$items_processed++;
+			progress($items_processed, $items_to_process);
+
+		};
+
 		/* create a dummy object for later use */
 		$dummy = new pobject;
 		$dummy->nls = new object;
 		$dummy->axflags = true;
 		$dummy->type = "pobject";
-		reset($AR->nls->list);
-		while (list($key, $val)=each($AR->nls->list)) {
+		foreach($AR->nls->list as $key => $value){
 			$dummy->$key=new object;
 			$dummy->$key->name="Dummy node";
 			$dummy->nls->list[$key]=$val;
@@ -108,7 +274,9 @@
 			$rootpath=$srcpath;
 		}
 
-
+		$arCallArgs['destpath'] = $destpath;
+		$arCallArgs['srcpath'] = $srcpath;
+		$arCallArgs['rootpath'] = $rootpath;
 
 		$clearcachePath = false;
 
@@ -123,7 +291,6 @@
 			$criteria = " (".$ARCurrent->options["query"].") ";
 		}
 
-		$offset=0;
 		$countcriteria = '';
 		if (!$ARCurrent->importStore->error) {
 			if($ARCurrent->options['without_children'] == true){
@@ -136,7 +303,6 @@
 			if ($ARCurrent->AXAction == "export") {
 				$criteria .= "order by none,path ASC";
 			}
-			$processed_items = 0;
 
 			if (get_class($this->store) == "axstore") {
 				$items_to_process = count($this->store->nodes); // FIXME: This works for import, but not for export.
@@ -144,182 +310,9 @@
 				$query = "object.path =~ '" . $srcpath . "%' ".$countcriteria ." order by path ASC";
 				$items_to_process = $this->count_find($srcpath, $query);
 			}
-			$stepsize=100;
 			progress(0, $items_to_process);
-			while (count($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,$stepsize,$offset)))) {
 
-				$dummys = array();
-				foreach($result as $obj) {
-					$mydummys = array();
-					// add self to check cache
-					$checkedPaths[$obj->path] = $obj->path;
-					$cpath = $obj->parent;
-					$newcpath=$this->store->make_path($destpath.substr($obj->path, strlen($rootpath)), '..');
-					while($cpath != '..' && !in_array($cpath,$checkedPaths) && !$ARCurrent->importStore->exists($newcpath)) {
-						$arguments = $arCallArgs;
-						$arguments["setDummyObject"] = true;
-						$temp_obj=current($this->store->call("system.export.object.phtml",
-									$arguments,
-									$this->store->get($cpath)));
-						$temp_obj->axflags |= AX_DUMMY;
-
-						array_unshift($mydummys,$temp_obj);
-						$checkedPaths[$temp_obj->path] = $temp_obj->path;
-
-						if( $newcpath == '/' ) {
-							continue;
-						}
-
-						// one up
-						$cpath = $temp_obj->parent;
-						$newcpath=$this->store->make_path($newcpath,'..');
-					}
-					$dummys = array_merge($dummys, $mydummys);
-
-				}
-				$result = array_merge($dummys,$result);
-
-				foreach($result as $key => $object) {
-					if ($object->parent != '..' && !$object->exists($object->parent)) {
-						display("Found orphaned node '".$object->path."' (skipping)\n");
-						continue;
-					}
-					$newpath=$destpath.substr($object->path, strlen($rootpath));
-					$oldpath=$object->path;
-					$update_obj = false;
-					$save_obj = true;
-
-					if (is_array($exclude_list)) {
-						foreach($exclude_list as $key => $excl_path) {
-							if (substr($newpath, 0, strlen($excl_path)) == $excl_path) {
-								$save_obj = false;
-								display("Skipping path because it is in the exclude list\n");
-								break;
-							}
-						}
-					}
-
-					if ($save_obj) {
-						display("processing($newpath)	");
-						if ($ARCurrent->options["without_data"]) {
-							display("no data for (".$object->path.")");
-							$object->axflags |= AX_WITHOUT_DATA;
-						}
-
-						if ($ARCurrent->options["without_templates"]) {
-							unset($object->data->config->privatetemplates);
-							unset($object->data->config->templates);
-							unset($object->data->config->pinp);
-							$object->axflags |= AX_WITHOUT_TEMPLATES;
-						}
-
-						if ($ARCurrent->options["without_files"]) {
-							$object->axflags |= AX_WITHOUT_FILES;
-						}
-
-						if (!$saved_object[$object->id]) {
-							if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
-								$saved_object[$object->id]=$newpath;
-								// we may never overwrite an existing object with a
-								// dummy object
-								if (!($object->axflags & AX_DUMMY) && 
-									!($object->axflags & AX_WITHOUT_DATA)) {
-
-									$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
-													$ARCurrent->importStore->get($newpath)));
-
-									if (
-										($object->lastchanged > $oldObject->lastchanged) || 
-										( ( $oldObject->axflags & AX_DUMMY) && !($object->axflags & AX_DUMMY) )) {
-										display("(updating)");
-										$save_obj = true;
-									} else {
-										$save_obj = false;
-										display("(ok)");
-										unset($oldObject);	// no update needed
-									}
-								} else {
-									display("(no overwrite)");
-									$save_obj = false;
-								}
-							}
-
-
-							if ($save_obj) {
-								$clearcachePath = getCommonParent($clearcachePath,$newpath,$this->store);
-
-								// next one has to be linked
-								$saved_object[$object->id]=$newpath;
-
-									if ($ARCurrent->importStore->exists($newpath)) {
-
-										$ARCurrent->importStore->call(
-												"system.export.update.phtml", 
-												array("newObject" => $object),
-												$ARCurrent->importStore->get($newpath));
-
-
-									} else {
-										$impObject = clone $object ;
-										display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
-										$impObject->arIsNewObject = true;
-										$impObject->path = $newpath;
-										if ($newpath!="/") {
-											$impObject->parent = $this->store->make_path($newpath, "..");
-										} else {
-											$impObject->parent = "..";
-										}
-										$impObject->store = $ARCurrent->importStore;
-										$impObject->call("system.import.phtml", $arCallArgs);
-										if ($impObject->error) {
-											display("\n	ERROR (".$impObject->error.")\n");
-											$exclude_list[] = $impObject->path;
-											continue;
-										}
-									}
-							}
-
-							if (!($object->axflags & AX_DUMMY)) {
-									$clearcachePath = getCommonParent($clearcachePath,$newpath,$this->store);
-
-									$object->newObject=current(
-										$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
-											$ARCurrent->importStore->get($newpath)));
-
-									if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
-										// (update or set templates and files)
-										$object->call("system.export.templates.phtml", $arCallArgs);
-									}
-									if (!($object->axflags & AX_WITHOUT_FILES)) {
-										$object->call("system.export.files.phtml", $arCallArgs);
-									}
-							}
-
-						} else {
-							if (!$ARCurrent->importStore->exists($newpath)) {
-								display("(linking)");
-								$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
-							}
-						}
-						display("\n");
-
-						$check_path = $this->store->make_path($newpath, "..");
-						if ($oldpath!=$srcpath && !$nextid_checks[$check_path]) {
-							$nextid_checks[$check_path] = true;
-							$nextid = $this->store->get_nextid($this->store->make_path($oldpath, ".."));
-							if ($nextid > 1) {
-								$ARCurrent->importStore->set_nextid($check_path, $nextid);
-								display("setting nextid ($nextid)\n");
-							}
-						}
-					} else {
-						display("	skipping ($newpath)\n");
-					}
-					$items_processed++;
-					progress($items_processed, $items_to_process);
-				}
-				$offset+=$stepsize;
-			}
+			$this->store->call($exportObject ,$arCallArgs,$this->store->find($srcpath,$criteria,0,0));
 			if (!$ARCurrent->options["without_grants"]) {
 				// reset config
 				$destobj = current($ARCurrent->importStore->call("system.get.phtml", $arguments,

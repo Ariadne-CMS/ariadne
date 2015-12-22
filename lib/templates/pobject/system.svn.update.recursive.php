@@ -5,10 +5,11 @@
 		set_time_limit(0);
 		$this->resetloopcheck();
 
-		$fstore	= $this->store->get_filestore_svn("templates");
-		$svn	= $fstore->connect($this->id, $this->getdata("username"), $this->getdata("password"));
+		$fstore = $this->store->get_filestore_svn("templates");
+		$svn    = $fstore->connect($this->id, $this->getdata("username"), $this->getdata("password"));
+
 		$svn_info = $fstore->svn_info($svn);
-		$stored_repository = rtrim($svn_info['URL'], "/") . "/";
+		$stored_repository = rtrim($svn_info['url'], "/") . "/";
 		$revision = $this->getdata('revision');
 		$repository = $this->getdata('repository');
 
@@ -29,73 +30,8 @@
 			echo "\n<span class='svn_error'>" . $this->path . ": " . $ARnls['err:svn:leaving_recurse_tree'] . "</span>\n";
 			flush();
 		} else {
-			if(!$revision) {
-				echo "\n<span class='svn_headerline'>Updating ".$this->path." from ".$repository."</span>\n";
-			} else {
-				echo "\n<span class='svn_headerline'>Updating ".$this->path." to revision $revision from $repository</span>\n";
-			}
-			flush();
-
-			// Update the templates.
-			$result = $fstore->svn_update($svn, '', $revision);
-
-			if ($result) {
-				$updated_templates = array();
-				$deleted_templates = array();
-
-				foreach ($result as $item) {
-					switch ($item['status']) {
-						case "A":
-						case "U":
-						case "M":
-						case "G":
-							$updated_templates[] = $item['name'];
-							break;
-						case "D":
-							$deleted_templates[] = $item['name'];
-							break;
-						default:
-							$updated_templates[] = $item['name'];
-							break;
-					}
-
-					$props = $fstore->svn_get_ariadne_props($svn, $item['name'], $revision);
-					if( $item["status"]  == "A" ) {
-						echo "<span class='svn_addtemplateline'>Added ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "U" || substr(ltrim($item['name']),0,2) == 'U ' ) { // substr to work around bugs in SVN.php
-						echo "<span class='svn_revisionline'>Updated ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "M" || $item["status"] == "G" ) {
-						echo "<span class='svn_revisionline'>Merged ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "C" ) {
-						echo "<span class='svn_revisionline'>Conflict ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					} elseif( $item["status"] == "D" ) {
-						echo "<span class='svn_deletetemplateline'>Deleted ".$item["name"]."</span>\n"; // we don't know the props since it's deleted.
-					} else {
-						echo $item["status"]." ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."\n";
-					}
-					flush();
-				}
-
-				$this->call(
-					"system.svn.compile.templates.php",
-					array(
-						'templates'	=> $updated_templates,
-						'fstore'	=> $fstore,
-						'svn'		=> $svn
-					)
-
-				);
-
-				$this->call(
-					"system.svn.delete.templates.php",
-					array(
-						'templates'	=> $deleted_templates,
-						'fstore'	=> $fstore,
-						'svn'		=> $svn
-					)
-				);
-
-			}
+			// we really need to update this, call the update template
+			$result = $this->call('system.svn.update.php');
 
 			// Run update on the existing subdirs.
 			$arCallArgs['repoPath'] = $this->path;

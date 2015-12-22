@@ -8,8 +8,6 @@
 
 	*****************************************************************************/
 
-	debug("ARnls lib: sv","all");
-
 	$ARnls["aboutariadne"]                          =    "Om Ariadne";
 	$ARnls["accessdenied"]                          =    "Tilltr&auml;de nekat";
 	$ARnls["add"]                                   =    "L&auml;gg till";

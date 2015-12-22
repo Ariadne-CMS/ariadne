@@ -11,7 +11,7 @@
 		function reset() {
 			global $AR;
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 
 			if (edit::getEditMode()) {
 				$lang = $me->_getvar('vdLanguage');
@@ -19,17 +19,16 @@
 					$lang = $me->nls;
 				}
 
-				$vedorPath = $me->path;
-				$vedorUrl = $me->make_local_url();
+				$vedorPath      = $me->path;
+				$vedorUrl       = $me->make_local_url();
 				$vedorParentUrl = $me->make_local_url('..');
-				$vedorEditUrl = $me->make_local_url("", $me->nls).edit::getEditTemplate();
-				$vedorLanguage = $lang;
-				$vedorUrlNls = $me->make_local_url("",$lang);
-				$vedorSiteNls = $me->make_local_url($me->currentsite(), $lang);
+				$vedorLanguage  = $lang;
+				$vedorUrlNls    = $me->make_local_url("",$lang);
+				$vedorSiteNls   = $me->make_local_url($me->currentsite(), $lang);
 
 				
 				$vedorNlsList = array();
-				$config=$me->loadConfig();
+				$config       = $me->loadConfig();
 				foreach($config->nls->list as $nls => $lang) {
 					$vedorNlsList[$me->make_local_url("",$nls).edit::getEditTemplate()] = $AR->nls->list[$nls];
 				}
@@ -44,12 +43,12 @@
 		function init() {
 			global $ARCurrent;
 			if (edit::getEditMode()) {
-				$context = pobject::getContext();
-				$me = $context["arCurrentObject"];
+				$context                = pobject::getContext();
+				$me                     = $context["arCurrentObject"];
 
-				$ARCurrent->nolangcheck=true;
-				$ARCurrent->allnls=true;
-				$options = $me->call("editor.ini");
+				$ARCurrent->nolangcheck = true;
+				$ARCurrent->allnls      = true;
+				$options                = $me->call("editor.ini");
 
 				echo "<script type='vedor/editorSettings'>";
 				echo json_encode($options);
@@ -59,9 +58,9 @@
 
 		function setEditMode($mode=false, $template='user.edit.page.html', $prefix="editable_") {
 			global $mod_edit_data;
-			$mod_edit_data['editmode']=$mode;
-			$mod_edit_data['edittemplate']=$template;
-			$mod_edit_data['editprefix']=$prefix;
+			$mod_edit_data['editmode']     = $mode;
+			$mod_edit_data['edittemplate'] = $template;
+			$mod_edit_data['editprefix']   = $prefix;
 		}
 
 		function getEditMode() {
@@ -83,30 +82,26 @@
 			return '_self';
 		}
 
-		function registerDataField($name) {
+		function registerDataField() {
 			/* private method */
-			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
 			global $mod_edit_data;
-			$id=++$mod_edit_data['id'];
-			$prefix = edit::getEditPrefix();
-			// echo "<script> parent.registerDataField('".$prefix.$id."','".AddCSlashes($name, ARESCAPE)."','".$me->path."',".$me->id."); </script>\n";
+			$id     = ++$mod_edit_data['id'];
 			return $id;
 		}
 
 		function getVedorVars($me, $name) {
-			$vedorVars = "data-vedor-path='" . $me->path . "' data-vedor-id='" . $me->id . "' data-vedor-field='" . $name . "'";
-			$vedorVars .= " ar:path='" . $me->path . "' ar:id='" . $me->id . "'";
+			$vedorVars  = "data-vedor-path='" . $me->path . "' data-vedor-id='" . $me->id . "' data-vedor-field='" . $name . "'".
+			              " ar:path='" . $me->path . "' ar:id='" . $me->id . "'";
 
 			return $vedorVars;		
 		}
 
 		function showInputText($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
-				$prefix = edit::getEditPrefix();
+				$id        = edit::registerDataField();
+				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<input type='text' class='editable' id='".$prefix.$id."' $vedorVars title='$title' value=\"";
@@ -120,10 +115,10 @@
 
 		function showInput($var, $name, $title, $type='text', $extra='') {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
-				$prefix = edit::getEditPrefix();
+				$id        = edit::registerDataField();
+				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<input name='$name' type='$type' class='editable' id='".$prefix.$id."' $vedorVars title='$title' value=\"";
@@ -137,7 +132,7 @@
 
 		function registerGroup($name, $id) {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			/* private method - adds $id to group $name, a change in any member of the group, forces dirty on all members */
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$prefix = edit::getEditPrefix();
@@ -147,9 +142,9 @@
 
 		function showCheckbox($var, $name, $title, $extra='', $group='', $value='1' ) {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if(edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
+				$id=edit::registerDataField();
 				if ($group) {
 					edit::registerGroup($group, $id);
 				}
@@ -158,7 +153,7 @@
 				if( $var == $value ) {
 					$checked = "checked";
 				}
-				$prefix = edit::getEditPrefix();
+				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 				echo "<input name='$name' type='checkbox' class='editable' id='".$prefix.$id."' $vedorVars title='$title' value='$value' $extra $checked>";
 			} else if( !edit::isEmpty($var)) {
@@ -171,9 +166,9 @@
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
+				$id = edit::registerDataField();
 				$checked = "";
-				if( $var==$value ) {
+				if( $var == $value ) {
 					$checked = "checked";
 				}
 				$prefix = edit::getEditPrefix();
@@ -188,10 +183,10 @@
 
 		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
-				$prefix = edit::getEditPrefix();
+				$id        = edit::registerDataField();
+				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<select class='editable' id='".$prefix.$id."' $vedorVars title='$title' $extra>";
@@ -259,10 +254,10 @@
 		
 		function showSpan($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
-				$prefix = edit::getEditPrefix();
+				$id        = edit::registerDataField();
+				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<span class='editable' id='".$prefix.$id."' $vedorVars title='$title' $extra>";
@@ -276,10 +271,10 @@
 
 		function showTextSpan($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
-				$prefix = edit::getEditPrefix();
+				$id        = edit::registerDataField();
+				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<span class='editable text-only' id='".$prefix.$id."' $vedorVars title='$title' $extra>";
@@ -293,10 +288,10 @@
 
 		function showDiv($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
-				$id=edit::registerDataField($name);
-				$prefix = edit::getEditPrefix();
+				$id        = edit::registerDataField();
+				$prefix    = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<div class='editable' id='".$prefix.$id."' $vedorVars title='$title' $extra>";
@@ -310,7 +305,7 @@
 
 		function startContainer() {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				echo "<span ar:type='container' ar:path='".$me->path."' ar:id='".$me->id."'>";
 			}
@@ -318,7 +313,7 @@
 
 		function endContainer() {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				echo "</span>";
 			}
@@ -326,7 +321,7 @@
 
 		function showLink($path='', $extra='', $url=false, $localurl=false) { 
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
 				$_url	= $me->make_url($path);
 			} else {
@@ -348,7 +343,7 @@
 
 		function showEditableLink($path='', $extra='', $url=false, $localurl=false) {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
 				$_url	= $me->make_url($path);
 			} else {
@@ -370,7 +365,7 @@
 		
 		function showHref($path='', $extra='', $localurl=false) {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
 				$_url	= $me->make_url($path);
 			} else {
@@ -385,7 +380,7 @@
 
         function showUrl($path='', $localurl=false) {
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
 				$_url	= $me->make_url($path);
 			} else {
@@ -438,15 +433,14 @@
 		}
 
 		function _registerDataField($name) {
-			// FIXME: Temporary fix voor oude libs die nog registerDataField gebruiken
-			$id = edit::registerDataField($name);
+			$id      = edit::registerDataField();
+			// FIXME: Temporary fix voor older code which still use registerDataField
 			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
-			$prefix = edit::getEditPrefix();
+			$me      = $context["arCurrentObject"];
+			$prefix  = edit::getEditPrefix();
 			echo "<script> parent.registerDataField('".$prefix.$id."','".AddCSlashes($name, ARESCAPE)."','".$me->path."'
 				,".$me->id."); </script>\n";
 			return $id;
-			// return edit::registerDataField($name)
 
 		}
 
@@ -494,11 +488,11 @@
 			return edit::endContainer();
 		}
 
-		function _showLink($path='', $extra='', $url=false, $localurl='') {
+		function _showLink($path='', $extra='', $url=false, $localurl=false) {
 			return edit::showLink($path, $extra, $url, $localurl);
 		}
 
-		function _showEditableLink($path='', $extra='', $url=false, $localurl='') {
+		function _showEditableLink($path='', $extra='', $url=false, $localurl=false) {
 			return edit::showEditableLink($path, $extra, $url, $localurl);			
 		}
 		
@@ -506,7 +500,7 @@
 			return edit::showHref($path, $localurl);
 		}
 
-		function _showUrl($path='', $localurl='') {
+		function _showUrl($path='', $localurl=false) {
 			return edit::showUrl($path, $localurl);
 		}
 

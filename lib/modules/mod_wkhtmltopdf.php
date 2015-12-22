@@ -4,11 +4,12 @@
 		protected $headers;
 		protected $cookies;
 		protected $options;
+		protected $cover;
 
 
 		public function __construct( $config = array() ) {
 			if (!$config['cmd']) {
-				$config['cmd'] = '/usr/bin/xvfb-run -a /usr/bin/wkhtmltopdf --disallow-local-file-access ';
+				$config['cmd'] = '/usr/bin/xvfb-run -a /usr/local/bin/wkhtmltopdf --disable-local-file-access ';
 			}
 
 			if (!$config['temp']) {
@@ -21,6 +22,7 @@
 			$this->options = array();
 			$this->cookies = array();
 			$this->headers = array();
+			$this->cover = false;
 		}
 
 
@@ -37,7 +39,7 @@
 
 			$execString = $this->config['cmd'];
 			foreach ($this->options as $name => $value) {
-				if ( is_bool( $name ) ) {
+				if ( is_bool( $value ) ) {
 					$execString .= " --$name";
 				} else {
 					$execString .= " --$name " . escapeshellarg( $value );
@@ -52,9 +54,14 @@
 				$execString .= " --custom-header " . escapeshellarg( $name ) . " " . escapeshellarg( $value );
 			}
 
+			if ($this->cover) {
+				$execString .= " cover " . escapeshellarg( $this->cover );
+			}
+
 			$execString .= " $url $tempFile";
 			$execOutput = array();
 			$execResult = 0;
+
 			exec( $execString, $execOutput, $execResult );
 			if ( $execResult != 0 && $execResult != 2 ) { // code 2 is for 404's encountered
 				@unlink( $tempFile );
@@ -75,6 +82,10 @@
 
 		public function setCookie($name, $value = null) {
 			$this->cookies[ $name ] = $value;
+		}
+
+		public function setCover($url) {
+			$this->cover = $url;
 		}
 
 		public function setHeaderList( $headerList = array() ) {
@@ -110,6 +121,7 @@
 				case 'ignore-load-errors':
 				case 'lowquality':
 				case 'no-background':
+				case 'print-media-type':
 					$this->options[ $name ] = true;
 				break;
 				case 'copies':
@@ -173,5 +185,8 @@
 
 		public static function _get( $options = array() ) {
 			return new pinp_wkhtmltopdf( $options );
+		}
+		public function _setCover( $url ) {
+			return $this->instance->setCover( $url );
 		}
 	}

@@ -38,6 +38,9 @@
 	require_once($ariadne."/bootstrap.php");
 	require_once($store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
 
+	// set update in progress for faster checks
+	$AR->upgradeInProgress = true;
+
 	require_once(AriadneBasePath . "/stores/axstore.phtml");
 	require_once(AriadneBasePath . "/configs/axstore.phtml");
 
@@ -197,19 +200,43 @@
 							"operation" => "9.0/upgrade.database.php",
 							"newversion" => '9.0-rc1'
 						));
-		case '9.0-rc1.7':
+		case '9.0-rc1.7': // because of previous released upgrade scripts
 		case '9.0-rc1':
 				array_push($todo, array(
 							"description" => "Installing missing objects",
 							"operation" => "9.0/install.missing.data.php",
-							"newversion" => "9.0-rc2.1"
-							));
-		case '9.0-rc2.1':
-				array_push($todo, array(
-							"description" => "Bumping revision to 9.0",
-							"operation" => "all/dummy.php",
 							"newversion" => "9.0"
 							));
+		case '9.0-rc2.1':
+		case '9.0':
+				array_push($todo, array(
+							"description" => "Updating properties with scope, adding new properties",
+							"operation" => "9.1/upgrade.database.php",
+							"newversion" => "9.1-rc1.1"
+							));
+		case '9.1-rc1.1':
+		case '9.1-rc1.2':
+		case '9.1':
+		case '9.2':
+				array_push($todo, array(
+							"description" => "Updating properties, adding new properties",
+							"operation" => "9.1/upgrade.database.php",
+							"newversion" => "9.3-rc1"
+							));
+		case '9.3-rc1':
+				array_push($todo, array(
+							"description" => "Update libraries for muze and vedor",
+							"operation" => "all/upgrade.muze.libs.php",
+							"newversion" => "9.3"
+							));
+				/* for future use
+				array_push($todo, array(
+							"description" => "Bumping revision to 9.2",
+							"operation" => "all/dummy.php",
+							"newversion" => "9.2"
+						));
+				 */
+	
 	}
 
 

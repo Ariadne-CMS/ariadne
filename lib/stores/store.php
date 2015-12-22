@@ -476,18 +476,4 @@ abstract class store {
 		}
 	}
 
-	public function __call($name,$arguments)
-	{
-		switch($name)
-		{
-			case "implements":
-				return $this->AR_implements($arguments[0],$arguments[1]);
-			break;
-			default:
-				debug("Called unknown function $name on store","store");
-				return false;
-
-		}
-	}
-
-} // end class store
+} 

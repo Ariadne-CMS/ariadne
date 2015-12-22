@@ -1,6 +1,6 @@
 <?php
 	if (!$setDummyObject) {
-		$this->properties=$this->load_properties();
+		$this->properties=$this->load_properties('%'); // get properties in all scopes
 
 		/* 
 			versions below and equal to 1.2 do not have their config
@@ -59,7 +59,14 @@
 			unset($this->data->config->grants);
 			unset($this->data->grants);
 		} else {
-			$this->call("system.export.get.grants.phtml");
+			while (list($type, $type_val)=@each($this->data->config->grants)) {
+				while (list($user,$grants)=@each($type_val)) {
+					while (list($grant, $value)=@each($grants)) {
+						display("exporting grants [$type][$user][$this->path][$grant]\n");
+						$ARCurrent->grants_list[$type][$user][$this->path][$grant]=$value;
+					}
+				}
+			}
 		}
 	} else {
 		$this->axflags=AX_DUMMY;

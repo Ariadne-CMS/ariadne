@@ -8,7 +8,9 @@
 		$result = $this->find($this->path, '', "system.svn.diff.php", $arCallArgs, 0, 0);
 		$modifications = "";
 		foreach( $result as $diff ) {
-			$modifications .= $diff;
+			if ( !ar('error')->isError($diff)){
+				$modifications .= $diff;
+			}
 		}
 		if( !$modifications ) {
 			echo "<pre class='svnresult'>".$ARnls["ariadne:svn:nomod"]."</pre>";

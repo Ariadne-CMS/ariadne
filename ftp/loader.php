@@ -21,6 +21,10 @@
 
 		chdir($currentDir);
 	}
+
+	require_once($ariadne."/configs/ftp/$configfile");
+	require_once($ariadne."/modules/mod_mimemagic.php");
+
 		/* this function has been taken from the php manual		*/
 
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {

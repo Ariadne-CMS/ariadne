@@ -130,35 +130,38 @@
 		 <div class="bd">
 			  <ul class="first-of-type">
 <?php
-	if ($svn_enabled && $svn_info['Revision']) {
+	if ($svn_enabled && $svn_info['revision']) {
 
 		$filename = $type.".".$function.".".$language.".pinp";
-		switch($svn_status[$filename]) {
+		switch($svn_status[$filename]['wc-status']['item']) {
 			// Fixme: find out the codes for "locked", "read only" and add them.
-			case "C":
+			case "conflicted":
 				$svn_img = "ConflictIcon.png";
 				$svn_alt = $ARnls['ariadne:svn:conflict'];
 				break;
-			case "M":
+			case "modified":
 				$svn_img = "ModifiedIcon.png";
 				$svn_alt = $ARnls['ariadne:svn:modified'];
 				break;
-			case "?":
+			case "unversioned":
 				break;
-			case "A":
+			case "added":
 				$svn_img = "AddedIcon.png";
 				$svn_alt = $ARnls['ariadne:svn:added'];
 				break;
-			case "D":
+			case "deleted":
 				$svn_img = "DeletedIcon.png";
 				$svn_alt = $ARnls['ariadne:svn:deleted'];
-			case "!":
+			case "missing":
 				$svn_style = "filter: alpha(opacity=30); opacity: 0.3;";
 				$svn_style_hide = "filter: alpha(opacity=0); opacity: 0;";
 				break;
-			default:
+			case "normal":
 				$svn_img = "InSubVersionIcon.png";
 				$svn_alt = $ARnls['ariadne:svn:insubversion'];
+				break;
+			default:
+				// No status
 				break;
 		}
 		$svn_img_src = $AR->dir->images . "/svn/$svn_img";

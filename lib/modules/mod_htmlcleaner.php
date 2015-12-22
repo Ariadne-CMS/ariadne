@@ -67,7 +67,7 @@ class htmlcleanertag {
 			trigger_error('tag syntax error', E_USER_ERROR);
 		}
 		if ($str[strlen($str)-2]=='/') {
-			$endset = $endset-1;
+			$endset--;
 			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE;
 		}
 		if ($str[1]=='/') {
@@ -89,6 +89,8 @@ class htmlcleanertag {
 		$i=0;
 		$return = array();
 		$_state = -1;
+		$_name = '';
+		$_quote = '';
 		$_value = '';
 
 		while ($i<strlen($str)) {
@@ -106,7 +108,7 @@ class htmlcleanertag {
 					$_state = 1;
 				}
 			} else if ($_state == 1) {	// state 1 : looking for equal
-				if (preg_match("/([a-zA-Z0-9_:-]{1})/",$chr)) {
+				if (preg_match("/([a-zA-Z0-9_:.-]{1})/",$chr)) {
 					$_name .= $chr;
 				} else if ($chr == '=') {
 					$_state = 3;
@@ -153,24 +155,13 @@ class htmlcleanertag {
 					} else {
 						$_value .= $chr;
 					}
-
-/*
-					if (preg_match("/([a-zA-Z0-9\.\,\_\-\/\#\@\%]{1})/",$chr)) {
-						$_value .= $chr;
-					} else {
-						// end of attribute
-						$return[strtolower($_name)] = $_value;
-						$_state = -1;
-					}
-*/
 				}
 			}
 			$i++;
 		}
 		if ($_value!='') {
 			$return[strtolower($_name)] = $_value;
-		}
-		if ($_name!='') {
+		} else if ($_name!='') {
 			$return[] = $_name;
 		}
 
@@ -183,6 +174,7 @@ class htmlcleanertag {
 
 	public function toString()
 	{
+		$src = '';
 		if ( ($this->nodeName == 'link' ||
 			$this->nodeName == 'img' ||
 			$this->nodeName == 'br' ||
@@ -211,8 +203,6 @@ class htmlcleanertag {
 		} else {
 			$str .= '>';
 		}
-//		if ($this->nodeName != "td")
-//			$str .= "\n";
 		return $str;
 	}
 
@@ -230,6 +220,8 @@ class htmlcleaner
 		$i=0;
 		$parts = array();
 		$_state = -1;
+		$_buffer = '';
+		$_quote = '';
 		$str_len = strlen($str);
 		while ($i<$str_len) {
 			$chr = $str[$i];
@@ -286,7 +278,6 @@ class htmlcleaner
 	{
 
 		$scriptParts = array();
-		$scriptPart  = false;
 		do {
 			$scriptPartKey = "";
 			if (preg_match('!<script[^>]*>(.|[\r\n])*?</[^>]*script[^>]*>!i', $body, $matches)) {

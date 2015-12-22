@@ -66,6 +66,11 @@
 			$database = $database . "_workspaces";
 		}
 
+		// declare default object,
+		if (!class_exists('object',false)) {
+			class object { }           // do not change
+		}
+
 		// Generate the config file.
 		ob_start();
 			include("conf/global.conf");
@@ -81,7 +86,6 @@
 
 			include("conf/salt.conf");
 			include("conf/session.conf");
-			include("conf/pinp.conf");
 			include("conf/loader.conf");
 			include("conf/im.conf");
 			include("conf/svn.conf");
@@ -89,15 +93,6 @@
 			include("conf/tidy.conf");
 			include("conf/webkit2png.conf");
 			include("conf/grep.conf");
-			include("conf/textualizer.conf");
-			include("conf/https.conf");
-			include("conf/forward.conf");
-			include("conf/debug.conf");
-			include("conf/outputzip.conf");
-			include("conf/hidesession.conf");
-			include("conf/hashalgorithm.conf");
-			include("conf/ldap.conf");
-			include("conf/auto.conf");
 		$configfile = ob_get_contents();
 		ob_end_clean();
 

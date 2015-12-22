@@ -204,18 +204,6 @@
 
   $AR->DEBUG = "WEB";
 
-
-  /**************************************************************************/
-  /* Set Ariadne's output compression level (0-9)                           */
-  /* (0 will disable output compression)                                    */
-  /**************************************************************************/
-
-  $AR->output_compression = 0;
-  $AR->output_compression_type = array (
-	'/text\/.+/'
-  );
-
-
   /**************************************************************************/
   /* Whether or not to hide the session id from the URL                     */
   /* If enabled, Webalizer will make reasonable page hit statistics, but    */

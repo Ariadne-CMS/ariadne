@@ -18,7 +18,7 @@
 		// now post a new XHR request
 		if (tests.formdata) {
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', muze.ariadne.registry.get('store_root') + muze.ariadne.registry.get('path') + "mfu.exists.ajax", false); 
+			xhr.open('POST', muze.ariadne.registry.get('ARRoot') + '/-' + muze.ariadne.registry.get('SessionID') + '-' + muze.ariadne.registry.get('path') + "mfu.exists.ajax", false); 
 			var result = xhr.send(formData);
 			if (xhr.responseText) {
 				return JSON.parse(xhr.responseText);
@@ -39,7 +39,7 @@
 		// now post a new XHR request
 		if (tests.formdata) {
 			var xhr = new XMLHttpRequest();
-			xhr.open('POST', muze.ariadne.registry.get('store_root') + muze.ariadne.registry.get('path') + "mfu.save.html"); 
+			xhr.open('POST', muze.ariadne.registry.get('ARRoot') + '/-' + muze.ariadne.registry.get('SessionID') + '-' + muze.ariadne.registry.get('path') + "mfu.save.html"); 
 			xhr.onload = function() {
 				progress.value = progress.innerHTML = 100;
 				YAHOO.util.Dom.removeClass(document.getElementById("archildren"), "dropzone-uploading");
@@ -67,7 +67,7 @@
 		var existingFiles = filesExist(files);
 
 		if (!existingFiles) {
-			handleFiles(files, true);
+			return handleFiles(files, true);
 		}
 		console.log(existingFiles);
 
