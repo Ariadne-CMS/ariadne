@@ -39,9 +39,6 @@
 
 	class stats {
 
-		function stats() {
-			// class constructor - nothing to do
-		}
 
 		function log() {
 			// all info is gathered from the php/webserver environment

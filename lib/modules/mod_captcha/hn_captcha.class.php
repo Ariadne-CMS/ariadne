@@ -290,7 +290,7 @@ class hn_captcha
 		  * @return nothing
 		  *
 		  **/
-		function hn_captcha($config,$secure=TRUE)
+		function __construct($config,$secure=TRUE)
 		{
 
 			// Test for GD-Library(-Version)

@@ -41,7 +41,7 @@ class _DiffOp {
 class _DiffOp_Copy extends _DiffOp {
   var $type = 'copy';
 
-  function _DiffOp_Copy($orig, $closing = FALSE) {
+  function __construct($orig, $closing = FALSE) {
     if (!is_array($closing)) {
       $closing = $orig;
     }
@@ -62,7 +62,7 @@ class _DiffOp_Copy extends _DiffOp {
 class _DiffOp_Delete extends _DiffOp {
   var $type = 'delete';
 
-  function _DiffOp_Delete($lines) {
+  function __construct($lines) {
     $this->orig = $lines;
     $this->closing = FALSE;
   }
@@ -80,7 +80,7 @@ class _DiffOp_Delete extends _DiffOp {
 class _DiffOp_Add extends _DiffOp {
   var $type = 'add';
 
-  function _DiffOp_Add($lines) {
+  function __construct($lines) {
     $this->closing = $lines;
     $this->orig = FALSE;
   }
@@ -98,7 +98,7 @@ class _DiffOp_Add extends _DiffOp {
 class _DiffOp_Change extends _DiffOp {
   var $type = 'change';
 
-  function _DiffOp_Change($orig, $closing) {
+  function __construct($orig, $closing) {
     $this->orig = $orig;
     $this->closing = $closing;
   }
@@ -576,7 +576,7 @@ class Diff {
    *      (Typically these are lines from a file.)
    * @param $to_lines array An array of strings.
    */
-  function Diff($from_lines, $to_lines) {
+  function __construct($from_lines, $to_lines) {
     $eng = new _DiffEngine;
     $this->edits = $eng->diff($from_lines, $to_lines);
     //$this->_check($from_lines, $to_lines);
@@ -735,7 +735,7 @@ class MappedDiff extends Diff {
    * @param $mapped_to_lines array This array should
    *  have the same number of elements as $to_lines.
    */
-  function MappedDiff($from_lines, $to_lines, $mapped_from_lines, $mapped_to_lines) {
+  function __construct($from_lines, $to_lines, $mapped_from_lines, $mapped_to_lines) {
 
     assert(sizeof($from_lines) == sizeof($mapped_from_lines));
     assert(sizeof($to_lines) == sizeof($mapped_to_lines));
@@ -943,7 +943,7 @@ define('NBSP', '&#160;');      // iso-8859-x non-breaking space.
  * @subpackage DifferenceEngine
  */
 class _HWLDF_WordAccumulator {
-  function _HWLDF_WordAccumulator() {
+  function __construct() {
     $this->_lines = array();
     $this->_line = '';
     $this->_group = '';
@@ -1009,7 +1009,7 @@ class WordLevelDiff extends MappedDiff {
     return 10000;
   }
 
-  function WordLevelDiff($orig_lines, $closing_lines) {
+  function __construct($orig_lines, $closing_lines) {
     list($orig_words, $orig_stripped) = $this->_split($orig_lines);
     list($closing_words, $closing_stripped) = $this->_split($closing_lines);
 

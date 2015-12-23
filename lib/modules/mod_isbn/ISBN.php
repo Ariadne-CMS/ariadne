@@ -93,7 +93,7 @@ define('ISBN_DEFAULT_PRINT_LANG_SPECIFIC_PREFIX', '');
  */
 class ISBN_Exception
 {
-  function ISBN_Exception($message, $e = null) {
+  function __construct($message, $e = null) {
     $this->message = $message;
     $this->e = $e;
   }
@@ -157,7 +157,7 @@ class ISBN
      *
      * @throws ISBN_Exception in case it fails
      */
-    function ISBN($isbn = '', $ver = ISBN_DEFAULT_INPUTVERSION)
+    function __construct($isbn = '', $ver = ISBN_DEFAULT_INPUTVERSION)
     {
         /* validate & handle optional isbn parameter */
         if (is_string($isbn) == false ) {

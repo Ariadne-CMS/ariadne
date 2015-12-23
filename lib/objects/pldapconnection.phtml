@@ -22,7 +22,7 @@ require_once(AriadneBasePath."/objects/pconnector.phtml");
 
 class pldapconnection extends pconnector { // psearch class definition
 
-	function pldapconnection() {
+	function __construct() {
 	global $store;
 		include_once($store->get_config("code")."stores/modules/ldap_compiler.php");
 		$this->lastquery=false;
