@@ -3,6 +3,7 @@ env:
     - DB=mysql WORKSPACE=yes
     - DB=mysql WORKSPACE=no
     - DB=postgresql
+    - SYNTAX=yes
 
 language: php
 cache: apt
@@ -10,6 +11,12 @@ cache: apt
 php:
     - 5.4
     - 5.6
+    - 7.0
+
+matrix:
+    allow_failures:
+        - php: 7.0
+          env: SYNTAX=yes
 
 before_install:
     - sudo apt-get update -qq
@@ -20,6 +27,7 @@ before_install:
     - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
     - sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/default
+    - if [  -e ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ] ; then cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf ; fi
     - phpenv rehash
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - sudo service apache2 restart
@@ -27,14 +35,16 @@ before_install:
     - svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn
     - svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log
 
+
 before_script:
     - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
     - sh -c "if [ ${DB} = 'mysql' ]; then mysqladmin -u root create ariadne; fi"
     - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
 
 script:
-    - bash ./tests/run.sh
-    - svnrepo="file://${TRAVIS_BUILD_DIR}/files/temp/testsvn/" phpunit --coverage-clover=coverage.clover
+    - if [ "${SYNTAX:-no}" == "yes" ] ; then  bash ./tests/syntax.sh ; fi
+    - if [ "${SYNTAX:-no}" != "yes" ] ; then  bash ./tests/run.sh ; fi
+    - if [ "${SYNTAX:-no}" != "yes" ] ; then svnrepo="file://${TRAVIS_BUILD_DIR}/files/temp/testsvn/" phpunit --coverage-clover=coverage.clover ; fi
 
 notifications:
     email: false
