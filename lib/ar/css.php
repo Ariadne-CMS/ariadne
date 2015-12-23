@@ -99,7 +99,7 @@
 			return $this->variables[$name] ? $this->variables[$name] : null;
 		}
 
-		public function bind( $variable, $value = null ) {
+		public function bind( $variable, $value = null, $dummy = 'string' ) {
 			if ( is_array($variable) ) {
 				$this->variables = $variable + $this->variables;
 			} else {

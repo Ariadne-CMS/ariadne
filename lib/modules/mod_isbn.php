@@ -4,7 +4,7 @@
 
 	class ISBN_For_PINP extends ISBN {
 
-		function ISBN_For_PINP($groups_csv, $isbn, $ver) {
+		function __construct($groups_csv, $isbn, $ver) {
 			ISBN::ISBN($isbn, $ver);
 			$this->groups_csv = $groups_csv;
 		}

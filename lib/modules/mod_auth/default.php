@@ -1,7 +1,7 @@
 <?php
 	class mod_auth_default {
 
-		function mod_auth_default($config=Array()) {
+		function __construct($config=Array()) {
 			$this->config = $config;
 		}
 

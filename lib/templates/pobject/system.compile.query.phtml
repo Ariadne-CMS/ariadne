@@ -1,7 +1,7 @@
 <?php
   // tokens: (, ), and, or,
   class scanner {
-	function scanner($text) {
+	function __construct($text) {
 		$this->data=$text;
 	}
 
@@ -47,7 +47,7 @@
 
   class parser {
 
-    function parser($text) {
+    function __construct($text) {
 		$this->scanner=new scanner($text);
 		$this->next_token();
     }

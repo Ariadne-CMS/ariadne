@@ -2,7 +2,7 @@
   include_once($store->get_config("code")."stores/modules/sql_compiler.php");
 
   class ldap_compiler extends sql_compiler {
-	function ldap_compiler(&$store, $mappings) {
+	function __construct(&$store, $mappings) {
 		debug("ldap_compiler($tbl_prefix)", "store");
 		$this->tbl_prefix=$tbl_prefix;
 		$this->store=$store;
