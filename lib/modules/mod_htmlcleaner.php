@@ -210,12 +210,12 @@ class htmlcleanertag {
 
 class htmlcleaner
 {
-	public function version()
+	public static function version()
 	{
 		return 'mshtml cleanup v.0.9.2 by troels@kyberfabrikken.dk';
 	}
 
-	public function dessicate($str)
+	public static function dessicate($str)
 	{
 		$i=0;
 		$parts = array();
@@ -274,7 +274,7 @@ class htmlcleaner
 
 
 	// removes the worst mess from word.
-	public function cleanup($body, $config)
+	public static function cleanup($body, $config)
 	{
 
 		$scriptParts = array();
@@ -410,10 +410,10 @@ class htmlcleaner
 
 class pinp_htmlcleaner extends htmlcleaner {
 
-	function _dessicate($str) {
+	public static function _dessicate($str) {
 		return parent::dessicate($str);
 	}
-	function _cleanup($str,$config) {
+	public static function _cleanup($str,$config) {
 		return parent::cleanup($str,$config);
 	}
 
