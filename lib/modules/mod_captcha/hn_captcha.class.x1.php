@@ -145,7 +145,7 @@ class hn_captcha_X1 extends hn_captcha
 		  * @return nothing
 		  *
 		  **/
-		function hn_captcha_X1($config,$secure=TRUE)
+		function __construct($config,$secure=TRUE)
 		{
 			// Call Constructor of main-class
 			$this->hn_captcha($config,$secure);
