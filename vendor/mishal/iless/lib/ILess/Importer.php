@@ -299,6 +299,7 @@ class ILess_Importer
         } else {
             $this->importers[$name] = $importer;
         }
+
         return $this;
     }
 
