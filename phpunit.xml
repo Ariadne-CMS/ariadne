@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit backupGlobals="false"
-         bootstrap="tests/bootstrap.php"
-         verbose="true"
-         timeoutForSmallTests="10">
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit backupGlobals="false" bootstrap="tests/bootstrap.php"
+verbose="true" timeoutForSmallTests="10">
   <testsuites>
     <testsuite name="Automated testing">
       <directory suffix="Test.php">tests/unit/</directory>
     </testsuite>
   </testsuites>
   <php>
-	<ini name="auto_globals_jit" value="Off" />
-	<env name="svnrepo" value="https://svn.muze.nl/svn/test/" />
+    <ini name="auto_globals_jit" value="Off" />
+    <env name="svnrepo" value="https://svn.muze.nl/svn/test/" />
   </php>
-   
+  <filter>
+    <whitelist addUncoveredFilesFromWhitelist="true">
+      <directory>lib</directory>
+    </whitelist>
+    <blacklist>
+      <directory suffix=".php">./vendor</directory>
+    </blacklist>
+  </filter>
 </phpunit>
