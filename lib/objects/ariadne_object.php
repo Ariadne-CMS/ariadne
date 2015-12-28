@@ -3412,13 +3412,12 @@ debug("loadLibrary: loading cache for $this->path");
 
 
 	/*	this is a private function used by the _preg_replace wrapper */
-
+	// FIXME: remove this function when the minimal php version for ariadne is raised to php 7.0
 	protected function preg_replace_compile($pattern, $replacement) {
 	global $AR;
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		preg_match("/^\s*(.)/", $pattern, $regs);
 		$delim = $regs[1];
-		// TODO: fixme deze eregi vervangen door iets wat niet eregi is
 		if (@eregi("\\${delim}[^$delim]*\\${delim}.*e.*".'$', $pattern)) {
 			$pinp = new pinp($AR->PINP_Functions, 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
@@ -3428,15 +3427,20 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function _preg_replace($pattern, $replacement, $text, $limit = -1) {
-		if (is_array($pattern)) {
-			$newrepl = array();
-			reset($replacement);
-			foreach ($pattern as $i_pattern) {
-				list(, $i_replacement) = each($replacement);
-				$newrepl[] = $this->preg_replace_compile($i_pattern, $i_replacement);
+		if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+			if (is_array($pattern)) {
+				$newrepl = array();
+				reset($replacement);
+				foreach ($pattern as $i_pattern) {
+					list(, $i_replacement) = each($replacement);
+					$newrepl[] = $this->preg_replace_compile($i_pattern, $i_replacement);
+				}
+			} else {
+				$newrepl = $this->preg_replace_compile($pattern, $replacement);
 			}
 		} else {
-			$newrepl = $this->preg_replace_compile($pattern, $replacement);
+			// php7 is safe, no more eval
+			$newrepl = $replacement;
 		}
 		return preg_replace($pattern, $newrepl, $text, $limit);
 	}

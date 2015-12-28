@@ -3,7 +3,7 @@
 class URL {
 
 	/* replaces the URLs with the {ar*[/nls]} markers */
-	public function RAWtoAR($page, $nls="") {
+	public static function RAWtoAR($page, $nls="") {
 		global $ARCurrent, $AR;
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];

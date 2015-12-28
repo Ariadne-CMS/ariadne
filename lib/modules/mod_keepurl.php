@@ -2,7 +2,7 @@
 
 	class pinp_keepurl {
 
-		function _make_path($path=".") {
+		public static function _make_path($path=".") {
 		global $ARCurrent;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -18,7 +18,7 @@
 			return $newpath;
 		}
 
-		function _loadConfig($path='.') {
+		public static function _loadConfig($path='.') {
 			global $ARCurrent;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -33,17 +33,17 @@
 			return $config;
 		}
 
-		function _currentsection($path=".") {
+		public static function _currentsection($path=".") {
 			$config = self::_loadConfig($path);
 			return $config->section;
 		}
 
-		function _currentsite($path=".") {
+		public static function _currentsite($path=".") {
 			$config = self::_loadConfig($path);
 			return $config->site;
 		}
 
-		function _get($path, $template, $args='') {
+		public static function _get($path, $template, $args='') {
 		global $ARCurrent;
 			// for now we have to remove all current redirects
 			$old_redirects = $ARCurrent->shortcut_redirect;
@@ -61,7 +61,7 @@
 			return $result;
 		}
 
-		function _make_real_path($path, &$redirects = Array()) {
+		public static function _make_real_path($path, &$redirects = Array()) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 
