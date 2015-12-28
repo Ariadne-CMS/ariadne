@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "hash": "5e15859bd1ca9865085da5d3f073dbc4",
+    "content-hash": "db1aee19d76edd069dba4893e92b1807",
     "packages": [
         {
             "name": "arc/arc",
@@ -344,16 +345,16 @@
         },
         {
             "name": "erusev/parsedown",
-            "version": "1.1.1",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "da5d75e97e1ed19e57bd54fa6cb595a6a0879a67"
+                "reference": "3ebbd730b5c2cf5ce78bc1bf64071407fc6674b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/da5d75e97e1ed19e57bd54fa6cb595a6a0879a67",
-                "reference": "da5d75e97e1ed19e57bd54fa6cb595a6a0879a67",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/3ebbd730b5c2cf5ce78bc1bf64071407fc6674b7",
+                "reference": "3ebbd730b5c2cf5ce78bc1bf64071407fc6674b7",
                 "shasum": ""
             },
             "type": "library",
@@ -379,7 +380,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-10-29 20:29:46"
+            "time": "2015-10-04 16:44:32"
         },
         {
             "name": "firephp/firephp-core",
@@ -502,16 +503,16 @@
         },
         {
             "name": "mishal/iless",
-            "version": "1.6.4",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mishal/iless.git",
-                "reference": "2d3f09f199b1a26ebbafa7b3d425540942264efe"
+                "reference": "c7855265f00567098e9af5b347bac5753019ab5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mishal/iless/zipball/2d3f09f199b1a26ebbafa7b3d425540942264efe",
-                "reference": "2d3f09f199b1a26ebbafa7b3d425540942264efe",
+                "url": "https://api.github.com/repos/mishal/iless/zipball/c7855265f00567098e9af5b347bac5753019ab5b",
+                "reference": "c7855265f00567098e9af5b347bac5753019ab5b",
                 "shasum": ""
             },
             "require": {
@@ -549,20 +550,20 @@
                 "php",
                 "processor"
             ],
-            "time": "2014-11-06 10:59:36"
+            "time": "2015-05-11 07:13:30"
         },
         {
             "name": "mrclay/jsmin-php",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mrclay/jsmin-php.git",
-                "reference": "b40a7e6dbf0907e7fdb419dcfe580814a4c8f547"
+                "reference": "932c9633c35b390beb2cfdea69a41ea7dbc8d759"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mrclay/jsmin-php/zipball/b40a7e6dbf0907e7fdb419dcfe580814a4c8f547",
-                "reference": "b40a7e6dbf0907e7fdb419dcfe580814a4c8f547",
+                "url": "https://api.github.com/repos/mrclay/jsmin-php/zipball/932c9633c35b390beb2cfdea69a41ea7dbc8d759",
+                "reference": "932c9633c35b390beb2cfdea69a41ea7dbc8d759",
                 "shasum": ""
             },
             "require": {
@@ -601,7 +602,7 @@
                 "jsmin",
                 "minify"
             ],
-            "time": "2014-08-25 06:15:47"
+            "time": "2015-03-30 15:04:42"
         },
         {
             "name": "pear/archive_tar",
@@ -666,16 +667,16 @@
         },
         {
             "name": "pear/console_getopt",
-            "version": "v1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pear/Console_Getopt.git",
-                "reference": "ff3eecbbc5d6e9a243f70f7cf51ca7554e4bb470"
+                "reference": "82f05cd1aa3edf34e19aa7c8ca312ce13a6a577f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pear/Console_Getopt/zipball/ff3eecbbc5d6e9a243f70f7cf51ca7554e4bb470",
-                "reference": "ff3eecbbc5d6e9a243f70f7cf51ca7554e4bb470",
+                "url": "https://api.github.com/repos/pear/Console_Getopt/zipball/82f05cd1aa3edf34e19aa7c8ca312ce13a6a577f",
+                "reference": "82f05cd1aa3edf34e19aa7c8ca312ce13a6a577f",
                 "shasum": ""
             },
             "type": "library",
@@ -709,28 +710,28 @@
                 }
             ],
             "description": "More info available on: http://pear.php.net/package/Console_Getopt",
-            "time": "2015-02-22 13:26:45"
+            "time": "2015-07-20 20:28:12"
         },
         {
             "name": "pear/pear-core-minimal",
-            "version": "v1.9.5",
+            "version": "v1.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pear/pear-core-minimal.git",
-                "reference": "bdfefcacb3b388a1050a58eff9ba5a8f43de2411"
+                "reference": "cae0f1ce0cb5bddb611b0a652d322905a65a5896"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pear/pear-core-minimal/zipball/bdfefcacb3b388a1050a58eff9ba5a8f43de2411",
-                "reference": "bdfefcacb3b388a1050a58eff9ba5a8f43de2411",
+                "url": "https://api.github.com/repos/pear/pear-core-minimal/zipball/cae0f1ce0cb5bddb611b0a652d322905a65a5896",
+                "reference": "cae0f1ce0cb5bddb611b0a652d322905a65a5896",
                 "shasum": ""
             },
             "require": {
                 "pear/console_getopt": "~1.3",
                 "pear/pear_exception": "~1.0"
             },
-            "provide": {
-                "rsky/pear-core-min": "*"
+            "replace": {
+                "rsky/pear-core-min": "self.version"
             },
             "type": "library",
             "autoload": {
@@ -743,7 +744,7 @@
                 "src/"
             ],
             "license": [
-                "New BSD"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
@@ -753,7 +754,7 @@
                 }
             ],
             "description": "Minimal set of PEAR core files to be used as composer dependency",
-            "time": "2015-02-10 20:55:39"
+            "time": "2015-10-17 11:41:19"
         },
         {
             "name": "pear/pear_exception",
