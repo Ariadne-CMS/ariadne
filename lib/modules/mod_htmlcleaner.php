@@ -63,10 +63,10 @@ class htmlcleanertag {
 		$str = str_replace("\n"," ", $str);
 		$offset=1;
 		$endset=strlen($str)-2;
-		if ($str[0]!='<' || $str[strlen($str)-1]!='>'){
+		if ($str[0] != '<' || $str[$endset+1] !== '>'){
 			trigger_error('tag syntax error', E_USER_ERROR);
 		}
-		if ($str[strlen($str)-2]=='/') {
+		if ($str[$endset]=='/') {
 			$endset--;
 			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE;
 		}
@@ -74,26 +74,34 @@ class htmlcleanertag {
 			$offset=2;
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE;
 		}
-		for ($tagname = '';preg_match("/([a-zA-Z0-9:]{1})/",$str[$offset]);$offset++) {
-			$tagname .= $str[$offset];
-		}
-		for ($tagattr = '';$offset<=$endset;$offset++){
-			$tagattr .= $str[$offset];
-		}
+
+		preg_match("|</?([a-zA-Z0-9:]+)|",$str,$matches);
+		$tagname = $matches[1];
+		$offset += strlen($tagname);
+
+		$tagattr = substr($str,$offset,$endset-$offset+1);
+
 		$this->nodeName = strtolower($tagname);
 		$this->attributes = $this->parseAttributes($tagattr);
 	}
 
 	function parseAttributes($str)
 	{
+		$str = trim($str);
+		if(strlen($str) == 0) {
+			return array();
+		}
+
+		//echo "{{".$str."}}\n";
 		$i=0;
 		$return = array();
 		$_state = -1;
 		$_name = '';
 		$_quote = '';
 		$_value = '';
+		$strlen = strlen($str);
 
-		while ($i<strlen($str)) {
+		while ($i<$strlen) {
 			$chr = $str[$i];
 
 			if ($_state == -1) {		// reset buffers
@@ -103,20 +111,23 @@ class htmlcleanertag {
 				$_state = 0;		// parse from here
 			}
 			if ($_state == 0) {		// state 0 : looking for name
-				if (preg_match("/([a-zA-Z]{1})/",$chr)) {
-					$_name = $chr;
-					$_state = 1;
+				if (ctype_space($chr)) { // whitespace, NEXT
+					$i++;
+					continue;
 				}
-			} else if ($_state == 1) {	// state 1 : looking for equal
-				if (preg_match("/([a-zA-Z0-9_:.-]{1})/",$chr)) {
-					$_name .= $chr;
-				} else if ($chr == '=') {
+				preg_match("/([a-zA-Z][a-zA-Z0-9_:.-]*)/",substr($str,$i),$matches);
+
+				$_name = $matches[1];
+				$i += strlen($_name);
+				$chr = $str[$i];
+
+				if ($chr == '=') {
 					$_state = 3;
 				} else {
 					$_state = 2;
 				}
 			} else if ($_state == 2) { // state 2: looking for equal
-				if ($chr != ' ' && $chr != "\t" && $chr != "\n") {
+				if (!ctype_space($chr)) {
 					if ($chr == '=') {
 						$_state = 3;
 					} else {
@@ -127,11 +138,11 @@ class htmlcleanertag {
 					}
 				}
 			} else if ($_state == 3) {	// state 3 : looking for quote
-				if (preg_match("/([\'\"]{1})/",$chr)) {
+				if ($chr == '"' || $chr == "'" ) {
 					$_quote = $chr;
 					$_value = '';
 					$_state = 4;
-				} else if (preg_match("/\\s{1}/",$chr)) {
+				} else if (ctype_space($chr)) {
 					$_state = 3;
 				} else {
 					$_quote = '';
@@ -149,7 +160,7 @@ class htmlcleanertag {
 					}
 				} else {
 					// Unquoted attributes end when there is a space char.
-					if (preg_match("/\\s{1}/", $chr)) {
+					if (ctype_space($chr)) {
 						$return[strtolower($_name)] = $_value;
 						$_state = -1;
 					} else {
@@ -195,7 +206,7 @@ class htmlcleanertag {
 			if (is_numeric($attkey)) {
 				$str .= ' '.$attvalue;
 			} else {
-				$str .= ' '.$attkey."=\"".$attvalue."\"";
+				$str .= ' '.$attkey."=\"".htmlentities($attvalue,ENT_QUOTES)."\"";
 			}
 		}
 		if ($this->closingStyle == HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE) {
@@ -230,21 +241,26 @@ class htmlcleaner
 				$_state = 0;
 			}
 			if ($_state == 0) {	// state 0 : looking for <
-				if ($chr == '<') {
-					// start buffering
+				$pos = strpos($str,'<',$i);
+				if( $pos === false) {
+					// no more
+					$_buffer = substr($str,$i);
+					$i = $str_len;
+				} else if($str[$pos] === '<') {
+					$chr = '<';
+					$_buffer = substr($str,$i,$pos-$i);
 					if ($_buffer!='') {
 						// store part
 						array_push($parts,new htmlcleanertag($_buffer));
 					}
 					$_buffer = '<';
+					$i = $pos;
 					if (($i+3 < $str_len) && $str[$i+1] == '!' && $str[$i+2] == '-' && $str[$i+3] == '-') {
 						// comment
 						$_state = 2;
 					} else {
 						$_state = 1;
 					}
-				} else {
-					$_buffer .= $chr;
 				}
 			} else if ($_state == 1) {	// state 1 : in tag looking for >
 				$_buffer .= $chr;
