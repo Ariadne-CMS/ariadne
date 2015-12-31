@@ -1312,8 +1312,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 			// Speedup check for config.ini
 
-			if( !$configcache->hasDefaultConfigIni ) {
-				if( is_array($this->data->config->templates) ) {
+			if( is_array($this->data->config->templates) ) {
+				$configcache->localTemplates = $this->data->config->templates;
+				if( !$configcache->hasDefaultConfigIni ) {
 					foreach($this->data->config->templates as $type => $templates ) {
 						if( isset($templates["config.ini"]) ) {
 							$configcache->hasDefaultConfigIni = true;
@@ -1323,11 +1324,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 				}
 			}
-
-			if (is_array($this->data->config->templates)) {
-				$configcache->localTemplates = $this->data->config->templates;
-			}
-			// hasConfigIni is checked in getConfig. Only calls config.ini if set to true
 
 			if( !$configcache->hasDefaultConfigIni ) {
 				$configcache->hasConfigIni = false;
