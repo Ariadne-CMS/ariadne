@@ -24,6 +24,7 @@
 	require_once(AriadneBasePath."/modules/mod_debug.php");
 	require_once(AriadneBasePath."/modules/mod_cache.php");
 
+	$AR->context = array();
 
 	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
 		include_once($store_config['code']."modules/mod_workspace.php");

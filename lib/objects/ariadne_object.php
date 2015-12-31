@@ -1039,9 +1039,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	public function pushContext($context) {
 	global $AR;
-		if (!$AR->context) {
-			$AR->context = array();
-		} else {
+		if(!empty($AR->context)) {
 			$context = array_merge(end($AR->context), $context);
 		}
 		array_push($AR->context, $context);
@@ -1049,29 +1047,21 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	public function setContext($context, $level=0) {
 	global $AR;
-		if (is_array($AR->context)) {
-			$AR->context[count($AR->context)-(1+$level)]=$context;
-		}
+		$AR->context[count($AR->context)-(1+$level)]=$context;
 	}
 
 	public function popContext() {
 	global $AR;
-		if (is_array($AR->context)) {
-			$result = array_pop($AR->context);
-		}
-		return $result;
+		return array_pop($AR->context);
 	}
 
 	public static function getContext($level=0) {
 	global $AR;
-		if (is_array($AR->context)) {
-			$result = $AR->context[count($AR->context)-(1+$level)];
-		}
-		return $result;
+		return $AR->context[count($AR->context)-(1+$level)];
 	}
 
 	public function CheckAdmin($user) {
-		if ($user->data->login == "admin") {
+	if ($user->data->login == "admin") {
 			return true;
 		}
 		if ($user->data->groups['/system/groups/admin/']) {
