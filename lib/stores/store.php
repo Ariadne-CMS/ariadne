@@ -285,7 +285,7 @@ abstract class store {
 			$class = substr($type, 0, $subcpos);
 			$vtype = $class;
 		}
-		if (!class_exists($class)) {
+		if (!class_exists($class, false)) {
 			include_once($this->code."objects/".$class.".phtml");
 		}
 		$object=new $class;

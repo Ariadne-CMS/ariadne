@@ -134,7 +134,7 @@ class URL {
 		$find[] = "%\\{arSession\\}%";
 		$repl[] = $session;
 
-		if (class_exists('edit') && edit::getEditMode()) {
+		if (class_exists('edit', false) && edit::getEditMode()) {
 			$find[] = "%ar:editable=([^ ]+)%";
 			$repl[] = "contentEditable=\\1";
 		}

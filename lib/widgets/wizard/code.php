@@ -80,7 +80,7 @@ if( !function_exists("wgWizKeepVars") ) {
 	}
 }
 
-if( !class_exists('pinp_wizard') ) {
+if( !class_exists('pinp_wizard', false) ) {
 	class pinp_wizard {
 		function _wgWizKeepVars($array, $prefix="") {
 			return wgWizKeepVars($array, $prefix);
