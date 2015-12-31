@@ -33,6 +33,12 @@ class htmlcleanerTest extends AriadneBaseTest
 		$clean = htmlcleaner::cleanup($html,array());
 		$this->assertEquals($html, $clean);
 	}
+	public function testCleaningAtributesDash() {
+		$html = '<body>testbody<span data-dash="dash"	ar:path:=\'/some"/thing/\'     	               >frml</span' . PHP_EOL . '></body>';
+		$prep = '<body>testbody<span data-dash="dash" ar:path:="/some&quot;/thing/">frml</span></body>';
+		$clean = htmlcleaner::cleanup($html,array());
+		$this->assertEquals($prep, $clean);
+	}
 
 }
 ?>
