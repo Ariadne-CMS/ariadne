@@ -47,7 +47,7 @@ class htmlcleanertag {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_TEXT;
 		}
 
-		if ((strlen($str)>1) && ($str[1]=='?' || $str[1]=='!')) {
+		if (isset($str[1]) && ($str[1]=='?' || $str[1]=='!')) {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_SPECIAL;
 		}
 
