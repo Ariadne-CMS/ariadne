@@ -297,16 +297,22 @@ class htmlcleaner
 	{
 
 		$scriptParts = array();
+
 		do {
-			$scriptPartKey = "";
-			if (preg_match('!<script[^>]*>(.|[\r\n])*?</[^>]*script[^>]*>!i', $body, $matches)) {
-				do {
-					$scriptPartKey = '----'.md5(rand()).'----';
-				} while (strpos($body, $scriptPartKey) !== false);
-				$body = str_replace($matches[0], $scriptPartKey, $body);
-				$scriptParts[$scriptPartKey] = $matches[0];
-			}
-		} while($scriptPartKey);
+			$prefix = md5(rand());
+		} while (strpos($body, $prefix) !== false);
+
+		$callback = function($matches) use ($prefix, &$scriptParts) {
+			$scriptPartKey = '----'.$prefix . '-' . count($scriptParts).'----';
+			$scriptParts[$scriptPartKey] = $matches[0];
+			return $scriptPartKey;
+		};
+
+		$newbody = preg_replace_callback('!<script[^>]*>(.|[\r\n])*?</[^>]*script[^>]*>!i', $callback, $body);
+
+		if($newbody) {
+			$body = $newbody;
+		}
 
 		$body = "<htmlcleaner>$body</htmlcleaner>";
 		$rewrite_rules = $config["rewrite"];
