@@ -100,6 +100,7 @@ class htmlcleanertag {
 		$_quote = '';
 		$_value = '';
 		$strlen = strlen($str);
+		$str .= ' ';
 
 		while ($i<$strlen) {
 			$chr = $str[$i];
@@ -139,34 +140,23 @@ class htmlcleanertag {
 				}
 			} else if ($_state == 3) {	// state 3 : looking for quote
 				if ($chr == '"' || $chr == "'" ) {
-					$_quote = $chr;
-					$_value = '';
-					$_state = 4;
-				} else if (ctype_space($chr)) {
-					$_state = 3;
-				} else {
-					$_quote = '';
-					$_value = $chr;
-					$_state = 4;
+					// fastforward til next quot
+					$regexp = '|'.$chr.'(.*?)'.$chr.'|';
+					$skip = 1;
+				} else if (!ctype_space($chr)) {
+					// fastforward til next space
+					$regexp = '|(.*?) ?|';
+					$skip = 0;
 				}
-			} else if ($_state == 4) {	// state 4 : looking for endquote
-				if ($_quote != "") {
-					if ($chr == $_quote) {
-						// end of attribute
-						$return[strtolower($_name)] = $_value;
-						$_state = -1;
-					} else {
-						$_value .= $chr;
-					}
-				} else {
-					// Unquoted attributes end when there is a space char.
-					if (ctype_space($chr)) {
-						$return[strtolower($_name)] = $_value;
-						$_state = -1;
-					} else {
-						$_value .= $chr;
-					}
-				}
+
+				$substr = substr($str,$i);
+				preg_match($regexp,substr($str,$i),$matches);
+				$_value = $matches[1];
+				$i += strlen($_value) + $skip ;
+
+				$return[strtolower($_name)] = $_value;
+
+				$_state = -1;
 			}
 			$i++;
 		}
@@ -230,7 +220,7 @@ class htmlcleaner
 	{
 		$i=0;
 		$parts = array();
-		$_state = -1;
+		$_state = 0;
 		$_buffer = '';
 		$_quote = '';
 		$str_len = strlen($str);
@@ -238,6 +228,7 @@ class htmlcleaner
 			$chr = $str[$i];
 			if ($_state == -1) {	// reset buffers
 				$_buffer = '';
+				$_quote = '';
 				$_state = 0;
 			}
 			if ($_state == 0) {	// state 0 : looking for <
@@ -258,6 +249,18 @@ class htmlcleaner
 					if (($i+3 < $str_len) && $str[$i+1] == '!' && $str[$i+2] == '-' && $str[$i+3] == '-') {
 						// comment
 						$_state = 2;
+
+						// cheating, fast forward to end of comment
+						$end = strpos($str,'-->',$i+3); // start looking 3 steps ahead
+						if($end !== false) {
+							$comment = substr($str,$i,$end-$i+3);
+							array_push($parts,new htmlcleanertag($comment)); // Remove this line to make the cleaner leave out HTML comments from the parts.
+							$_state = -1;
+							$i = $end+2;
+						} else {
+							$_buffer = substr($str,$i);
+							$i = $str_len;
+						}
 					} else {
 						$_state = 1;
 					}
