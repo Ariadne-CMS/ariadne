@@ -328,6 +328,38 @@ class htmlcleaner
 		}
 		$delete_stack = Array();
 		$skipNodes = 0;
+		if(is_array($rewrite_rules)) {
+			foreach ($rewrite_rules as $tag_rule=> $attrib_rules) {
+				$escaped_rule = str_replace('/','\/',$tag_rule);
+				if($tag_rule !== $escaped_rule) {
+					$rewrite_rules[$escaped_rule] = $attrib_rules;
+					unset($rewrite_rules[$tag_rule]);
+					$tag_rule = $escaped_rule;
+				}
+
+				if (is_array($attrib_rules)) {
+					foreach ($attrib_rules as $attrib_rule=> $value_rules) {
+						$escaped_rule = str_replace('/','\/',$attrib_rule);
+						if ($attrib_rule !== $escaped_rule) {
+							$rewrite_rules[$tag_rule][$escaped_rule] = $value_rules;
+							unset($rewrite_rules[$tag_rule][$attrib_rule]);
+							$attrib_rule = $escaped_rule;
+						}
+
+						if (is_array($value_rules)) {
+							foreach ($value_rules as $value_rule=>$value) {
+								$escaped_rule = str_replace('/','\/',$value_rule);
+								if ($value_rule !== $escaped_rule) {
+									$rewrite_rules[$tag_rule][$attrib_rule][$escaped_rule] = $value;
+									unset($rewrite_rules[$tag_rule][$attrib_rule][$value_rule]);
+								}
+							}
+						} 
+					}
+				}
+			}
+		}
+
 		foreach ($parts as $i => $part) {
 			if ($skipNodes > 0) {
 				$skipNodes--;
@@ -358,19 +390,17 @@ class htmlcleaner
 				}
 			}
 
+
 			if ($part && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
-					$escaped_rule = str_replace('/','\/',$tag_rule);
-					if (preg_match('/'.$escaped_rule.'/is', $part->nodeName)) {
+					if (preg_match('/'.$tag_rule.'/is', $part->nodeName)) {
 						if (is_array($attrib_rules) && is_array($part->attributes)) {
 							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
 								foreach ($part->attributes as $attrib_key=>$attrib_val) {
-									$escaped_rule = str_replace('/','\/',$attrib_rule);
-									if (preg_match('/'.$escaped_rule.'/is', $attrib_key)) {
+									if (preg_match('/'.$attrib_rule.'/is', $attrib_key)) {
 										if (is_array($value_rules)) {
 											foreach ($value_rules as $value_rule=>$value) {
-												$escaped_rule = str_replace('/','\/',$value_rule);
-												if (preg_match('/'.$escaped_rule.'/is', $attrib_val)) {
+												if (preg_match('/'.$value_rule.'/is', $attrib_val)) {
 													if ($value === false) {
 														unset($part->attributes[$attrib_key]);
 														if (!count($part->attributes)) {
@@ -383,8 +413,7 @@ class htmlcleaner
 															break 3;
 														}
 													} else {
-														$escaped_rule = str_replace('/','\/',$value_rule);
-														$part->attributes[$attrib_key] = preg_replace('/^'.$escaped_rule.'$/is', $value, $part->attributes[$attrib_key]);
+														$part->attributes[$attrib_key] = preg_replace('/^'.$value_rule.'$/is', $value, $part->attributes[$attrib_key]);
 													}
 												}
 											}
@@ -401,8 +430,7 @@ class htmlcleaner
 												break 2;
 											}
 										} else {
-											$escaped_rule = str_replace('/','\/',$attrib_rule);
-											$part->attributes[preg_replace('/^'.$escaped_rule.'$/is', $value_rules, $attrib_key)] = $part->attributes[$attrib_key];
+											$part->attributes[preg_replace('/^'.$attrib_rule.'$/is', $value_rules, $attrib_key)] = $part->attributes[$attrib_key];
 											unset($part->attributes[$attrib_key]);
 										}
 									}
