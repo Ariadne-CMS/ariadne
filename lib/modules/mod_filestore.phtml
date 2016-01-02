@@ -444,17 +444,16 @@
 				@mkdir($path, DIRMODE); // Supress error, can trigger with race condition.
 			}	
 			while ($id) {
-				$next=floor($id/PATHTICLESIZE);
 				$part=$id%PATHTICLESIZE;
-				$path.="/$part";
-				$id=$next;
+				$path .= '/'. $part;
+				$id=floor($id/PATHTICLESIZE);
 			}
 			if ($write && !file_exists($path)) {
 				@mkdir($path, DIRMODE, true); // Supress error, can trigger with race condition.
 			}
-			$path.="/";
+			$path .= '/';
 			if ($name) {
-				$path.="_$name";
+				$path .= '_'.$name;
 			}
 			return $path;
 		}
