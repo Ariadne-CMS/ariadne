@@ -446,9 +446,8 @@ class htmlcleaner
 			}
 		}
 
-		foreach ($scriptParts as $key => $value) {
-			$return = str_replace($key, $value, $return);
-		}
+		$return = str_replace(array_keys($scriptParts), array_values($scriptParts), $return);
+
 		//FIXME: htmlcleaner removes the '<' in '</htmlcleaner>' if the html code is broken
 		// ie: if the last tag in the input isn't properly closed... it should instead
 		// close any broken tag properly (add quotes and a '>')
