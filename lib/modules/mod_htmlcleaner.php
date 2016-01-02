@@ -194,7 +194,7 @@ class htmlcleanertag {
 			if (is_numeric($attkey)) {
 				$str .= ' '.$attvalue;
 			} else {
-				$str .= ' '.$attkey."=\"".htmlentities($attvalue,ENT_QUOTES)."\"";
+				$str .= ' '.$attkey.'="'.str_replace('"','&quot;',$attvalue).'"';
 			}
 		}
 		if ($this->closingStyle == HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE) {
@@ -245,8 +245,6 @@ class htmlcleaner
 					$_buffer = '<';
 					$i = $pos;
 					if (($i+3 < $str_len) && $str[$i+1] == '!' && $str[$i+2] == '-' && $str[$i+3] == '-') {
-						// comment
-						$_state = 2;
 
 						// cheating, fast forward to end of comment
 						$end = strpos($str,'-->',$i+3); // start looking 3 steps ahead
@@ -321,7 +319,7 @@ class htmlcleaner
 		if (is_array($config["delete_emptied"])) {
 			$config["delete_emptied"] = array_flip($config["delete_emptied"]);
 		}
-		if (is_array($config["delete_empty_containers"])) {
+		if (isset($config["delete_empty_containers"]) && is_array($config["delete_empty_containers"])) {
 			$config["delete_empty_containers"] = array_flip($config["delete_empty_containers"]);
 		}
 		$delete_stack = Array();
@@ -380,7 +378,7 @@ class htmlcleaner
 						array_push($delete_stack, Array("tag" => $part->nodeName));
 				} else if (isset($config["delete_empty_containers"][$part->nodeName])) {
 					if ($part->nodeName != 'a' || !$part->attributes['name']) {	// named anchor objects are not containers
-						if ($parts[$i+1] && $parts[$i+1]->nodeName == $part->nodeName && $parts[$i+1]->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE) {
+						if (isset($parts[$i+1]) && $parts[$i+1]->nodeName == $part->nodeName && $parts[$i+1]->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE) {
 							$skipNodes = 1;
 							continue;
 						}
@@ -392,7 +390,7 @@ class htmlcleaner
 			if ($part && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
 					if (preg_match('/'.$tag_rule.'/is', $part->nodeName)) {
-						if (is_array($attrib_rules) && is_array($part->attributes)) {
+						if (is_array($attrib_rules)) {
 							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
 								foreach ($part->attributes as $attrib_key=>$attrib_val) {
 									if (preg_match('/'.$attrib_rule.'/is', $attrib_key)) {
