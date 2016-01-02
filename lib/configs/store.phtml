@@ -69,7 +69,13 @@
   if( $AR->OS=='WIN32' ) {
     $store_config['files']         = $AR->dir->install.'\files\\';
   } else {
-    $store_config['files']         = $AR->dir->install.'/files/';
+    $realpath = realpath($AR->dir->install.'/files/');
+    if(!$realpath) {
+       $realpath = $AR->dir->install.'/files/';
+    } else {
+       $realpath .= '/';
+    }
+    $store_config['files']         = $realpath;
   }
 
   /*************************************************************************/
