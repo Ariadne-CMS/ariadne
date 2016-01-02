@@ -16,6 +16,12 @@ class htmlcleanerTest extends AriadneBaseTest
 		$this->assertEquals($html, $clean);
 	}
 
+	public function testFormSelectOptionEmptyAttr() {
+		$html = '<body>testbody<form><a class=""></form></body>';
+		$clean = htmlcleaner::cleanup($html,array());
+		$this->assertEquals($html, $clean);
+	}
+
 	public function testDataAtributesDot() {
 		$html = '<body>testbody<span data.dot="dot">frml</span></body>';
 		$clean = htmlcleaner::cleanup($html,array());
