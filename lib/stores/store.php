@@ -334,21 +334,22 @@ abstract class store {
 			$path = substr($curr_dir, 1).'/'.$path;
 		}
 		if ($path) {
-			$splitpath=explode("/", $path);
+			$splitpath=explode('/', $path);
 			foreach ($splitpath as $pathticle) {
 				switch($pathticle) {
-					case ".." :
+					case '..' :
 						$result = dirname($result);
 						// if second char of $result is not set, then current result is the rootNode
 						if (isset($result[1])) {
-							$result .= "/";
+							$result .= '/';
+						} else {
+							$result[0] = '/'; // make sure that even under windows, slashes are always forward slashes.
 						}
-						$result[0] = "/"; // make sure that even under windows, slashes are always forward slashes.
 					break;
-					case "." : break;
-					case ""	 : break;
+					case '.' : break;
+					case ''  : break;
 					default:
-						$result .= $pathticle."/";
+						$result .= $pathticle.'/';
 					break;
 				}
 			}
