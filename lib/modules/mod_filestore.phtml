@@ -179,9 +179,8 @@
 			global $ARConfig;
 			if (!$ARConfig->fsFunctions[$fsId][$fsName]) {
 				// template isn't in the cache, so define it... as a new function
-				if ($this->exists($fsId, $fsName.".inc") ){
-					// new style template available
-					$path=$this->make_path($fsId, $fsName.".inc");
+				$path=$this->make_path($fsId, $fsName.".inc");
+				if (file_exists($path)) {
 					$arTemplateFunction = ariadne_include_template($path);
 					if(is_callable($arTemplateFunction) ) {
 						$ARConfig->fsFunctions[$fsId][$fsName] = $arTemplateFunction;
@@ -189,7 +188,7 @@
 				}
 			}
 			// now call the function...
-			$fsFunc=&$ARConfig->fsFunctions[$fsId][$fsName];
+			$fsFunc = $ARConfig->fsFunctions[$fsId][$fsName];
 			return $fsFunc($fsObject, $fsLocalVars);
 		}
 
@@ -437,7 +436,7 @@
 
 		/* private functions */
 
-		public function make_path($id, $name="", $write=false) {
+		public function make_path($id, $name=null, $write=false) {
 			// calculate path based on $id and $name
 			$path=$this->root;
 			if ($write && !file_exists($path) ) {
@@ -452,7 +451,7 @@
 				@mkdir($path, DIRMODE, true); // Supress error, can trigger with race condition.
 			}
 			$path .= '/';
-			if ($name) {
+			if (isset($name) && $name ) {
 				$path .= '_'.$name;
 			}
 			return $path;
