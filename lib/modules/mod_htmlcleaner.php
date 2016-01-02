@@ -36,26 +36,24 @@ class htmlcleanertag {
 	public $nodeType;
 	public $nodeName;
 	public $nodeValue;
-	public $attributes;
+	public $attributes = array();
 	public $closingStyle;
 
 	public function __construct($str)
 	{
 		if ($str[0]=='<') {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_NODE;
+			if (isset($str[1]) && ($str[1]=='?' || $str[1]=='!')) {
+				$this->nodeType = HTML_CLEANER_NODE_NODETYPE_SPECIAL;
+				$this->nodeValue = $str;
+			} else {
+				$this->parseFromString($str);
+			}
 		} else {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_TEXT;
-		}
-
-		if (isset($str[1]) && ($str[1]=='?' || $str[1]=='!')) {
-			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_SPECIAL;
-		}
-
-		if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_NODE) {
-			$this->parseFromString($str);
-		} else if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType==HTML_CLEANER_NODE_NODETYPE_SPECIAL) {
 			$this->nodeValue = $str;
 		}
+
 	}
 
 	function parseFromString($str)
