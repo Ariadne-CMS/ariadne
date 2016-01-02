@@ -264,22 +264,15 @@ class htmlcleaner
 			} else if ($_state == 1) {	// state 1 : in tag looking for >
 				$_buffer .= $chr;
 				if ($chr == '"' || $chr == "'") {
-					$_quote = $chr;
-					$_state = 3;
+
+					$regexp = '|'.$chr.'(.*?)'.$chr.'|';
+					preg_match($regexp,$str,$matches,0,$i);
+
+					$_buffer .= $matches[1] . $chr;
+					$i += strlen($matches[1]) + 1 ;
 				} else if ($chr == '>') {
 					array_push($parts,new htmlcleanertag($_buffer));
 					$_state = -1;
-				}
-			} else if ($_state == 2) {	// state 2 : in comment looking for -->
-				$_buffer .= $chr;
-				if ($str[$i-2] == '-' && $str[$i-1] == '-' && $str[$i] == '>') {
-					array_push($parts,new htmlcleanertag($_buffer)); // Remove this line to make the cleaner leave out HTML comments from the parts.
-					$_state = -1;
-				}
-			} else if ($_state == 3) {
-				$_buffer .= $chr;
-				if ($chr == $_quote || $chr == '') {
-					$_state = 1;
 				}
 			}
 			$i++;
