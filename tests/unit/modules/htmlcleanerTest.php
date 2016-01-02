@@ -46,5 +46,11 @@ class htmlcleanerTest extends AriadneBaseTest
 		$this->assertEquals($prep, $clean);
 	}
 
+	public function testDataNextingImpropperHtmlEncoding() {
+		$html = '<body>testbody<span data-dash="dash><">frml</span></body>';
+		$clean = htmlcleaner::cleanup($html,array());
+		$this->assertEquals($html, $clean);
+	}
+
 }
 ?>
