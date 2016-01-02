@@ -98,7 +98,6 @@ class htmlcleanertag {
 		$_quote = '';
 		$_value = '';
 		$strlen = strlen($str);
-		$str .= ' ';
 
 		while ($i<$strlen) {
 			$chr = $str[$i];
@@ -114,7 +113,7 @@ class htmlcleanertag {
 					$i++;
 					continue;
 				}
-				preg_match("/([a-zA-Z][a-zA-Z0-9_:.-]*)/",substr($str,$i),$matches);
+				preg_match("/([a-zA-Z][a-zA-Z0-9_:.-]*)/",$str,$matches,0,$i);
 
 				$_name = $matches[1];
 				$i += strlen($_name);
@@ -139,29 +138,30 @@ class htmlcleanertag {
 			} else if ($_state == 3) {	// state 3 : looking for quote
 				if ($chr == '"' || $chr == "'" ) {
 					// fastforward til next quot
-					$regexp = '|'.$chr.'(.*?)'.$chr.'|';
+					$regexp = '|^'.$chr.'(.*?)'.$chr.'|';
 					$skip = 1;
 				} else if (!ctype_space($chr)) {
 					// fastforward til next space
-					$regexp = '|(.*?) ?|';
+					$regexp = '|^(.*?) ?|';
 					$skip = 0;
 				}
 
-				$substr = substr($str,$i);
 				preg_match($regexp,substr($str,$i),$matches);
 				$_value = $matches[1];
 				$i += strlen($_value) + $skip ;
 
 				$return[strtolower($_name)] = $_value;
-
 				$_state = -1;
+
 			}
 			$i++;
 		}
-		if ($_value!='') {
-			$return[strtolower($_name)] = $_value;
-		} else if ($_name!='') {
-			$return[] = $_name;
+		if($_state != -1 ) {
+			if ($_value!='') {
+				$return[strtolower($_name)] = $_value;
+			} else if ($_name!='') {
+				$return[] = $_name;
+			}
 		}
 
 		return $return;
