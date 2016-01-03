@@ -95,10 +95,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		) );
 
 		// convert the deprecated urlencoded arguments to an array
-		if (is_string($arCallArgs)) {
+		if (isset($arCallArgs) && is_string($arCallArgs)) {
 			$ARCurrent->arTemp=$arCallArgs;
 			$arCallArgs=array();
-			Parse_str($ARCurrent->arTemp, $arCallArgs);
+			parse_str($ARCurrent->arTemp, $arCallArgs);
 		}
 		// import the arguments in the current scope, but don't overwrite existing
 		// variables.
