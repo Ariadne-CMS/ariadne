@@ -743,19 +743,20 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	protected function compare_hosts($url1, $url2) {
 		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match.
 		// using preg_replace instead of parse_url() because the latter doesn't parse '//www.muze.nl' correctly.
-		if (isset($url2) && is_array($url2)) {
-			foreach ($url2 as $url) {
-				if ($this->compare_hosts($url1, $url)) {
-					return true;
-				}
-			}
-			return false;
+		if (isset($url) && !is_array($url2) ){
+			$url2 = array($url2);
 		}
+		$preurl1 = preg_replace('|^[a-z:]*//|i', '', $url1);
 
-		return (
-			($url1 == $url2) ||
-			(preg_replace('|^[a-z:]*//|i', '', $url1) == preg_replace('|^[a-z:]*//|i', '', $url2))
-		);
+		foreach($url2 as $url) {
+			if (
+					$url == $url1 ||
+					$prepurl1 == preg_replace('|^[a-z:]*//|i', '', $url2)
+				) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function make_local_url($path="", $nls=false, $session=true, $https=null) {
