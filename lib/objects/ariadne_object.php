@@ -743,9 +743,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	protected function compare_hosts($url1, $url2) {
 		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match.
 		// using preg_replace instead of parse_url() because the latter doesn't parse '//www.muze.nl' correctly.
-		if (isset($url) && !is_array($url2) ){
-			$url2 = array($url2);
+		if (isset($url) ) {
+			if ( !is_array($url2) ){
+				$url2 = array($url2);
+			}
+		} else {
+			$url2 = array();
 		}
+
 		$preurl1 = preg_replace('|^[a-z:]*//|i', '', $url1);
 
 		foreach($url2 as $url) {
