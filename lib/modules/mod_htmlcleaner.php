@@ -36,26 +36,24 @@ class htmlcleanertag {
 	public $nodeType;
 	public $nodeName;
 	public $nodeValue;
-	public $attributes;
+	public $attributes = array();
 	public $closingStyle;
 
 	public function __construct($str)
 	{
 		if ($str[0]=='<') {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_NODE;
+			if (isset($str[1]) && ($str[1]=='?' || $str[1]=='!')) {
+				$this->nodeType = HTML_CLEANER_NODE_NODETYPE_SPECIAL;
+				$this->nodeValue = $str;
+			} else {
+				$this->parseFromString($str);
+			}
 		} else {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_TEXT;
-		}
-
-		if ((strlen($str)>1) && ($str[1]=='?' || $str[1]=='!')) {
-			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_SPECIAL;
-		}
-
-		if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_NODE) {
-			$this->parseFromString($str);
-		} else if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType==HTML_CLEANER_NODE_NODETYPE_SPECIAL) {
 			$this->nodeValue = $str;
 		}
+
 	}
 
 	function parseFromString($str)
@@ -63,10 +61,10 @@ class htmlcleanertag {
 		$str = str_replace("\n"," ", $str);
 		$offset=1;
 		$endset=strlen($str)-2;
-		if ($str[0]!='<' || $str[strlen($str)-1]!='>'){
+		if ($str[0] != '<' || $str[$endset+1] !== '>'){
 			trigger_error('tag syntax error', E_USER_ERROR);
 		}
-		if ($str[strlen($str)-2]=='/') {
+		if ($str[$endset]=='/') {
 			$endset--;
 			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE;
 		}
@@ -74,26 +72,34 @@ class htmlcleanertag {
 			$offset=2;
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE;
 		}
-		for ($tagname = '';preg_match("/([a-zA-Z0-9:]{1})/",$str[$offset]);$offset++) {
-			$tagname .= $str[$offset];
-		}
-		for ($tagattr = '';$offset<=$endset;$offset++){
-			$tagattr .= $str[$offset];
-		}
+
+		preg_match("|</?([a-zA-Z0-9:]+)|",$str,$matches);
+		$tagname = $matches[1];
+		$offset += strlen($tagname);
+
+		$tagattr = substr($str,$offset,$endset-$offset+1);
+
 		$this->nodeName = strtolower($tagname);
 		$this->attributes = $this->parseAttributes($tagattr);
 	}
 
 	function parseAttributes($str)
 	{
+		$str = trim($str);
+		if(strlen($str) == 0) {
+			return array();
+		}
+
+		//echo "{{".$str."}}\n";
 		$i=0;
 		$return = array();
 		$_state = -1;
 		$_name = '';
 		$_quote = '';
 		$_value = '';
+		$strlen = strlen($str);
 
-		while ($i<strlen($str)) {
+		while ($i<$strlen) {
 			$chr = $str[$i];
 
 			if ($_state == -1) {		// reset buffers
@@ -103,20 +109,23 @@ class htmlcleanertag {
 				$_state = 0;		// parse from here
 			}
 			if ($_state == 0) {		// state 0 : looking for name
-				if (preg_match("/([a-zA-Z]{1})/",$chr)) {
-					$_name = $chr;
-					$_state = 1;
+				if (ctype_space($chr)) { // whitespace, NEXT
+					$i++;
+					continue;
 				}
-			} else if ($_state == 1) {	// state 1 : looking for equal
-				if (preg_match("/([a-zA-Z0-9_:.-]{1})/",$chr)) {
-					$_name .= $chr;
-				} else if ($chr == '=') {
+				preg_match("/([a-zA-Z][a-zA-Z0-9_:.-]*)/",$str,$matches,0,$i);
+
+				$_name = $matches[1];
+				$i += strlen($_name);
+				$chr = $str[$i];
+
+				if ($chr == '=') {
 					$_state = 3;
 				} else {
 					$_state = 2;
 				}
 			} else if ($_state == 2) { // state 2: looking for equal
-				if ($chr != ' ' && $chr != "\t" && $chr != "\n") {
+				if (!ctype_space($chr)) {
 					if ($chr == '=') {
 						$_state = 3;
 					} else {
@@ -127,42 +136,32 @@ class htmlcleanertag {
 					}
 				}
 			} else if ($_state == 3) {	// state 3 : looking for quote
-				if (preg_match("/([\'\"]{1})/",$chr)) {
-					$_quote = $chr;
-					$_value = '';
-					$_state = 4;
-				} else if (preg_match("/\\s{1}/",$chr)) {
-					$_state = 3;
-				} else {
-					$_quote = '';
-					$_value = $chr;
-					$_state = 4;
+				if ($chr == '"' || $chr == "'" ) {
+					// fastforward til next quot
+					$regexp = '|^'.$chr.'(.*?)'.$chr.'|';
+					$skip = 1;
+				} else if (!ctype_space($chr)) {
+					// fastforward til next space
+					$regexp = '|^(.*?) ?|';
+					$skip = 0;
 				}
-			} else if ($_state == 4) {	// state 4 : looking for endquote
-				if ($_quote != "") {
-					if ($chr == $_quote) {
-						// end of attribute
-						$return[strtolower($_name)] = $_value;
-						$_state = -1;
-					} else {
-						$_value .= $chr;
-					}
-				} else {
-					// Unquoted attributes end when there is a space char.
-					if (preg_match("/\\s{1}/", $chr)) {
-						$return[strtolower($_name)] = $_value;
-						$_state = -1;
-					} else {
-						$_value .= $chr;
-					}
-				}
+
+				preg_match($regexp,substr($str,$i),$matches);
+				$_value = $matches[1];
+				$i += strlen($_value) + $skip ;
+
+				$return[strtolower($_name)] = $_value;
+				$_state = -1;
+
 			}
 			$i++;
 		}
-		if ($_value!='') {
-			$return[strtolower($_name)] = $_value;
-		} else if ($_name!='') {
-			$return[] = $_name;
+		if($_state != -1 ) {
+			if ($_value!='') {
+				$return[strtolower($_name)] = $_value;
+			} else if ($_name!='') {
+				$return[] = $_name;
+			}
 		}
 
 		return $return;
@@ -195,7 +194,7 @@ class htmlcleanertag {
 			if (is_numeric($attkey)) {
 				$str .= ' '.$attvalue;
 			} else {
-				$str .= ' '.$attkey."=\"".$attvalue."\"";
+				$str .= ' '.$attkey.'="'.str_replace('"','&quot;',$attvalue).'"';
 			}
 		}
 		if ($this->closingStyle == HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE) {
@@ -219,7 +218,7 @@ class htmlcleaner
 	{
 		$i=0;
 		$parts = array();
-		$_state = -1;
+		$_state = 0;
 		$_buffer = '';
 		$_quote = '';
 		$str_len = strlen($str);
@@ -227,44 +226,53 @@ class htmlcleaner
 			$chr = $str[$i];
 			if ($_state == -1) {	// reset buffers
 				$_buffer = '';
+				$_quote = '';
 				$_state = 0;
 			}
 			if ($_state == 0) {	// state 0 : looking for <
-				if ($chr == '<') {
-					// start buffering
+				$pos = strpos($str,'<',$i);
+				if( $pos === false) {
+					// no more
+					$_buffer = substr($str,$i);
+					$i = $str_len;
+				} else if($str[$pos] === '<') {
+					$chr = '<';
+					$_buffer = substr($str,$i,$pos-$i);
 					if ($_buffer!='') {
 						// store part
 						array_push($parts,new htmlcleanertag($_buffer));
 					}
 					$_buffer = '<';
+					$i = $pos;
 					if (($i+3 < $str_len) && $str[$i+1] == '!' && $str[$i+2] == '-' && $str[$i+3] == '-') {
-						// comment
-						$_state = 2;
+
+						// cheating, fast forward to end of comment
+						$end = strpos($str,'-->',$i+3); // start looking 3 steps ahead
+						if($end !== false) {
+							$comment = substr($str,$i,$end-$i+3);
+							array_push($parts,new htmlcleanertag($comment)); // Remove this line to make the cleaner leave out HTML comments from the parts.
+							$_state = -1;
+							$i = $end+2;
+						} else {
+							$_buffer = substr($str,$i);
+							$i = $str_len;
+						}
 					} else {
 						$_state = 1;
 					}
-				} else {
-					$_buffer .= $chr;
 				}
 			} else if ($_state == 1) {	// state 1 : in tag looking for >
 				$_buffer .= $chr;
 				if ($chr == '"' || $chr == "'") {
-					$_quote = $chr;
-					$_state = 3;
+
+					$regexp = '|'.$chr.'(.*?)'.$chr.'|';
+					preg_match($regexp,$str,$matches,0,$i);
+
+					$_buffer .= $matches[1] . $chr;
+					$i += strlen($matches[1]) + 1 ;
 				} else if ($chr == '>') {
 					array_push($parts,new htmlcleanertag($_buffer));
 					$_state = -1;
-				}
-			} else if ($_state == 2) {	// state 2 : in comment looking for -->
-				$_buffer .= $chr;
-				if ($str[$i-2] == '-' && $str[$i-1] == '-' && $str[$i] == '>') {
-					array_push($parts,new htmlcleanertag($_buffer)); // Remove this line to make the cleaner leave out HTML comments from the parts.
-					$_state = -1;
-				}
-			} else if ($_state == 3) {
-				$_buffer .= $chr;
-				if ($chr == $_quote || $chr == '') {
-					$_state = 1;
 				}
 			}
 			$i++;
@@ -278,16 +286,22 @@ class htmlcleaner
 	{
 
 		$scriptParts = array();
+
 		do {
-			$scriptPartKey = "";
-			if (preg_match('!<script[^>]*>(.|[\r\n])*?</[^>]*script[^>]*>!i', $body, $matches)) {
-				do {
-					$scriptPartKey = '----'.md5(rand()).'----';
-				} while (strpos($body, $scriptPartKey) !== false);
-				$body = str_replace($matches[0], $scriptPartKey, $body);
-				$scriptParts[$scriptPartKey] = $matches[0];
-			}
-		} while($scriptPartKey);
+			$prefix = md5(rand());
+		} while (strpos($body, $prefix) !== false);
+
+		$callback = function($matches) use ($prefix, &$scriptParts) {
+			$scriptPartKey = '----'.$prefix . '-' . count($scriptParts).'----';
+			$scriptParts[$scriptPartKey] = $matches[0];
+			return $scriptPartKey;
+		};
+
+		$newbody = preg_replace_callback('!<script[^>]*>(.|[\r\n])*?</[^>]*script[^>]*>!i', $callback, $body);
+
+		if($newbody) {
+			$body = $newbody;
+		}
 
 		$body = "<htmlcleaner>$body</htmlcleaner>";
 		$rewrite_rules = $config["rewrite"];
@@ -298,11 +312,43 @@ class htmlcleaner
 		if (is_array($config["delete_emptied"])) {
 			$config["delete_emptied"] = array_flip($config["delete_emptied"]);
 		}
-		if (is_array($config["delete_empty_containers"])) {
+		if (isset($config["delete_empty_containers"]) && is_array($config["delete_empty_containers"])) {
 			$config["delete_empty_containers"] = array_flip($config["delete_empty_containers"]);
 		}
 		$delete_stack = Array();
 		$skipNodes = 0;
+		if(is_array($rewrite_rules)) {
+			foreach ($rewrite_rules as $tag_rule=> $attrib_rules) {
+				$escaped_rule = str_replace('/','\/',$tag_rule);
+				if($tag_rule !== $escaped_rule) {
+					$rewrite_rules[$escaped_rule] = $attrib_rules;
+					unset($rewrite_rules[$tag_rule]);
+					$tag_rule = $escaped_rule;
+				}
+
+				if (is_array($attrib_rules)) {
+					foreach ($attrib_rules as $attrib_rule=> $value_rules) {
+						$escaped_rule = str_replace('/','\/',$attrib_rule);
+						if ($attrib_rule !== $escaped_rule) {
+							$rewrite_rules[$tag_rule][$escaped_rule] = $value_rules;
+							unset($rewrite_rules[$tag_rule][$attrib_rule]);
+							$attrib_rule = $escaped_rule;
+						}
+
+						if (is_array($value_rules)) {
+							foreach ($value_rules as $value_rule=>$value) {
+								$escaped_rule = str_replace('/','\/',$value_rule);
+								if ($value_rule !== $escaped_rule) {
+									$rewrite_rules[$tag_rule][$attrib_rule][$escaped_rule] = $value;
+									unset($rewrite_rules[$tag_rule][$attrib_rule][$value_rule]);
+								}
+							}
+						} 
+					}
+				}
+			}
+		}
+
 		foreach ($parts as $i => $part) {
 			if ($skipNodes > 0) {
 				$skipNodes--;
@@ -325,7 +371,7 @@ class htmlcleaner
 						array_push($delete_stack, Array("tag" => $part->nodeName));
 				} else if (isset($config["delete_empty_containers"][$part->nodeName])) {
 					if ($part->nodeName != 'a' || !$part->attributes['name']) {	// named anchor objects are not containers
-						if ($parts[$i+1] && $parts[$i+1]->nodeName == $part->nodeName && $parts[$i+1]->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE) {
+						if (isset($parts[$i+1]) && $parts[$i+1]->nodeName == $part->nodeName && $parts[$i+1]->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE) {
 							$skipNodes = 1;
 							continue;
 						}
@@ -333,19 +379,17 @@ class htmlcleaner
 				}
 			}
 
+
 			if ($part && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
-					$escaped_rule = str_replace('/','\/',$tag_rule);
-					if (preg_match('/'.$escaped_rule.'/is', $part->nodeName)) {
-						if (is_array($attrib_rules) && is_array($part->attributes)) {
+					if (preg_match('/'.$tag_rule.'/is', $part->nodeName)) {
+						if (is_array($attrib_rules)) {
 							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
 								foreach ($part->attributes as $attrib_key=>$attrib_val) {
-									$escaped_rule = str_replace('/','\/',$attrib_rule);
-									if (preg_match('/'.$escaped_rule.'/is', $attrib_key)) {
+									if (preg_match('/'.$attrib_rule.'/is', $attrib_key)) {
 										if (is_array($value_rules)) {
 											foreach ($value_rules as $value_rule=>$value) {
-												$escaped_rule = str_replace('/','\/',$value_rule);
-												if (preg_match('/'.$escaped_rule.'/is', $attrib_val)) {
+												if (preg_match('/'.$value_rule.'/is', $attrib_val)) {
 													if ($value === false) {
 														unset($part->attributes[$attrib_key]);
 														if (!count($part->attributes)) {
@@ -358,8 +402,7 @@ class htmlcleaner
 															break 3;
 														}
 													} else {
-														$escaped_rule = str_replace('/','\/',$value_rule);
-														$part->attributes[$attrib_key] = preg_replace('/^'.$escaped_rule.'$/is', $value, $part->attributes[$attrib_key]);
+														$part->attributes[$attrib_key] = preg_replace('/^'.$value_rule.'$/is', $value, $part->attributes[$attrib_key]);
 													}
 												}
 											}
@@ -376,8 +419,7 @@ class htmlcleaner
 												break 2;
 											}
 										} else {
-											$escaped_rule = str_replace('/','\/',$attrib_rule);
-											$part->attributes[preg_replace('/^'.$escaped_rule.'$/is', $value_rules, $attrib_key)] = $part->attributes[$attrib_key];
+											$part->attributes[preg_replace('/^'.$attrib_rule.'$/is', $value_rules, $attrib_key)] = $part->attributes[$attrib_key];
 											unset($part->attributes[$attrib_key]);
 										}
 									}
@@ -397,9 +439,8 @@ class htmlcleaner
 			}
 		}
 
-		foreach ($scriptParts as $key => $value) {
-			$return = str_replace($key, $value, $return);
-		}
+		$return = str_replace(array_keys($scriptParts), array_values($scriptParts), $return);
+
 		//FIXME: htmlcleaner removes the '<' in '</htmlcleaner>' if the html code is broken
 		// ie: if the last tag in the input isn't properly closed... it should instead
 		// close any broken tag properly (add quotes and a '>')

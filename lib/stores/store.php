@@ -285,7 +285,7 @@ abstract class store {
 			$class = substr($type, 0, $subcpos);
 			$vtype = $class;
 		}
-		if (!class_exists($class)) {
+		if (!class_exists($class, false)) {
 			include_once($this->code."objects/".$class.".phtml");
 		}
 		$object=new $class;
@@ -328,29 +328,23 @@ abstract class store {
 	**********************************************************************/
 		$this->error = "";
 		$result = "/";
-		if ($path[0] === "/") {
-			$path = substr($path, 1);
-		} else {
-			$path = substr($curr_dir, 1).'/'.$path;
+		if ($path[0] !== "/") {
+			$path = $curr_dir . '/' . $path;
 		}
-		if ($path) {
-			$splitpath=explode("/", $path);
-			foreach ($splitpath as $pathticle) {
-				switch($pathticle) {
-					case ".." :
-						$result = dirname($result);
-						// if second char of $result is not set, then current result is the rootNode
-						if (isset($result[1])) {
-							$result .= "/";
-						}
-						$result[0] = "/"; // make sure that even under windows, slashes are always forward slashes.
-					break;
-					case "." : break;
-					case ""	 : break;
-					default:
-						$result .= $pathticle."/";
-					break;
+
+		$splitpath = preg_split('|/|', $path, -1, PREG_SPLIT_NO_EMPTY);
+
+		foreach ($splitpath as $pathticle) {
+			if($pathticle === '..' ) {
+				$result = dirname($result);
+				// if second char of $result is not set, then current result is the rootNode
+				if (isset($result[1])) {
+					$result = $result . "/";
+				} else {
+					$result = "/"; // make sure that even under windows, slashes are always forward slashes.
 				}
+			} else if ($pathticle !== '.') {
+				$result = $result . $pathticle."/";
 			}
 		}
 		return $result;

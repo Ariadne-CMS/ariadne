@@ -16,6 +16,12 @@ class htmlcleanerTest extends AriadneBaseTest
 		$this->assertEquals($html, $clean);
 	}
 
+	public function testFormSelectOptionEmptyAttr() {
+		$html = '<body>testbody<form><a class=""></form></body>';
+		$clean = htmlcleaner::cleanup($html,array());
+		$this->assertEquals($html, $clean);
+	}
+
 	public function testDataAtributesDot() {
 		$html = '<body>testbody<span data.dot="dot">frml</span></body>';
 		$clean = htmlcleaner::cleanup($html,array());
@@ -30,6 +36,18 @@ class htmlcleanerTest extends AriadneBaseTest
 
 	public function testDataAtributesDash() {
 		$html = '<body>testbody<span data-dash="dash">frml</span></body>';
+		$clean = htmlcleaner::cleanup($html,array());
+		$this->assertEquals($html, $clean);
+	}
+	public function testCleaningAtributesDash() {
+		$html = '<body>testbody<span data-dash="dash"	ar:path:=\'/some"/thing/\'     	               >frml</span' . PHP_EOL . '></body>';
+		$prep = '<body>testbody<span data-dash="dash" ar:path:="/some&quot;/thing/">frml</span></body>';
+		$clean = htmlcleaner::cleanup($html,array());
+		$this->assertEquals($prep, $clean);
+	}
+
+	public function testDataNextingImpropperHtmlEncoding() {
+		$html = '<body>testbody<span data-dash="dash><">frml</span></body>';
 		$clean = htmlcleaner::cleanup($html,array());
 		$this->assertEquals($html, $clean);
 	}

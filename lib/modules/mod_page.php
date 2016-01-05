@@ -117,13 +117,13 @@ class page {
 		}
 
 		if ($settings["htmlcleaner"]["enabled"] || $settings["htmlcleaner"]===true) {
-			include_once($me->store->get_config("code")."modules/mod_htmlcleaner.php");
+			require_once($me->store->get_config("code")."modules/mod_htmlcleaner.php");
 			$config = $settings["htmlcleaner"];
 			$page   = htmlcleaner::cleanup($page, $config);
 		}
 
 		if ($settings["htmltidy"]["enabled"] || $settings["htmltidy"]===true) {
-			include_once($me->store->get_config("code")."modules/mod_tidy.php");
+			require_once($me->store->get_config("code")."modules/mod_tidy.php");
 			if ($settings["htmltidy"]===true) {
 				$config = array();
 				$config["options"] = $AR->Tidy->options;

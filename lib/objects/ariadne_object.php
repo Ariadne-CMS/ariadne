@@ -95,14 +95,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		) );
 
 		// convert the deprecated urlencoded arguments to an array
-		if (is_string($arCallArgs)) {
+		if (isset($arCallArgs) && is_string($arCallArgs)) {
 			$ARCurrent->arTemp=$arCallArgs;
 			$arCallArgs=array();
-			Parse_str($ARCurrent->arTemp, $arCallArgs);
+			parse_str($ARCurrent->arTemp, $arCallArgs);
 		}
 		// import the arguments in the current scope, but don't overwrite existing
 		// variables.
-		if (is_array($arCallArgs)) {
+		if (isset($arCallArgs) && is_array($arCallArgs)) {
 			extract($arCallArgs,EXTR_SKIP);
 		}
 		// now find the initial nls selection (CheckConfig is needed for per
@@ -351,9 +351,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	private function saveCustomData($configcache, $properties) {
 		$custom = $this->getdata("custom", "none");
 		@parse_str($custom);
-		if (is_array($custom)) {
+		if (isset($custom) && is_array($custom)) {
 			foreach($custom as $nls=>$entries){
-				if (is_array($entries)) {
+				if (isset($entries) && is_array($entries)) {
 					foreach ( $entries as $customkey => $customval ){
 						$this->data->custom[$nls][$customkey] = $customval;
 					}
@@ -365,7 +365,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// parse_str fails miserably thus keeping the array $custom intact.
 
 		$i=0;
-		if (is_array($this->data->custom)) {
+		if (isset($this->data->custom) && is_array($this->data->custom)) {
 			foreach($this->data->custom as $nls => $cdata) {
 				foreach($cdata as $name => $value){
 					// one index, this order (name, value, nls) ?
@@ -375,7 +375,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						$this->data->custom[$nls][$name] = $value;
 					}
 					if ($configcache->custom[$name]['property']) {
-						if (is_array($value)) {
+						if (isset($value) && is_array($value)) {
 							foreach($value as $valkey => $valvalue ) {
 								$properties["custom"][$i]["name"]=$name;
 								$properties["custom"][$i]["value"]=$valvalue;
@@ -486,7 +486,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// the properties from the eventData are the new property list
 		// no need to merge them with $properties, just manipulate the properties array directly
 		// in the event data. unlike the user.workflow.pre.html template
-		if ( is_array( $eventData->arProperties ) ) {
+		if (isset( $eventData->arProperties ) && is_array( $eventData->arProperties ) ) {
 			$properties = $eventData->arProperties;
 		} else {
 			$properties = array();
@@ -499,7 +499,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$arCallArgs['properties'] = $properties;
 		$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
 		/* merge workflow properties */
-		if ( is_array($wf_result) ){
+		if (isset($wf_result) && is_array($wf_result) ){
 			$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 		}
 
@@ -549,7 +549,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$this->data->config = $config;
 				/* merge workflow properties */
 
-				if ( is_array($wf_result) ){
+				if (isset($wf_result) && is_array($wf_result) ){
 					$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 
 					if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
@@ -686,7 +686,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$keephost) {
 			if ($nls) {
 				$url=$temp_config->root["list"]["nls"][$nls];
-				if (is_array($url)) {
+				if (isset($url) && is_array($url)) {
 					$url = current( $url );
 				}
 				if ($url) {
@@ -702,7 +702,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$checkNLS = $this->nls;
 				}
 				$urlList = $temp_config->root['list']['nls'][$checkNLS];
-				if (is_array($urlList)) {
+				if (isset($urlList) && is_array($urlList)) {
 					$url = reset($urlList) . $rootoptions;
 				} else {
 					$url = $temp_config->root["value"].$rootoptions;
@@ -743,19 +743,25 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	protected function compare_hosts($url1, $url2) {
 		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match.
 		// using preg_replace instead of parse_url() because the latter doesn't parse '//www.muze.nl' correctly.
-		if (is_array($url2)) {
-			foreach ($url2 as $url) {
-				if ($this->compare_hosts($url1, $url)) {
-					return true;
-				}
+		if (isset($url) ) {
+			if ( !is_array($url2) ){
+				$url2 = array($url2);
 			}
-			return false;
+		} else {
+			$url2 = array();
 		}
 
-		return (
-			($url1 == $url2) ||
-			(preg_replace('|^[a-z:]*//|i', '', $url1) == preg_replace('|^[a-z:]*//|i', '', $url2))
-		);
+		$preurl1 = preg_replace('|^[a-z:]*//|i', '', $url1);
+
+		foreach($url2 as $url) {
+			if (
+					$url == $url1 ||
+					$prepurl1 == preg_replace('|^[a-z:]*//|i', '', $url2)
+				) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function make_local_url($path="", $nls=false, $session=true, $https=null) {
@@ -765,7 +771,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$checkpath = $path;
 
 		$redirects = $ARCurrent->shortcut_redirect;
-		if (is_array($redirects)) {
+		if (isset($redirects) && is_array($redirects)) {
 			$newpath = $checkpath;
 			$c_redirects = count($redirects);
 			$c_redirects_done = 0;
@@ -953,14 +959,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 				if (!$AR->user->groups) {
 					$groups=$this->find("/system/groups/",$criteria, "system.get.phtml");
-					if (is_array($groups)) {
+					if (isset($groups) && is_array($groups)) {
 						foreach($groups as $group ){
 							if (is_object($group)) {
 								$AR->user->groups[$group->path] = $group;
 							}
 						}
 					}
-					if (is_array($AR->user->data->config->groups)) {
+					if (isset($AR->user->data->config->groups) && is_array($AR->user->data->config->groups)) {
 						foreach ($AR->user->data->config->groups as $groupPath => $groupId) {
 							if (!$AR->user->groups[$groupPath]) {
 								$AR->user->groups[$groupPath] = current($this->get($groupPath, "system.get.phtml"));
@@ -975,7 +981,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 				if ($AR->user->groups) {
 					/* check for owner grants (set by system.get.config.phtml) */
-					if (is_array($AR->user->ownergrants)) {
+					if (isset($AR->user->ownergrants) && is_array($AR->user->ownergrants)) {
 						if (!$AR->user->groups["owner"]) {
 							$AR->user->groups["owner"] = @current($this->get("/system/groups/owner/", "system.get.phtml"));
 						}
@@ -985,9 +991,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						$groupgrants=array();
 						if (is_object($group)) {
 							$group->FindGrants($path, $groupgrants, $userpath);
-							if (is_array($grants)) {
+							if (isset($grants) && is_array($grants)) {
 								foreach($groupgrants as $gkey => $gval ){
-									if (is_array($grants[$gkey]) && is_array($gval)) {
+									if (isset($grants[$gkey]) && is_array($grants[$gkey]) && is_array($gval)) {
 										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
 									} else
 									if ($gval && !is_array($gval)) {
@@ -1003,15 +1009,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						}
 					}
 				}
-				if( is_array($AR->sgGrants) ) {
+				if(isset($AR->sgGrants) && is_array($AR->sgGrants) ) {
 					ksort($AR->sgGrants);
 					$ppath = $this->make_path($path);
 					foreach( $AR->sgGrants as $sgpath => $sggrants) {
 						$sgpath = $this->make_path($sgpath);
 						if( substr($ppath, 0, strlen($sgpath)) == $sgpath ) { // sgpath is parent of ppath or equal to ppath
-							if (is_array($grants)) {
+							if (isset($grants) && is_array($grants)) {
 								foreach($sggrants as $gkey => $gval ){
-									if (is_array($grants[$gkey]) && is_array($gval)) {
+									if (isset($grants[$gkey]) && is_array($grants[$gkey]) && is_array($gval)) {
 										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
 									} else
 									if ($gval && !is_array($gval)) {
@@ -1039,9 +1045,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	public function pushContext($context) {
 	global $AR;
-		if (!$AR->context) {
-			$AR->context = array();
-		} else {
+		if(!empty($AR->context)) {
 			$context = array_merge(end($AR->context), $context);
 		}
 		array_push($AR->context, $context);
@@ -1049,29 +1053,21 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	public function setContext($context, $level=0) {
 	global $AR;
-		if (is_array($AR->context)) {
-			$AR->context[count($AR->context)-(1+$level)]=$context;
-		}
+		$AR->context[count($AR->context)-(1+$level)]=$context;
 	}
 
 	public function popContext() {
 	global $AR;
-		if (is_array($AR->context)) {
-			$result = array_pop($AR->context);
-		}
-		return $result;
+		return array_pop($AR->context);
 	}
 
 	public static function getContext($level=0) {
 	global $AR;
-		if (is_array($AR->context)) {
-			$result = $AR->context[count($AR->context)-(1+$level)];
-		}
-		return $result;
+		return $AR->context[count($AR->context)-(1+$level)];
 	}
 
 	public function CheckAdmin($user) {
-		if ($user->data->login == "admin") {
+	if ($user->data->login == "admin") {
 			return true;
 		}
 		if ($user->data->groups['/system/groups/admin/']) {
@@ -1269,7 +1265,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$arConfig = $ARCurrent->arConfig;
 			}
 			unset($ARCurrent->arResult);
-			if (is_array($arConfig['library'])) {
+			if (isset($arConfig['library']) && is_array($arConfig['library'])) {
 				if (!$ARConfig->libraries[$this->path]) {
 					$ARConfig->libraries[$this->path] = array();
 				}
@@ -1322,8 +1318,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 			// Speedup check for config.ini
 
-			if( !$configcache->hasDefaultConfigIni ) {
-				if( is_array($this->data->config->templates) ) {
+			if(isset($this->data->config->templates) && is_array($this->data->config->templates) ) {
+				$configcache->localTemplates = $this->data->config->templates;
+				if( !$configcache->hasDefaultConfigIni ) {
 					foreach($this->data->config->templates as $type => $templates ) {
 						if( isset($templates["config.ini"]) ) {
 							$configcache->hasDefaultConfigIni = true;
@@ -1334,14 +1331,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 
-			if (is_array($this->data->config->templates)) {
-				$configcache->localTemplates = $this->data->config->templates;
-			}
-			// hasConfigIni is checked in getConfig. Only calls config.ini if set to true
-
 			if( !$configcache->hasDefaultConfigIni ) {
 				$configcache->hasConfigIni = false;
-				if( is_array($this->data->config->pinp) ) {
+				if(isset($this->data->config->pinp) && is_array($this->data->config->pinp) ) {
 					foreach( $this->data->config->pinp as $type => $templates ) {
 						if( isset($templates["config.ini"]) ) {
 							$configcache->hasConfigIni = true;
@@ -1387,10 +1379,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if ($this->data->config->grants["pgroup"]["owner"]) {
 				$configcache->ownergrants = $this->data->config->grants["pgroup"]["owner"];
 			}
-			if (is_array($configcache->ownergrants)) {
+			if (isset($configcache->ownergrants) && is_array($configcache->ownergrants)) {
 				if ($AR->user && $AR->user->data->login != 'public' && $AR->user->data->login === $this->data->config->owner) {
 					$ownergrants = $configcache->ownergrants;
-					if (is_array($ownergrants)) {
+					if (isset($ownergrants) && is_array($ownergrants)) {
 						foreach( $ownergrants as $grant => $val ) {
 							$AR->user->ownergrants[$this->path][$grant] = $val;
 						}
@@ -1398,7 +1390,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 
-			if (is_array($this->data->config->customconfig)) {
+			if (isset($this->data->config->customconfig) && is_array($this->data->config->customconfig)) {
 				$configcache->custom=array_merge(is_array($configcache->custom)?$configcache->custom:array(), $this->data->config->customconfig);
 			}
 			$ARConfig->cache[$this->path]=$configcache;
@@ -1539,7 +1531,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		$templates = $config->localTemplates;
-		if (is_array($templates)) {
+		if (isset($templates) && is_array($templates)) {
 			$list = array();
 			foreach ($templates as $type => $functions) {
 				foreach ($functions as $function => $template) {
@@ -1627,7 +1619,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		if ( $libraryName ) {
 			$userConfig = ar::acquire('defaults.'.$libraryName);
-			if ( is_array($userConfig) ) {
+			if (isset($userConfig) && is_array($userConfig) ) {
 				$defaults = array_merge( $defaults, $userConfig );
 			}
 		}
@@ -1859,10 +1851,10 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 			}
 */
-			if (is_array($this->data->custom) && $this->data->custom['none']) {
+			if (isset($this->data->custom) && is_array($this->data->custom) && $this->data->custom['none']) {
 				$this->customdata=$this->data->custom['none'];
 			}
-			if (is_array($this->data->custom) && $this->data->custom[$nls]) {
+			if (isset($this->data->custom) && is_array($this->data->custom) && $this->data->custom[$nls]) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 
@@ -1915,7 +1907,7 @@ debug("loadLibrary: loading cache for $this->path");
 			if ($arCallFunction) { // don't search for templates named ''
 				// FIXME: Redirect code has to move to getPinpTemplate()
 				$redirects	= $ARCurrent->shortcut_redirect;
-				if (is_array($redirects)) {
+				if (isset($redirects) && is_array($redirects)) {
 					$redirpath = $this->path;
 					while (!$template['arTemplateId'] &&
 								($redir = array_pop($redirects)) &&
@@ -1935,16 +1927,16 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 
 				if ($template["arCallTemplate"] && $template["arTemplateId"]) {
-					if (!is_array($ARCurrent->cacheTemplateChain)) {
+					if (!isset($ARCurrent->cacheTemplateChain)) {
 						$ARCurrent->cacheTemplateChain = array();
 					}
-					if (!is_array($ARCurrent->cacheTemplateChain[$template["arTemplateId"]])) {
+					if (!isset($ARCurrent->cacheTemplateChain[$template["arTemplateId"]])) {
 						$ARCurrent->cacheTemplateChain[$template["arTemplateId"]] = array();
 					}
-					if (!is_array($ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']])) {
+					if (!isset($ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']])) {
 						$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']] = array();
 					}
-					if (!$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']]) {
+					if (!isset($ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']])) {
 						$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']] = 0;
 					}
 					$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']]++;
@@ -2037,7 +2029,7 @@ debug("loadLibrary: loading cache for $this->path");
 								$continue = ($eventData!=false);
 							}
 							if ( $continue ) {
-								if (!is_array($ARCurrent->cacheCallChainSettings)) {
+								if (!isset($ARCurrent->cacheCallChainSettings)) {
 									$ARCurrent->cacheCallChainSettings = array();
 								}
 								if ($ARConfig->cache[$this->path]->inConfigIni == false) {
@@ -2128,7 +2120,7 @@ debug("loadLibrary: loading cache for $this->path");
 					$offset = 0;
 					$limit = 5000;
 					$ids=$this->store->info($this->store->find($path, "" , $limit, $offset));
-					while (is_array($ids) && sizeof($ids)) {
+					while (is_array($ids) && count($ids)) {
 						foreach($ids as $value) {
 							$eventData = new object();
 							$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $value['type'], $value['path'] );
@@ -2376,7 +2368,7 @@ debug("loadLibrary: loading cache for $this->path");
 		if ($nls!="none") {
 			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
-				if (is_array($arCallArgs)) {
+				if (isset($arCallArgs) && is_array($arCallArgs)) {
 					extract($arCallArgs);
 				} else if (is_string($arCallArgs)) {
 					Parse_Str($arCallArgs);
@@ -2403,7 +2395,7 @@ debug("loadLibrary: loading cache for $this->path");
 		} else { // language independant variable.
 			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
-				if (is_array($arCallArgs)) {
+				if (isset($arCallArgs) && is_array($arCallArgs)) {
 					extract($arCallArgs);
 				} else if (is_string($arCallArgs)) {
 					Parse_Str($arCallArgs);
@@ -2451,7 +2443,7 @@ debug("loadLibrary: loading cache for $this->path");
 		$tries = 0;
 		$redirecting = true;
 
-		if(is_array($postdata)) {
+		if(isset($postdata) && is_array($postdata)) {
 			foreach($postdata as $key=>$val) {
 				if(!is_integer($key)) {
 					$data .= "$key=".urlencode($val)."&";
@@ -2573,7 +2565,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 		include_once($this->store->get_config("code")."modules/mod_unicode.php");
 
-		if (is_array($data)) {
+		if (isset($data) && is_array($data)) {
 			foreach($data as $key => $val){
 				$data[$key] = $this->convertToUTF8($val, $charset);
 			}
@@ -2649,7 +2641,7 @@ debug("loadLibrary: loading cache for $this->path");
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
 		// FIXME: Redirect code has to move to getPinpTemplate()
 		$redirects	= $ARCurrent->shortcut_redirect;
-		if (is_array($redirects)) {
+		if (isset($redirects) && is_array($redirects)) {
 			$redirpath = $this->path;
 			while (!$template['arTemplateId'] &&
 						($redir = array_pop($redirects)) &&
@@ -2791,7 +2783,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 		if ($ARCurrent->arCallStack) {
 			$arCallArgs=end($ARCurrent->arCallStack);
-			if (is_array($arCallArgs)) {
+			if (isset($arCallArgs) && is_array($arCallArgs)) {
 				extract($arCallArgs);
 			} else if (is_string($arCallArgs)) {
 				Parse_Str($arCallArgs);
@@ -2919,7 +2911,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		if (file_exists($coderoot."widgets/$arWidgetName")) {
 			if (file_exists($coderoot."widgets/$arWidgetName/$arWidgetTemplate")) {
-				if (is_array($arWidgetArgs)) {
+				if (isset($arWidgetArgs) && is_array($arWidgetArgs)) {
 					extract($arWidgetArgs);
 				} else if (is_string($arWidgetArgs)) {
 					Parse_str($arWidgetArgs);
@@ -3363,7 +3355,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function _save($properties="", $vtype="") {
-		if (is_array($properties)) {
+		if (isset($properties) && is_array($properties)) {
 			// isn't this double work, the save function doesn this again
 			foreach ($properties as $prop_name => $prop) {
 				foreach ($prop as $prop_index => $prop_record) {
@@ -3428,7 +3420,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 	public function _preg_replace($pattern, $replacement, $text, $limit = -1) {
 		if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-			if (is_array($pattern)) {
+			if (isset($pattern) && is_array($pattern)) {
 				$newrepl = array();
 				reset($replacement);
 				foreach ($pattern as $i_pattern) {

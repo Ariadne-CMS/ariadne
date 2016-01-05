@@ -87,7 +87,7 @@
 
 	}
 
-	if (!class_exists('tidy')) {
+	if (!class_exists('tidy', false)) {
 		// provide tidy class for code not migrated to ARtidy name, but only if the package php5-tidy is not loaded
 		class tidy extends ARtidy {}
 	}
