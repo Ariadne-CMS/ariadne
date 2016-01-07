@@ -15,7 +15,6 @@
 			$this->mode = $config["mode"];
 			if ($this->mode == "pear" || !$this->mode) {
 				$this->mode = "pear";
-				include_once("Archive/Tar.php");
 				PEAR::setErrorHandling(PEAR_ERROR_DIE);
 			}
 			debug("mod_tar:: mode='".$this->mode."'");

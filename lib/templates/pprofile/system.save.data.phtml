@@ -86,9 +86,14 @@
 				}
 			}
 		}
+		$this->data->scaffold = $this->getdata('scaffold','none');
 
 		if (!$this->error) {
+			$arIsNewObject = $this->arIsNewObject;
 			$arResult = $this->save($properties);
+			if ( !$this->error && $arIsNewObject && $this->data->scaffold ) {
+				$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
+			}
 		}
 		global $cache_config;
 		$cachestore=new cache($cache_config);

@@ -194,8 +194,13 @@
 				}
 				$properties["published"][0]["value"]=$this->data->published;
 
+				$this->data->scaffold = $this->getdata('scaffold','none');
+				$arIsNewObject = $this->arIsNewObject;
 				$arResult = $this->save($properties);
 				if ( !$this->error ) {
+					if ( !$this->error && $arIsNewObject && $this->data->scaffold) {
+						$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold));
+					}
 					reset($AR->nls->list);
 					while (list($key, $value)=each($AR->nls->list)) {
 						/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */

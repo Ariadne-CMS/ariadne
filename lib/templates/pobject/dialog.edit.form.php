@@ -23,6 +23,11 @@
 		<input type="text" name="value" maxlength="50" id="value"
 			value="<?php $this->showdata("value","none"); ?>" class="inputline">
 	</div>
+	<?php
+		if ( $arNewType ) {
+            $this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
+        }
+	?>
 </fieldset>
 
 <?php } ?>

@@ -207,9 +207,15 @@
 			if($windowprefs=$this->getdata("windowprefs","none")) {
 				$this->data->windowprefs=$windowprefs;
 			}
+			$this->data->scaffold = $this->getdata('scaffold','none');
+
 		}
 		if (!$this->error) {
+			$arIsNewObject = $this->arIsNewObject;
 			$newpath=$this->save($properties);
+			if ( !$this->error && $arIsNewObject && $this->data->scaffold ) {
+				$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
+			}
 			$arResult = $newpath;
 			if (!$this->error) {
 				/* warning: do not save this object again, since system.set.user.phtml updates the object also.. */

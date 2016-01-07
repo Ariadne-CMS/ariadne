@@ -13,7 +13,7 @@
 		if (!$this->arIsNewObject) {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
-		    $this->data=current($this->get(".","system.get.data.phtml"));
+			$this->data=current($this->get(".","system.get.data.phtml"));
 		} else {
 			$this->data=new object;
 		}
@@ -37,6 +37,7 @@
 				$this->data->nls=new object;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
+			$this->data->scaffold = $this->getdata('scaffold','none');
 
 			reset($AR->nls->list);
 			$count=0;
@@ -70,7 +71,13 @@
 					}
 				}
 			}
+			$arIsNewObject = $this->arIsNewObject;
 			$arResult = $this->save($properties);
+
+			if ( !$this->error && $arIsNewObject && $this->data->scaffold ) {
+				$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
+			}
+
 			global $cache_config;
 			$cachestore=new cache($cache_config);
 			$cachestore->onObjectSaved($this->id);

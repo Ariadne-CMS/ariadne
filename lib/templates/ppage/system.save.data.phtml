@@ -47,6 +47,7 @@
 					}
 				}
 			}
+			$this->data->scaffold = $this->getdata('scaffold','none');
 
 			reset($AR->nls->list);
 			$count=0;
@@ -108,9 +109,13 @@
 					}
 				}
 			}
+			$arIsNewObject = $this->arIsNewObject;
 			$arResult = $this->save($properties);
 
 			if (!$this->error) {
+				if ( $arIsNewObject && $this->data->scaffold ) {
+					$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
+				}
 				unset($this->arIsNewObject);
 				reset($AR->nls->list);
 				$count=0;

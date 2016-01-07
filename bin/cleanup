@@ -45,7 +45,6 @@ function procFile($filename) {
 function procCacheFile($filename) {
 	$mtime = filemtime($filename);
 	if ($mtime < 1000) {
-		echo "Skipped $filename, not stale enough;\n";
 		return;
 	}
 	$age = time() - $mtime;

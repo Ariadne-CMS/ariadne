@@ -161,7 +161,7 @@ class scanner {
 
 	function ext_compile($engine, $string) {
 		if ($engine == "lessc") { // FIXME: Define an API for compiler classes so that no specific configuration is needed here.
-			return ar('beta/lessc')->compile($string);
+			return ar('formats/less')->compile($string);
 		} else if ($engine == "jsmin") {
 			return ar('beta/jsmin')->compile($string);
 		} else if ($engine == "test") {
@@ -751,6 +751,7 @@ class pinp {
 		  "bcsub|gmp_[a-z_]+";
 		$misc_funcs="mail|highlight_string|pack|unpack|get_browser|get_class|uniqid|clone|set_time_limit|hash|".
 		  "json_encode|json_decode|json_last_error|is_a|sleep|usleep|func_get_arg|func_get_args|func_num_args";
+		$zlib_funcs="gzinflate|gzcompress|gzdecode|gzdeflate|gzencode|gzuncompress|zlib_encode|zlib_decode|zlib_get_coding_type";
 		$net_funcs="checkdnsrr|dns_check_record|gethostbyaddr|gethostbyname|gethostbynamel|getmxrr|".
 		  "getprotobyname|getprotobynumber|header_remove|header|headers_list|headers_sent|http_response_code|".
 		  "inet_ntop|inet_pton|setcookie|setrawcookie|".
@@ -808,7 +809,7 @@ class pinp {
 		$this->allowed_functions=array_flip(explode("|", strtolower("$array_funcs|$object_funcs|$ctype_funcs|$filter_funcs|".
 		  "$control_funcs|$datetime_funcs|$math_funcs|".
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
-		  "$allowed_functions|$debug_funcs|$loader_funcs|$ob_funcs|$iconv_funcs|$mb_funcs|$pspell_funcs|$imap_funcs")));
+		  "$allowed_functions|$debug_funcs|$loader_funcs|$ob_funcs|$iconv_funcs|$mb_funcs|$pspell_funcs|$imap_funcs|$zlib_funcs")));
 
 		/*
 			create lookup table for cast-types
@@ -1606,37 +1607,14 @@ class pinp {
 		if (!$template) {
 			$template = $this->new_template;
 		}
-		$display_errors = ini_get("display_errors");
-		ini_set("display_errors",1);
-		$error_reporting = error_reporting(E_ERROR | E_PARSE);
-		ob_start();
-			$func = create_function('',' ?'.'>'.$template.'<'.'?php ');
-			$result = ob_get_contents();
-		ob_end_clean();
-		error_reporting($error_reporting);
-		ini_set("display_errors",$display_errors);
 
-		if(empty($func)){
-			$result	= strip_tags($result);
-			$result  = trim($result,"\n");
-			list($result,$rest) = explode("\n",$result,2);
-			$result	= trim($result);
-			$first	= strpos($result,':');
-			$last	= strrpos($result,':');
-
-			$error	= trim(substr($result,0,$first));
-			$reason	= trim(substr($result,$first+2,$last-($first+2)));
-			$where	= trim(substr($result,$last+2));
-
-			$linenr = substr($where,strrpos($where,' ')+1);
-			// '^(.+) in /'
-			preg_match('|^(.+) in /|',$reason,$matches);
-
-			$this->error = $error . ' : ' . $matches[1] . ' on line ' . $linenr;
-			//$this->error .= $template;
-
+		$this->error = null;
+		$parser = (new PhpParser\ParserFactory)->create(PhpParser\ParserFactory::ONLY_PHP5);
+		try {
+			$parser->parse($template);
+		} catch(PhpParser\Error $e) {
+			$this->error = $e->getMessage();
 		}
-
 	}
 
 }

@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'arc\\' => array($vendorDir . '/arc/base/src', $vendorDir . '/arc/events/src', $vendorDir . '/arc/grants/src', $vendorDir . '/arc/config/src', $vendorDir . '/arc/cache/src', $vendorDir . '/arc/xml/src', $vendorDir . '/arc/web/src'),
+    'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
 );
