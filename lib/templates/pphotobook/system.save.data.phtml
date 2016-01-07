@@ -48,6 +48,7 @@
 				$this->data->nls=new object;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
+			$this->data->scaffold = $this->getdata('scaffold','none');
 			reset($AR->nls->list);
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
@@ -123,8 +124,12 @@
 		$this->data->thumbwidth=$this->getdata("thumbwidth","none");
 		$this->data->thumbheight=$this->getdata("thumbheight","none");
 		$this->data->thumbcolor=$this->getdata("thumbcolor","none");
+		$arIsNewObject = $this->arIsNewObject;
 		$arResult = $this->save($properties);
 		if ( !$this->error ) {
+			if ( $arIsNewObject && $this->data->scaffold ) {
+				$this->call('system.copy.scaffold.php',array('scaffold' => $this->data->scaffold));
+			}
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
 				if ($page=$this->getdata("page",$key)) {

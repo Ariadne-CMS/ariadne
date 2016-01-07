@@ -71,6 +71,7 @@
 				$this->data->nls=new object;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
+			$this->data->scaffold = $this->getdata('scaffold','none');
 			reset($AR->nls->list);
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
@@ -273,7 +274,13 @@
 					}
 					$this->data->timeframes=$properties["timeframe"];
 				}
+				$arIsNewObject = $this->arIsNewObject;
 				$arResult = $this->save($properties);
+
+				if ( !$this->error && $arIsNewObject && $this->data->scaffold ) {
+					$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
+				}
+
 				global $cache_config;
 				$cachestore=new cache($cache_config);
 				$cachestore->onObjectSaved($this->id);

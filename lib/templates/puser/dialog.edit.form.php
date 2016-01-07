@@ -103,6 +103,11 @@
 		<input id="changeOwner" type="radio" name="setowner"
 			value="0" class="inputradio"<?php if (!$setowner) echo " checked"; ?>><?php echo $ARnls["no"]; ?>
 	</div>
+	<?php
+		if ( $arNewType ) {
+			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
+		}
+	?>
 
 </fieldset>
 

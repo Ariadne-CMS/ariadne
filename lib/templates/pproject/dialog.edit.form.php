@@ -40,32 +40,7 @@
 	<?php 
 		} 
 		if ( $arNewType ) {
-			$scaffoldConfig = ar::acquire('settings.scaffolds');
-			if ( $scaffoldConfig ) {
-				if ( !is_array($scaffoldConfig) ) {
-					$scaffoldConfig = array($scaffoldConfig);
-				}
-	?>
-	<div class="field">
-		<label for="scaffold"><?php echo $ARnls["ariadne:scaffold"]; ?></label>
-		<select id="scaffold" type="text" name="scaffold" class="selectline">
-			<option value=""><?php echo $ARnls["ariadne:noscaffold"]; ?></option>
-			<?php
-				foreach ($scaffoldConfig as $scaffold) {
-					$this->find(
-						$scaffold.'pproject/',
-						"object.implements = 'pproject' and object.parent='".$scaffold."pproject/'",
-						"show.option.phtml",
-						array(
-							"selected" => $this->getdata("scaffold", "none")
-						)
-					);
-				}
-			?>
-		</select>
-	</div>
-	<?php
-			}
+			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
 		}
 	?>
 </fieldset>

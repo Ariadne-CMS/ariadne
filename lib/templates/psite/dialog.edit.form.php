@@ -81,6 +81,11 @@
 		?>
 	</div>
 	<?php } ?>
+	<?php
+		if ( $arNewType ) {
+			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
+		}
+	?>
 </fieldset>
 
 <?php } ?>

@@ -116,54 +116,9 @@
 
 			if (!$this->error) {
 
-				if ( $arIsNewObject && $this->data->scaffold && ar::exists($this->data->scaffold) ) {
-					$scaffold = current(ar::get($this->data->scaffold)->call('system.get.phtml'));
-					if ( $scaffold ) {
-						// copy config from scaffold
-						foreach ($scaffold->data->config->pinp as $ttype => $tdata ) {
-							foreach ( $tdata as $tfunction => $tlanguages ) {
-								foreach( $tlanguages as $tlanguage => $tid ) {
-									if ( $scaffold->data->config->privatetemplates[$ttype][$tfunction]) {
-										$private = true;
-									} else {
-										$private = false;
-									}
-									if ( $scaffold->data->config->templates[$ttype][$tfunction][$tlanguage] ) {
-										$default = true;
-									} else {
-										$default = false;
-									}
-									$template = $scaffold->call('system.get.layout.phtml', array(
-										'type'     => $ttype,
-										'function' => $tfunction,
-										'language' => $tlanguage
-									));
-									$this->call('system.save.layout.phtml', array(
-										'type'     => $ttype,
-										'function' => $tfunction,
-										'language' => $tlanguage,
-										'default'  => $default,
-										'private'  => $private,
-										'template' => $template
-									));
-								}
-							}
-						}
-					}
-
-					// copy all children from scaffold
-					$objects = ar::get($this->data->scaffold)->find('')->limit(0)->order('object.path ASC')->call('system.get.name.phtml');
-					foreach( $objects as $objectpath => $objectname ) {
-						$subpath = substr($objectpath, strlen($this->data->scaffold));
-						ar::get($objectpath)->call('system.copyto.phtml', array(
-							'target' => $this->path.$subpath,
-							'search' => $this->data->scaffold,
-							'replace' => $this->path,
-							'defaultnls' => $this->data->nls->default
-						));
-					}
+				if ( $arIsNewObject && $this->data->scaffold ) {
+					$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
 				}
-
 
 				unset($this->arIsNewObject);
 				reset($AR->nls->list);

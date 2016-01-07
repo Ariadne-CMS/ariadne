@@ -91,6 +91,8 @@
 				$this->data->emails=$emails;
 			}
 
+			$this->data->scaffold = $this->getdata('scaffold','none');
+
 			$properties["address"][0]["street"]=$this->data->address;
 			$properties["address"][0]["zipcode"]=$this->data->zipcode;
 			$properties["address"][0]["city"]=$this->data->city;
@@ -109,7 +111,11 @@
 						);
 			}
 			if (!$this->error) {
+				$arIsNewObject = $this->arIsNewObject;
 				$arResult = $this->save($properties);
+				if ( !$this->error && $arIsNewObject && $this->data->scaffold ) {
+					$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
+				}
 			}
 			global $cache_config;
 			$cachestore=new cache($cache_config);
