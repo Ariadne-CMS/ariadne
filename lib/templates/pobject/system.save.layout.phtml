@@ -48,7 +48,7 @@
 
 				if ($private) {
 					$this->data->config->privatetemplates[$type][$function] = 1;
-				} else {
+				} else if (isset($private)) {
 					if (isset($this->data->config->privatetemplates[$type][$function])) {
 						unset($this->data->config->privatetemplates[$type][$function]);
 						if (count($this->data->config->privatetemplates[$type])==0) {
