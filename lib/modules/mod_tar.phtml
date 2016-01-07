@@ -12,46 +12,19 @@
 			$this->tar_tar = $config["tar"];
 			$this->tar_untar = $config["untar"];
 			$this->tar_nofail = $config["nofail"];
-			$this->mode = $config["mode"];
-			if ($this->mode == "pear" || !$this->mode) {
-				$this->mode = "pear";
-				include_once("Archive/Tar.php");
-				PEAR::setErrorHandling(PEAR_ERROR_DIE);
-			}
-			debug("mod_tar:: mode='".$this->mode."'");
+			PEAR::setErrorHandling(PEAR_ERROR_DIE);
 		}
 
 
 		function extract($archive, $file, $dstdir) {
-			if ($this->mode == "system") {
-				$result = $this->untar_system($archive, $file, $dstdir);
-			} else {
-				$result = $this->untar_pear($archive, $file, $dstdir);
-			}
-			return $result;
-		}
-
-		function create($archive, $file, $srcdir) {
-			if ($this->mode == "system") {
-				$result = $this->tar_system($archive, $file, $srcdir);
-			} else {
-				$result = $this->tar_pear($archive, $file, $srcdir);
-			}
-			return $result;
-		}
-
-		function untar_pear($archive, $file, $dstdir) {
-			debug("untar_pear($archive, $file, $dstdir)");
-
 			$archive = new Archive_Tar($archive);
 			$result = $archive->extract($dstdir);
 			$archive->_Archive_Tar();
 
-			debug("untar_pear [return]");
 			return $result;
 		}
-	
-		function tar_pear($archive, $filelist, $srcdir) {
+
+		function create($archive, $filelist, $srcdir) {
 			$archive = new Archive_Tar($archive, true);
 			$filelist = trim($filelist);
 			$filelist = explode(" ", $filelist);
@@ -67,100 +40,4 @@
 			$archive->_Archive_Tar();
 			return $result;
 		}
-
-
-
-		function untar_system($tarfile, $file, $dstdir) {
-			debug("untar_system($tarfile, $file, $dstdir)");
-
-			if ($this->tar_error_handler) {
-				$errfile=$dstdir."/tar.errors";
-				$errfile=$this->_fix_tar_paths($errfile);
-				$handler=sprintf($this->tar_error_handler, $errfile);
-			}
-			$dstdir=$this->_fix_tar_paths($dstdir);
-			$tarfile=$this->_fix_tar_paths($tarfile);
-
-			//$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
-			$arguments = Array(
-							"%destdir%" => '"'.$dstdir.'"',
-							"%contents%" => $file,
-							"%archive%" => '"'.$tarfile.'"',
-							"%errorhandler%" => $handler
-						 );
-
-			$command = $this->tar_untar;
-			while (list($key, $val) = each($arguments)) {
-				$command = str_replace($key, $val, $command);
-			}
-
-			debug("untar cmd ($command)");
-			system($command,$retVar);
-			if (!$this->tar_nofail && ($retVar!=0 && $retVar!=259)) {
-				$this->error.="Error:\n	($command):\n	Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
-				if ($errfile && file_exists($errfile)) {
-					$this->error.=implode("",file($errfile));
-					@unlink($errfile);
-					$this->error.="\n";
-				}
-				$result=0;
-			} else {
-				$result=1; // ok
-			}
-			return $result;
-		}
-
-		function tar_system($tarfile, $file, $dstdir) {
-			if ($this->tar_error_handler) {
-				$errfile=$dstdir."/tar.errors";
-				$errfile=$this->_fix_tar_paths($errfile);
-				$handler=sprintf($this->tar_error_handler, $errfile);
-			}
-
-			$dstdir=$this->_fix_tar_paths($dstdir);
-			$tarfile=$this->_fix_tar_paths($tarfile);
-
-			//$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
-			$arguments = Array(
-							"%destdir%" => '"'.$dstdir.'"',
-							"%contents%" => $file,
-							"%archive%" => '"'.$tarfile.'"',
-							"%errorhandler%" => $handler
-						 );
-
-			$command = $this->tar_tar;
-
-			while (list($key, $val) = each($arguments)) {
-				$command = str_replace($key, $val, $command);
-			}
-
-			system($command,$retVar);
-			if (!$this->tar_nofail && $retVar!=0) {
-				$this->error="Error: ($command):\n	Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
-				if ($errfile && file_exists($errfile)) {
-					$this->error.=implode("",file($errfile));
-					unlink($errfile);
-					$this->error.="\n";
-				}
-				$result=0;
-			} else {
-				$result=1; // ok
-			}
-			return $result;
-		}
-
-		function _fix_tar_paths($path) {
-		global $AR;
-			if ($AR->OS=="WIN32") {
-				$path=str_replace('\\', '/', $path);
-				if (preg_match('/^([a-z]):/i', $path, $regs)) {
-					$path="//".$regs[1].substr($path,2);
-				}
-			} else {
-				// escape spaces (for other OS's than WIN32)
-				$path=preg_replace('/([^\\\\])[ ]/', '\1\ ', $path);
-			}
-			return $path;
-		}
-
 	}
