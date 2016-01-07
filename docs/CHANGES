@@ -1,4 +1,22 @@
 ========================
+Changes Ariadne 9.4
+========================
+
+Bug fixes
+- Detect php parse errors in pinp compiler with phpparser
+- escaping bug in htmlcleaner for attributes
+- fixes mod_tar in pear mode
+
+performance improvements:
+- +- 10% performce gain by improving performance of performance heavy functions
+
+Changes:
+- updated composer libraries
+- php7 support, it passes the unit tests, and is installable
+- added encryption support for mysqlstore
+- added zlib functions to pinp whitelist
+
+========================
 Changes Ariadne 9.3
 ========================
 This release is mainly targeted on bug fixes and performance improvements
