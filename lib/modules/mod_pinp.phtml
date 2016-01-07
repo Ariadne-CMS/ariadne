@@ -161,7 +161,7 @@ class scanner {
 
 	function ext_compile($engine, $string) {
 		if ($engine == "lessc") { // FIXME: Define an API for compiler classes so that no specific configuration is needed here.
-			return ar('beta/lessc')->compile($string);
+			return ar('formats/less')->compile($string);
 		} else if ($engine == "jsmin") {
 			return ar('beta/jsmin')->compile($string);
 		} else if ($engine == "test") {
