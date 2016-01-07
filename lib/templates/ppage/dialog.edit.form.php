@@ -37,12 +37,12 @@
 			include($this->store->get_config("code")."widgets/htmledit/form.html");
 		?>
 	</div>
+	<?php } ?>
 	<?php
 		if ( $arNewType ) {
 			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
 		}
 	?>
-	<?php } ?>
 </fieldset>
 
 <?php } ?>
