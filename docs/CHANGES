@@ -15,6 +15,7 @@ Changes:
 - php7 support, it passes the unit tests, and is installable
 - added encryption support for mysqlstore
 - added zlib functions to pinp whitelist
+- add scaffold support to most of the object types
 
 ========================
 Changes Ariadne 9.3
