@@ -15,7 +15,13 @@
 			// the defined interface: $arCallArgs)
 		    $this->data=current($this->get(".","system.get.data.phtml"));
 		} else {
-			$this->data=new object;
+			$scaffold = ar::getvar('scaffold');
+			if ($scaffold && ar::exists($scaffold)) {
+				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
+			}
+			if (!isset($this->data) || ar_error::isError($this->data)) {
+				$this->data = new object;
+			}
 		}
 	
 		$this->error = null;
@@ -127,7 +133,7 @@
 					/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
 					global $ARBeenHere;
 					$ARBeenHere=array();
-					                
+					           
 					$page=$this->getdata("page",$key);
 					if ($page!==false) {
 						$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
