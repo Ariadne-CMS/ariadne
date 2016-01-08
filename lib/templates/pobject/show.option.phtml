@@ -4,11 +4,14 @@
 			$modifier=ARTHISTYPE;
 		}
 		if (!$grant || $this->CheckSilent($grant, $modifier)) {
+			if (!$arLanguage) {
+				$arLanguage = $nls;
+			}
 			?><option value="<?php echo $this->path; ?>"<?php 
 			if ($selected==$this->path) { 
 				echo " selected";
 			} 
-			?>><?php echo $nlsdata->name; ?></option><?php
+			?>><?php echo $this->showdata('name', $arLanguage); ?></option><?php
 		}
 	}
 ?>
