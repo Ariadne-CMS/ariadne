@@ -17,13 +17,13 @@
 			// the defined interface: $arCallArgs)
 		    $this->data=current($this->get(".","system.get.data.phtml"));
 		} else {
-            $scaffold = ar::getvar('scaffold');
-            if ($scaffold && ar::exists($scaffold)) {
-                $this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
-            }
-            if (!isset($this->data) || ar_error::isError($this->data)) {
-                $this->data = new object;
-            }
+			$scaffold = ar::getvar('scaffold');
+			if ($scaffold && ar::exists($scaffold)) {
+				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
+			}
+			if (!isset($this->data) || ar_error::isError($this->data)) {
+				$this->data = new object;
+			}
 		}
 
 		$this->error = null;
