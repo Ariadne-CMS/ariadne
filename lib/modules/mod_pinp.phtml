@@ -758,6 +758,7 @@ class pinp {
 		  "dns_get_mx|dns_get_record|getservbyport|getservbyname|ip2long|long2ip|get_headers|http_build_query";
 		$regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split|spliti|preg_match|".
 		  "preg_match_all|preg_split|preg_quote|preg_grep|preg_filter|preg_last_error";
+		$stream_functs="stream_context_create|stream_context_get_options|stream_context_get_params|stream_context_set_option|stream_context_set_params";
 		$string_funcs="addslashes|addcslashes|bin2hex|chop|chr|chunk_split|".
 		  "convert_cyr_string|convert_uudecode|convert_uuencode|count_chars|crc32|crypt|echo|explode|flush|".
 		  "get_html_translation_table|htmlentities|htmlspecialchars|htmlspecialchars_decode|hex2bin|implode|join|".
@@ -808,7 +809,7 @@ class pinp {
 		  "imap_subscribe|imap_thread|imap_timeout|imap_uid|imap_undelete|imap_unsubscribe|imap_utf7_decode|imap_utf7_encode|imap_utf8";
 		$this->allowed_functions=array_flip(explode("|", strtolower("$array_funcs|$object_funcs|$ctype_funcs|$filter_funcs|".
 		  "$control_funcs|$datetime_funcs|$math_funcs|".
-		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
+		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$stream_funcs|$var_funcs|$xml_funcs|".
 		  "$allowed_functions|$debug_funcs|$loader_funcs|$ob_funcs|$iconv_funcs|$mb_funcs|$pspell_funcs|$imap_funcs|$zlib_funcs")));
 
 		/*
