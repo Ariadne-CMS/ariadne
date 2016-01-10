@@ -171,7 +171,7 @@ class ESI {
 
 		$compiled=$pinp->compile("<pinp>" . $test . "</pinp>");
 
-		$compiled = preg_replace("/^<\?php(.*)\?>$/s", '$1', $compiled);
+		$compiled = preg_replace("/^<\?php(.*)\?".">$/s", '$1', $compiled);
 
 		// FIXME: Is eval after the pinp compiler save enough to run?
 		$result = eval("return (" . $compiled . ");");
@@ -187,7 +187,7 @@ class ESI {
 		global $ARCurrent, $AR;
 
 		// parse <esi:include src="view.html">
-		$regExp = '|<esi:include.*?>|i';
+		$regExp = '|<esi:include.*?'.'>|i';
 
 
 		preg_match_all($regExp, $page, $matches);
