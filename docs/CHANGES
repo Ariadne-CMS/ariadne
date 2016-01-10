@@ -2,6 +2,8 @@
 Changes Ariadne 9.4
 ========================
 
+Minimum PHP version raised to 5.4.7
+
 Changes:
 - updated composer libraries
 - php7 support, it passes the unit tests, and is installable. We aren't running
@@ -21,9 +23,12 @@ Bug fixes:
   fatal errors when saving templates.
 - Fixed an escaping bug in htmlcleaner for attributes
 - Fixed mod_tar in pear mode, windows installs should now work again.
-- Performance improvements:
+- Fixed installer for the usecase where the www dir is copied instead of symlinked
+- Fixed esi including schemeless uri's
 
+- Performance improvements:
 +- 10% performce gain by improving performance of performance heavy functions
+
 
 ========================
 Changes Ariadne 9.3
