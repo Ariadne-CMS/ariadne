@@ -439,14 +439,15 @@ abstract class store {
 	}
 
 	protected function unserialize($value, $path) {
-		if (substr($value, 0, 2) == "O:") {
+		if ($value[0] === "O" && $value[1] === ":") {
 			return unserialize($value);
 		} else if ($this->config['crypto'] instanceof \Closure) {
 			$crypto = $this->config['crypto']();
+			list($token,$datavalue) = explode(':', $value, 2);
 			foreach ($crypto as $cryptoConfig) {
 				$cryptoToken = $cryptoConfig['token'];
-				if (substr($value, 0, strlen($cryptoToken)+1) == ($cryptoToken . ":")) {
-					$value = substr($value, strlen($cryptoToken)+1);
+				if ($token === $cryptoToken ) {
+					$value = $datavalue;
 					switch ($cryptoConfig['method']) {
 						case 'ar_crypt':
 							$key = base64_decode($cryptoConfig['key']);
@@ -459,7 +460,7 @@ abstract class store {
 				}
 			}
 
-			if (substr($decryptedValue, 0, 2) == "O:") {
+			if ($decryptedValue[0] === "O" && $decryptedValue[1] === ":") {
 				return unserialize($decryptedValue);
 			} else {
 				$dummy = unserialize('O:6:"object":7:{s:5:"value";s:0:"";s:3:"nls";O:6:"object":2:{s:7:"default";s:2:"nl";s:4:"list";a:1:{s:2:"nl";s:10:"Nederlands";}}s:2:"nl";O:6:"object":1:{s:4:"name";s:14:"Crypted object";}s:6:"config";O:6:"object":2:{s:10:"owner_name";s:6:"Nobody";s:5:"owner";s:6:"nobody";}s:5:"mtime";i:0;s:5:"ctime";i:0;s:5:"muser";s:6:"nobody";}');
