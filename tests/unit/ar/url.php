@@ -21,6 +21,36 @@ class ar_urlTest extends AriadneBaseTest {
 		$this->assertEquals( $url->query['foo'], 'some thing' );
 	}
 
+	function testparseUrlQueryMultipleElements()
+	{
+		$starturl = 'http://www.ariadne-cms.org/?test=test&test=frop';
+		$url = ar::url( $starturl );
+		$this->assertInstanceOf( 'ar_url', $url );
+		$this->assertInstanceOf( 'ar_urlQuery', $url->query );
+		$this->assertEquals( 'frop', ''.$url->query['test'], "PHP url parser, the second instance has precedence");
+		$this->assertNotEquals( $starturl, ''.$url );
+	}
+
+	function testparseUrlQueryUnnumberedElements()
+	{
+		$starturl = 'http://www.ariadne-cms.org/?test[]=test&test[]=frop';
+		$url = ar::url( $starturl );
+		$this->assertInstanceOf( 'ar_url', $url );
+		$this->assertInstanceOf( 'ar_urlQuery', $url->query );
+		$this->assertEquals( ['test', 'frop'], $url->query['test'], "Auto indexed array from query");
+		$this->assertEquals( $starturl, ''.$url );
+	}
+
+	function testparseUrlQueryNumberedElements()
+	{
+		$starturl = 'http://www.ariadne-cms.org/?test[1]=test&test[0]=frop';
+		$url = ar::url( $starturl );
+		$this->assertInstanceOf( 'ar_url', $url );
+		$this->assertInstanceOf( 'ar_urlQuery', $url->query );
+		$this->assertEquals( ['frop', 'test'], $url->query['test'], "manual index array from query");
+		$this->assertEquals( $starturl, ''.$url );
+	}
+
 	function testParseAuthority()
 	{
 		$starturl = 'http://foo:bar@www.ariadne-cms.org:80/';
