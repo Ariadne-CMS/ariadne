@@ -8,8 +8,6 @@
  * @author Auke van Slooten <auke@muze.nl>
 */
 
-require_once($this->store->get_config('code')."/modules/mod_error.php");
-
 /**
  * This is the Google Maps geo helper/getter class
  */
@@ -35,7 +33,7 @@ class geo_gmap {
 	public function getLatLong($address) {
 		$data=$this->getRawData($address, 'php');
 		if ($data->Status->code!=200) {
-			return error::raiseError('MOD_GEO: connection to Google Maps failed: '.$data->Status->code, 'geo_4');
+			return ar_error::raiseError('MOD_GEO: connection to Google Maps failed: '.$data->Status->code, 'geo_4');
 		} else {
 			$coordinates = $data->Placemark[0]->Point->coordinates;
 			return array('lat' => $coordinates[1], 'long' => $coordinates[0], 'alt' => $coordinates[2]);
@@ -62,7 +60,7 @@ class geo {
 			$this->api = 'GMap';
 			$this->api_key = $config['KEY'];
 			if (!$this->api_key) {
-				return error::raiseError('MOD_GEO: Google Maps needs an API KEY, please provide one','geo_3');
+				return ar_error::raiseError('MOD_GEO: Google Maps needs an API KEY, please provide one','geo_3');
 			}
 			$this->output = $config['OUTPUT'];
 			if (!$this->output) {
@@ -72,7 +70,7 @@ class geo {
 			$this->getter->api_key = $this->api_key;
 			return true;
 		} else {
-			return error::raiseError('MOD_GEO: API "'.$config['API'].'" not supported', 'geo_0');
+			return ar_error::raiseError('MOD_GEO: API "'.$config['API'].'" not supported', 'geo_0');
 		}
 	}
 
@@ -90,11 +88,11 @@ class geo {
 			$output = $this->output;
 		}
 		if (!$address) {
-			return error::raiseError('MOD_GEO: No address given to getRawData', 'geo_1');
+			return ar_error::raiseError('MOD_GEO: No address given to getRawData', 'geo_1');
 		} else if ($this->getter) {
 			return $this->getter->getRawData($address, $output);
 		} else {
-			return error::raiseError('MOD_GEO: GEO module not initialized, call init method first', 'geo_2');
+			return ar_error::raiseError('MOD_GEO: GEO module not initialized, call init method first', 'geo_2');
 		}
 	}
 
@@ -106,11 +104,11 @@ class geo {
 
 	public function getLatLong($address) {
 		if (!$address) {
-			return error::raiseError('MOD_GEO: No address given to getLatLong', 'geo_5');
+			return ar_error::raiseError('MOD_GEO: No address given to getLatLong', 'geo_5');
 		} else if ($this->getter) {
 			return $this->getter->getLatLong($address);
 		} else {
-			return error::raiseError('MOD_GEO: GEO module not initialized, call init method first', 'geo_2');
+			return ar_error::raiseError('MOD_GEO: GEO module not initialized, call init method first', 'geo_2');
 		}
 	}
 
@@ -148,7 +146,7 @@ class geo {
 			}
 			return $result;
 		} else {
-			return error::raiseError('MOD_GEO: No EXIF GPS block given', 'geo_6');
+			return ar_error::raiseError('MOD_GEO: No EXIF GPS block given', 'geo_6');
 		}
 	}
 
@@ -198,7 +196,7 @@ class pinp_geo extends geo {
 	public function _init($config) {
 		$geo = new pinp_geo();
 		$result = $geo->init($config);
-		if (!error::isError($result)) {
+		if (!ar_error::isError($result)) {
 			return $geo;
 		} else {
 			return $result;

@@ -1,6 +1,4 @@
 <?php
-	require_once('mod_error.php');
-
 	class pinp_csv {
 
 		public function _init($settings = "") {
@@ -64,7 +62,7 @@
 
 			$csv = new csvFeed($me, $settings);
 			$result = $csv->readFromArray($csvArray, $settings);
-			if ($result && error::isError($result)) {
+			if ($result && ar_error::isError($result)) {
 				return $result;
 			} else {
 				return $csv;
@@ -150,7 +148,7 @@
 
 		public function readFromArray($csvArray, $settings = array() ) {
 			if (!is_array($csvArray)) {
-				$error = error::raiseError('mod_csv: readFromArray, input is not an array', 1);
+				$error = ar_error::raiseError('mod_csv: readFromArray, input is not an array', 1);
 				return $error;
 			}
 			$this->readMode = 'array';
@@ -324,7 +322,7 @@
 		public function quoteValues($values, $settings = array()) {
 			$settings = array_merge($this->settings, $settings);
 			if (!is_array($values)) {
-				return error::raiseError('mod_csv: quoteValues: values argument is not an array', 2);
+				return ar_error::raiseError('mod_csv: quoteValues: values argument is not an array', 2);
 			}
 			$result = '';
 			if ($settings['keySelection']) {
