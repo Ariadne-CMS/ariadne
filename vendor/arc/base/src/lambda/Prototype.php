@@ -99,7 +99,7 @@ final class Prototype
      * @param $name
      * @param $args
      * @return mixed
-     * @throws \arc\ExceptionMethodNotFound
+     * @throws \arc\MethodNotFound
      */
     public function __call($name, $args)
     {
@@ -111,7 +111,7 @@ final class Prototype
                 return call_user_func_array( $method, $args );
             }
         }
-        throw new \arc\ExceptionMethodNotFound( $name.' is not a method on this Object', \arc\exceptions::OBJECT_NOT_FOUND );
+        throw new \arc\MethodNotFound( $name.' is not a method on this Object', \arc\exceptions::OBJECT_NOT_FOUND );
     }
 
     /**
@@ -143,7 +143,7 @@ final class Prototype
         // the anonymous function / closure is needed to make sure that get_object_vars
         // only returns public properties.
         return ( is_object( $this->prototype )
-            ? array_merge( $this->prototype->properties, $this->getLocalProperties( $this ) )
+            ? array_merge( $this->prototype->properties, $this->getLocalProperties() )
             : $this->getLocalProperties() );
     }
 
@@ -153,10 +153,9 @@ final class Prototype
      */
     private function getLocalProperties()
     {
-        $getLocalProperties = \Closure::bind( function ($o) {
-                return get_object_vars($o);
-            }, new \stdClass(), new \stdClass() );
-
+        $getLocalProperties = \Closure::bind(function ($o) {
+            return get_object_vars($o);
+        }, new dummy(), new dummy());
         return [ 'prototype' => $this->prototype ] + $getLocalProperties( $this );
     }
 
@@ -224,14 +223,14 @@ final class Prototype
 
     /**
      * @return mixed
-     * @throws \arc\ExceptionMethodNotFound
+     * @throws \arc\MethodNotFound
      */
     public function __invoke()
     {
         if (is_callable( $this->__invoke )) {
             return call_user_func_array( $this->__invoke, func_get_args() );
         } else {
-            throw new \arc\ExceptionMethodNotFound( 'No __invoke method found in this Object', \arc\exceptions::OBJECT_NOT_FOUND );
+            throw new \arc\MethodNotFound( 'No __invoke method found in this Object', \arc\exceptions::OBJECT_NOT_FOUND );
         }
     }
 
@@ -274,4 +273,13 @@ final class Prototype
             return call_user_func_array( $f, $args );
         }
     }
+}
+
+/**
+ * Class dummy
+ * This class is needed because in PHP7 you can no longer bind to \stdClass
+ * And anonymous classes are syntax errors in PHP5.6, so there.
+ * @package arc\lambda
+ */
+class dummy {
 }

@@ -9,8 +9,6 @@
      * file that was distributed with this source code.
      */
 
-    require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
-
     class TestTree extends PHPUnit_Framework_TestCase
     {
         function testExpand()

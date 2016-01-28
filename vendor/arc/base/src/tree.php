@@ -21,7 +21,6 @@ class tree
      * @param  \arc\tree\Node $node
      * @param  string         $root
      * @param  string         $nodeName
-     * @internal param \arc\tree\Node $tree
      * @return array          [ $path => $data, ... ]
      */
     public static function collapse($node, $root = '', $nodeName = 'nodeName')
@@ -227,7 +226,7 @@ class tree
      * @param  \arc\tree\Node   $node
      * @param  callable         $callback
      * @param  mixed            $nodeName
-     * @throws ExceptionDefault
+     * @throws UnknownErrorDefault
      */
     public static function sort($node, $callback, $nodeName = 'nodeName')
     {
@@ -240,7 +239,7 @@ class tree
                 $node->childNodes->uasort( $callback );
             };
         } else {
-            throw new \arc\ExceptionDefault( 'Cannot sort this tree - no suitable sort method found',
+            throw new \arc\UnknownErrorDefault( 'Cannot sort this tree - no suitable sort method found',
                 \arc\exceptions::OBJECT_NOT_FOUND);
         }
         self::map( $node, $sort, '', $nodeName );

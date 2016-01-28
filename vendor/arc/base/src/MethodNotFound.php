@@ -11,4 +11,4 @@
 
 namespace arc;
 
-class ExceptionMethodNotFound extends Exception { }
+class MethodNotFound extends UnknownError { }

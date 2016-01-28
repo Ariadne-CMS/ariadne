@@ -76,7 +76,7 @@ class NamedNode implements \Serializable
         if ($node instanceof NamedNode) {
             $node->appendChild( $this->nodeName, $this );
         } elseif (isset($node)) {
-            throw new \arc\Exception( 'parentNode is not a \arc\tree\NamedNode', \arc\exceptions::ILLEGAL_ARGUMENT );
+            throw new \arc\UnknownError( 'parentNode is not a \arc\tree\NamedNode', \arc\exceptions::ILLEGAL_ARGUMENT );
         } elseif ($this->parentNode) {
             $this->parentNode->removeChild( $this->nodeName );
         }

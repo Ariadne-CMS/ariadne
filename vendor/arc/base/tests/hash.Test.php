@@ -10,8 +10,6 @@
      * file that was distributed with this source code.
      */
 
-    require_once( __DIR__ . DIRECTORY_SEPARATOR . 'bootstrap.php' );
-
     class TestHash extends PHPUnit_Framework_TestCase
     {
         function testHashGet()

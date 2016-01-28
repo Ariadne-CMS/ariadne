@@ -22,7 +22,7 @@ But you can influence the cache time per call:
 
     <?php
         $cachedHTTPClient = \arc\cache::proxy( \arc\http::client(), function($params) {
-            return ( \arc\http::parseCacheTime( $params['target']->responseHeaders ) - time() );
+            return ( \arc\http\headers::parseCacheTime( $params['target']->responseHeaders ) );
         });
     
 This will create a caching http client that reads the cache-control and expires headers from each request and caches

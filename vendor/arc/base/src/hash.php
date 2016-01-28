@@ -17,10 +17,12 @@ namespace arc;
 class hash
 {
     /**
-     * Recursively search a hash for a key-path and return its value or the default value if the key-path is not found.
-     * @param $path
-     * @param $hash
-     * @param null $default
+     * Returns the value from $hash matching the given path ($path) or
+     * if the path cannot be found in the hash, it returns the default
+     * value ($default).
+     * @param      $path    A list of keys to traverse, seperated by '/'
+     * @param      $hash    The hash to search
+     * @param null $default The default value if the path is not found.
      * @return mixed|null
      */
     public static function get($path, $hash, $default = null)
@@ -34,13 +36,14 @@ class hash
     }
 
     /**
-     * Check if a key-path is defined in the hash.
-     * @param $path
-     * @param $hash
+     * Checks whether the given path ($path) is available in the hash.
+     * @param $path A list of keys to traverse, seperated by '/'
+     * @param $hash The hash to search
      * @return bool
      */
     public static function exists($path, $hash)
     {
+        $path = \arc\path::collapse($path);
         $parent = \arc\path::parent($path);
         $filename = basename( $path );
         $hash = self::get( $parent, $hash );
@@ -58,7 +61,7 @@ class hash
 
     /**
      * Parse a variable name like 'name[index][index2]' to a key-path like '/name/index/index2/'
-     * @param $name
+     * @param $name The variable name to parse
      * @return string
      */
     public static function parseName($name)
@@ -93,7 +96,7 @@ class hash
     }
 
     /**
-     * Generate a NamedNode tree from a hash.
+     * Converts a hash to a \arc\tree\NamedNode
      * @param $hash
      * @param null $parent
      * @return tree\NamedNode|null

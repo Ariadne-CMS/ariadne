@@ -11,23 +11,40 @@
 
 namespace arc;
 
-/*
-* @requires \arc\lambda
-*/
+/**
+ * Class context
+ * A \arc\lambda\Prototype based dependency injection container
+ * with stack functionality.
+ *
+ * @package arc
+ * @requires \arc\lambda
+ */
 class context
 {
     public static $context = null;
 
+    /**
+     * Adds/overrides a set of properties/methods in a new 'stack frame'
+     * @param $params
+     */
     public static function push($params)
     {
         self::$context = self::$context->extend( $params );
     }
 
+    /**
+     * Removes last addition/overrides from the container.
+     */
     public static function pop()
     {
         self::$context = self::$context->prototype;
     }
 
+    /**
+     * Take a peek at earlier entries of the container.
+     * @param int $level
+     * @return null
+     */
     public static function peek($level = 0)
     {
         $context = self::$context;

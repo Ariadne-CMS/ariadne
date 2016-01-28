@@ -36,13 +36,13 @@ class cache
             @mkdir( ARC_CACHE_DIR, 0770, true );
         }
         if (!file_exists( ARC_CACHE_DIR )) {
-            throw new \arc\ExceptionConfigError('Cache Directory does not exist ( '.ARC_CACHE_DIR.' )', \arc\exceptions::CONFIGURATION_ERROR);
+            throw new \arc\ConfigError('Cache Directory does not exist ( '.ARC_CACHE_DIR.' )', \arc\exceptions::CONFIGURATION_ERROR);
         }
         if (!is_dir( ARC_CACHE_DIR )) {
-            throw new \arc\ExceptionConfigError('Cache Directory is not a directory ( '.ARC_CACHE_DIR.' )', \arc\exceptions::CONFIGURATION_ERROR);
+            throw new \arc\ConfigError('Cache Directory is not a directory ( '.ARC_CACHE_DIR.' )', \arc\exceptions::CONFIGURATION_ERROR);
         }
         if (!is_writable( ARC_CACHE_DIR )) {
-            throw new \arc\ExceptionConfigError('Cache Directory is not writable ( '.ARC_CACHE_DIR.' )', \arc\exceptions::CONFIGURATION_ERROR);
+            throw new \arc\ConfigError('Cache Directory is not writable ( '.ARC_CACHE_DIR.' )', \arc\exceptions::CONFIGURATION_ERROR);
         }
         if (!$prefix) { // make sure you have a default prefix, so you won't clear other prefixes unintended
             $prefix = 'default';
@@ -81,7 +81,7 @@ class cache
         if (method_exists( $store, $name )) {
             return call_user_func_array( array( $store, $name), $args);
         } else {
-            throw new \arc\ExceptionMethodNotFound('Method ' . $name . ' not found in Cache Store', \arc\exceptions::OBJECT_NOT_FOUND);
+            throw new \arc\MethodNotFound('Method ' . $name . ' not found in Cache Store', \arc\exceptions::OBJECT_NOT_FOUND);
         }
     }
 

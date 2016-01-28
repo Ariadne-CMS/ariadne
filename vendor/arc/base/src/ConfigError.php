@@ -11,4 +11,4 @@
 
 namespace arc;
 
-class ExceptionDefault extends Exception { }
+class ConfigError extends UnknownError { }

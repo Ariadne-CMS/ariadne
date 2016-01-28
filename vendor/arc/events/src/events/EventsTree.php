@@ -98,7 +98,7 @@ class EventsTree implements EventsTreeInterface
     {
         $listenerSection = ( $capture ? 'capture' : 'listen' ) . '.' . $eventName;
         if (!is_callable($callback)) {
-            throw new \arc\ExceptionIlligalRequest('Method is not callable.', \arc\exceptions::ILLEGAL_ARGUMENT);
+            throw new \arc\IllegalRequest('Method is not callable.', \arc\exceptions::ILLEGAL_ARGUMENT);
         }
         if (!isset( $this->tree->nodeValue[ $listenerSection ])) {
             $this->tree->nodeValue[ $listenerSection ] = array();

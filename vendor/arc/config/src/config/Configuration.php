@@ -97,7 +97,7 @@ class Configuration implements ConfigurationInterface
             $entry = &$entry[$var];
         }
         if ( !is_array( $entry ) ) {
-            throw \arc\ExceptionDefault( 'Unable to configure '.$name.', parent set to non-array value', \arc\exceptions::FIXME );
+            throw \arc\ConfigError( 'Unable to configure '.$name.', parent set to non-array value', \arc\exceptions::CONFIGURATION_ERROR );
         } else {
             $entry[ $lastName ] = $value;
         }

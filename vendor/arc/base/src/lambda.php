@@ -9,6 +9,47 @@
  */
 namespace arc;
 
+function singleton($f) {
+    return function () use ($f) {
+        static $result;
+        if (null === $result) {
+            if ( $f instanceof \Closure && isset($this) ) {
+                $f = \Closure::bind($f, $this);
+            }
+            $result = $f();
+        }
+        return $result;
+    };
+}
+
+function partial(callable $callable, $partialArgs, $defaultArgs=[] ) {
+    $partialMerge = function($partialArgs, $addedArgs, $defaultArgs = [])
+    {
+        end( $partialArgs );
+        $l = key( $partialArgs );
+        for ($i = 0; $i <= $l; $i++) {
+            if (!array_key_exists($i, $partialArgs) && count($addedArgs)) {
+                $partialArgs[ $i ] = array_shift( $addedArgs );
+            }
+        }
+        if (count($addedArgs)) { // there are $addedArgs left, so there should be no 'holes' in $partialArgs
+            $partialArgs =array_merge( $partialArgs, $addedArgs );
+        }
+        // fill any 'holes' in $partialArgs with entries from $defaultArgs
+        $result =  array_replace( $defaultArgs, $partialArgs );
+        ksort($result);
+
+        return $result;
+    };
+
+    return function() use ($callable, $partialArgs, $defaultArgs, $partialMerge) {
+        if ( $callable instanceof \Closure && isset($this) ) {
+            $callable = \Closure::bind($callable, $this);
+        }
+        return call_user_func_array( $callable, $partialMerge( $partialArgs, func_get_args(), $defaultArgs ) );
+    };
+}
+
 /**
  * Class lambda
  * Experimental functionality, may be removed later, use at own risk.
@@ -37,29 +78,9 @@ class lambda
      */
     public static function partial(callable $callable, $partialArgs, $defaultArgs = [])
     {
-        return function () use ($callable, $partialArgs, $defaultArgs) {
-            return call_user_func_array( $callable, self::partialMerge( $partialArgs, func_get_args(), $defaultArgs ) );
-        };
+        return partial($callable, $partialArgs, $defaultArgs);
     }
 
-    private static function partialMerge($partialArgs, $addedArgs, $defaultArgs = [])
-    {
-        end( $partialArgs );
-        $l = key( $partialArgs );
-        for ($i = 0; $i <= $l; $i++) {
-            if (!array_key_exists($i, $partialArgs) && count($addedArgs)) {
-                $partialArgs[ $i ] = array_shift( $addedArgs );
-            }
-        }
-        if (count($addedArgs)) { // there are $addedArgs left, so there should be no 'holes' in $partialArgs
-            $partialArgs =array_merge( $partialArgs, $addedArgs );
-        }
-        // fill any 'holes' in $partialArgs with entries from $defaultArgs
-        $result =  array_replace( $defaultArgs, $partialArgs );
-        ksort($result);
-
-        return $result;
-    }
 
     /**
      * Returns a function with named arguments. The peppered function accepts one argument - a named array of values
@@ -101,13 +122,6 @@ class lambda
     */
     public static function singleton($f)
     {
-        return function () use ($f) {
-            static $result;
-            if (null === $result) {
-                $result = $f();
-            }
-
-            return $result;
-        };
+        return singleton($f);
     }
 }
