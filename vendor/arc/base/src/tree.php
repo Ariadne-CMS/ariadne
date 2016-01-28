@@ -43,11 +43,11 @@ class tree
      */
     public static function expand($tree = null)
     {
-        if ( is_object( $tree ) && isset( $tree->childNodes ) ) {
+        if (is_object( $tree ) && isset( $tree->childNodes )) {
             return $tree; //FIXME: should we clone the tree to avoid shared state?
         }
         $root = new \arc\tree\NamedNode();
-        if ( !is_array($tree) ) {
+        if (!is_array($tree)) {
             return $root; // empty tree
         }
         $previousParent = $root;
@@ -91,13 +91,13 @@ class tree
     public static function dive($node, $diveCallback = null, $riseCallback = null)
     {
         $result = null;
-        if ( is_callable( $diveCallback ) ) {
+        if (is_callable( $diveCallback )) {
             $result = call_user_func( $diveCallback, $node );
         }
-        if ( !isset( $result ) && $node->parentNode ) {
+        if (!isset( $result ) && $node->parentNode) {
             $result = \arc\tree::dive( $node->parentNode, $diveCallback, $riseCallback );
         }
-        if ( is_callable( $riseCallback ) ) {
+        if (is_callable( $riseCallback )) {
             return call_user_func( $riseCallback, $node, $result );
         } else {
             return $result;
@@ -112,7 +112,7 @@ class tree
      */
     public static function parents($node, $callback = null)
     {
-        if ( !isset( $callback ) ) {
+        if (!isset( $callback )) {
             $callback = function ($node, $result) {
                 return ( (array) $result ) + array( $node );
             };
@@ -149,12 +149,12 @@ class tree
     public static function search($node, $callback)
     {
         $result = call_user_func( $callback, $node );
-        if ( isset( $result ) ) {
+        if (isset( $result )) {
             return $result;
         }
         foreach ($node->childNodes as $child) {
             $result = self::search( $child, $callback );
-            if ( isset( $result ) ) {
+            if (isset( $result )) {
                 return $result;
             }
         }
@@ -177,7 +177,7 @@ class tree
         $name = self::getNodeName( $node, $nodeName );
         $path = $root . $name . '/';
         $callbackResult = call_user_func( $callback, $node );
-        if ( isset($callbackResult) ) {
+        if (isset($callbackResult)) {
             $result[ $path ] = $callbackResult;
         }
         foreach ($node->childNodes as $child) {
@@ -216,7 +216,7 @@ class tree
     public static function filter($node, $callback, $root = '', $nodeName = 'nodeName')
     {
         return self::map( $node, function ($node) use ($callback) {
-            if ( call_user_func( $callback, $node ) ) {
+            if (call_user_func( $callback, $node )) {
                 return $node->nodeValue;
             }
         }, $root, $nodeName );
@@ -231,7 +231,7 @@ class tree
      */
     public static function sort($node, $callback, $nodeName = 'nodeName')
     {
-        if ( is_array($node->childNodes) ) {
+        if (is_array($node->childNodes)) {
             $sort = function ($node) use ($callback) {
                 uasort( $node->childNodes, $callback );
             };
@@ -248,7 +248,7 @@ class tree
 
     private static function getNodeName($node, $nodeName)
     {
-        if ( is_callable($nodeName) ) {
+        if (is_callable($nodeName)) {
             $name = call_user_func( $nodeName, $node );
         } else {
             $name = $node->{$nodeName};
@@ -256,5 +256,4 @@ class tree
 
         return $name;
     }
-
 }

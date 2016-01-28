@@ -19,5 +19,4 @@ abstract class Node
     public $parentNode = null;
     public $childNodes = array();
     public $nodeValue = null;
-
 }

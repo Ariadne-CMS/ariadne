@@ -27,14 +27,24 @@ namespace arc\url;
  */
 class PHPQuery extends Query
 {
+    /**
+     * Create a query string from the given values
+     * @param array $values
+     * @return string
+     */
     protected function compile($values)
     {
         return http_build_query( $values );
     }
 
+    /**
+     * Parse a query string and return an array with values.
+     * @param string $queryString
+     * @return mixed
+     */
     protected function parseQueryString($queryString)
     {
-        parse_str( $queryString, $values );
+        parse_str( (string) $queryString, $values );
 
         return $values;
     }

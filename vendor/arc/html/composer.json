@@ -1,0 +1,26 @@
+{
+	"name": "arc/html",
+	"type": "library",
+	"description": "Ariadne Component Library: html writer and parser Component",
+	"keywords": ["component","components"],
+	"homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Auke van Slooten",
+			"email": "auke@muze.nl"
+		}
+	],
+	"require": {
+		"php": ">=5.4",
+		"arc/xml": "~2.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"arc\\": "src/"
+		}
+	},
+	"require-dev": {
+		"phpunit/phpunit": "5.1.*"
+	}
+}

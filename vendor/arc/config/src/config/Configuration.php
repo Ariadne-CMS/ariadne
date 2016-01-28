@@ -27,7 +27,7 @@ class Configuration implements ConfigurationInterface
 
     public function acquire($name)
     {
-        return \arc\tree::Dive(
+        return \arc\tree::dive(
             $this->tree,
             function ($node) use ($name) {
                 return $this->getValueIfRoot( $name, $node->nodeValue );
@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
 
     public function configure($name, $value)
     {
-        if ( !isset( $this->tree->nodeValue ) ) {
+        if (!isset( $this->tree->nodeValue )) {
             $this->tree->nodeValue = array();
         }
         $this->setValue( $name, $value, $this->tree->nodeValue );
@@ -76,7 +76,7 @@ class Configuration implements ConfigurationInterface
         $vars = explode('.', $name);
         $entry = $config;
         foreach ($vars as $var) {
-            if ( !isset( $entry[$var] ) ) {
+            if (!isset( $entry[$var] )) {
                 return null;
             }
             $entry = $entry[$var];
@@ -91,7 +91,7 @@ class Configuration implements ConfigurationInterface
         $lastName = array_pop( $vars );
         $entry = &$config;
         foreach ($vars as $var) {
-            if ( !isset( $entry[$var] ) ) {
+            if (!isset( $entry[$var] )) {
                 $entry[$var] = array();
             }
             $entry = &$entry[$var];
@@ -106,7 +106,7 @@ class Configuration implements ConfigurationInterface
     private function getValueIfRoot($name, $config)
     {
         $value = $this->getValue( $name, $config );
-        if ( !$this->isHash( $value ) ) {
+        if (!$this->isHash( $value )) {
             return $value;
         }
     }
@@ -118,8 +118,8 @@ class Configuration implements ConfigurationInterface
 
     private function mergeValue($initial, $additional)
     {
-        if ( isset( $additional ) ) {
-            if ( !$this->isHash( $initial ) ) {
+        if (isset( $additional )) {
+            if (!$this->isHash( $initial )) {
                 return $additional;
             } elseif ( $this->isHash( $additional ) ) {
                 return array_replace_recursive( $initial, $additional );
@@ -130,5 +130,4 @@ class Configuration implements ConfigurationInterface
 
         return $initial;
     }
-
 }

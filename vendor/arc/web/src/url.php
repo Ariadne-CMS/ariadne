@@ -10,7 +10,11 @@
  */
 
 namespace arc;
-
+/**
+ * Class url
+ * Simple URL manipulation.
+ * @package arc
+ */
 class url
 {
     /**
@@ -26,10 +30,12 @@ class url
     }
 
     /**
-     *	Returns a new URL object with easy access to the components (scheme, host, port, path, etc)
-     *	It will not parse the query string for you.
-     *	@param string $url
-     *	@return \arc\url\Url The url object
+     * Returns a new URL object with easy access to the components (scheme, host, port, path, etc)
+     * It will parse the query string without PHP centric assumptions. You can have the same parameter
+     * present multiple times and it will automatically turn into an array. You can use parameters without
+     * a value, these will become array values with a numbered index.
+     * @param string $url
+     * @return \arc\url\Url The url object
     */
     public static function safeUrl($url)
     {

@@ -1,9 +1,26 @@
 <?php
-
+/*
+ * This file is part of the Ariadne Component Library.
+ *
+ * (c) Muze <info@muze.nl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace arc;
 
+/**
+ * Class lambda
+ * Experimental functionality, may be removed later, use at own risk.
+ * @package arc
+ */
 class lambda
 {
+    /**
+     * Creates a new Prototype object
+     * @param $properties
+     * @return lambda\Prototype
+     */
     public static function prototype($properties)
     {
         // do not ever use a single prototype for every other lambda\Prototype
@@ -12,12 +29,13 @@ class lambda
     }
 
     /**
-    * Returns a function with the given arguments already entered or partially applied.
-    * @param callable $function The function to curry
-    * @param mixed $argument,... unlimited Optional arguments to curry the function with
-    * @return callable
-    */
-    public static function partial($callable, $partialArgs, $defaultArgs = [])
+     * Returns a function with the given arguments already entered or partially applied.
+     * @param callable $callable The function to curry
+     * @param array $partialArgs unlimited Optional arguments to curry the function with
+     * @param array $defaultArgs optional default values
+     * @return callable
+     */
+    public static function partial(callable $callable, $partialArgs, $defaultArgs = [])
     {
         return function () use ($callable, $partialArgs, $defaultArgs) {
             return call_user_func_array( $callable, self::partialMerge( $partialArgs, func_get_args(), $defaultArgs ) );
@@ -28,7 +46,7 @@ class lambda
     {
         end( $partialArgs );
         $l = key( $partialArgs );
-        for ($i=0; $i<=$l; $i++) {
+        for ($i = 0; $i <= $l; $i++) {
             if (!array_key_exists($i, $partialArgs) && count($addedArgs)) {
                 $partialArgs[ $i ] = array_shift( $addedArgs );
             }
@@ -44,20 +62,17 @@ class lambda
     }
 
     /**
-    * Returns a function with named arguments. The peppered function accepts one argument - a named array of values
-    * @param callable $function The function or method to pepper
-    * @param array $namedArgs Optional. The named arguments to pepper the function with, the order must be the order
-    *        in which the unpeppered function expects them. If not set, pepper will use Reflection to get them.
-    * @return callable
-    */
+     * Returns a function with named arguments. The peppered function accepts one argument - a named array of values
+     * @param callable $callable The function or method to pepper
+     * @param array $namedArgs Optional. The named arguments to pepper the function with, the order must be the order
+     *        in which the unpeppered function expects them. If not set, pepper will use Reflection to get them.
+     *        Format is [ 'argumentName' => 'defaultValue' ]
+     * @return callable
+     */
     public static function pepper(callable $callable, $namedArgs=null)
     {
-        if (!is_array( $namedArgs )) {
-            if (!is_array( $callable )) {
-                $ref = new ReflectionFunction( $callable );
-            } else {
-                $ref = new ReflectionMethod( $callable );
-            }
+        if ( !is_array( $namedArgs ) ) {
+            $ref = !is_array($callable) ? new \ReflectionFunction($callable) : new \ReflectionMethod($callable[0], $callable[1]);
             $namedArgs = [];
             foreach ($ref->getParameters() as $parameter) {
                 $namedArgs[ $parameter->getName() ] = $parameter->getDefaultValue();
@@ -65,7 +80,8 @@ class lambda
         }
 
         return function ($otherArgs) use ($callable, $namedArgs) {
-            return call_user_func_array( $callable, array_values( array_merge( $namedArgs, $otherArgs ) ) );
+            $args = array_values( array_merge( $namedArgs, $otherArgs ) );
+            return call_user_func_array( $callable, $args );
         };
     }
 

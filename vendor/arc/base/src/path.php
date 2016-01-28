@@ -80,7 +80,7 @@ class path
                 switch ($entry) {
                     case '..':
                         $result = dirname( $result );
-                        if ( isset($result[1]) ) { // fast check to see if there is a dirname
+                        if (isset($result[1])) { // fast check to see if there is a dirname
                             $result .= '/';
                         }
                         $result[0] = '/'; // php has a bug in dirname('/') -> returns a '\\' in windows
@@ -157,7 +157,7 @@ class path
             $parent .= '/';
         }
         $parent[0] = '/'; // dirname('/something/') returns '\' in windows.
-        if ( strpos( $parent, $root ) !== 0 ) { // parent is outside of the root
+        if (strpos( $parent, $root ) !== 0) { // parent is outside of the root
 
             return null;
         }
@@ -195,7 +195,7 @@ class path
      */
     public static function tail($path)
     {
-        if ( !\arc\path::isAbsolute($path) ) {
+        if (!\arc\path::isAbsolute($path)) {
             $path = '/' . $path;
         }
 

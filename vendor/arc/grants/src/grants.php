@@ -12,12 +12,19 @@
 namespace arc;
 
 /**
- *	@requires \arc\path;
- * 	@requires \arc\tree;
- *	@requires \arc\context;
+ * @package arc-grants
+ * @requires \arc\path;
+ * @requires \arc\tree;
+ * @requires \arc\context;
+ * @method static GrantsTree cd(string $path)
+ * @method static GrantsTree switchUser(string $user, array $groups)
+ * @method static GrantsTree setUserGrants(string $grants)
+ * @method static GrantsTree setGroupGrants(string $group, string $grants)
+ * @method static bool check(string $grant)
+ * @method static array ls()
  */
 
-class grants
+final class grants
 {
     public static function getGrantsTree()
     {
@@ -35,19 +42,17 @@ class grants
         return $context->arcGrants;
     }
 
-    public static function check($grant)
-    {
-        return self::getGrantsTree()->check( $grant );
+    public static function cd($path=null) {
+        \arc\context::$context->arcGrants = self::getGrantsTree()->cd($path);
+        return \arc\context::$context->arcGrants;
     }
 
-    public static function cd($path)
-    {
-        return self::getGrantsTree()->cd( $path );
+    public static function switchUser($user) {
+        \arc\context::$context->arcGrants = self::getGrantsTree()->switchUser($user);
+        return \arc\context::$context->arcGrants;
     }
 
-    public static function ls()
-    {
-        return self::getGrantsTree()->ls();
+    public static function __callStatic($name, $params) {
+        return call_user_func_array( [self::getGrantsTree(), $name], $params );
     }
-
 }
