@@ -415,20 +415,20 @@
         },
         {
             "name": "arc/xml",
-            "version": "2.3.1",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-xml.git",
-                "reference": "b6c60ca250217059cb70b30f76f265e3a4f21b0c"
+                "reference": "ed1825a66700220ecc52e1812183226ade68d0a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-xml/zipball/b6c60ca250217059cb70b30f76f265e3a4f21b0c",
-                "reference": "b6c60ca250217059cb70b30f76f265e3a4f21b0c",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-xml/zipball/ed1825a66700220ecc52e1812183226ade68d0a8",
+                "reference": "ed1825a66700220ecc52e1812183226ade68d0a8",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~2.0",
+                "arc/base": "~2.1",
                 "php": ">=5.4"
             },
             "require-dev": {
@@ -456,7 +456,7 @@
                 "component",
                 "components"
             ],
-            "time": "2016-01-27 11:00:10"
+            "time": "2016-01-31 18:23:42"
         },
         {
             "name": "erusev/parsedown",

@@ -30,7 +30,7 @@ class Proxy extends \ArrayObject implements DOMElement, SimpleXMLElement {
     }
 
     public function __toString() {
-        return $this->target->asXML();
+        return isset($this->target) ? (string) $this->target->asXML() : '';
     }
 
     private function _isDomProperty( $name ) {
@@ -43,9 +43,32 @@ class Proxy extends \ArrayObject implements DOMElement, SimpleXMLElement {
         return in_array( $name, $domProperties );
     }
 
+    private function _parseName( $name ) {
+        $ns     = '';
+        $name   = trim($name);
+        $prefix = false;
+        if ( $name[0] == '{' ) {
+            list($ns, $name) = explode('}', $name);
+            $ns    = substr($ns, 1);
+        } else if ( strpos($name, ':') !== false ) {
+            list ($ns, $name) = explode(':', $name);
+            if ( isset($this->parser->namespaces[$ns]) ) {
+                $prefix = $ns;
+                $ns     = $this->parser->namespaces[$ns];
+            } else {
+                $prefix = $this->lookupPrefix($ns);
+            }
+        }
+        return [ $ns, $name, $prefix ];
+    }
+
     private function _getTargetProperty($name) {
-        $value = null;
-        if ( !$this->_isDomProperty($name) ) {
+        $value  = null;
+        list( $uri, $name, $prefix ) 
+                = $this->_parseName($name);
+        if ( $uri ) {
+            $value = $this->target->children($uri)->{$name};
+        } else if ( !$this->_isDomProperty($name) ) {
             $value = $this->target->{$name};
         } else {
             $dom = dom_import_simplexml($this->target);
@@ -59,12 +82,21 @@ class Proxy extends \ArrayObject implements DOMElement, SimpleXMLElement {
     private function _proxyResult( $value ) {
         if ( $value instanceof \DOMElement ) {
             $value = simplexml_import_dom($value);
+        } else if ( $value instanceof \DOMNodeList ) {
+            $array = [];
+            for ( $i=0, $l=$value->length; $i<$l; $i ++ ) {
+                $array[$i] = $value[$i];
+            }
+            $value = $array;
         }
         if ( $value instanceof \SimpleXMLElement ) {
-            return new static( $value, $this->parser );
-        } else {
-            return $value;
+            $value = new static( $value, $this->parser );
+        } else if ( is_array($value) ) {
+            foreach ( $value as $key => $subvalue ) {
+                $value[$key] = $this->_proxyResult( $subvalue );
+            }
         }
+        return $value;
     }
 
     public function __get( $name) {
@@ -72,6 +104,20 @@ class Proxy extends \ArrayObject implements DOMElement, SimpleXMLElement {
             return $this->target;
         }
         return $this->_proxyResult( $this->_getTargetProperty($name) );
+    }
+
+    public function __set( $name, $value ) {
+        if ($name == 'nodeValue') {
+            $this->target = $value;
+        } else {
+            list($uri, $name, $prefix) = $this->_parseName($name);
+            if ( $uri && !$this->isDefaultNamespace($uri) ) {
+                $el = $this->ownerDocument->createElementNS($uri, $prefix.':'.$name, $value);
+                $this->appendChild($el);
+            } else {
+                $this->target->{$name} = $value;
+            }
+        }
     }
 
     private function _domCall( $name, $args ) {
@@ -93,27 +139,14 @@ class Proxy extends \ArrayObject implements DOMElement, SimpleXMLElement {
                 }
             }
         }
-        $result = call_user_func_array( [ $dom, $name], $args );
-        if ( isset($result) && is_object($result) ) {
-            if ( $result instanceof \DOMElement ) {
-                return new static( $result, $this->parser );
-            }
-            if ( $result instanceof \DOMNodeList ) {
-                $resultArray = [];
-                for ( $i=0, $l=$result->length; $i<$l; $i ++ ) {
-                    $resultArray[$i] = new static( simplexml_import_dom($result->item($i)), $this->parser );
-                }
-                return $resultArray;
-            }
-        }
-        return $result;
+        return call_user_func_array( [ $dom, $name], $args );
     }
 
     public function __call( $name, $args ) {
-        if ( !method_exists($this->target, $name) ) {
-            return $this->_domCall( $name, $args );
+        if ( !method_exists( $this->target, $name ) ) {
+            return $this->_proxyResult( $this->_domCall( $name, $args ) );
         } else {
-            return $this->ProxyCall($name, $args);
+            return $this->_proxyResult( $this->ProxyCall( $name, $args ) );
         }
     }
 
@@ -124,15 +157,11 @@ class Proxy extends \ArrayObject implements DOMElement, SimpleXMLElement {
      */
     public function find( $query) {
         $xpath = \arc\xml::css2Xpath( $query );
-        $temp  = $this->target->xpath( $xpath );
-        foreach ($temp as $key => $value) {
-            $temp[ $key ] = new static( $value, $this->parser );
-        }
-        return $temp;
+        return $this->_proxyResult( $this->target->xpath( $xpath ) );
     }
 
     /**
-     * Ssearches through the subtree for an element with the given id and returns it
+     * Searches through the subtree for an element with the given id and returns it
      * @param string $id
      * @return Proxy
      */
@@ -140,18 +169,45 @@ class Proxy extends \ArrayObject implements DOMElement, SimpleXMLElement {
         return current($this->find('#'.$id));
     }
 
+    /**
+     * Register a namespace alias and URI to use in xpath and find
+     * @param string $prefix the alias for this namespace
+     * @param string $ns the URI for this namespace
+     */
+    public function registerNamespace( $prefix, $ns ) {
+        if ( $this->target && $this->target instanceof \SimpleXMLElement ) {
+            $this->target->registerXPathNamespace($prefix, $ns);
+        }
+        $this->parser->namespaces[$prefix] = $ns;
+    }
+
     public function offsetGet( $offset )
     {
-        return (string) $this->target[$offset];
+        list( $uri, $name, $prefix ) = $this->_parseName($offset);
+        if ( $uri ) {
+            return (string) $this->attributes($uri)[$name];
+        } else {
+            return (string) $this->target[$offset];
+        }
     }
 
     public function offsetSet( $offset, $value )
     {
-        $this->target[$offset] = $value;
+        list( $uri, $name, $prefix ) = $this->_parseName($offset);
+        if ( $uri && !$this->isDefaultNamespace($uri) ) {
+            $this->setAttributeNS($uri, $prefix.':'.$name, $value);
+        } else {
+            $this->target[$name] = $value;
+        }
     }
 
     public function offsetUnset( $offset )
     {
-        unset( $this->target[$offset] );
+        list( $uri, $name, $prefix ) = $this->_parseName($offset);
+        if ( $uri ) {
+            unset( $this->target->attributes($uri)->{$name} );
+        } else {
+            unset( $this->target[$offset] );
+        }
     }
 }
