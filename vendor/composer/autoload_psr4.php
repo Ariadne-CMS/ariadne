@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'arc\\' => array($vendorDir . '/arc/base/src', $vendorDir . '/arc/events/src', $vendorDir . '/arc/grants/src', $vendorDir . '/arc/config/src', $vendorDir . '/arc/cache/src', $vendorDir . '/arc/xml/src', $vendorDir . '/arc/web/src'),
+    'arc\\' => array($vendorDir . '/arc/prototype/src', $vendorDir . '/arc/grants/src', $vendorDir . '/arc/html/src', $vendorDir . '/arc/web/src', $vendorDir . '/arc/base/src', $vendorDir . '/arc/events/src', $vendorDir . '/arc/config/src', $vendorDir . '/arc/cache/src', $vendorDir . '/arc/xml/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
+    'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
 );

@@ -4,31 +4,33 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fcc2aaf2ae2838312dfd013c75b7dd7b",
-    "content-hash": "69820092b0ce212a5cba2ee5d535809f",
+    "hash": "64720c11612f76ca11d5a00d2d8a8ff8",
+    "content-hash": "7dffadb7e7a88a742a96dd7ee17db425",
     "packages": [
         {
             "name": "arc/arc",
-            "version": "1.1",
+            "version": "2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-arc.git",
-                "reference": "ec1869dff0e9f9a38b289077651bfb7dca918c5f"
+                "reference": "56b41a56f65b66680b022249ccdfd7edf507f450"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-arc/zipball/ec1869dff0e9f9a38b289077651bfb7dca918c5f",
-                "reference": "ec1869dff0e9f9a38b289077651bfb7dca918c5f",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-arc/zipball/56b41a56f65b66680b022249ccdfd7edf507f450",
+                "reference": "56b41a56f65b66680b022249ccdfd7edf507f450",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~1.0",
-                "arc/cache": "~1.0",
-                "arc/config": "~1.0",
-                "arc/events": "~1.0",
-                "arc/grants": "~1.0",
-                "arc/web": "~1.0",
-                "arc/xml": "~1.0",
+                "arc/base": "~2.1",
+                "arc/cache": "~1.2",
+                "arc/config": "~1.2",
+                "arc/events": "~1.2",
+                "arc/grants": "~1.2",
+                "arc/html": "~1.0",
+                "arc/prototype": "~0.9",
+                "arc/web": "~2.1",
+                "arc/xml": "~2.1",
                 "php": ">=5.4"
             },
             "type": "library",
@@ -48,24 +50,27 @@
                 "component",
                 "components"
             ],
-            "time": "2014-06-26 12:33:47"
+            "time": "2016-01-28 15:08:00"
         },
         {
             "name": "arc/base",
-            "version": "1.1",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-base.git",
-                "reference": "79b7f0980b7e3a408905b63e5a9d8917610d4a33"
+                "reference": "b643a1a360c5a596c862a79611946d2f0f7b1654"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-base/zipball/79b7f0980b7e3a408905b63e5a9d8917610d4a33",
-                "reference": "79b7f0980b7e3a408905b63e5a9d8917610d4a33",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-base/zipball/b643a1a360c5a596c862a79611946d2f0f7b1654",
+                "reference": "b643a1a360c5a596c862a79611946d2f0f7b1654",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4"
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
             },
             "type": "library",
             "autoload": {
@@ -89,25 +94,28 @@
                 "component",
                 "components"
             ],
-            "time": "2014-07-02 11:50:51"
+            "time": "2016-01-28 14:35:55"
         },
         {
             "name": "arc/cache",
-            "version": "1.1.1",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-cache.git",
-                "reference": "87a1c2f9822255b85fc681b17afd235c6d0c0cb3"
+                "reference": "377f3d8896585e776a71e6a001868ff21adddaca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-cache/zipball/87a1c2f9822255b85fc681b17afd235c6d0c0cb3",
-                "reference": "87a1c2f9822255b85fc681b17afd235c6d0c0cb3",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-cache/zipball/377f3d8896585e776a71e6a001868ff21adddaca",
+                "reference": "377f3d8896585e776a71e6a001868ff21adddaca",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~1.0",
+                "arc/base": "~2.1",
                 "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
             },
             "type": "library",
             "autoload": {
@@ -131,25 +139,28 @@
                 "component",
                 "components"
             ],
-            "time": "2014-07-02 11:51:21"
+            "time": "2016-01-28 15:01:26"
         },
         {
             "name": "arc/config",
-            "version": "1.1",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-config.git",
-                "reference": "5d62370e19229f4385ad59df7234de35e9827a28"
+                "reference": "48cb069d9d113efd85a1a28d0cf7d36554f6a6cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-config/zipball/5d62370e19229f4385ad59df7234de35e9827a28",
-                "reference": "5d62370e19229f4385ad59df7234de35e9827a28",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-config/zipball/48cb069d9d113efd85a1a28d0cf7d36554f6a6cb",
+                "reference": "48cb069d9d113efd85a1a28d0cf7d36554f6a6cb",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~1.0",
+                "arc/base": "~2.1",
                 "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
             },
             "type": "library",
             "autoload": {
@@ -167,31 +178,34 @@
                     "email": "auke@muze.nl"
                 }
             ],
-            "description": "Ariadne Component Library: Cache Component",
+            "description": "Ariadne Component Library: hierarchical configuration management Component",
             "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
             "keywords": [
                 "component",
                 "components"
             ],
-            "time": "2014-06-26 12:37:47"
+            "time": "2016-01-28 15:02:15"
         },
         {
             "name": "arc/events",
-            "version": "1.1",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-events.git",
-                "reference": "68d4aab110988f0e3caab92819d9eae1362f282d"
+                "reference": "ca37cd80f389c2e435d2f5717e3d69e5b2ca38f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-events/zipball/68d4aab110988f0e3caab92819d9eae1362f282d",
-                "reference": "68d4aab110988f0e3caab92819d9eae1362f282d",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-events/zipball/ca37cd80f389c2e435d2f5717e3d69e5b2ca38f8",
+                "reference": "ca37cd80f389c2e435d2f5717e3d69e5b2ca38f8",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~1.0",
+                "arc/base": "~2.1",
                 "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
             },
             "type": "library",
             "autoload": {
@@ -209,31 +223,34 @@
                     "email": "auke@muze.nl"
                 }
             ],
-            "description": "Ariadne Component Library: Cache Component",
+            "description": "Ariadne Component Library: W3C style events Component",
             "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
             "keywords": [
                 "component",
                 "components"
             ],
-            "time": "2014-06-26 12:22:13"
+            "time": "2016-01-28 15:01:27"
         },
         {
             "name": "arc/grants",
-            "version": "1.1",
+            "version": "1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-grants.git",
-                "reference": "e5c1aa441b237372d9528a671b13e68dc6ea8ecc"
+                "reference": "7d6e1f4c477f8a52fdb189cbe84c4d881e7ea7a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-grants/zipball/e5c1aa441b237372d9528a671b13e68dc6ea8ecc",
-                "reference": "e5c1aa441b237372d9528a671b13e68dc6ea8ecc",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-grants/zipball/7d6e1f4c477f8a52fdb189cbe84c4d881e7ea7a6",
+                "reference": "7d6e1f4c477f8a52fdb189cbe84c4d881e7ea7a6",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~1.0",
+                "arc/base": "~1.0||~2.0",
                 "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
             },
             "type": "library",
             "autoload": {
@@ -251,31 +268,126 @@
                     "email": "auke@muze.nl"
                 }
             ],
-            "description": "Ariadne Component Library: Cache Component",
+            "description": "Ariadne Component Library: user and group rights management Component",
             "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
             "keywords": [
                 "component",
                 "components"
             ],
-            "time": "2014-06-26 12:38:18"
+            "time": "2016-01-27 23:18:44"
         },
         {
-            "name": "arc/web",
-            "version": "1.1",
+            "name": "arc/html",
+            "version": "1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Ariadne-CMS/arc-web.git",
-                "reference": "d0640720c0156ff220465b1aa777e67e21e2f06f"
+                "url": "https://github.com/Ariadne-CMS/arc-html.git",
+                "reference": "c71ba27d091aec20c728e1a7252dfc2368d23375"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-web/zipball/d0640720c0156ff220465b1aa777e67e21e2f06f",
-                "reference": "d0640720c0156ff220465b1aa777e67e21e2f06f",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-html/zipball/c71ba27d091aec20c728e1a7252dfc2368d23375",
+                "reference": "c71ba27d091aec20c728e1a7252dfc2368d23375",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~1.0",
+                "arc/xml": "~2.2",
                 "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "arc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Auke van Slooten",
+                    "email": "auke@muze.nl"
+                }
+            ],
+            "description": "Ariadne Component Library: html writer and parser Component",
+            "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+            "keywords": [
+                "component",
+                "components"
+            ],
+            "time": "2016-01-24 15:53:31"
+        },
+        {
+            "name": "arc/prototype",
+            "version": "0.9.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ariadne-CMS/arc-prototype.git",
+                "reference": "20a26b4ee2bac9db93432888747fc564d5878483"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-prototype/zipball/20a26b4ee2bac9db93432888747fc564d5878483",
+                "reference": "20a26b4ee2bac9db93432888747fc564d5878483",
+                "shasum": ""
+            },
+            "require": {
+                "arc/base": ">=2.0",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "arc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Auke van Slooten",
+                    "email": "auke@muze.nl"
+                }
+            ],
+            "description": "ARC: prototypical inheritance component",
+            "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+            "keywords": [
+                "arc",
+                "component",
+                "components",
+                "prototype"
+            ],
+            "time": "2016-01-20 14:31:54"
+        },
+        {
+            "name": "arc/web",
+            "version": "2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ariadne-CMS/arc-web.git",
+                "reference": "954270d2142bea5364a8e69fd4c6ad870378ac79"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-web/zipball/954270d2142bea5364a8e69fd4c6ad870378ac79",
+                "reference": "954270d2142bea5364a8e69fd4c6ad870378ac79",
+                "shasum": ""
+            },
+            "require": {
+                "arc/base": "~2.0",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
             },
             "type": "library",
             "autoload": {
@@ -299,25 +411,28 @@
                 "component",
                 "components"
             ],
-            "time": "2014-06-30 12:07:48"
+            "time": "2016-01-27 22:30:38"
         },
         {
             "name": "arc/xml",
-            "version": "1.1",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ariadne-CMS/arc-xml.git",
-                "reference": "93b79378ff536639d576889f4350a4cf526aeccc"
+                "reference": "ed1825a66700220ecc52e1812183226ade68d0a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ariadne-CMS/arc-xml/zipball/93b79378ff536639d576889f4350a4cf526aeccc",
-                "reference": "93b79378ff536639d576889f4350a4cf526aeccc",
+                "url": "https://api.github.com/repos/Ariadne-CMS/arc-xml/zipball/ed1825a66700220ecc52e1812183226ade68d0a8",
+                "reference": "ed1825a66700220ecc52e1812183226ade68d0a8",
                 "shasum": ""
             },
             "require": {
-                "arc/base": "~1.0",
+                "arc/base": "~2.1",
                 "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.1.*"
             },
             "type": "library",
             "autoload": {
@@ -335,13 +450,13 @@
                     "email": "auke@muze.nl"
                 }
             ],
-            "description": "Ariadne Component Library: Cache Component",
+            "description": "Ariadne Component Library: xml writer and parser Component",
             "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
             "keywords": [
                 "component",
                 "components"
             ],
-            "time": "2014-07-02 11:50:49"
+            "time": "2016-01-31 18:23:42"
         },
         {
             "name": "erusev/parsedown",
@@ -381,6 +496,49 @@
                 "parser"
             ],
             "time": "2015-10-04 16:44:32"
+        },
+        {
+            "name": "firebase/php-jwt",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "time": "2015-07-22 18:31:08"
         },
         {
             "name": "firephp/firephp-core",
@@ -919,7 +1077,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4"
+        "php": ">=5.6"
     },
     "platform-dev": []
 }

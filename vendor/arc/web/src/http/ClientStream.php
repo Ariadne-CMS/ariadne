@@ -11,115 +11,150 @@
 
 namespace arc\http;
 
-class ClientStream implements ClientInterface
+/**
+ * Class ClientStream
+ * Implements a HTTP client using PHP's stream handling.
+ * @package arc\http
+ */
+class ClientStream implements Client
 {
-    private $options = array('headers' => array());
+    private $options        = ['headers' => []];
 
     public $responseHeaders = null;
-    public $requestHeaders = null;
+    public $requestHeaders  = null;
 
-    protected function parseRequestURL($url)
-    {
-        $components = parse_url( $url );
-
-        return isset($components['query']) ? $components['query'] : false;
-    }
-
-    protected function mergeOptions()
-    {
-        $args = func_get_args();
-        array_unshift( $args, $this->options );
-
-        return call_user_func_array( 'array_merge', $args );
-    }
-
-    protected function buildURL($url, $request)
-    {
-        if (is_array( $request ) || $request instanceof \ArrayObject) {
-            $request = http_build_query( (array) $request );
-        }
-        $request = (string) $request; // to force a \ar\connect\url\urlQuery to a possibly empty string.
-        if ($request) {
-            if (strpos( (string) $url, '?' ) === false) {
-                $request = '?' . $request;
+    /**
+     * Merges header string and headers array to single string with all headers
+     * @return string
+     */
+    private function mergeHeaders() {
+        $args   = func_get_args();
+        $result = '';
+        foreach ( $args as $headers ) {
+            if (is_array($headers) || $headers instanceof \ArrayObject ) {
+                $result .= array_reduce( (array) $headers, function($carry, $entry) {
+                    return $carry . "\r\n" . $entry;
+                }, '');
             } else {
-                $request = '&' . $request;
+                $result .= (string) $headers;
             }
-            $url .= $request;
         }
-
-        return $url;
+        if (substr($result, -2)!="\r\n") {
+            $result .= "\r\n";
+        }
+        return $result;
     }
 
-    public function request( $type, $url, $request = null, $options = array() )
+    /**
+     * Send a HTTP request and return the response
+     * @param string       $type    The method to use, GET, POST, etc.
+     * @param string       $url     The URL to request
+     * @param array|string $request The query string
+     * @param array        $options Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public function request( $type, $url, $request = null, $options = [] )
     {
+        $url = \arc\url::url( (string) $url);
         if ($type == 'GET' && $request) {
-            $url = $this->buildURL( $url, $request );
-            $request = '';
+            $url->query->import( $request);
+            $request = null;
         }
 
-        $options = $this->mergeOptions( array(
-            'method' => $type,
+        $options = [
+            'method'  => $type,
             'content' => $request
-        ), $options );
+        ] + $options;
 
-        if (isset($options['header'])) {
-            $options['header'] .=  "\r\n";
-        } else {
-            $options['header'] = '';
-        }
+        $options['headers'] = $this->mergeHeaders(
+            \arc\hash::get('header', $this->options),
+            \arc\hash::get('headers', $this->options),
+            \arc\hash::get('header', $options),
+            \arc\hash::get('headers', $options)
+        );
 
-        $options['header'] .= isset($options['headers']) ? implode( "\r\n", $options['headers'] ) ."\r\n" : '' ;
-        unset($options['headers']);
+        $options += (array) $this->options;
 
-        $context = stream_context_create( array( 'http' => $options ) );
-        $result = @file_get_contents( (string) $url, false, $context );
-        $this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
-        $this->requestHeaders = isset($options['header']) ? $options['header'] : '';
+        $context = stream_context_create( [ 'http' => $options ] );
+        $result  = @file_get_contents( (string) $url, false, $context );
+        $this->responseHeaders = isset($http_response_header) ? $http_response_header : null; //magic php variable set by file_get_contents.
+        $this->requestHeaders  = isset($options['headers']) ? explode("\r\n",$options['headers']) : [];
 
         return $result;
     }
 
-    public function __construct( $options = array() )
+    /**
+     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
+     */
+    public function __construct( $options = [] )
     {
         $this->options = $options;
     }
 
-    public function get( $url, $request = null, $options = array() )
+    /**
+     * Send a GET request
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public function get( $url, $request = null, $options = [] )
     {
-        if (!isset($request)) {
-            $request = $this->parseRequestURL($url);
-        }
-
         return $this->request( 'GET', $url, $request, $options );
     }
 
-    public function post( $url, $request = null, $options = array() )
+    /**
+     * Send a POST request
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public function post( $url, $request = null, $options = [] )
     {
         return $this->request( 'POST', $url, $request, $options );
     }
 
-    public function put( $url, $request = null, $options = array() )
+    /**
+     * Send a PUT request
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public function put( $url, $request = null, $options = [] )
     {
         return $this->request( 'PUT', $url, $request, $options );
     }
 
-    public function delete( $url, $request = null, $options = array() )
+    /**
+     * Send a DELETE request
+     * @param string         $url     The URL to request
+     * @param array|string   $request The query string
+     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public function delete( $url, $request = null, $options = [] )
     {
         return $this->request( 'DELETE', $url, $request, $options );
     }
 
+
+    /**
+     * Adds headers for subsequent requests
+     * @param mixed $headers The headers to add, either as a string or an array of headers.
+     * @return $this
+     */
     public function headers($headers)
     {
         if (!isset($this->options['headers'])) {
-            $this->options['headers'] = array();
+            $this->options['headers'] = [];
         }
-        if (!is_array($headers)) {
-            $headers = explode("\r\n", $headers);
+        if ( !is_array($headers) ) {
+            $headers = explode("\r\n",$headers);
             if (end($headers) == '') {
                 array_pop($headers);
             }
-
         }
 
         $this->options['headers'] = array_merge($this->options['headers'], $headers);

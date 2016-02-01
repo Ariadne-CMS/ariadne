@@ -11,36 +11,81 @@
 
 namespace arc;
 
-class http
+/**
+ * Class http
+ * Basic HTTP client.
+ * @package arc
+ */
+final class http
 {
-    public static function request( $method = null, $url = null, $query = null, $options = array() )
+    /**
+     * Send a HTTP request with a specific method, GET, POST, etc.
+     * @param null  $method The method to use, GET, POST, etc.
+     * @param null  $url    The URL to request
+     * @param null  $query  The query string
+     * @param array $options    Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public static function request( $method = null, $url = null, $query = null, $options = [] )
     {
         $client = new http\ClientStream();
 
-        return $client->send( $method, $url, $query, $options );
+        return $client->request( $method, $url, $query, $options );
     }
 
-    public static function client( $options = array() )
+    /**
+     * Create a new HTTP client with a default set of stream context options to use in all requests.
+     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
+     * @return http\ClientStream
+     */
+    public static function client( $options = [] )
     {
         return new http\ClientStream( $options );
     }
 
-    public static function get( $url, $query = null, $options = array() )
+    /**
+     * Do a HTTP GET request and return the response.
+     * @param       $url    The URL to request
+     * @param mixed  $query  The query parameters
+     * @param array $options    Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public static function get( $url, $query = null, $options = [] )
     {
         return self::request( 'GET', $url, $query, $options);
     }
 
-    public static function post( $url, $query = null, $options = array() )
+    /**
+     * Do a HTTP POST request and return the response.
+     * @param       $url    The URL to request
+     * @param mixed  $query  The query parameters
+     * @param array $options    Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public static function post( $url, $query = null, $options = [] )
     {
         return self::request( 'POST', $url, $query, $options);
     }
 
-    public static function put( $url, $query = null, $options = array() )
+    /**
+     * Do a HTTP PUT request and return the response.
+     * @param       $url    The URL to request
+     * @param mixed  $query  The query parameters
+     * @param array $options    Any of the HTTP stream context options, e.g. extra headers.
+     */
+    public static function put( $url, $query = null, $options = [] )
     {
         return self::request( 'PUT', $url, $query, $options);
     }
 
-    public static function delete( $url, $query = null, $options = array() )
+    /**
+     * Do a HTTP DELETE request and return the response.
+     * @param       $url    The URL to request
+     * @param mixed  $query  The query parameters
+     * @param array $options    Any of the HTTP stream context options, e.g. extra headers.
+     * @return string
+     */
+    public static function delete( $url, $query = null, $options = [] )
     {
         return self::request( 'DELETE', $url, $query, $options);
     }
