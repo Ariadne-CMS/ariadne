@@ -648,41 +648,7 @@ class axstore {
 
 
 	function make_path($curr_dir, $path) {
-	/**********************************************************************
- 
-		This function creates an absolute path from the given starting path
-	($curr_dir) and a relative (or absolute) path ($path). If $path starts
-	with a '/' $curr_dir is ignored. 
-	$path must be a string of substrings seperated by '/'. each of these 
-	substrings may consist of charachters and/or numbers. If a substring
-	is "..", it and the previuos substring will be removed. If a substring
-	is "." or "", it is removed. All other substrings are then concatenated
-	with a '/' between them and at the start and the end. This string is 
-	then returned.
-
-	**********************************************************************/
-
-		$this->error="";
-		if (substr($path,0,1)=="/") {
-			$result="/";
-			$path=substr($path, 1);
-		} else {
-			$result=$curr_dir;
-		}
-		if ($path) {
-			$splitpath=explode("/", $path);
-
-			foreach ($splitpath as $pathticle ) {
-				switch($pathticle) {
-					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
-								break;
-					case "." : break;
-					case ""	 : break;
-					default	 : $result=$result.$pathticle."/";
-				}
-			}
-		}
-		return $result;
+		return \arc\path::collapse($path, $curr_dir);
 	}
 
 	function get_filestore($name) {

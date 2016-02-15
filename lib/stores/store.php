@@ -315,39 +315,7 @@ abstract class store {
 	}
 
 	public function make_path($curr_dir, $path) {
-	/**********************************************************************
-		This function creates an absolute path from the given starting path
-	($curr_dir) and a relative (or absolute) path ($path). If $path starts
-	with a '/' $curr_dir is ignored.
-	$path must be a string of substrings seperated by '/'. each of these
-	substrings may consist of charachters and/or numbers. If a substring
-	is "..", it and the previuos substring will be removed. If a substring
-	is "." or "", it is removed. All other substrings are then concatenated
-	with a '/' between them and at the start and the end. This string is
-	then returned.
-	**********************************************************************/
-		$this->error = "";
-		$result = "/";
-		if ($path[0] !== "/") {
-			$path = $curr_dir . '/' . $path;
-		}
-
-		$splitpath = preg_split('|/|', $path, -1, PREG_SPLIT_NO_EMPTY);
-
-		foreach ($splitpath as $pathticle) {
-			if($pathticle === '..' ) {
-				$result = dirname($result);
-				// if second char of $result is not set, then current result is the rootNode
-				if (isset($result[1])) {
-					$result = $result . "/";
-				} else {
-					$result = "/"; // make sure that even under windows, slashes are always forward slashes.
-				}
-			} else if ($pathticle !== '.') {
-				$result = $result . $pathticle."/";
-			}
-		}
-		return $result;
+		return \arc\path::collapse($path, $curr_dir);
 	}
 
 	public function save_properties($properties, $id) {
