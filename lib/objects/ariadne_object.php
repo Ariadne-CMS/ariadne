@@ -463,6 +463,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$wf_object->arIsNewObject=$arIsNewObject;
 		}
 
+		/* save custom data */
+		$properties = $this->saveCustomData($configcache, $properties);
+
 		// this makes sure the event handlers are run on $wf_object, so that $this->data changes don't change the data of the object to be saved
 		$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
 
@@ -524,8 +527,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$properties["time"][0]["mtime"]=$this->data->mtime;
 		$properties["time"][0]["muser"]=$this->data->muser;
 
-		/* save custom data */
-		$properties = $this->saveCustomData($configcache, $properties);
 
 		if (!$this->error) {
 			if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
