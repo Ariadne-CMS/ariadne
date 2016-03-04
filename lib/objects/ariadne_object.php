@@ -364,7 +364,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// array with the name $custom, or $custom comes from the object and is an array and as such
 		// parse_str fails miserably thus keeping the array $custom intact.
 
-		$i=0;
 		if (isset($this->data->custom) && is_array($this->data->custom)) {
 			foreach($this->data->custom as $nls => $cdata) {
 				foreach($cdata as $name => $value){
@@ -377,16 +376,19 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					if ($configcache->custom[$name]['property']) {
 						if (isset($value) && is_array($value)) {
 							foreach($value as $valkey => $valvalue ) {
-								$properties["custom"][$i]["name"]=$name;
-								$properties["custom"][$i]["value"]=$valvalue;
-								$properties["custom"][$i]["nls"]=$nls;
-								$i++;
+								$properties["custom"][] = [
+									"name"  => $name,
+									"value" => $valvalue,
+									"nls"   => $nls,
+								];
 							}
 						} else {
-							$properties["custom"][$i]["name"]=$name;
-							$properties["custom"][$i]["value"]=$value;
-							$properties["custom"][$i]["nls"]=$nls;
-							$i++;
+							$properties["custom"][] = [
+								"name"  => $name,
+								"value" => $value,
+								"nls"   => $nls,
+							];
+
 						}
 					}
 				}
