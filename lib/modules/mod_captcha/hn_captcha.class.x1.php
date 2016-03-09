@@ -148,7 +148,7 @@ class hn_captcha_X1 extends hn_captcha
 		function __construct($config,$secure=TRUE)
 		{
 			// Call Constructor of main-class
-			$this->hn_captcha($config,$secure);
+			parent::__construct($config,$secure);
 
 
 			// specify counter-filename
