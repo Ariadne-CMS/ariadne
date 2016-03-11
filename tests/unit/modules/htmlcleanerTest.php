@@ -52,5 +52,11 @@ class htmlcleanerTest extends AriadneBaseTest
 		$this->assertEquals($html, $clean);
 	}
 
+	public function testTagDash() {
+		$html = '<body><hello-world>hello world</hello-world></body>';
+		$clean = htmlcleaner::cleanup($html,array());
+		$this->assertEquals($html, $clean);
+	}
+
 }
 ?>
