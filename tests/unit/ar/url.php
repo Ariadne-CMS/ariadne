@@ -101,15 +101,15 @@ class ar_urlTest extends AriadneBaseTest {
 		$commonUrls = [
 			'ftp://ftp.is.co.za/rfc/rfc1808.txt',
 			'http://www.ietf.org/rfc/rfc2396.txt',
-			// FAILS with ar_url 'ldap://[2001:db8::7]/c=GB?objectClass?one',
-			// FAILS with ar_url 'mailto:John.Doe@example.com',
-			// FAILS with ar_url 'news:comp.infosystems.www.servers.unix',
-			// FAILS with ar_url 'tel:+1-816-555-1212',
+			'ldap://[2001:db8::7]/c=GB?objectClass?one',
+			'mailto:John.Doe@example.com',
+			'news:comp.infosystems.www.servers.unix',
+			'tel:+1-816-555-1212',
 			'telnet://192.0.2.16:80/',
-			// FAILS with ar_url 'urn:oasis:names:specification:docbook:dtd:xml:4.1.2',
-			// FAILS with ar_url '//google.com',
+			'urn:oasis:names:specification:docbook:dtd:xml:4.1.2',
+			'//google.com',
 			'../../relative/',
-			// FAILS with ar_url 'file:///C:/'
+			'file:///C:/'
 		];
 		foreach ($commonUrls as $sourceUrl) {
 			$url = ar::url( $sourceUrl );
