@@ -52,7 +52,7 @@ class mysqlstore extends store{
 		} else {
 			$dbh = @new mysqli($host, $user, $password, $database);
 			if ($dbh->connect_errno) {
-				die("Error " . $this->dbh->connect_error);
+				die("Error [".$dbh->connect_errno."]" . $dbh->connect_error);
 			}
 			self::$connections[$host][$user][$db] = $dbh;
 		}
