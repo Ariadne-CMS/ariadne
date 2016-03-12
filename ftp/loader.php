@@ -1079,7 +1079,6 @@
 		}
 
 
-	sleep(1);
 //	debugon("pinp");
 
 	// set PHP error handling
