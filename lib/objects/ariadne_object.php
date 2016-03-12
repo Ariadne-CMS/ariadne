@@ -364,7 +364,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// array with the name $custom, or $custom comes from the object and is an array and as such
 		// parse_str fails miserably thus keeping the array $custom intact.
 
-		$i=0;
 		if (isset($this->data->custom) && is_array($this->data->custom)) {
 			foreach($this->data->custom as $nls => $cdata) {
 				foreach($cdata as $name => $value){
@@ -377,16 +376,19 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					if ($configcache->custom[$name]['property']) {
 						if (isset($value) && is_array($value)) {
 							foreach($value as $valkey => $valvalue ) {
-								$properties["custom"][$i]["name"]=$name;
-								$properties["custom"][$i]["value"]=$valvalue;
-								$properties["custom"][$i]["nls"]=$nls;
-								$i++;
+								$properties["custom"][] = [
+									"name"  => $name,
+									"value" => $valvalue,
+									"nls"   => $nls,
+								];
 							}
 						} else {
-							$properties["custom"][$i]["name"]=$name;
-							$properties["custom"][$i]["value"]=$value;
-							$properties["custom"][$i]["nls"]=$nls;
-							$i++;
+							$properties["custom"][] = [
+								"name"  => $name,
+								"value" => $value,
+								"nls"   => $nls,
+							];
+
 						}
 					}
 				}
@@ -463,6 +465,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$wf_object->arIsNewObject=$arIsNewObject;
 		}
 
+		/* save custom data */
+		$properties = $this->saveCustomData($configcache, $properties);
+
 		// this makes sure the event handlers are run on $wf_object, so that $this->data changes don't change the data of the object to be saved
 		$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
 
@@ -524,8 +529,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$properties["time"][0]["mtime"]=$this->data->mtime;
 		$properties["time"][0]["muser"]=$this->data->muser;
 
-		/* save custom data */
-		$properties = $this->saveCustomData($configcache, $properties);
 
 		if (!$this->error) {
 			if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {

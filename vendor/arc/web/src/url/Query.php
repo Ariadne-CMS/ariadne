@@ -14,10 +14,9 @@ namespace arc\url;
 /**
  *  Query parses any valid url query part and generates array accessible values for it
  *  - you can use the same name multiple times -- ?name=value1&name=value2
- *    this will result in name becoming an array, similar arrays will not be encoded with trailing [] behind the name
+ *    this will result in name becoming an array, similarly arrays will not be encoded with trailing [] behind the name
  *  - you can use names without values -- ?name&name2&name3
- *  - names may include any valid character -- ?name+name
- *	Usage:
+ *  - names may include any valid character -- ?valid+name
  *
  */
 class Query extends \ArrayObject implements QueryInterface
@@ -29,7 +28,7 @@ class Query extends \ArrayObject implements QueryInterface
 
     public function __toString()
     {
-        return str_replace( array('%7E', '%20' ), array( '~', '+' ), // ~ and + are often unnecesarily encoded
+        return str_replace( ['%7E', '%20'], ['~', '+'], // ~ and + are often unnecesarily encoded
             $this->compile( (array) $this )
         );
     }
@@ -50,9 +49,13 @@ class Query extends \ArrayObject implements QueryInterface
         return $this;
     }
 
+    /**
+     * Removes all current query parameters.
+     * @return $this
+     */
     public function reset()
     {
-        $this->exchangeArray( array() );
+        $this->exchangeArray( [] );
 
         return $this;
     }
@@ -109,10 +112,10 @@ class Query extends \ArrayObject implements QueryInterface
             foreach ($values as $queryStringEntry) {
                 list( $name, $value ) = $this->parseQueryStringEntry( $queryStringEntry );
                 if (!isset($value)) {
-                    // no '=' in query entry  => ?name&...
+                    // no '=' in query entry  e.g: ?name&...
                     $result[] = $name;
                 } elseif (!isset( $result[$name] )) {
-                    // new entry => ?name=1&...
+                    // a new entry e.g: ?name=1&...
                     $result[ $name ] = $value;
                 } elseif (!is_array( $result[$name] )) {
                     // entry with same name exists already but is not an array yet => ?name=1&name=2&...
@@ -156,5 +159,4 @@ class Query extends \ArrayObject implements QueryInterface
             );
         }
     }
-
 }

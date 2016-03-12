@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-/* TODO:
- * - check performance of hash based grants storage vs. strings
- * - perhaps refactor grants storage and check to seperate class/object as nodeValue in the tree
- */
 
 namespace arc\grants;
 
-class GrantsTree
+/**
+ * Class GrantsTree
+ * @package arc\grants
+ */
+final class GrantsTree
 {
     use \arc\traits\Proxy {
         \arc\traits\Proxy::__construct as private ProxyConstruct;
@@ -27,9 +27,9 @@ class GrantsTree
     private $groups = array();
 
     /**
-     *    @param \arc\tree\NamedNode $tree The tree storage for event listeners.
-     *   @param string $user
-     *   @param array $groups
+     * @param \arc\tree\NamedNode $tree The tree storage for event listeners.
+     * @param string $user
+     * @param array $groups
      */
     public function __construct( $tree, $user, $groups = array() )
     {
@@ -39,52 +39,164 @@ class GrantsTree
         $this->groups = $groups;
     }
 
+    /**
+     * Change to a different node
+     * @param $path
+     * @return GrantsTree
+     */
     public function cd($path)
     {
         return new GrantsTree( $this->tree->cd( $path ), $this->user );
     }
 
-    public function ls()
-    {
-        // FIXME: implement this
-    }
-
-    public function switchUser( $user, $groups = array() )
+    /**
+     * Switch default user to check and set grants.
+     * @param $user
+     * @param array $groups
+     * @return GrantsTree this
+     */
+    public function switchUser( $user, $groups = [] )
     {
         return new GrantsTree( $this->tree, $user, $groups );
     }
 
-    public function setUserGrants($grants = null)
+    /**
+     * Set new grants for the current user.
+     * @param null $grants
+     * @return GrantsTree this
+     */
+    public function set($grants = null)
     {
         if ( isset( $grants ) ) {
-            $this->tree->nodeValue['user.'.$this->user ] = ' ' . trim( $grants ) . ' ';
+            if ( !isset($this->tree->nodeValue['users'])) {
+                $this->tree->nodeValue['users'] = [];
+            }
+            $this->tree->nodeValue['users'][$this->user ] = ' ' . trim( $grants ) . ' ';
         } else {
-            unset( $this->tree->nodeValue['user.'.$this->user ] );
+            unset( $this->tree->nodeValue['users'][$this->user ] );
         }
+        return $this;
     }
 
-    public function setGroupGrants($group, $grants = null)
-    {
+
+    /**
+     * Deprecated. Use set() instead.
+     * @param null $grants
+     */
+    public function setUserGrants( $grants = null ){
+        $this->set($grants);
+    }
+
+    /**
+     * Deprecated. Use setForGroup instead.
+     * @param $group
+     * @param null $grants
+     */
+    public function setGroupGrants( $group, $grants = null ){
+        $this->setForGroup($group, $grants);
+    }
+
+    /**
+     * Set new grants for the given user.
+     * @param $user
+     * @param null $grants
+     * @return GrantsTree this
+     */
+    public function setForUser( $user, $grants = null ) {
+        $this->switchUser($user)->set($grants);
+        return $this;
+    }
+
+    /**
+     * Set new grants for the given group.
+     * @param $group
+     * @param null $grants
+     * @return GrantsTree this
+     */
+    public function setForGroup( $group, $grants = null ) {
         if ( isset( $grants ) ) {
-            $this->tree->nodeValue['group.'.$group ] = ' ' . trim( $grants ) . ' ';
+            if ( !isset($this->tree->nodeValue['groups'])) {
+                $this->tree->nodeValue['groups'] = [];
+            }
+            $this->tree->nodeValue['groups'][$group ] = ' ' . trim( $grants ) . ' ';
         } else {
-            unset( $this->tree->nodeValue['group.'.$group ] );
+            unset( $this->tree->nodeValue['groups'][$group ] );
         }
+        return $this;
     }
 
+    /**
+     * Return the grants for the current user.
+     * @return mixed
+     */
+    public function grants() {
+        return \arc\hash::get('/users/'.$this->user.'/', $this->tree->nodeValue, '');
+    }
+
+    /**
+     * Return the grants for a specific user.
+     * @param $user
+     * @return mixed
+     */
+    public function grantsForUser($user, $groups = []) {
+        return $this->switchUser($user, $groups)->grants();
+    }
+
+    /**
+     * Returns an array with the grants for all users.
+     * @return array
+     */
+    public function grantsForAllUsers() {
+        return \arc\hash::get('/users/', $this->tree->nodeValue, array() );
+    }
+
+    /**
+     * Return the grants for a specific group.
+     * @param $group
+     * @return mixed
+     */
+    public function grantsForGroup($group) {
+        return \arc\hash::get("/groups/$group/", $this->tree->nodeValue, '');
+    }
+
+    /**
+     * Returns an array with the grants for all groups.
+     * @return array
+     */
+    public function grantsForAllGroups() {
+        return \arc\hash::get('/groups/', $this->tree->nodeValue, array() );
+    }
+
+    /**
+     * @param $grant
+     * @return bool
+     */
     public function check($grant)
     {
         // uses strpos since it is twice as fast as preg_match for the most common cases
         $grants = $this->fetchGrants();
-        if ( strpos( $grants, $grant.' ' ) === false ) { // exit early if no possible match is found
 
+        if ( strpos( $grants, $grant.' ' ) === false ) { // exit early if no possible match is found
             return false;
         }
 
-        return ( strpos( $grants, ' '.$grant.' ')!==false
-            || strpos( $grants, ' ='.$grant.' ')!==false );
+        return ( strpos( $grants, ' '.$grant.' ') !== false
+            || strpos( $grants, ' ='.$grant.' ') !== false );
     }
 
+    /**
+     * Check grant for a specific user.
+     * @param $user
+     * @param $grant
+     * @return bool
+     */
+    public function checkForUser($grant, $user, $groups = []) {
+        return $this->switchUser($user, $groups)->check($grant);
+    }
+
+    /**
+     * @return string
+     */
     private function fetchGrants()
     {
         $user = $this->user;
@@ -92,30 +204,29 @@ class GrantsTree
         $grants = (string) \arc\tree::dive(
             $this->tree,
             function ($node) use ($user) {
-                if ( isset( $node->nodeValue['user.'.$user] ) ) {
-                    return $node->nodeValue['user.'.$user];
+                if ( isset( $node->nodeValue['users'][$user] ) ) {
+                    return $node->nodeValue['users'][$user];
                 }
             },
-                function ($node, $grants) use (&$user, $groups) {
-                    if (!$user) { // don't do this for user grants the first time
-                        $grants = preg_replace(
-                            array( '/\=[^ ]*/', '/\>([^ ]*)/' ),
-                            array( '', '$1' ),
-                            $grants
-                        );
-                    }
-                    $user = false;
-                    foreach ($groups as $group) {
-                        if ( isset( $node->nodeValue[ 'group.'.$group ] ) ) {
-                            $grants .= $node->nodeValue['group.'.$group ];
-                        }
-                    }
-
-                    return $grants;
+            function ($node, $grants) use (&$user, $groups) {
+                if (!$user) { // don't do this for user grants the first time
+                    $grants = preg_replace(
+                        array( '/\=[^ ]*/', '/\>([^ ]*)/' ),
+                        array( '', '$1' ),
+                        $grants
+                    );
                 }
+                $user = false;
+                foreach ($groups as $group) {
+                    if ( isset( $node->nodeValue['groups'][$group] ) ) {
+                        $grants .= $node->nodeValue['groups'][$group];
+                    }
+                }
+
+                return $grants;
+            }
         );
 
         return $grants;
     }
-
 }

@@ -1,15 +1,28 @@
 language: php
 php:
-  - 5.4
-  - 5.5
+  - '5.6'
+  - '7.0'
+  - 'hhvm'
+
+matrix:
+   allow_failures:
+         - php: 'hhvm'
 
 before_script:
    - composer install
-   - composer --working-dir=tests install
 
-script: php ./tests/testall.php
+script: vendor/bin/phpunit --coverage-clover=coverage.clover
 
 notifications:
   email: false
-  irc: "open.ircnet.org#ariadne"
+  irc:
+    channels:
+       secure: "Lle1aCLy76rflDkqLxIoKIr2T54TTnFS8jVr6OySX36ICRlJuyXjV4mhxf93r0TiJMXhRAcHnKcQ96AKrHfR3vGMS4mrisXJbZwuAZPbsJh4yfYHT2Y1gxXqSt1aXOrrF8A8SxlXbYkBni/x9EXGrFDpsfKwc9wT2+M/FTitaYQ="
+    on_success: change
+    on_failure: always
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
+
+sudo: false

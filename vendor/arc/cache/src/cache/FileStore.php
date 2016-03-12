@@ -8,9 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-// FIXME: not specific to \arc\cache really
 namespace arc\cache;
 
+/**
+ * Class FileStore
+ * @package arc\cache
+ */
 class FileStore
 {
     protected $root = null;
@@ -18,6 +21,11 @@ class FileStore
     protected $basePath = null;
     protected $mode = null;
 
+    /**
+     * @param        $root          The root directory to store cache images
+     * @param string $currentPath   The path within the root to use
+     * @param int    $mode          The filemode to use
+     */
     public function __construct($root, $currentPath = '/', $mode = 0770)
     {
         $this->root = $root;
@@ -26,11 +34,21 @@ class FileStore
         $this->mode = $mode;
     }
 
+    /**
+     * Returns the path for an image based on the current path and the name given
+     * @param $name     The name for the cache image. The name is base64 encoded, so you cannot use full paths, only filenames.
+     * @return string
+     */
     protected function getPath($name)
     {
         return $this->basePath . base64_encode( $name );
     }
 
+    /**
+     * Returns the contents for a cached image, if it exists, null otherwise.
+     * @param string $name
+     * @return string|null
+     */
     public function getVar($name)
     {
         $filePath = $this->getPath( $name );
@@ -39,6 +57,12 @@ class FileStore
         }
     }
 
+    /**
+     * Store a value as a cached image.
+     * @param string $name
+     * @param string $value
+     * @return int
+     */
     public function putVar($name, $value)
     {
         $filePath = $this->getPath( $name );
@@ -50,6 +74,11 @@ class FileStore
         return file_put_contents( $filePath, $value, LOCK_EX );
     }
 
+    /**
+     * Return a fileinfo array (size, ctime, mtime) for a cached image, or null if it isn't found.
+     * @param $name
+     * @return array|null
+     */
     public function getInfo($name)
     {
         $filePath = $this->getPath( $name );
@@ -64,6 +93,12 @@ class FileStore
         }
     }
 
+    /**
+     * Change the file info, only supports mtime in this implementation. Returns true if the cache image is found.
+     * @param string $name The name of the cache image
+     * @param array  $info The new file information - an array with 'mtime','size' and/or 'ctime' keys.
+     * @return bool
+     */
     public function setInfo($name, $info)
     {
         $filePath = $this->getPath( $name );
@@ -86,11 +121,20 @@ class FileStore
         }
     }
 
+    /**
+     * Change the path to store/retrieve cache images.
+     * @param $path
+     * @return FileStore
+     */
     public function cd($path)
     {
         return new FileStore( $this->root, \arc\path::collapse( $path, $this->currentPath ), $this->mode );
     }
 
+    /**
+     * Returns an array with cache image names in the current path.
+     * @return array
+     */
     public function ls()
     {
         $dir = dir( $this->basePath );
@@ -108,6 +152,11 @@ class FileStore
         return $result;
     }
 
+    /**
+     * Remove a cache image.
+     * @param $name
+     * @return bool
+     */
     public function remove($name)
     {
         $filePath = $this->getPath( $name );
@@ -115,6 +164,9 @@ class FileStore
         return unlink( $filePath );
     }
 
+    /**
+     * @param $dir
+     */
     protected function cleanup($dir)
     {
         foreach (glob( $dir . '/*' ) as $file) {
@@ -127,27 +179,30 @@ class FileStore
         rmdir( $dir );
     }
 
-    protected function rmdir($path, $cleanup = null)
-    {
-        if (!isset( $cleanup )) {
-            $cleanup = array( $this, 'cleanup' );
-        }
-        call_user_func( $cleanup, $path );
-    }
-
-    public function purge($name = null)
+    /**
+     * Removes an entire subtree of cache images.
+     * @param string $name The name of the image / subdir to remove.
+     * @return bool
+     */
+    public function purge($name = '')
     {
         if ($name) {
-            $this->clear( $name );
+            $this->remove( $name );
         }
-        $dirPath = $this->basePath . \arc\path::collapse( \arc\path::clean( $name ) );
+        $dirPath = $this->basePath . \arc\path::collapse( $name );
         if (file_exists( $dirPath ) && is_dir( $dirPath )) {
-            $this->rmdir( $dirPath );
+            $this->cleanup( $dirPath );
         }
 
         return true;
     }
 
+    /**
+     * Locks a cache image. Default a write only lock, so you can still read the cache.
+     * @param string $name
+     * @param bool $blocking
+     * @return bool
+     */
     public function lock($name, $blocking = false)
     {
         $filePath = $this->getPath( $name );
@@ -164,6 +219,11 @@ class FileStore
         return flock( $lockFile, $lockMode );
     }
 
+    /**
+     * Unlocks a cache image.
+     * @param $name
+     * @return bool
+     */
     public function unlock($name)
     {
         $filePath = $this->getPath( $name );

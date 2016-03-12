@@ -25,7 +25,7 @@
 
 			$resCreate = $this->open( $this->_filename, ZipArchive::CREATE );
 			if ($resCreate !== true) {
-				return error::raiseError( "System-error creating temporary zip archive '".$this->filename."'", $resCreate );
+				return ar_error::raiseError( "System-error creating temporary zip archive '".$this->filename."'", $resCreate );
 			}
 
 			return $this;

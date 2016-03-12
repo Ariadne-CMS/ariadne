@@ -315,39 +315,7 @@ abstract class store {
 	}
 
 	public function make_path($curr_dir, $path) {
-	/**********************************************************************
-		This function creates an absolute path from the given starting path
-	($curr_dir) and a relative (or absolute) path ($path). If $path starts
-	with a '/' $curr_dir is ignored.
-	$path must be a string of substrings seperated by '/'. each of these
-	substrings may consist of charachters and/or numbers. If a substring
-	is "..", it and the previuos substring will be removed. If a substring
-	is "." or "", it is removed. All other substrings are then concatenated
-	with a '/' between them and at the start and the end. This string is
-	then returned.
-	**********************************************************************/
-		$this->error = "";
-		$result = "/";
-		if ($path[0] !== "/") {
-			$path = $curr_dir . '/' . $path;
-		}
-
-		$splitpath = preg_split('|/|', $path, -1, PREG_SPLIT_NO_EMPTY);
-
-		foreach ($splitpath as $pathticle) {
-			if($pathticle === '..' ) {
-				$result = dirname($result);
-				// if second char of $result is not set, then current result is the rootNode
-				if (isset($result[1])) {
-					$result = $result . "/";
-				} else {
-					$result = "/"; // make sure that even under windows, slashes are always forward slashes.
-				}
-			} else if ($pathticle !== '.') {
-				$result = $result . $pathticle."/";
-			}
-		}
-		return $result;
+		return \arc\path::collapse($path, $curr_dir);
 	}
 
 	public function save_properties($properties, $id) {
@@ -439,14 +407,15 @@ abstract class store {
 	}
 
 	protected function unserialize($value, $path) {
-		if (substr($value, 0, 2) == "O:") {
+		if ($value[0] === "O" && $value[1] === ":") {
 			return unserialize($value);
 		} else if ($this->config['crypto'] instanceof \Closure) {
 			$crypto = $this->config['crypto']();
+			list($token,$datavalue) = explode(':', $value, 2);
 			foreach ($crypto as $cryptoConfig) {
 				$cryptoToken = $cryptoConfig['token'];
-				if (substr($value, 0, strlen($cryptoToken)+1) == ($cryptoToken . ":")) {
-					$value = substr($value, strlen($cryptoToken)+1);
+				if ($token === $cryptoToken ) {
+					$value = $datavalue;
 					switch ($cryptoConfig['method']) {
 						case 'ar_crypt':
 							$key = base64_decode($cryptoConfig['key']);
@@ -459,7 +428,7 @@ abstract class store {
 				}
 			}
 
-			if (substr($decryptedValue, 0, 2) == "O:") {
+			if ($decryptedValue[0] === "O" && $decryptedValue[1] === ":") {
 				return unserialize($decryptedValue);
 			} else {
 				$dummy = unserialize('O:6:"object":7:{s:5:"value";s:0:"";s:3:"nls";O:6:"object":2:{s:7:"default";s:2:"nl";s:4:"list";a:1:{s:2:"nl";s:10:"Nederlands";}}s:2:"nl";O:6:"object":1:{s:4:"name";s:14:"Crypted object";}s:6:"config";O:6:"object":2:{s:10:"owner_name";s:6:"Nobody";s:5:"owner";s:6:"nobody";}s:5:"mtime";i:0;s:5:"ctime";i:0;s:5:"muser";s:6:"nobody";}');

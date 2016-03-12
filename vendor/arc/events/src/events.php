@@ -101,5 +101,4 @@ class events
     {
         return self::getEventsTree()->cd( $path );
     }
-
 }

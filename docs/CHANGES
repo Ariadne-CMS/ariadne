@@ -1,4 +1,36 @@
 ========================
+Changes Ariadne 9.4
+========================
+
+Minimum PHP version raised to 5.4.7
+
+Changes:
+- updated composer libraries
+- php7 support, it passes the unit tests, and is installable. We aren't running
+  anything on it yet, so handle with care.
+- added encryption support for mysqlstore. You can now encrypt an entire
+  subtree in Ariadne.
+- added zlib functions to pinp whitelist.
+- added scaffold support to most of the object types. In
+  /system/scaffolds/muze/ add a new directory with a type as filename, e.g.
+  'pdir' or 'pdir.subtype'. Add objects of that type under that directory, just
+  like the projects under /system/scaffolds/muze/pproject/. Now when you create
+  a new object of that type, you can select a scaffold and get templates and
+  children added automatically.
+
+Bug fixes:
+- Detect php parse errors in pinp compiler with nikix/php-parser. No more PHP
+  fatal errors when saving templates.
+- Fixed an escaping bug in htmlcleaner for attributes
+- Fixed mod_tar in pear mode, windows installs should now work again.
+- Fixed installer for the usecase where the www dir is copied instead of symlinked
+- Fixed esi including schemeless uri's
+
+- Performance improvements:
++- 10% performce gain by improving performance of performance heavy functions
+
+
+========================
 Changes Ariadne 9.3
 ========================
 This release is mainly targeted on bug fixes and performance improvements

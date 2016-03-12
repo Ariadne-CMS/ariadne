@@ -82,7 +82,7 @@
 
 	class pinp_selectorIterator extends selectorIterator {
 
-		public function pinp_selectorIterator($selector, $count, $definitions = Array()) {
+		public function __construct($selector, $count, $definitions = Array()) {
 			return parent::__construct($selector, $count, $definitions);
 		}
 

@@ -1,5 +1,12 @@
 <?php
-
+/*
+ * This file is part of the Ariadne Component Library.
+ *
+ * (c) Muze <info@muze.nl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace arc;
 
 /**
@@ -14,7 +21,7 @@ namespace arc;
  *        \arc\noxss::prevent();
  *    ?>
  */
-class noxss
+final class noxss
 {
     /**
      * @var (bool) A flag to indicate if there might be an XSS attack going on
