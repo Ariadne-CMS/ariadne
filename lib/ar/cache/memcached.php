@@ -19,19 +19,24 @@ class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStore
 
 	// key
 	public function get( $path ) {
-		$res = $this->mc->get([$path]);
-		if(count($res) === 0 ){
-			return current($res);
+		$res = $this->mc->get($path);;
+		$code = $this->mc->getResultCode();
+		if($code !== MEMCACHED_SUCCESS ){
+			return $res;
 		}
 		return null;
 	}
 
+	public function getIfFresh( $path, $timeout = 0 ) {
+		// we do not know if it is fresh
+		return $this->get( $path );
+	}
+
 	// key value expire
 	public function set( $path, $value, $timeout = 7200 ) {
-			return $this->mc->set($path, $value, 0, $timeout);
+		$res = $this->mc->set($path, $value, $timeout);
+		return $res;
 	}
-	
-
 
 	// meta info
 	public function info( $path ) {
@@ -45,7 +50,6 @@ class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStore
 		return $this->mc->delete($path);
 	}
 
-
 	public function subStore( $path ) {
 		// geen idee eigenlijk
 	}
@@ -53,6 +57,14 @@ class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStore
 	// hoeveel tijd hebben we nog
 	public function isFresh( $path ) {
 		return null; // we hebben deze data niet
+	}
+
+	public function putvar( $name, $value ) {
+		return $this->set( $name, $value );
+	}
+
+	public function getvar( $name ) {
+		return $this->get( $name );
 	}
 }
 
