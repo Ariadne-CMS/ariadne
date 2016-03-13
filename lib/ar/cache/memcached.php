@@ -67,5 +67,10 @@ class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStore
 	public function getvar( $name ) {
 		return $this->get( $name );
 	}
+
+	// purge, we do not have the option to partial purge, so purge all
+	public function purge($name=null){
+		return $this->mc->flush();
+	}
 }
 

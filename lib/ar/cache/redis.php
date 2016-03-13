@@ -81,6 +81,11 @@ class ar_cache_redisStore implements ar_cacheStoreInterface, arKeyValueStoreInte
 		return (bool)$this->redis->ttl($path);
 	}
 
+	// purge, we do not have the option to partial purge, so purge all
+	public function purge($name=null){
+		return $this->redis->delete( $this->redis->keys($name .'*'));
+	}
+
 	public function putvar( $name, $value ) {
 		return $this->set( $name, $value );
 	}
