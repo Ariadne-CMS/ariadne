@@ -29,8 +29,7 @@ class ar_cache_redisStore implements ar_cacheStoreInterface, arKeyValueStoreInte
 		if (isset($options['db'])) {
 			$redis->select($options['db']);
 		}
-
-
+		$redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
 	}
 
 	// key
