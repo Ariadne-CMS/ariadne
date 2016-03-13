@@ -56,7 +56,8 @@ class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStore
 
 	// hoeveel tijd hebben we nog
 	public function isFresh( $path ) {
-		return null; // we hebben deze data niet
+		$res = $this->get( $path );
+		return ($res !== null);
 	}
 
 	public function putvar( $name, $value ) {
