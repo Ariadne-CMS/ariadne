@@ -2,15 +2,16 @@
 
 	ar_pinp::allow( 'ar_url');
 	ar_pinp::allow( 'ar_urlQuery' );
+	use \arc\url;
 
 	class ar_url extends arBase implements arKeyValueStoreInterface {
 
-		private $components, $query;
+		private $url, $query;
 
 		public function __construct( $url ) {
-			$this->components = parse_url( $url );
-			// FIXME: make option to skip parsing of the query part
-			$this->query = new ar_urlQuery( $this->components['query'] );
+			$query = new \arc\url\PHPQuery();
+			$this->url = new \arc\url\Url($url, $query);
+			$this->query = new ar_urlQuery($query);
 		}
 
 		public function __get($var) {
@@ -19,8 +20,8 @@
 			}
 			if ($var=='query') {
 				return $this->query;
-			} else if ( isset( $this->components[$var] ) ) {
-				return $this->components[$var];
+			} else if ( isset( $this->url->{$var} ) ) {
+				return $this->url->{$var};
 			} else {
 				return null;
 			}
@@ -30,63 +31,30 @@
 			switch($var) {
 				case 'query' :
 					if (is_string($value)) {
-						$this->query = new ar_urlQuery($value);
+						$this->url->query = $value;
+						$this->query = new ar_urlQuery($this->url->query);
 					} else if ($value instanceof ar_urlQuery) {
-						$this->query = $value;
+						$this->url->query = (string) $value;
 					} else if (is_object($value) && method_exists($value, '__toString') ) {
-						$this->query = new ar_urlQuery($value);
+						$this->url->query = (string)$value;
 					}
-				break;
-				case 'path' :
-					$this->components[$var] = $value;
 				break;
 				case 'password' :
 					$var = 'pass';
-					$this->components[$var] = $value;
-				break;
+				case 'path' :
 				case 'scheme':
 				case 'host' :
 				case 'port' :
 				case 'user' :
 				case 'pass' :
 				case 'fragment' :
-					$this->components[$var] = $value;
+					return $this->url->{$var} = $value;
 				break;
 			}
 		}
 
 		public function __toString() {
-			$url = '';
-			if ($this->components['host']) {
-				if ($this->components['scheme']) {
-					$url .= $this->components['scheme'].'://';
-				}
-				if ($this->components['user']) {
-					$url .= $this->components['user'];
-					if ($this->components['pass']) {
-						$url .= ':'.$this->components['pass'];
-					}
-					$url .= '@';
-				}
-				$url .= $this->components['host'];
-				if ($this->components['port']) {
-					$url .= ':'.$this->components['port'];
-				}
-				if ($this->components['path']) {
-					if (substr($this->components['path'], 0, 1)!=='/') {
-						$url.= '/';
-					}
-				}
-			}
-			$url .= $this->components['path'];
-			$query = ''.$this->query;
-			if ($query) {
-				$url .= '?' . $query ;
-			}
-			if ($this->components['fragment']) {
-				$url .= '#' . $this->components['fragment'];
-			}
-			return $url;
+			return (string)$this->url;
 		}
 
 		public function getvar( $name ) {
@@ -103,19 +71,21 @@
 
 	}
 
-	class ar_urlQuery extends ArrayObject implements arKeyValueStoreInterface /*, ArrayAcces, IteratorAggregate, .. */ {
+	class ar_urlQuery implements arKeyValueStoreInterface, ArrayAccess /*, ArrayAcces, IteratorAggregate, .. */ {
+		private $query;
 
 		public function __construct( $query ) {
-			$arguments = array();
-			if ($query) {
-				// FIXME: parse_str cannot handle all types of query string
-				// ?val&1+2=3  =>  val=&1_2=3
-				parse_str( $query, $arguments );
-				if ( class_exists('ar_http') && ar_http::$tainting) {
-					ar::taint($arguments);
-				}
+			if ( $query instanceof \arc\url\Query ){
+				$this->query  = $query;
+			} else {
+				$this->query = new \arc\url\PHPQuery($query);
 			}
-			parent::__construct( $arguments, ArrayObject::ARRAY_AS_PROPS );
+		}
+
+		public function __setQuery($url, $query) {
+			if ( $url->query === $this->query ) {
+				$url->query = $this->query = $query->query;
+			}
 		}
 
 		public function __call( $name, $arguments ) {
@@ -131,33 +101,43 @@
 			}
 		}
 
+		public function __get( $name ) {
+			return $this->query->{$name};
+		}
+
+		public function __set( $name, $value ) {
+			$this->query->{$name} = $value;
+		}
+
 		public function getvar( $name ) {
-			return $this->offsetGet($name);
+			return $this->query->{$name};
 		}
 
 		public function putvar( $name, $value ) {
-			$this->offsetSet($name, $value);
+			$this->query->{$name} = $value;
 		}
 
 		public function __toString() {
-			$arguments = (array) $this;
-			ar::untaint( $arguments, FILTER_UNSAFE_RAW);
-			// FIXME: http_build_query cannot build all query strings, see above about parse_str
-			$result = http_build_query( (array) $arguments );
-			$result = str_replace( '%7E', '~', $result ); // incorrectly encoded, obviates need for oauth_encode_url
-			return $result;
+			return (string)$this->query;
 		}
 
 		public function import( $values ) {
-			if ( is_string( $values ) ) {
-				parse_str( $values, $result );
-				$values = $result;
-			}
-			if ( is_array( $values) ) {
-				foreach( $values as $name => $value ) {
-					$this->offsetSet($name, $value);
-				}
-			}
+			$this->query->import( $values );
+		}
+
+		public function offsetExists($name){
+			return isset($this->query->{$name});
+		}
+
+		public function offsetGet($name) {
+			return $this->query->{$name};
+		}
+
+		public function offsetSet($name, $value) {
+			$this->query->{$name} = $value;
+		}
+		public function offsetUnset($name) {
+			unset($this->query->{$name});
 		}
 
 	}
