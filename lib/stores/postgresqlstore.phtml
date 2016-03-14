@@ -140,14 +140,18 @@ class postgresqlstore extends store {
 		return (@pg_numrows($objects["list"]));
 	}
 
-	public function info($objects) {
+	public function info($objects, $options = []) {
 		debug("info([list])","store");
 		$i = 0;
 		while ($row=@pg_fetch_array($objects["list"], $i++)) {
 			unset($row["object"]);
-			$result[]=$row;
+			if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
+				$result[$row['path']] = $row;
+			} else {
+				$result[] = $row;
+			}
 		}
-		return ($result);
+		return $result;
 	}
 
 	public function get_config($field) {

@@ -180,6 +180,21 @@
 			return $result;
 		}
 
+		public function info() {
+			global $store;
+			if (ar_store::$rememberShortcuts) {
+				$path = ar_store::makeRealPath( $this->path );
+			} else {
+				$path = $this->path;
+			}
+			$query = $this->query;
+			if ($this->order) {
+				$query .= ' order by '.$this->order;
+			}
+			$result = $store->info( $store->find( $path, $query, $this->limit, $this->offset), array( 'usePathAsKey' => true ));
+			return $result;
+		}
+
 		public function count() {
 			global $store;
 			if (ar_store::$rememberShortcuts) {
@@ -247,6 +262,16 @@
 			return $store->call( $template, $args, $store->get( $path ), array( 'usePathAsKey' => true ) );
 		}
 
+		public function info() {
+			global $store;
+			if ( ar_store::$rememberShortcuts ) {
+				$path = ar_store::makeRealPath( $this->path );
+			} else {
+				$path = $this->path;
+			}
+			return $store->info( $store->get( $path ), array( 'usePathAsKey' => true ));
+		}
+
 		public function parents() {
 			return new ar_storeParents( $this->path );
 		}
@@ -298,6 +323,40 @@
 			return $store->call( $template, $args,
 				$store->parents( $this->path, $this->top ),
 				array( 'usePathAsKey' => true )
+			);
+		}
+
+		public function info(){
+			global $store;
+
+			if ( ar_store::$rememberShortcuts) {
+				$path     = ar_store::makePath( $this->path );
+				$realpath = ar_store::makeRealPath( $this->path );
+				if ($realpath != $path ) {
+					// must do a call for each seperate path.
+					$list   = array();
+					$parent = $path;
+					while ( $realpath != $this->top && $parent != $this->top && end( $list ) != $realpath ) {
+						$list[$parent] = $realpath;
+						$parent        = ar_store::makePath( $parent . '../' );
+						$realpath      = ar_store::makeRealPath( $parent );
+					}
+					if ( ( $realpath == $this->top ) || ( $parent == $this->top ) ) {
+						$list[$parent] = $realpath;
+					}
+					$list = array_reverse( $list );
+					$result = array();
+					foreach ( $list as $virtualpath => $path ) {
+						$result[$virtualpath] = current( $store->info(
+							$store->get( $path )
+						));
+					}
+					return $result;
+				}
+			}
+
+			return $store->info(
+				$store->parents( $this->path, $this->top ), array( 'usePathAsKey' => true )
 			);
 		}
 
