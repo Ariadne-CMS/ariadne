@@ -70,7 +70,7 @@
 				$templateCode = $templates->templateCodeFunction($compiled);
 
 				// generating optimized template code
-				$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
+				$optimized = sprintf($AR->PINPtemplate, $compiled);
 
 				$templates->write($optimized, $this->id, $file.".inc");
 				if ($mtime) {

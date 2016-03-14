@@ -64,12 +64,12 @@
 					$pinp_code = file_get_contents($f);
 
 					$compiler = new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
-					$pinp_code_compiled_new = $compiler->compile(strtr($pinp_code, "\r", ""));
+					$optimized = sprintf($AR->PINPtemplate, $compiled);
+					$compiled = $compiler->compile(strtr($pinp_code, "\r", ""));
 					if ($compiler->error) {
 						showCompilerError($compiler, $path.$file);
 					} else {
-						$templateCode = $templateStore->templateCodeFunction($pinp_code_compiled_new);
-						$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
+						$optimized = sprintf($AR->PINPtemplate, $compiled);
 						$templateStore->write($optimized, $objectID, $templateName.".inc");
 					}
 				} else if (is_dir($f) && $file != "CVS" && $file != ".svn") {
