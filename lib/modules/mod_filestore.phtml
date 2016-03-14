@@ -173,7 +173,7 @@
 			return $template;
 		}
 
-		public function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
+		public function import($fsId, $fsName) {
 			// first check the cached templates
 			global $ARConfig;
 			if (!isset($ARConfig->fsFunctions[$fsId][$fsName])) {
@@ -186,9 +186,10 @@
 					}
 				}
 			}
-			// now call the function...
-			$fsFunc = $ARConfig->fsFunctions[$fsId][$fsName];
-			return $fsFunc($fsObject, $fsLocalVars);
+
+			if (isset($ARConfig->fsFunctions[$fsId][$fsName])) {
+				return $ARConfig->fsFunctions[$fsId][$fsName];
+			}
 		}
 
 

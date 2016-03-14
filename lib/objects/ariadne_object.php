@@ -2040,7 +2040,10 @@ debug("loadLibrary: loading cache for $this->path");
 									echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
 								}
 								set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-								$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+								$func = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"]);
+								if(is_callable($func)){
+									$arResult = $func($this);
+								}
 								restore_error_handler();
 								if (isset($arResult)) {
 									$ARCurrent->arResult=$arResult;
@@ -2705,7 +2708,10 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				if ( $continue ) {
 					set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-					$arResult = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+					$func = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"]);
+					if(is_callable($func)){
+						$arResult = $func($this);
+					}
 					restore_error_handler();
 
 					if ( !$AR->contextCallHandler ) { /* prevent oncall from re-entering here */
