@@ -42,6 +42,46 @@ class ar_core_pinpSandbox extends arBase {
 		return ( !isset($callable) || $callable instanceof \Closure );
 	}
 
+	public function usort(array &$arr, callable $f) {
+		if ( $this->isSafeCallable($f) ) {
+			return usort($arr, $f);
+		} else {
+			return false;
+		}
+	}
+
+	public function uasort(array &$arr, callable $f) {
+		if ( $this->isSafeCallable($f) ) {
+			return uasort($arr, $f);
+		} else {
+			return false;
+		}
+	}
+
+	public function uksort(array &$arr, callable $f) {
+		if ( $this->isSafeCallable($f) ) {
+			return uksort($arr, $f);
+		} else {
+			return false;
+		}
+	}
+
+	public function array_walk(array &$arr, callable $f) {
+		if ( $this->isSafeCallable($f) ) {
+			return array_walk($arr, $f);
+		} else {
+			return false;
+		}
+	}
+
+	public function array_walk_recursive(array &$arr, callable $f) {
+		if ( $this->isSafeCallable($f) ) {
+			return array_walk_recursive($arr, $f);
+		} else {
+			return false;
+		}
+	}
+
 	public function __call($function, $args){
 		if ( $function[0] === '_' ) {
 			// variable called as a function
@@ -63,11 +103,6 @@ class ar_core_pinpSandbox extends arBase {
 				// second arg must be a closure
 				case 'array_filter':
 				case 'array_reduce':
-				case 'array_walk':
-				case 'array_walk_recursive':
-				case 'usort':
-				case 'uasort':
-				case 'uksort':
 				case 'preg_replace_callback':
 					if ( $this->isSafeCallable($args[1])) {
 						return call_user_func_array( $function, $args );

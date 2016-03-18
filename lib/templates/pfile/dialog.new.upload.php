@@ -52,7 +52,7 @@
 		<?php   if ($this->getdata('file_temp', $selectednls)) { ?>
 			<div class="left">
 				<label for="file" class="fileinfo">
-					<?php echo $this->getdata('file', $selectednls); ?><br>
+					<?php echo htmlentities($this->getdata('file', $selectednls)); ?><br>
 					<?php echo $this->make_filesize($this->getdata('file_size', $selectednls)); ?>
 					<br><br>
 				</label>

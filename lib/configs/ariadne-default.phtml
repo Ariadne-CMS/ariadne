@@ -32,6 +32,8 @@
 		$AR->PINP_Functions       = array();
 	}
 
+	$AR->PINPtemplate = '<?'.'php $arTemplateFunction = function(&$AR_this) {  $local = new ar_core_pinpSandbox($AR_this); ?'.'>%s<'.'?php }; ?'.'>';
+
 	/**************************************************************************/
 	/* Textualizer information                                                */
 	/* Used to extract the text from various document formats for the purpose */

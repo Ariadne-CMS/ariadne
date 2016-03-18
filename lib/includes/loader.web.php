@@ -931,6 +931,8 @@
 			$xss_vars = array();
 			ldGatherXSSInput($xss_vars, $_GET);
 			ldGatherXSSInput($xss_vars, $_POST);
+			$filenames = array_map(function ($e) { return $e['name']; }, $_FILES);
+			ldGatherXSSInput($xss_vars, $filenames);
 
 			ldGatherXSSInput( $xss_vars, $function );
 			ldGatherXSSInput( $xss_vars, $path );

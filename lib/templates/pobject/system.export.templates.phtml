@@ -65,10 +65,7 @@ if (! ( $templates && is_array($templates) && !empty($templates) ) && !$ARCurren
 									$this->newObject->error = $pinp->error;
 								} else {
 
-									$templateCode = $new_filestore->templateCodeFunction($compiled);
-
-									// generating optimized template code
-									$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
+									$optimized = sprintf($AR->PINPtemplate, $compiled);
 
 									$new_filestore->write($optimized, $this->newObject->id, $file .".inc");
 									$new_filestore->touch($this->newObject->id, $file .".inc", $tmtime);
