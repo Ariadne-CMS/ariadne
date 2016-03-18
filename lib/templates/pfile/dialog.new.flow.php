@@ -20,7 +20,7 @@
 			$arNewFilename = $this->getdata("arNewFilename","none");
 			if (!$arNewFilename || !$this->getdata("name", $language)) {
 				if (($file=$this->getdata("file", $language)) && preg_match("|[^\/\\\]*\$|", $file, $matches)) {
-					$arFilename = preg_replace("|[^a-z0-9\./_-]|i", "-", $matches[0]);
+					$arFilename = trim(preg_replace("|[^a-z0-9\./_-]|i", "-", $matches[0]), '._-');
 					if (!$arNewFilename) {
 						$_POST['arNewFilename'] = $arFilename;
 						$this->path = $this->store->make_path($this->parent, $arFilename);
