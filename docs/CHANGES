@@ -1,3 +1,31 @@
+===================
+Changes Ariadne 9.5
+===================
+
+Changes:
+- the ariadne backend details view can now be configured to show different
+  columns. In addition you can add custom filters or completely rewrite the
+  query
+- ar\url now users arc\url, which supports all valid URL formats
+- php7 support improved
+- onbeforesave and workflow.pre now have access to the complete set of
+  customdata
+- added ar\store::info method, that returns meta information about objects.
+  This is faster and uses less memory than calling templates.
+
+Bug fixes:
+- fixed a bug in the html cleaner that broke html5 custom tags / web
+  components
+- fixed a bug that allowed onbeforesave / user.workflow.pre to overwrite
+  properties
+- fixed bug in upgrade script that prevented upgrades from 8.4 to 9.x
+- fixed possible XSS attacks with file names in a file upload
+- ar\contents\file::getContents now forces the stream pointer to stay put,
+  this fixes problems in specific php versions.
+- fixed use of array functions in pinp that update the array by reference
+  (usort, uasort, array_walk, etc.)
+
+
 ========================
 Changes Ariadne 9.4
 ========================
