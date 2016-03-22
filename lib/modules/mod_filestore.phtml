@@ -173,11 +173,10 @@
 			return $template;
 		}
 
-		public function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
-			// this looks scary, and maybe it is...
+		public function import($fsId, $fsName) {
 			// first check the cached templates
 			global $ARConfig;
-			if (!$ARConfig->fsFunctions[$fsId][$fsName]) {
+			if (!isset($ARConfig->fsFunctions[$fsId][$fsName])) {
 				// template isn't in the cache, so define it... as a new function
 				$path=$this->make_path($fsId, $fsName.".inc");
 				if (file_exists($path)) {
@@ -187,9 +186,10 @@
 					}
 				}
 			}
-			// now call the function...
-			$fsFunc = $ARConfig->fsFunctions[$fsId][$fsName];
-			return $fsFunc($fsObject, $fsLocalVars);
+
+			if (isset($ARConfig->fsFunctions[$fsId][$fsName])) {
+				return $ARConfig->fsFunctions[$fsId][$fsName];
+			}
 		}
 
 

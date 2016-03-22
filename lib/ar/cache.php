@@ -194,6 +194,8 @@
 		public function clear( $path = null );
 		public function subStore( $path );
 		public function isFresh( $path );
+		public function purge( $name = null );
+		public function getIfFresh( $name, $freshness=0 );
 	}
 
 	class ar_cacheStore implements ar_cacheStoreInterface, arKeyValueStoreInterface {

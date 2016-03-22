@@ -44,7 +44,10 @@
 		}
 
 		public function getContents( $length = -1, $offset = -1 ) {
-			return stream_get_contents( $this->resource, $length, $offset );
+			$curpos = ftell( $this->resource );
+			$res = stream_get_contents( $this->resource, $length, $offset );
+			fseek( $this->resource, $curpos );
+			return $res;
 		}
 
 		public function write( $string, $length = null ) {
