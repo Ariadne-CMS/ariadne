@@ -1,7 +1,7 @@
 <?php
 	$arResult = $this->call("pobject::system.list.entry.php", $arCallArgs);
-
-	$arResult["overlay_icon"] = $arResult["icons"]["small"];
+	
+	$arResult["overlay_icon"]  = $arResult["icons"]["small"];
 	$arResult["overlay_icons"] = $arResult["icons"];
 
 	$arResult["icons"] = array(
