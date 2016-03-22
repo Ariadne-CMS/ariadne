@@ -652,8 +652,8 @@
 			if ( getOption('tagBoundaries') ) {
 				vedor.editor.actions['vedor-show-tags'](document.getElementById('vdShowTagBoundaries'));
 			}
-			if ( getOption('properties') ) {
-				vedor.editor.actions['vedor-properties'](document.getElementById('VD_META'));
+			if ( getOption('properties') || vdOpenMetaPane ) {
+				vedor.editor.actions['vedor-properties'](document.getElementById('VD_META'),true);
 			}
 			if ( getOption('tagStack')===false ) { // default is on, this toggles it
 				vedor.editor.actions['vedor-show-tags-stack'](document.getElementById('vdShowTagStack'));
@@ -3681,8 +3681,10 @@
 			}
 			window_onresize();
 		},
-		"vedor-properties" : function(el) {
-			VD_META_onclick();
+		"vedor-properties" : function(el, enabled) {
+			if ( vdMetaDataSlideEnabled != enabled ) {
+				VD_META_onclick();
+			}
 			return false;
 		},
 		"vedor-insert-gadget" : function(el) {
