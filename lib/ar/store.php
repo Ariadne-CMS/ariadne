@@ -7,11 +7,15 @@
 
 	class ar_store extends arBase {
 		static public $rememberShortcuts = true;
+		static public $searchObject = false;
 
 		public static function configure( $option, $value ) {
 			switch ($option) {
 				case 'rememberShortcuts' :
 					self::$rememberShortcuts = $value;
+				break;
+				case 'searchObject' :
+					self::$searchObject = $value;
 				break;
 			}
 		}
@@ -32,6 +36,17 @@
 
 		public static function find( $query = "" ) {
 			return new ar_storeFind( ar::context()->getPath(), $query);
+		}
+
+		public static function getSearchPath( $path ) {
+			return ar::context()->getPath( array(
+				'searchObject' => self::$searchObject,
+				'path' => $path
+			) );
+		}
+
+		public static function getSearchQuery( $query ) {
+			return ar::context()->getQuery( $query );
 		}
 
 		public static function get( $path = "" ) {
@@ -160,6 +175,11 @@
 		public function __construct( $path = '/', $query = '' ) {
 			$this->path = (string)$path;
 			$this->query = (string)$query;
+
+			if ( ar_store::$searchObject ) {
+				$this->query = ar_store::getSearchQuery( $query );
+				$this->path = ar_store::getSearchPath( $path );
+			}
 		}
 
 		public function call( $template, $args = null ) {

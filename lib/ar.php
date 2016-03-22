@@ -493,6 +493,10 @@
 				} else if ($options['rememberShortcuts']) {
 					$me->_load('mod_keepurl.php');
 					$path = pinp_keepurl::_make_path( $path );
+				} else if ( $options['searchObject'] ) {
+					if (isset($me->data->path)) {
+						$path = $me->data->path;
+					}
 				}
 			} else {
 				$path = self::makePath( '/', $options['path'] );
@@ -508,6 +512,21 @@
 				$me = null;
 			}
 			return $me;
+		}
+
+		public static function getQuery( $query, $options = array() ) {
+			$me = self::getObject( $options );
+			if ($me) {
+				if (isset($me->data->query)) {
+					if ( $query ) {
+						$query = "(" . $me->data->query . ") and $query";
+					} else {
+						 $query = $me->data->query;
+					}
+					return $query;
+				}
+			}
+			return $query;
 		}
 
 		public static function getLoader( $options = array() ) { //FIXME: move code from ar_loader to here
