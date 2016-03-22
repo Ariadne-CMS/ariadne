@@ -119,13 +119,20 @@
 							));
 		*/
 		case '8.4-b1': // because of previous released upgrade scripts
+		case '8.4-b2': // because of previous released upgrade scripts
+		case '8.4':
 		case '9.0-rc1.1':
 				array_push($todo, array(
 							"description" => "Installing cache store",
 							"operation" => "9.0/install.cache_store.php",
+							"newversion" => '9.0-rc1.1a'
+						));
+		case '9.0-rc1.1a':
+				array_push($todo, array(
+							"description" => "Update properties and path length",
+							"operation" => "9.1/upgrade.database.php",
 							"newversion" => '9.0-rc1.2'
 						));
-		case '8.4-b2': // because of previous released upgrade scripts
 		case '9.0-rc1.2':
 				array_push($todo, array(
 							"description" => "Installing default libs",
@@ -143,14 +150,9 @@
 				array_push($todo, array(
 							"description" => "Mogrify dirs in system folder",
 							"operation" => "9.0/install.configfiles.php",
-							"newversion" => '9.0-rc1.6'
-						));
-		case '9.0-rc1.6':
-				array_push($todo, array(
-							"description" => "Update properties and path length",
-							"operation" => "9.0/upgrade.database.php",
 							"newversion" => '9.0-rc1'
 						));
+		case '9.0-rc1.6':
 		case '9.0-rc1.7': // because of previous released upgrade scripts
 		case '9.0-rc1':
 				array_push($todo, array(
