@@ -105,6 +105,7 @@
 				}
 
 				$this->save();
+				$this->ClearCache($this->path, true, false);
 
 				global $cache_config;
 				$cachestore=new cache($cache_config);

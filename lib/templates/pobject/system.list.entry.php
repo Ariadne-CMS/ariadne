@@ -94,7 +94,14 @@
 
 		$filestore = $this->store->get_filestore_svn("templates");
 		$svn_object = $filestore->connect($this->id);
-		$svn_status = $filestore->svn_status($svn_object);
+		$svn_status = $this->getdatacache(sprintf("svn-status-%s",$svn_object));
+
+		if ( !(isset($svn_status) && is_array($svn_status)) ) {
+			$svn_status = $filestore->svn_status($svn_object);
+			if (isset($svn_status) && is_array($svn_status)) {
+				$this->savedatacache(sprintf("svn-status-%s",$svn_object), $svn_status, 999);
+			}
+		}
 
 		if ($svn_status) {
 			$svn['status'] = 'insubversion';
