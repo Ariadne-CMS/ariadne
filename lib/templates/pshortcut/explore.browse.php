@@ -1,3 +1,5 @@
 <?php
-	$this->call("pobject::explore.browse.php", $arCallArgs);
+    if ( $this->data->path && ar::exists($this->data->path) ) {
+    	ar::get($this->data->path)->call("explore.browse.php", $arCallArgs);
+    }
 ?>
