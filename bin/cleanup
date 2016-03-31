@@ -93,16 +93,18 @@ function recurse($func, $dir=".") {
 	if (is_callable($func)) {
 
 		$d = dir($dir);
-		while (false !== ($entry = $d->read())) {
-			if(!in_array($entry,$skipentries)) {
-				if (is_dir($dir.'/'.$entry)) {
-					recurse($func,$dir.'/'.$entry);
-				} else {
-					$func($dir.'/'.$entry);
+		if (isset($d) && $d !== false) {
+			while (false !== ($entry = $d->read())) {
+				if(!in_array($entry,$skipentries)) {
+					if (is_dir($dir.'/'.$entry)) {
+						recurse($func,$dir.'/'.$entry);
+					} else {
+						$func($dir.'/'.$entry);
+					}
 				}
 			}
+			$d->close();
 		}
-		$d->close();
 		@unlink($dir);
 	}
 }
