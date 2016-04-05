@@ -26,6 +26,9 @@
 	if (!$colDefs) {
 		$colDefs = $defaults;
 	}
+	if (!isset($colDefs["local_url"])) {
+		$colDefs["local_url"] = $defaults["local_url"];
+	}
 
 	$arResult = [];
 	//FIXME: needs refactoring, or \arc\hash::get() must accept '/' as 'return the root entry itself'
