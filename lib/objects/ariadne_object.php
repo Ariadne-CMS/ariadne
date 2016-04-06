@@ -1102,14 +1102,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$isadmin = $this->CheckAdmin($AR->user);
 
 		if (!$isadmin && !$AR->user->grants[$this->path]) {
-			$AR->user->grants[$this->path]=$this->GetValidGrants();
+			$grants = $this->GetValidGrants();
+		} else {
+			$grants = $AR->user->grants[$this->path];
 		}
+
 		if ($AR->user->data->login!="public") {
 			// Don't remove this or MSIE users won't get uptodate pages...
 			ldSetClientCache(false);
 		}
 
-		$grants=$AR->user->grants[$this->path];
 		if ( 	( !$grants[$grant]
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
 				) && !$isadmin ) {
