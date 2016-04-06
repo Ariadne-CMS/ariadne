@@ -146,6 +146,12 @@
 		$store->add_type("pbookmark", "pobject");
 		$store->add_type("pbookmark", "pbookmark");
 
+		// install punittest type
+		$store->add_type("punittest", "pobject");
+		$store->add_type("punittest", "ppage");
+		$store->add_type("punittest", "pdir");
+		$store->add_type("punittest", "punittest");
+
 		if ($error) {
 			error($error);
 		}

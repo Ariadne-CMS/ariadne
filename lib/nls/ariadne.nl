@@ -235,6 +235,7 @@
 	$ARnls["ariadne:types:pshortcut"]               =    "Snelkoppeling";
 	$ARnls["ariadne:types:psite"]                   =    "Site";
 	$ARnls["ariadne:types:puser"]                   =    "Gebruiker";
+	$ARnls["ariadne:types:punittest"]               =    "Unit Tests";
 	$ARnls["ariadne:up"]                            =    "Omhoog";
 	$ARnls["ariadne:uploader"]                      =    "Uploader";
 	$ARnls["ariadne:uploading"]                     =    "Uploading...";
