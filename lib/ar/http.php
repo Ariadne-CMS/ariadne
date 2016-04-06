@@ -51,7 +51,9 @@
 				chr(128) - chr(159) (various)
 				PHP irreversibly modifies field names containing these characters in an attempt to maintain compatibility with the deprecated register_globals feature.
 			*/
-			$name = preg_replace("/[ \.\[\x80-\x9f]/", "_", $name);
+			if (isset($name) ) {
+				$name = preg_replace("/[ \.\[\x80-\x9f]/", "_", $name);
+			}
 
 			switch($method) {
 				case 'GET' :

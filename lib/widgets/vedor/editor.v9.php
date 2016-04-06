@@ -2008,10 +2008,16 @@
 	var arObjectRegistry	= new Array();
 	var arChangeRegistry	= new Array();
 	var arGroupRegistry	= new Array();
+	var arGroupRegistryQueue = new Array();
 	var currentEditableField= false;
 
 	function registerDataField(fieldId, fieldName, objectPath, objectId) {
 		arFieldRegistry[fieldId]=new dataField(fieldId, fieldName, objectPath, objectId);
+                if ( arGroupRegistryQueue[fieldId] ) {
+                        arFieldRegistry[fieldId].group = arGroupRegistryQueue[fieldId];
+                        arGroupRegistryQueue[fieldId] = null;
+                }
+
 		if (!arObjectRegistry[objectId]) {
 			arObjectRegistry[objectId]=new Array();
 		}
@@ -2036,6 +2042,8 @@
 		arGroupRegistry[group].push(fieldId);
 		if (arFieldRegistry[fieldId]) {
 			arFieldRegistry[fieldId].group=group;
+		} else {
+			arGroupRegistryQueue[fieldId] = group;
 		}
 	}
 
