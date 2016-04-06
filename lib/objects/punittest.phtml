@@ -15,15 +15,6 @@ class punittest extends pdir implements PHPUnit_Framework_Test {
 
     public function run(PHPUnit_Framework_TestResult $result = NULL) {
         global $AR;
-        if(!$AR->user) {
-            echo "RECOVERING USER PUBLIC\n";
-            $this->pushContext(array("scope" => "php"));
-                $AR->user=current(
-                    $this->get("/system/users/public/", "system.get.phtml")
-                );
-            $this->popContext();
-
-        }
         if ($result === NULL) {
             $result = new PHPUnit_Framework_TestResult;
         }
@@ -40,7 +31,6 @@ class punittest extends pdir implements PHPUnit_Framework_Test {
                 $stopTime = PHP_Timer::stop();
                 $result->addFailure($this, $e, $stopTime);
             } catch(\Exception $e) {
-                var_dump($e);
                 $stopTime = PHP_Timer::stop();
                 $result->addError($this, $e, $stopTime);
             }
