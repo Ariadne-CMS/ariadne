@@ -7,7 +7,9 @@
 
 require_once(AriadneBasePath."/objects/pdir.phtml");
 
-class punittest extends pdir implements PHPUnit_Framework_Test {
+class punittest extends pdir implements PHPUnit_Framework_Test, PHPUnit_Framework_SelfDescribing {
+
+    public $numAssertions = 0;
 
     public function count() {
         return 1;
@@ -25,6 +27,7 @@ class punittest extends pdir implements PHPUnit_Framework_Test {
             $result->startTest($this);
             PHP_Timer::start();
             $stopTime = null;
+            $this->numAssertions = 0;
             try {
                 $this->call($template);
             } catch (PHPUnit_Framework_AssertionFailedError $e) {
@@ -48,6 +51,7 @@ class punittest extends pdir implements PHPUnit_Framework_Test {
             if (!method_exists('PHPUnit_Framework_Assert',substr($name,1))) {
                 throw new \Exception('Method '.substr($name,1).' not found',404);
             }
+            $this->numAssertions++;
             return call_user_func_array(
                 'PHPUnit_Framework_Assert::'.substr($name,1),
                 $args
@@ -62,16 +66,21 @@ class punittest extends pdir implements PHPUnit_Framework_Test {
 
         $suite->addTest($this); //punittest
 
-        //$listener = new PHPUnit_Util_TestDox_ResultPrinter_HTML();
-        //$result = new PHPUnit_Framework_TestResult();
-        //$result->addListener($listener);
-        $result = $suite->run($result); // => PHPUnit_Framework_TestResult
+        $listener = new ar_core_phpunitResultPrinter();
+        $result   = new PHPUnit_Framework_TestResult();
+        $result->addListener($listener);
+        $result   = $suite->run($result); // => PHPUnit_Framework_TestResult
 
-        $printer = new PHPUnit_TextUI_ResultPrinter();
-        echo '<pre>';
-        $printer->printResult($result);
-        echo '</pre>';
+        $listener->printResult($result);
         return $result;
     }
 
+    public function getNumAssertions() {
+        return $this->numAssertions;
+    }
+
+    public function toString()
+    {
+        return $this->path;
+    }
 }
