@@ -1316,13 +1316,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$configcache= clone $ARConfig->cache[$this->parent];
 			$configcache->localTemplates = [];
 			$configcache->pinpTemplates = [];
-			unset($configcache->id);
 			$configcache->id = $this->id;
 
 			// cache default templates
 			if (isset($this->data->config->templates) && count($this->data->config->templates)) {
 				$configcache->pinpTemplates    = $this->data->config->pinp;
-				$configcache->templates        = $this->data->config->templates;
 				$configcache->privatetemplates = $this->data->config->privatetemplates;
 				$configcache->localTemplates   = $this->data->config->templates;
 
@@ -1537,13 +1535,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$template = null;
 				if (!isset($arSuperContext[$path.":".$arType.":".$arCallFunction])) {
 					$template = array_reduce($templates[$arCallFunction] , function($carry, $item) use ($arType, $reqnls) {
-						if (isset($carry) && $carry['language'] != 'any') {
-							return $carry;
-						} 
 						if ($item['type'] === $arType) {
-							if ($item['language'] == $reqnls) {
-								return $item;
-							} else if ($item['language'] == 'any') {
+							if (isset($carry) && $carry['language'] !== 'any') {
+								return $carry;
+							} else if ($item['language'] === 'any' || $item['language'] === $reqnls ) {
 								return $item;
 							}
 						}
@@ -1590,9 +1585,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arSuperContext = array();
 		}
 
-		if (strpos($arCallFunction,"::")!==false) {
+		$typepos = strpos($arCallFunction,"::");
+		if ($typepos !== false ) {
 			// template of a specific class defined via call("class::template");
-			list($arCallType, $arCallFunction)=explode("::",$arCallFunction,2);
+			$arCallType     = substr($arCallFunction, 0, $typepos);
+			$arCallFunction = substr($arCallFunction, $typepos+1);
 		} else {
 			$arCallType=$this->type;
 		}
@@ -1638,27 +1635,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$lastcheckedpath     = "";
 		$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
 		$reqnls              = $this->reqnls;
-
-		while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
+		$template            = null;
+		while (!$arCallClassTemplate && !isset($template) && $checkpath!=$lastcheckedpath) {
 			debug("getPinpTemplate: checking for ".$arCallFunction." on ".$checkpath);
 			$lastcheckedpath = $checkpath;
-			$arType = $arCallType;
 
-			$template = $this->findTemplateOnPath( [ $checkpath ], $arCallFunction, $arType, $reqnls, $arSuperContext);
+			$template = $this->findTemplateOnPath( [ $checkpath ], $arCallFunction, $arCallType, $reqnls, $arSuperContext);
 
 			if (isset($template)) {
 				// haal info uit template
-				$arCallTemplate     = sprintf("%s.%s.%s",$template['type'],$arCallFunction,$template['language']);
-				$arCallTemplateName = $arCallFunction;
-				$arCallTemplateNLS  = $template['language'];
-				$arCallTemplatePath = $template['path'];
-				$arTemplateId       = $template['id'];
-				$arPrivateTemplate  = $template['private'];
-				$arCallTemplateType = $template['type'];
 				debug("getPinpTemplate: found ".$arCallFunction." on ".$checkpath);
-				break;
-			}
-			if ($inLibrary) {
+			} else if ($inLibrary) {
 
 				// faster matching on psection, prefix doesn't have to be a valid type
 				$prefix = substr($ARConfig->cache[$checkpath]->type,0,8);
@@ -1675,20 +1662,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$libraries = array_filter($ARConfig->libraries[$checkpath],'is_int',ARRAY_FILTER_USE_KEY);
 
 					do  {
-						$template = $this->findTemplateOnPath( $libraries, $arCallFunction, $arType, $reqnls, $arSuperContext);
+						$template = $this->findTemplateOnPath( $libraries, $arCallFunction, $arCallType, $reqnls, $arSuperContext);
 						//var_dump($template,$libraries);
-						if (isset($template)) {
-							// haal info uit template
-							$arCallTemplate     = sprintf("%s.%s.%s",$template['type'],$arCallFunction,$template['language']);
-							$arCallTemplateName = $arCallFunction;
-							$arCallTemplateNLS  = $template['language'];
-							$arCallTemplatePath = $template['path'];
-							$arTemplateId       = $template['id'];
-							$arPrivateTemplate  = $template['private'];
-							$arCallTemplateType = $template['type'];
-							debug("getPinpTemplate: found ".$arCallFunction." on ".$arCallTemplatePath);
-							break 2;
-						} else {
+						if (!isset($template)) {
 							$libraries = array_map( function($path) use ($top, $ARConfig) {
 								$prefix = substr($ARConfig->cache[$path]->type,0,8);
 								if ($prefix === 'psection') {
@@ -1706,7 +1682,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							// remove all unneeded libraries
 							$libraries = array_filter($libraries);
 						}
-					} while(count($libraries) );
+					} while(!isset($template) && count($libraries) );
+					debug("getPinpTemplate: found ".$arCallFunction." on ".$template['path']);
 				}
 
 			}
@@ -1719,19 +1696,22 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$checkpath=$this->store->make_path($checkpath, "..");
 			
 		}
-
-		debug("getPinpTemplate END; $arTemplateId; $arCallTemplatePath ");
-		$result["arTemplateId"]       = $arTemplateId;
-		$result["arCallTemplate"]     = $arCallTemplate;
-		$result["arCallType"]         = $arCallType;
-		$result["arCallTemplateName"] = $arCallTemplateName;
-		$result["arCallTemplateNLS"]  = $arCallTemplateNLS;
-		$result["arCallTemplateType"] = $arCallTemplateType;
-		$result["arCallTemplatePath"] = $arCallTemplatePath;
-		$result["arLibrary"]          = $arLibrary;
-		$result["arLibraryPath"]      = $arLibraryPath;
-		$result["arLibrariesSeen"]    = $librariesSeen;
-		$result["arPrivateTemplate"]  = $arPrivateTemplate;
+		$result = null;
+		if(isset($template)) {
+			$result = [];
+			debug("getPinpTemplate END; ".$template['id'] .' '.$template['path']);
+			$result["arTemplateId"]       = $template['id'];
+			$result["arCallTemplate"]     = sprintf("%s.%s.%s",$template['type'],$arCallFunction,$template['language']);
+			$result["arCallType"]         = $arCallType;
+			$result["arCallTemplateName"] = $arCallFunction;
+			$result["arCallTemplateNLS"]  = $template['language'];
+			$result["arCallTemplateType"] = $template['type'];
+			$result["arCallTemplatePath"] = $template['path'];
+			$result["arLibrary"]          = $arLibrary;
+			$result["arLibraryPath"]      = $arLibraryPath;
+			$result["arLibrariesSeen"]    = $librariesSeen;
+			$result["arPrivateTemplate"]  = $template['private'];
+		}
 		return $result;
 	}
 
@@ -1864,9 +1844,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				if (isset($redirects) && is_array($redirects)) {
 					$redirpath = $this->path;
 					while (!$template['arTemplateId'] &&
-								($redir = array_pop($redirects)) &&
-									$redir["keepurl"] &&
-										(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
+							($redir = array_pop($redirects)) &&
+							$redir["keepurl"] &&
+							(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
 					) {
 						$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"]);
 						$redirpath = $redir['src'];
@@ -1900,7 +1880,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 					$arTemplates=$this->store->get_filestore("templates");
-
 					$exists = ar('template')->exists($template['arCallTemplatePath'],$template["arCallTemplate"]);
 					if ( $exists ) {
 						// check if the requested language exists, if not do not display anything,
@@ -2577,13 +2556,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$arCallArgs) {
 			$arCallArgs = end($ARCurrent->arCallStack);
 		}
-		$arSuperContext = (array)$context['arSuperContext'];
-		$arLibrary		= $context['arLibrary'];
-		$arLibraryPath	= $context['arLibraryPath'];
-		$arCallType		= $context['arCallTemplateType'];
-		$arSuperPath	= $context['arCallTemplatePath'];
+		$arSuperContext  = (array)$context['arSuperContext'];
+		$arLibrary       = $context['arLibrary'];
+		$arLibraryPath   = $context['arLibraryPath'];
+		$arCallType      = $context['arCallTemplateType'];
+		$arSuperPath     = $context['arCallTemplatePath'];
 		$arLibrariesSeen = $context['arLibrariesSeen'];
-		$arCallFunction = $arSuperFunction = $context['arCallFunction'];
+		$arCallFunction  = $arSuperFunction = $context['arCallFunction'];
 		if ($arLibrary) {
 			$arSuperFunction = str_replace($arLibrary.':', '', $arCallFunction);
 		}
@@ -2602,9 +2581,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (isset($redirects) && is_array($redirects)) {
 			$redirpath = $this->path;
 			while (!$template['arTemplateId'] &&
-						($redir = array_pop($redirects)) &&
-							$redir["keepurl"] &&
-								(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
+				($redir = array_pop($redirects)) &&
+				$redir["keepurl"] &&
+				(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
 			) {
 				debug("call_super: following shortcut redirect: $redirpath; to ".$redir["dest"]);
 				$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"], false, $arLibrariesSeen, $arSuperContext);
@@ -2636,13 +2615,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$ARCurrent->arCallStack[]=$arCallArgs;
 				$this->pushContext(
 					array(
-						"scope" => "pinp",
-						"arSuperContext" => $arSuperContext,
-						"arLibrary" => $arLibrary,
-						"arLibraryPath" => $template['arLibraryPath'],
-						"arCallFunction" => $arCallFunction,
-						"arCurrentObject" => $this,
-						"arCallType" => $template['arCallType'],
+						"scope"              => "pinp",
+						"arSuperContext"     => $arSuperContext,
+						"arLibrary"          => $arLibrary,
+						"arLibraryPath"      => $template['arLibraryPath'],
+						"arCallFunction"     => $arCallFunction,
+						"arCurrentObject"    => $this,
+						"arCallType"         => $template['arCallType'],
 						"arCallTemplateName" => $template['arCallTemplateName'],
 						"arCallTemplateNLS"  => $template['arCallTemplateNLS'],
 						"arCallTemplateType" => $template['arCallTemplateType'],
@@ -2682,7 +2661,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$this->popContext();
 			}
 		}
-
 		return $arResult;
 	}
 
