@@ -2597,8 +2597,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, $arSuperContext);
 		}
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
-			$arTemplates=$this->store->get_filestore("templates");
-			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc")) {
+			$exists = ar('template')->exists($template['arCallTemplatePath'],$template["arCallTemplate"]);
+			if ( $exists ) {
 				debug("call_super: found template ".$template["arCallTemplate"]." on object with id ".$template["arTemplateId"]);
 				$arLibrary = $template['arLibrary'];
 				debug("call_super: found template on ".$template["arTemplateId"]);
