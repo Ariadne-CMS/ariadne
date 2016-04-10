@@ -1973,7 +1973,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 									echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
 								}
 								set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-								$func = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"]);
+								$func = ar('template')->get($template['arCallTemplatePath'],$template['arCallTemplate']);
 								if(is_callable($func)){
 									$arResult = $func($this);
 								}
@@ -2642,7 +2642,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 				if ( $continue ) {
 					set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-					$func = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"]);
+					$func = ar('template')->get($template['arCallTemplatePath'],$template['arCallTemplate']);
 					if(is_callable($func)){
 						$arResult = $func($this);
 					}
