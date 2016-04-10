@@ -4,6 +4,25 @@
 		private $cache = [];
 
 		private function getStorageLayer($path) {
+			global $AR;
+			if (isset($AR->templateStore)) {
+				$layers = array_keys($AR->templateStore);
+				// fallback
+				$layer = array_reduce($layers, function($carry, $item) use ($path) {
+					if(strpos($path, $item) === 0) {
+						// item is a prefix of item
+						if(!isset($carry) || (strlen($carry) < strlen($item) )) {
+							// item is more specific
+							$carry = $item;
+						}
+					}
+					return $carry;
+				}, null);
+				if(isset($layer)) {
+					$classname = 'ar_template_' .  $AR->templateStore[$layer];
+					return new $classname($path);
+				}
+			}
 			return new ar_template_filestore($path);
 		}
 
