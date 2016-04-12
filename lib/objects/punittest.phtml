@@ -20,8 +20,13 @@ class punittest extends pdir implements PHPUnit_Framework_Test, PHPUnit_Framewor
         if ($result === NULL) {
             $result = new PHPUnit_Framework_TestResult;
         }
+        if (isset($this->data->config->pinp['punittest']['unity.setup'])) {
+            $args = $this->call('unity.setup');
+        } else {
+            $args = [];
+        }
         foreach ( $this->data->config->pinp['punittest'] as $template => $templateInfo ) {
-            if ( substr($template, 0, 5) !== 'test.') {
+            if ( strpos($template, 'unity.test.')!==0) {
                 continue;
             }
             $result->startTest($this);
@@ -29,7 +34,7 @@ class punittest extends pdir implements PHPUnit_Framework_Test, PHPUnit_Framewor
             $stopTime = null;
             $this->numAssertions = 0;
             try {
-                $this->call($template);
+                $this->call($template, $args);
             } catch (PHPUnit_Framework_AssertionFailedError $e) {
                 $stopTime = PHP_Timer::stop();
                 $result->addFailure($this, $e, $stopTime);
@@ -41,6 +46,9 @@ class punittest extends pdir implements PHPUnit_Framework_Test, PHPUnit_Framewor
                 $stopTime = PHP_Timer::stop();
             }
             $result->endTest($this, $stopTime);
+        }
+        if (isset($this->data->config->pinp['punittest']['unity.teardown'])) {
+            $this->call('unity.teardown');
         }
         return $result;
     }
