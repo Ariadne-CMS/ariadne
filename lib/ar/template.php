@@ -19,11 +19,12 @@
 					return $carry;
 				}, null);
 				if(isset($layer)) {
-					$classname = 'ar_template_' .  $AR->templateStore[$layer];
-					return new $classname($path);
+					$config =  $AR->templateStore[$layer];
+					$classname = 'ar_template_' . $config['driver'];
+					return new $classname($layer, $config);
 				}
 			}
-			return new ar_template_filestore($path);
+			return new ar_template_filestore('/',[]);
 		}
 
 		public function get($path, $name){
