@@ -112,7 +112,15 @@
 		}
 
 		public function exists($path, $name) {
-			return true;
+			$arpath = path::collapse($path);
+
+			if ( strpos($arpath, $this->path, 0) !== 0) {
+				return ar('error')->raiseError('invalide path for loading template',500);
+			}
+
+			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
+			$realpath = realpath($realpath) .'/';
+			return file_exists($realpath . $name);
 		}
 
 		public function compile($path, $name) {
