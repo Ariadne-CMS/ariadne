@@ -1525,7 +1525,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		debug('findTemplateOnPath: ['.$arType .']['.$arCallFunction.']['.$reqnls.']');
-		while ($arType!='ariadne_object' && !$arCallTemplate  ) {
+		while ($arType!='ariadne_object' ) {
+			list($arMatchType,$arMatchSubType) = explode('.',$arType,2);
 			foreach($paths as $path) {
 				debug("findTemplateOnPath context [". $path.":".$arType.":".$arCallFunction ."]");
 				$templates = ar('template')->ls($path);
@@ -1534,8 +1535,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 				$template = null;
 				if (!isset($arSuperContext[$path.":".$arType.":".$arCallFunction])) {
-					$template = array_reduce($templates[$arCallFunction] , function($carry, $item) use ($arType, $reqnls) {
-						if ($item['type'] === $arType) {
+					$template = array_reduce($templates[$arCallFunction] , function($carry, $item) use ($arMatchType,$arMatchSubType, $reqnls) {
+						if ($item['type'] === $arMatchType && ($item['subtype'] == $arMatchSubType)) {
 							if (isset($carry) && $carry['language'] !== 'any') {
 								return $carry;
 							} else if ($item['language'] === 'any' || $item['language'] === $reqnls ) {
@@ -1700,8 +1701,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if(isset($template)) {
 			$result = [];
 			debug("getPinpTemplate END; ".$template['id'] .' '.$template['path']);
+			$type = $template['type'];
+			if(isset($template['subtype'])) {
+				$type .= '.' . $template['subtype'];
+			}
 			$result["arTemplateId"]       = $template['id'];
-			$result["arCallTemplate"]     = sprintf("%s.%s.%s",$template['type'],$arCallFunction,$template['language']);
+			$result["arCallTemplate"]     = sprintf("%s.%s.%s",$type,$arCallFunction,$template['language']);
 			$result["arCallType"]         = $arCallType;
 			$result["arCallTemplateName"] = $arCallFunction;
 			$result["arCallTemplateNLS"]  = $template['language'];
