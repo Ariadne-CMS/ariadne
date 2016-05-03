@@ -1528,6 +1528,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = explode('.',$arType,2);
 			foreach($paths as $path) {
+				$local = ($path === $this->path);
 				debug("findTemplateOnPath context [". $path.":".$arType.":".$arCallFunction ."]");
 				$templates = ar('template')->ls($path);
 				if(!isset($templates[$arCallFunction])) {
@@ -1535,12 +1536,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 				$template = null;
 				if (!isset($arSuperContext[$path.":".$arType.":".$arCallFunction])) {
-					$template = array_reduce($templates[$arCallFunction] , function($carry, $item) use ($arMatchType,$arMatchSubType, $reqnls) {
-						if ($item['type'] === $arMatchType && ($item['subtype'] == $arMatchSubType)) {
-							if (isset($carry) && $carry['language'] !== 'any') {
-								return $carry;
-							} else if ($item['language'] === 'any' || $item['language'] === $reqnls ) {
-								return $item;
+					$template = array_reduce($templates[$arCallFunction] , function($carry, $item) use ($arMatchType,$arMatchSubType, $reqnls, $local) {
+						if ( ( $item['local'] == true && $local == true ) || $item['local'] == false ) {
+							if ($item['type'] === $arMatchType && ($item['subtype'] == $arMatchSubType) ) {
+								if (isset($carry) && $carry['language'] !== 'any') {
+									return $carry;
+								} else if ($item['language'] === 'any' || $item['language'] === $reqnls ) {
+									return $item;
+								}
 							}
 						}
 						return $carry;
@@ -1710,7 +1713,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$result["arCallType"]         = $arCallType;
 			$result["arCallTemplateName"] = $arCallFunction;
 			$result["arCallTemplateNLS"]  = $template['language'];
-			$result["arCallTemplateType"] = $template['type'];
+			$result["arCallTemplateType"] = $type;
 			$result["arCallTemplatePath"] = $template['path'];
 			$result["arLibrary"]          = $arLibrary;
 			$result["arLibraryPath"]      = $arLibraryPath;
