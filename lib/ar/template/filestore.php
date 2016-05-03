@@ -74,7 +74,7 @@
 							'filename' => $tempname,
 							'language' => $language,
 							'private'  => isset($config->privatetemplates[$type][$name]),
-							'local'    => isset($config->localTemplates[$type][$name][$language]),
+							'local'    => !isset($config->localTemplates[$type][$name][$language]),
 						];
 					}
 				}
