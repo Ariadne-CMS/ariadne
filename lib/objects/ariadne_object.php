@@ -1709,7 +1709,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$type .= '.' . $template['subtype'];
 			}
 			$result["arTemplateId"]       = $template['id'];
-			$result["arCallTemplate"]     = sprintf("%s.%s.%s",$type,$arCallFunction,$template['language']);
+			$result["arCallTemplate"]     = $template['filename'];
 			$result["arCallType"]         = $arCallType;
 			$result["arCallTemplateName"] = $arCallFunction;
 			$result["arCallTemplateNLS"]  = $template['language'];
