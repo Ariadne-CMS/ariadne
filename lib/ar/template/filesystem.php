@@ -41,6 +41,16 @@
 		}
 
 		public function load($path, $name) {
+			$arpath = path::collapse($path);
+
+			if ( strpos($arpath, $this->path, 0) !== 0) {
+				return ar('error')->raiseError('invalide path for loading template',500);
+			}
+
+			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
+			$realpath = realpath($realpath) .'/';
+
+			return file_get_contents($realpath . $name);
 		}
 
 		public function ls($path) {
