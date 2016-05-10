@@ -101,7 +101,7 @@
 			}
 		}
 
-		public function __get( $name ) {
+		public function &__get( $name ) {
 			return $this->query->{$name};
 		}
 
@@ -129,7 +129,7 @@
 			return isset($this->query->{$name});
 		}
 
-		public function offsetGet($name) {
+		public function &offsetGet($name) {
 			return $this->query->{$name};
 		}
 
