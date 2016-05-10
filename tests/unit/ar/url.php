@@ -116,4 +116,18 @@ class ar_urlTest extends AriadneBaseTest {
 			$this->assertEquals( $sourceUrl, ''.$url );
 		}
 	}
+
+	function testArrayAccess() {
+		$base = 'https://www.ariadne-cms.org/';
+
+		$url = ar::url($base);
+		$url->query['test']['foo'] = 'bar';
+
+		$this->assertEquals( 'bar', $url->query['test']['foo']);
+		$this->assertEquals( $base . '?test%5Bfoo%5D=bar', (string)$url );
+
+		$url->query->test['bar'] = 'foo';
+		$this->assertEquals( 'foo', $url->query->test['bar']);
+		$this->assertEquals( $base . '?test%5Bfoo%5D=bar&test%5Bbar%5D=foo', (string)$url );
+	}
 }
