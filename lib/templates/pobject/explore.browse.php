@@ -112,13 +112,15 @@
 
 		$object_list = ar::get($eventData['path'])
 		->find($query)
-		->limit($eventData['limit'], $eventData['offset'])
+		->limit($eventData['limit'])
+		->offset($eventData['offset'])
 		->order($eventData['order'])
 		->call($eventData['template'], $eventData['args']);
 
 		$object_count = ar::get($eventData['path'])
 		->find($query)
-		->limit($eventData['limit'], $eventData['offset'])
+		->limit($eventData['limit'])
+		->offset($eventData['offset'])
 		->order($eventData['order'])
 		->count();
 
@@ -127,16 +129,16 @@
 
 		$colDefs = $eventData['args']['columns'];
 		foreach($colDefs as $colKey => $colDef ) {
-		        if ( $colDef['hide'] ) {
-		                unset($colDefs[$colKey]);
-                        } else {
-        			$colDefs[$colKey] = array_merge($colDef, [ 'key' => $colKey ]);
-                        }
+			if ( $colDef['hide'] ) {
+				unset($colDefs[$colKey]);
+			} else {
+				$colDefs[$colKey] = array_merge($colDef, [ 'key' => $colKey ]);
+			}
 		}
-		$colDefs = array_values($colDefs);
+		$colDefs        = array_values($colDefs);
 		$viewtype       = $eventData['view'];
 		$items_per_page = $eventData['limit'];
-		$current_page   = floor($eventData['offset'] / $eventData['limit']);
+		$current_page   = 1 + floor($eventData['offset'] / $eventData['limit']);
 
 		if( $viewtype == "details" ) {
 			$datalist = array();
