@@ -1212,3 +1212,9 @@
 			echo $image;
 		}
 	}
+
+	function ldGetPutHandle() {
+		$stdin = fopen("php://input", "r");
+		return new ar_content_filesFile($stdin);
+	}
+
