@@ -1664,29 +1664,27 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				if (isset($ARConfig->libraries[$checkpath])) {
 					// need to check for unnamed libraries
 					$libraries = array_filter($ARConfig->libraries[$checkpath],'is_int',ARRAY_FILTER_USE_KEY);
+					foreach( $libraries as $libpath ) {
+						$next = 0;
+						do {
+							$template = $this->findTemplateOnPath( [ $libpath ], $arCallFunction, $arCallType, $reqnls, $arSuperContext);
 
-					do  {
-						$template = $this->findTemplateOnPath( $libraries, $arCallFunction, $arCallType, $reqnls, $arSuperContext);
-						//var_dump($template,$libraries);
-						if (!isset($template)) {
-							$libraries = array_map( function($path) use ($top, $ARConfig) {
-								$prefix = substr($ARConfig->cache[$path]->type,0,8);
-								if ($prefix === 'psection') {
-									return false;
-								}
+							if (isset($template)) {
+								break 2;
+							}
 
-								$parent = $this->store->make_path($path, "..");
+							$prefix = substr($ARConfig->cache[$libpath]->type,0,8);
+							if ($prefix === 'psection') {
+								$next = 1;
+							}
+							$libparent = $this->store->make_path($libpath, "..");
 
-								if ( $path == $parent || $top == $path) {
-									return false;
-								}
-								return $parent;
-							}, $libraries);
-
-							// remove all unneeded libraries
-							$libraries = array_filter($libraries);
-						}
-					} while(!isset($template) && count($libraries) );
+							if ( $libpath == $libparent || $top == $libpath) {
+								$next = 1;
+							}
+							$libpath = $libparent;
+						} while ($next == 0);
+					}
 					debug("getPinpTemplate: found ".$arCallFunction." on ".$template['path']);
 				}
 
