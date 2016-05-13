@@ -54,7 +54,11 @@
 		}
 
 		public function __toString() {
-			return (string)$this->url;
+			$query = (array)$this->url->query;
+			$url   = clone($this->url);
+			ar::untaint($query, FILTER_UNSAFE_RAW);
+			$url->query->import($query);
+			return (string)$url;
 		}
 
 		public function getvar( $name ) {
@@ -118,7 +122,11 @@
 		}
 
 		public function __toString() {
-			return (string)$this->query;
+			$q = clone $this->query;
+			$qa = (array)$q;
+			ar::untaint($qa, FILTER_UNSAFE_RAW);
+			$q->import($qa);
+			return (string)$q;
 		}
 
 		public function import( $values ) {
