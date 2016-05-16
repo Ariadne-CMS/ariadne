@@ -108,14 +108,10 @@
 			$user = false;
 			switch($req) {
 				case RADIUS_ACCESS_ACCEPT:
-					/* generate a uniq, not guessable, password */
-					srand((double)microtime()*1000000);
-					$password = md5(uniqid(rand(), true));
-
 					$userData = Array();
 					$userData["name"] = $login;
-					$userData["newpass1"] = $password;
-					$userData["newpass2"] = $password;
+					$userData["newpass1"] = '!';
+					$userData["newpass2"] = '!';
 	 				$user = $this->storeExternalUser($login, $userData);
 					break;
 
