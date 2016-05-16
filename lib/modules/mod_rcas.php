@@ -25,8 +25,8 @@
 				$data["arNewFilename"] = "$user_dir$login/";
 
 				$data["name"] = $login;
-				$data["newpass1"] = '!',
-				$data["newpass2"] = '!',
+				$data["newpass1"] = '!';
+				$data["newpass2"] = '!';
 				$data["profile"] = $user_profile;
 				$data["setowner"] = true;
 				$data["email"] = $userInfo["email"];
