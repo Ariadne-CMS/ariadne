@@ -11,6 +11,7 @@
 		"pear/versioncontrol_svn": "0.5.2",
 		"ircmaxell/password-compat": "^1.0",
 		"nikic/php-parser": "~2",
-		"firebase/php-jwt": "^3.0"
+		"firebase/php-jwt": "^3.0",
+		"paragonie/random_compat": "^2.0"
 	}
 }
