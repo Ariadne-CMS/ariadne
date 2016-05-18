@@ -35,8 +35,7 @@
 		$ARCurrent->session->put("ARUserDir", $ARUserDir, true);
 
 		/* create the session key */
-		srand((double)microtime()*1000000);
-		$session_key = md5(uniqid(rand(), true));
+		$session_key = bin2hex(random_bytes(16));
 
 		$ARCurrent->session->put("ARSessionKey", $session_key, true);
 		$ARCurrent->session->put("ARSessionTimedout", 0, 1);

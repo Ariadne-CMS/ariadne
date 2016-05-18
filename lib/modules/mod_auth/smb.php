@@ -54,14 +54,11 @@
 				if ($result != 0) {
 					debug("ldAuthSMB: could not connect or authenticate to the SMB server [".$this->config["smb_server"]."] for user '$login'", "all");
 				} else {
-					/* generate a uniq, not guessable, password */
-					srand((double)microtime()*1000000);
-					$password = md5(uniqid(rand(), true));
 
 					$userData = Array();
 					$userData["name"] = $login;
-					$userData["newpass1"] = $password;
-					$userData["newpass2"] = $password;
+					$userData["newpass1"] = '!';
+					$userData["newpass2"] = '!';
 					$user = $this->storeExternalUser($login, $userData);
 				}
 			}
