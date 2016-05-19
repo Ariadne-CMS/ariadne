@@ -335,7 +335,7 @@
 
 								$userConfig = $dataobj->loadUserConfig();
 								$authconfig = $userConfig['authentication'];
-								unset($user);
+								unset($group);
 								unset($criteria);
 								$criteria["login"]["value"]["="]=$login;
 								$criteria["object"]["type"]["="]="pgroup";

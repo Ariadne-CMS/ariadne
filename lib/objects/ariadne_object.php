@@ -2287,7 +2287,8 @@ debug("loadLibrary: loading cache for $this->path");
 		if ($file=array_pop($ARCurrent->cache)) {
 			$image=ob_get_contents();
 			if ($image !== false) {
-				$result = $image;
+				$result = true;
+				$origimage = $image;
 
 				$contentType = $ARCurrent->ldHeaders['content-type'];
 				if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
@@ -2313,7 +2314,7 @@ debug("loadLibrary: loading cache for $this->path");
 					}
 				}
 				ob_end_clean();
-				echo $image;
+				echo $origimage;
 			} else {
 				debug("skipped saving cache - ob_get_contents returned false so output buffering was not active", "all");
 				$result = false;
