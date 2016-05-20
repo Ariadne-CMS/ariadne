@@ -752,6 +752,8 @@
 						} else if ($session_id && $AR->hideSessionIDfromURL ) {
 							$data = str_replace($tag, '', $data);
 						}
+						$data_len = strlen($data);
+						header("Content-Length: ".$data_len);
 						echo $data;
 					}
 
@@ -764,8 +766,12 @@
 					} else {
 						$data = str_replace($tag, '', $data);
 					}
+					$data_len = strlen($data);
+					header("Content-Length: ".$data_len);
 					echo $data;
 				} else {
+					$data_len = filesize($cachedimage);
+					header("Content-Length: ".$data_len);
 					readfile($cachedimage);
 				}
 			}
