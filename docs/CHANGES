@@ -1,4 +1,22 @@
 ===================
+Changes Ariadne 9.6
+===================
+
+Changes
+- IMPORTANT: this release no longer supports old passwords stored as MD5 hashes. If you can no longer login, reset the password using an administrator account. This should only be an issue if you upgrade from a very old Ariadne release (<9).
+- Added ar('loader')->stdin()/stdout()/stderr() functions that return the php IO streams
+- The Ariadne loader now also handles PUT requests, use ar('loader')->stdin() to get the php://input stream
+- Improved security code by using the new random_bytes()/random_int() functions, with a secure fallback for older PHP versions.
+
+Bug fixes
+- Fixed bug in mod_edit that broke grouping of related fields
+- Fixed a number of warnings by better use of isset()
+- Fixed the browse dialog: selection in the right pane and pagination now work again.
+- Fixed incorrect content-length header in cache images that use session placeholders.
+- Fixed a bug in the importer that in very specific circumstances could misapply grants to the wrong group.
+- Fixed that ar_url can handle ar_tainted options and untaint them when applied to a url
+
+===================
 Changes Ariadne 9.5
 ===================
 
