@@ -41,20 +41,26 @@
 		$pass1=$this->getdata("newpass1","none");
 		$pass2=$this->getdata("newpass2","none");
 		if ($pass1 || $pass2 ) {
-
-			$this->data->password = ($pass1 && ($pass1 == $pass2)) ? $this->hashPassword( $pass1 ) : null;
-			if (!$this->data->password) {
+			if( $pass1 === $pass2 ) {
+				if ($pass1 === '!' ) {
+					// special case, set password to something hash_password can not match
+					$this->data->password = '!';
+				} else {
+					$this->data->password = $this->hashPassword( $pass1 );
+				}
+			} else {
 				$this->error = ar::error( $ARnls["err:validpassword"], 1203);
 				return false;
-			} else {
-				// Password is set; Set expiry time here -
-				// if the checkbox for 'never expires' is set,
-				// it will be unset before the final save.  if
-				if ($authConfig["expiry"]) {
-					$this->data->password_expiry = time() + $authConfig['expiry'];
-				}
+			}
+
+			// Password is set; Set expiry time here -
+			// if the checkbox for 'never expires' is set,
+			// it will be unset before the final save.  if
+			if ($authConfig["expiry"]) {
+				$this->data->password_expiry = time() + $authConfig['expiry'];
 			}
 		}
+
 
 		$login = $this->getdata("login", "none");
 		if (!$login) {
