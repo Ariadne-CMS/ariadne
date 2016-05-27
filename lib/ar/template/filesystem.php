@@ -22,9 +22,10 @@
 			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
 			$realpath = realpath($realpath) .'/';
 
-			// FIXME 'netjes' een path opzoeken hier voor
 			$cachepath = sha1($path . $name);
-			$cacheroot = '/home/muller/devel/site/files/temp/';
+			$tempOb    = ar::context()->getObject();
+			$cacheroot = $tempOb->store->get_config('files').'temp/';
+
 			if ( 
 				! file_exists( $cacheroot . $cachepath )  ||
 				( filemtime($cacheroot . $cachepath ) < filemtime ( $realpath  . $name ) )
