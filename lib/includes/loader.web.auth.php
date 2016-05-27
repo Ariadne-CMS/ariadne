@@ -62,6 +62,19 @@
 			}
 		}
 
+		// Keep a maximum of 15 session cookies for one client
+		if (sizeof($cookies) > 15) {
+			uasort($cookies, function($a, $b) {
+				return $a['timetamp'] > $b['timestamp'];
+			});
+
+			while(sizeof($cookies) > 15) {
+				$sessionid = array_pop(array_keys($cookies));
+				setcookie("ARSessionCookie[".$sessionid."]", 1, 1);
+				unset($cookies[$sessionid]);
+			}
+		}
+
 		if( $ARCurrent->session->id !== 0) {
 			$data = array();
 
