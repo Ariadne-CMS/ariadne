@@ -1658,7 +1658,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				if (isset($ARConfig->libraries[$checkpath])) {
 					// need to check for unnamed libraries
 					$libraries = array_filter($ARConfig->libraries[$checkpath],'is_int',ARRAY_FILTER_USE_KEY);
-					foreach( $libraries as $libpath ) {
+					foreach( $libraries as $key => $libpath ) {
+						$arLibraryPath = $libpath;
+						$arLibrary     = $key;
+
 						$libprevpath = null;
 						while($libpath != $libprevpath ) {
 							$libprevpath = $libpath;
