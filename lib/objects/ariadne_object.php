@@ -1583,20 +1583,23 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arSuperContext = array();
 		}
 
-		$typepos = strpos($arCallFunction,"::");
-		if ($typepos !== false ) {
-			// template of a specific class defined via call("class::template");
-			$arCallType     = substr($arCallFunction, 0, $typepos);
-			$arCallFunction = substr($arCallFunction, $typepos+1);
+		$matches = [];
+		preg_match('/^
+		    ( (?<libname> [^:]+) :  )?
+		    ( (?<calltype>[^:]+) :: )?
+		      (?<template>[^:]+)
+		    $/x', $arCallFunction, $matches);
+
+		$arCallFunction = $matches['template'];
+
+		if($matches['calltype'] != '') {
+			$arCallType = $matches['calltype'];
 		} else {
-			$arCallType=$this->type;
+			$arCallType = $this->type;
 		}
 
-		$libpos = strpos($arCallFunction,":");
-		if ( $libpos !== false ) {
-			// template of a specific library defined via call("library:template");
-			$arLibrary      = substr($arCallFunction, 0, $libpos);
-			$arCallFunction = substr($arCallFunction, $libpos+1);
+		if ( $matches['libname'] != '' ) {
+			$arLibrary      = $matches['libname'];
 
 			if ($arLibrary == 'current') {
 				// load the current arLibrary
