@@ -181,13 +181,14 @@
 				array_push($todo, array(
 							"description" => "Update libraries for muze and vedor",
 							"operation" => "all/upgrade.muze.libs.php",
-							"newversion" => "9.6"
+							"newversion" => "9.7"
 						));
 		case '9.5':
+		case '9.6':
 				array_push($todo, array(
-							"description" => "Bumping revision to 9.6",
+							"description" => "Bumping revision to 9.7",
 							"operation" => "all/dummy.php",
-							"newversion" => "9.6"
+							"newversion" => "9.7"
 						));
 	
 	}

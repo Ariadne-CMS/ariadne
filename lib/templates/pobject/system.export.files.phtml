@@ -27,6 +27,8 @@
 						if( $ARCurrent->AXHeader["version"] < 4 ) {
 							// export contains non nls'd files upgrade first"
 							$this->call('system.upgrade.filestore.8.4.php');
+							// reread file list
+							$orig_files=$orig_filestore->ls($this->id);
 						}
 					}
 

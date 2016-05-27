@@ -1,4 +1,16 @@
 ===================
+Changes Ariadne 9.7
+===================
+
+Bug fixes
+- Fixed bug when locking passwords, now correctly stores '!' as the hashed
+  password. This means that user cannot login anymore.
+- Fixed bug when importing files from older Ariadne versions, which had
+  duplicate file storage. In certain cases files would be de-duplicated on
+  import, but the reference would be to removed file instead of the kept file.
+  This means that import would create a pfile object without a real file.
+
+===================
 Changes Ariadne 9.6
 ===================
 
