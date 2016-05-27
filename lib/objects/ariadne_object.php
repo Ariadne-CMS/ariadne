@@ -1521,11 +1521,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
 
-		debug('findTemplateOnPath: ['.$arType .']['.$arCallFunction.']['.$reqnls.']');
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = explode('.',$arType,2);
 			$local = ($path === $this->path);
-			debug("findTemplateOnPath context [". $path.":".$arType.":".$arCallFunction ."]");
 			$templates = ar('template')->ls($path);
 			if(isset($templates[$arCallFunction])) {
 				$template = null;
@@ -1544,7 +1542,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}, null);
 				}
 				if ( isset($template) && !isset($arSuperContext[$path.":".$arType.":".$arCallFunction])) {
-					debug("findTemplateOnPath returning for [". $path.":".$arType.":".$arCallFunction ."]");
 					return $template;
 				}
 			}
@@ -1629,7 +1626,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				debug("getPinpTemplate: Failed to find library $arLibrary");
 			}
 			$path = $this->make_path($path);
-			debug("final lib path is ".$path);
 		}
 
 		$checkpath           = $path;
@@ -1638,21 +1634,20 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$reqnls              = $this->reqnls;
 		$template            = null;
 		while (!$arCallClassTemplate && !isset($template) && $checkpath!=$lastcheckedpath) {
-			debug("getPinpTemplate: checking for ".$arCallFunction." on ".$checkpath);
 			$lastcheckedpath = $checkpath;
 
 			$template = $this->findTemplateOnPath( $checkpath, $arCallFunction, $arCallType, $reqnls, $arSuperContext);
 
 			if (isset($template)) {
 				// haal info uit template
-				debug("getPinpTemplate: found ".$arCallFunction." on ".$checkpath);
+				// debug("getPinpTemplate: found ".$arCallFunction." on ".$checkpath);
 			} else if ($inLibrary) {
 
 				// faster matching on psection, prefix doesn't have to be a valid type
 				$prefix = substr($ARConfig->cache[$checkpath]->type,0,8);
 
 				if ($prefix === 'psection') {
-					 debug("BREAKING; $arTemplateId");
+					 // debug("BREAKING; $arTemplateId");
 					// break search operation when we have found a
 					// psection object
 					break;
@@ -1698,7 +1693,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$result = null;
 		if(isset($template)) {
 			$result = [];
-			debug("getPinpTemplate END; ".$template['id'] .' '.$template['path']);
+			//debug("getPinpTemplate END; ".$template['id'] .' '.$template['path']);
 			$type = $template['type'];
 			if(isset($template['subtype'])) {
 				$type .= '.' . $template['subtype'];
