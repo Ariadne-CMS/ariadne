@@ -63,9 +63,23 @@
 			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
 			$realpath = realpath($realpath) .'/';
 			$config = [];
-			if (file_exists($realpath . 'library.json')) {
-				$config = json_decode(file_get_contents($realpath . 'library.json'),true);
+			$traverse = 'src/';
+			if (!file_exists($realpath . 'library.json')) {
+				$realparent = path::parent($realpath);
+				$node = basename($realpath);
+				if ($node === 'tests' && file_exists($realparent . 'library.json') ) {
+					// special case
+					// system/lib/libname/tests/ is a sibling of src instead of a child library
+					$traverse = 'tests/';
+					$arpath   = path::parent($path);
+					$realpath = $realparent;
+				} else {
+					return [];
+				}
 			}
+
+			$config = json_decode(file_get_contents($realpath . 'library.json'),true);
+
 			if(!isset($config['exports']) ) {
 				$config['exports'] = [];
 			}
@@ -120,7 +134,7 @@
 				}
 
 			};
-			$traverseDir($realpath . 'src/');
+			$traverseDir($realpath . $traverse );
 			return $result;
 		}
 
