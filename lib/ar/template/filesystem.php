@@ -62,7 +62,10 @@
 			}
 			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
 			$realpath = realpath($realpath) .'/';
-			$config = json_decode(file_get_contents($realpath . 'library.json'),true);
+			$config = [];
+			if (file_exists($realpath . 'library.json')) {
+				$config = json_decode(file_get_contents($realpath . 'library.json'),true);
+			}
 			if(!isset($config['exports']) ) {
 				$config['exports'] = [];
 			}
@@ -74,42 +77,44 @@
 
 			$traverseDir = function ($path, $type = 'pobject', $nls = 'any') use ($arpath, &$result, $config, &$traverseDir, $realpath) {
 				$path = path::collapse($path);
-				$index = scandir($path, SCANDIR_SORT_NONE);
-				if($index !== false) {
-					list($maintype, $subtype) = explode('.', $type,2);
-					foreach($index as $filename) {
-						if($filename[0] === "." ) {
-							continue;
-						}
-						$filepath = $path . $filename;
-						if ( is_dir($filepath) ) {
-							if (strlen($filename) == 2) {
-								$traverseDir(path::collapse($filename, $path), $type, $filename);
-							} else {
-								$traverseDir(path::collapse($filename, $path), $filename);
+				if (is_dir($path) ) {
+					$index = scandir($path, SCANDIR_SORT_NONE);
+					if($index !== false) {
+						list($maintype, $subtype) = explode('.', $type,2);
+						foreach($index as $filename) {
+							if($filename[0] === "." ) {
+								continue;
 							}
-						} else if ( is_file($filepath) ) {
-							$tempname = sprintf("%s.%s.%s",$type,$filename,$nls);
-							$confname = sprintf("%s::%s",$type,$filename);
-							$private = true;
-							if (isset( $config['exports'] ) ) {
-								$private = ! in_array($confname, $config['exports']);
+							$filepath = $path . $filename;
+							if ( is_dir($filepath) ) {
+								if (strlen($filename) == 2) {
+									$traverseDir(path::collapse($filename, $path), $type, $filename);
+								} else {
+									$traverseDir(path::collapse($filename, $path), $filename);
+								}
+							} else if ( is_file($filepath) ) {
+								$tempname = sprintf("%s.%s.%s",$type,$filename,$nls);
+								$confname = sprintf("%s::%s",$type,$filename);
+								$private = true;
+								if (isset( $config['exports'] ) ) {
+									$private = ! in_array($confname, $config['exports']);
+								}
+								$local = false;
+								if (isset( $config['local'] ) ) {
+									$local = in_array($confname, $config['local']);
+								}
+								$result[$filename][] = [
+									'id'       => PHP_INT_MAX,
+									'path'     => $arpath,
+									'type'     => $maintype,
+									'subtype'  => $subtype,
+									'name'     => $tempname,
+									'filename' => substr($filepath,strlen($realpath)),
+									'language' => $nls,
+									'private'  => $private,
+									'local'    => $local,
+								];
 							}
-							$local = false;
-							if (isset( $config['local'] ) ) {
-								$local = in_array($confname, $config['local']);
-							}
-							$result[$filename][] = [
-								'id'       => PHP_INT_MAX,
-								'path'     => $arpath,
-								'type'     => $maintype,
-								'subtype'  => $subtype,
-								'name'     => $tempname,
-								'filename' => substr($filepath,strlen($realpath)),
-								'language' => $nls,
-								'private'  => $private,
-								'local'    => $local,
-							];
 						}
 					}
 				}
