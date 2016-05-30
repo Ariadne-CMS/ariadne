@@ -62,7 +62,6 @@
 			}
 			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
 			$realpath = realpath($realpath) .'/';
-			$config = [];
 			$traverse = 'src/';
 			if (!file_exists($realpath . 'library.json')) {
 				$realparent = path::parent($realpath);
