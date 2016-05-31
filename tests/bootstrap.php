@@ -73,7 +73,11 @@
 			)
 		);
 		$base = current($res);
-
+		// set grants for testrunner user
+		ar::get($res)->call('system.save.grants.phtml', array(
+			"path"      => '/system/users/testrunner/',
+			"newgrants" => 'read add edit >delete config layout'
+		));
 		define('TESTBASE',$base);
 
 		importContent($base,getcwd().'/www/install/packages/demo.ax');
@@ -81,7 +85,6 @@
 		$AR        = $origAR;
 		$ARCurrent = $origARCurrent;
 		$ARConfig  = $origARConfig;
-
 	}
 
 	abstract class AriadneBaseTest extends PHPUnit_Framework_TestCase
@@ -93,9 +96,9 @@
 			$store = new $inst_store($root,$store_config);
 
 			/* now load a user (admin in this case)*/
-			$login = "admin";
-			$query = "object.implements = 'puser' and login.value='$login'";
-			$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
+			$AR->user = new object();
+			$AR->user->data = new object();
+			$AR->user->data->login = "admin";
 		}
 
 		private static function loadTestData() {
@@ -114,4 +117,8 @@
 
 	}
 
+
 	initTestData();
+
+	// become testrunner
+	$AR->user = current(ar::get('/system/users/testrunner/')->call('system.get.phtml'));
