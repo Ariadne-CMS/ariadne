@@ -110,7 +110,14 @@
 								$confname = sprintf("%s::%s",$type,$filename);
 								$private = true;
 								if (isset( $config['exports'] ) ) {
-									$private = ! in_array($confname, $config['exports']);
+									if ($config['exports'][0] === '*') {
+										$private = false;
+									} else {
+										$private = ! (
+											in_array($filename, $config['exports']) ||
+											in_array($confname, $config['exports'])
+										);
+									}
 								}
 								$local = false;
 								if (isset( $config['local'] ) ) {
