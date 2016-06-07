@@ -66,15 +66,18 @@
 		}
 
 		public static function stdin() {
-			return new ar_content_filesFile( fopen('php://stdin','r') );
+	                $stdin = fopen("php://input", "r");
+	                return new ar_content_filesFile($stdin);
 		}
 
 		public static function stdout() {
-			return new ar_content_filesFile( fopen('php://stdin','w') );			
+			$stdout = fopen('php://stdin','w');
+			return new ar_content_filesFile($stdout);
 		}
 
 		public static function stderr() {
-			return new ar_content_filesFile( fopen('php://stderr','w') );			
+			$stderr = fopen('php://stderr','w') );
+			return new ar_content_filesFile($stderr);
 		}
 
 		public static function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = null ) {
