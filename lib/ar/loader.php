@@ -66,7 +66,7 @@
 		}
 
 		public static function inputStream() {
-	                return new ar_content_filesFile(fopen("php://input", "r"));
+			return new ar_content_filesFile(fopen("php://input", "r"));
 		}
 
 		public static function outputStream() {
