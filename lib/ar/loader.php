@@ -65,19 +65,12 @@
 			return $loader->getvar( $name, $method );
 		}
 
-		public static function stdin() {
-	                $stdin = fopen("php://input", "r");
-	                return new ar_content_filesFile($stdin);
+		public static function inputStream() {
+	                return new ar_content_filesFile(fopen("php://input", "r"));
 		}
 
-		public static function stdout() {
-			$stdout = fopen('php://stdin','w');
-			return new ar_content_filesFile($stdout);
-		}
-
-		public static function stderr() {
-			$stderr = fopen('php://stderr','w');
-			return new ar_content_filesFile($stderr);
+		public static function outputStream() {
+			return new ar_content_filesFile(fopen('php://output','w'));
 		}
 
 		public static function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = null ) {
