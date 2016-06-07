@@ -76,7 +76,7 @@
 		}
 
 		public static function stderr() {
-			$stderr = fopen('php://stderr','w') );
+			$stderr = fopen('php://stderr','w');
 			return new ar_content_filesFile($stderr);
 		}
 
