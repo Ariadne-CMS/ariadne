@@ -60,6 +60,8 @@
 
 		public function crypt( $value ) {
 			if ($this->api === 0 ) {
+				trigger_error("Encrypting data with ar/crypt is deprecated.", E_USER_DEPRECATED);
+
 				$iv = str_pad('',mcrypt_get_iv_size ( $this->encoding, $this->mode),"\0");
 				return base64_encode(mcrypt_encrypt($this->encoding, $this->key, $value, $this->mode,$iv));
 
