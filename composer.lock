@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "332c6c7936ff1ad5f504d932dc598862",
-    "content-hash": "49e4f840068f8ec41810485929037af9",
+    "hash": "aa421c70179b1a5389dc6513e046f272",
+    "content-hash": "8d55dcdcff3cac22a2650fd9e26d1c4b",
     "packages": [
         {
             "name": "arc/arc",
@@ -457,6 +457,65 @@
                 "components"
             ],
             "time": "2016-01-31 18:23:42"
+        },
+        {
+            "name": "defuse/php-encryption",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/defuse/php-encryption.git",
+                "reference": "c430ea262848fefe891b735575fcbb4ca2ddd3a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/defuse/php-encryption/zipball/c430ea262848fefe891b735575fcbb4ca2ddd3a8",
+                "reference": "c430ea262848fefe891b735575fcbb4ca2ddd3a8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "paragonie/random_compat": "~2.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "nikic/php-parser": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Hornby",
+                    "email": "taylor@defuse.ca",
+                    "homepage": "https://defuse.ca/"
+                },
+                {
+                    "name": "Scott Arciszewski",
+                    "email": "info@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "Secure PHP Encryption Library",
+            "keywords": [
+                "aes",
+                "authenticated encryption",
+                "cipher",
+                "crypto",
+                "cryptography",
+                "encrypt",
+                "encryption",
+                "openssl",
+                "security",
+                "symmetric key cryptography"
+            ],
+            "time": "2016-05-20 22:06:40"
         },
         {
             "name": "doctrine/instantiator",

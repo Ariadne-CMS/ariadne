@@ -3,3 +3,5 @@ www/ariadne.inc
 bin/createsymlinks.ini
 *~
 DEADJOE
+vendor/defuse/php-encryption/test/
+
