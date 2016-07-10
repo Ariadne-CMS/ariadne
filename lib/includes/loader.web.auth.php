@@ -236,6 +236,7 @@
 		global $AR;
 		$data = json_decode($cookie,true);
 		if(is_null($data)){
+			$cookie = strtr($cookie,'-_.','+/=');
 			if(isset($AR->sessionCryptoKey) && extension_loaded('openssl') ) {
 				$decoded = ar('security/crypt')
 					->key($AR->sessionCryptoKey)
@@ -256,7 +257,7 @@
 				->key($AR->sessionCryptoKey)
 				->encrypt($data);
 			if($encoded !== false && !ar('error')->isError($encoded)) {
-				$data = $encoded;
+				$data = strtr($encoded,'+/=','-_.');
 			}
 		}
 		return $data;
