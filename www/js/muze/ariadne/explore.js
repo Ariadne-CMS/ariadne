@@ -56,6 +56,7 @@ muze.namespace("muze.ariadne.explore", function() {
 			'dialog_grants'                   : windowprops_common + ',height=570,width=950',
 			'dialog_owner'                    : windowprops_common + windowsize_small, //',height=260,width=400',
 			'dialog_grantkey'                 : windowprops_common + ',height=330,width=400',
+			'dialog_cryptokey'                 : windowprops_common + ',height=330,width=400',
 			'dialog_preferences'              : windowprops_common + ',height=400,width=500',
 			'dialog_search'                   : windowprops_common + ',height=500,width=700',
 			'help_about'                      : windowprops_common + ',height=375,width=600',

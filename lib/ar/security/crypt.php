@@ -119,4 +119,10 @@ class ar_security_crypt extends arBase {
 		return $decrypted;
 	}
 
+	public function generateKey(){
+		$key = DC\Key::createNewRandomKey();
+		$bytes = $key->getRawBytes();
+		return base64_encode($bytes);
+	}
+
 }

@@ -81,6 +81,7 @@
 	$ARnls["ariadne:folders"]                       =    "Folders";
 	$ARnls["ariadne:generate"]                      =    "Generate";
 	$ARnls["ariadne:grantkey"]                      =    "Grant key";
+	$ARnls["ariadne:cryptokey"]                     =    "Crypto key";
 	$ARnls["ariadne:grants"]                        =    "Set grants for ";
 	$ARnls["ariadne:grants:grants_explained"]       =    "Grants explained for ";
 	$ARnls["ariadne:grants:objects_with_grants"]    =    "Objects with grants configured";

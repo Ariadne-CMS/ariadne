@@ -81,6 +81,7 @@
 	$ARnls["ariadne:folders"]                       =    "Mappen";
 	$ARnls["ariadne:generate"]                      =    "Genereer";
 	$ARnls["ariadne:grantkey"]                      =    "Rechtensleutel";
+	$ARnls["ariadne:cryptokey"]                     =    "Cryptografische Sleutel";
 	$ARnls["ariadne:grants"]                        =    "Zet rechten voor ";
 	$ARnls["ariadne:grants:grants_explained"]       =    "Rechten verklaard voor ";
 	$ARnls["ariadne:grants:objects_with_grants"]    =    "Objecten met rechten geconfigureerd";

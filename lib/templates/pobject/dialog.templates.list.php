@@ -131,6 +131,11 @@
 	}
 ?>
 					<li class="yuimenubaritem">
+						 <a class="yuimenubaritemlabel" href="dialog.cryptokey.php" onclick="muze.ariadne.explore.arshow('dialog.cryptokey', this.href); return false;">
+							<?php echo $ARnls['ariadne:cryptokey']; ?>
+						 </a>
+					</li>
+					<li class="yuimenubaritem">
 						 <a class="yuimenubaritemlabel" href="http://www.ariadne-cms.org/docs/" onclick="muze.ariadne.explore.arshow('_new', this.href); return false;">
 							<?php echo $ARnls['help']; ?>
 						 </a>
