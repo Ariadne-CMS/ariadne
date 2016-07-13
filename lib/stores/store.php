@@ -386,11 +386,20 @@ abstract class store {
 					if (strpos($path, $cryptoPath) === 0) {
 						$value->ARcrypted = true;
 						switch ($cryptoConfig['method']) {
+							case 'ar_security_crypt':
+								$key =$cryptoConfig['key'];
+								$cryptedValue = ar('security/crypt')
+									->key($key)
+									->encrypt(serialize($value));
+								if ( !ar('error')->isError($cryptedValue) && $cryptedValue !== false ) {
+									return $cryptoConfig['token'] . ":" . $cryptedValue;
+								}
+							break;
 							case 'ar_crypt':
 								$key = base64_decode($cryptoConfig['key']);
 								$crypto = new ar_crypt($key,$cryptoConfig['crypto'],1);
 								$cryptedValue = $crypto->crypt(serialize($value));
-								if($cryptedValue !== false ) {
+								if ($cryptedValue !== false ) {
 									return $cryptoConfig['token'] . ":" . $cryptedValue;
 								}
 							break;
@@ -417,6 +426,15 @@ abstract class store {
 				if ($token === $cryptoToken ) {
 					$value = $datavalue;
 					switch ($cryptoConfig['method']) {
+						case 'ar_security_crypt':
+							$key =$cryptoConfig['key'];
+							$decryptedValue = ar('security/crypt')
+								->key($key)
+								->decrypt($value);
+							if ( ar('error')->isError($decryptedValue) || $decryptedValue == false ) {
+								$decryptedValue = null;
+							}
+						break;
 						case 'ar_crypt':
 							$key = base64_decode($cryptoConfig['key']);
 							$crypto = new ar_crypt($key,$cryptoConfig['crypto'],1);
