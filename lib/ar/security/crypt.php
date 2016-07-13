@@ -8,7 +8,7 @@
  *   and not by using the 'insecure' method in the defuse library
  */
 
-ar_pinp::allow( 'ar_security_crypt');
+ar_pinp::allow('ar_security_crypt');
 
 use Defuse\Crypto as DC;
 
@@ -18,10 +18,10 @@ class ar_security_crypt extends arBase {
 	const USEKEY  = 1;
 	const USEPASS = 2;
 
-	private function keyRawToInternal ( $rawkey ) {
+	private function keyRawToInternal($rawkey) {
 		static $key;
 		static $func;
-		if ( is_null($key) ) {
+		if (is_null($key)) {
 			$key = DC\Key::createNewRandomKey();
 			$func = function($rawkey) {
 				return new self($rawkey);
@@ -48,16 +48,16 @@ class ar_security_crypt extends arBase {
 		$ret = new self();
 		// hide key from most error related stackdumps
 		$ret->secret = function() use ($key) { return $key; };
-		$ret->method=self::USEKEY;
+		$ret->method = self::USEKEY;
 		return $ret;
 	}
 
 	public function passphrase($pass)
 	{
 		$ret = new self();
-		$ret->method   = self::USEPASS;
 		// hide pass from most error related stackdumps
 		$ret->secret = function() use ($pass) { return $pass; };
+		$ret->method = self::USEPASS;
 		return $ret;
 	}
 
@@ -75,7 +75,7 @@ class ar_security_crypt extends arBase {
 			return ar('error')->raiseError('use key or passphrase to init crypt engine',1000);
 		}
 
-		if(!is_scalar($data)) {
+		if (!is_scalar($data)) {
 			return ar('error')->raiseError('Data should be a scalar datatype',1000);
 		}
 
@@ -100,7 +100,7 @@ class ar_security_crypt extends arBase {
 		}
 		$data = base64_decode($data,true);
 
-		if($data === false ) {
+		if ($data === false ) {
 			return ar('error')->raiseError('Invalid data, not properly base64 encoded',1000);
 		}
 
@@ -113,14 +113,14 @@ class ar_security_crypt extends arBase {
 			}
 		} catch (DC\Exception\EnvironmentIsBrokenException $ex) {
 			return ar('error')->raiseError('enviroment is broken', 1000);
-		} catch ( DC\Exception\WrongKeyOrModifiedCiphertextException $ex) {
+		} catch (DC\Exception\WrongKeyOrModifiedCiphertextException $ex) {
 			return ar('error')->raiseError('wrong key of data has been tampered with', 1000);
 		}
 		return $decrypted;
 	}
 
 	public function generateKey(){
-		$key = DC\Key::createNewRandomKey();
+		$key   = DC\Key::createNewRandomKey();
 		$bytes = $key->getRawBytes();
 		return base64_encode($bytes);
 	}
