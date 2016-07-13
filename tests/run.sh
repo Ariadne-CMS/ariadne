@@ -73,6 +73,10 @@ if [ $INSTALL_ERRORS -gt 0 ]; then
 	exit 1;
 fi
 
+if [ "${ENCRYPT:-no}" == "yes" ] ; then
+	echo 'adding encryption to config';
+	echo '$AR->DB->crypto = array("test1" => array( "method" => "ar_security_crypt", "token" => "test1", "key" => $AR->sessionCryptoKey, "paths" => array("/projects/")));' | tee -a  ${BUILDROOT}/lib/config/ariadne.phtml
+fi
 
 # Check the demo site
 wget -q -O ${TMPDIR}/demosite.txt ${URL}loader.php/projects/demo/demo/
