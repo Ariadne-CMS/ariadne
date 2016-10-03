@@ -131,8 +131,8 @@
 						$YYBUFFER[++$YYCURSOR];
 						return AR_HTMLPARSER_T_TEXT;
 					break;
-					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && (substr_compare($YYBUFFER, '<!--', $YYCURSOR) == 0 ):
-							$value		= "<!--"; $YYCURSOR+=3;
+					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && (substr_compare($YYBUFFER, '<!--', $YYCURSOR, 4) == 0 ):
+							$value		= "<!--"; $YYCURSOR+=4;
 							$YYSTATE	= AR_HTMLPARSER_STATE_COMMENT;
 							return AR_HTMLPARSER_T_TEXT;
 					break;
