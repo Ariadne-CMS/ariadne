@@ -265,7 +265,7 @@ class htmlcleaner
 				$_buffer .= $chr;
 				if ($chr == '"' || $chr == "'") {
 
-					$regexp = '|'.$chr.'(.*?)'.$chr.'|';
+					$regexp = '|'.$chr.'(.*?)'.$chr.'|sm';
 					preg_match($regexp,$str,$matches,0,$i);
 
 					$_buffer .= $matches[1] . $chr;
