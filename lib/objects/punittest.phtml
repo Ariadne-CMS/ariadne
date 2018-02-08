@@ -1,0 +1,94 @@
+<?php
+    /******************************************************************
+     punittest.phtml                                       Muze Ariadne
+     ------------------------------------------------------------------
+     Copyright 2016 Muze
+    ******************************************************************/
+
+require_once(AriadneBasePath."/objects/pdir.phtml");
+
+class punittest extends pdir implements PHPUnit_Framework_Test, PHPUnit_Framework_SelfDescribing {
+
+    public $numAssertions = 0;
+
+    public function count() {
+        return 1;
+    }
+
+    public function run(PHPUnit_Framework_TestResult $result = NULL) {
+        global $AR;
+        if ($result === NULL) {
+            $result = new PHPUnit_Framework_TestResult;
+        }
+        if (isset($this->data->config->pinp['punittest']['unity.setup'])) {
+            $args = $this->call('unity.setup');
+        } else {
+            $args = [];
+        }
+        foreach ( $this->data->config->pinp['punittest'] as $template => $templateInfo ) {
+            if ( strpos($template, 'unity.test.')!==0) {
+                continue;
+            }
+            $result->startTest($this);
+            PHP_Timer::start();
+            $stopTime = null;
+            $this->numAssertions = 0;
+            try {
+                $this->call($template, $args);
+            } catch (PHPUnit_Framework_AssertionFailedError $e) {
+                $stopTime = PHP_Timer::stop();
+                $result->addFailure($this, $e, $stopTime);
+            } catch(\Exception $e) {
+                $stopTime = PHP_Timer::stop();
+                $result->addError($this, $e, $stopTime);
+            }
+            if ( $stopTime===null ) {
+                $stopTime = PHP_Timer::stop();
+            }
+            $result->endTest($this, $stopTime);
+        }
+        if (isset($this->data->config->pinp['punittest']['unity.teardown'])) {
+            $this->call('unity.teardown');
+        }
+        return $result;
+    }
+
+    public function __call($name, $args)
+    {
+        if ( substr($name, 0, 7)==='_assert' ) {
+            if (!method_exists('PHPUnit_Framework_Assert',substr($name,1))) {
+                throw new \Exception('Method '.substr($name,1).' not found',404);
+            }
+            $this->numAssertions++;
+            return call_user_func_array(
+                'PHPUnit_Framework_Assert::'.substr($name,1),
+                $args
+            );
+        } else {
+            return parent::__call($name, $args);
+        }
+    }
+
+    public function _run() {
+        $suite = new PHPUnit_Framework_TestSuite();
+
+        $suite->addTest($this); //punittest
+
+        $listener = new ar_core_phpunitResultPrinter();
+        $result   = new PHPUnit_Framework_TestResult();
+        $result->addListener($listener);
+        $result   = $suite->run($result); // => PHPUnit_Framework_TestResult
+
+        $listener->printResult($result);
+        return $result;
+    }
+
+    public function getNumAssertions() {
+        return $this->numAssertions;
+    }
+
+    public function toString()
+    {
+        return $this->path;
+    }
+}

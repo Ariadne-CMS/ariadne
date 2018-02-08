@@ -6,7 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phpDocumentor' => array($vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'VersionControl_SVN' => array($vendorDir . '/pear/versioncontrol_svn'),
+    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'PEAR' => array($vendorDir . '/pear/pear_exception'),
     'JSMin\\' => array($vendorDir . '/mrclay/jsmin-php/src'),

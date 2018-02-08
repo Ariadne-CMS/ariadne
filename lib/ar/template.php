@@ -2,6 +2,7 @@
 
 	class ar_template extends arBase {
 		private $cache = [];
+		private $compiledCache = [];
 
 		private function getStorageLayer($path) {
 			global $AR;
@@ -28,7 +29,10 @@
 		}
 
 		public function get($path, $name){
-			return self::getStorageLayer($path)->get($path, $name);
+			if(!isset($this->compiledCache[$path][$name])) {
+				$this->compiledCache[$path][$name] = self::getStorageLayer($path)->get($path, $name);
+			}
+			return $this->compiledCache[$path][$name];
 		}
 
 		public function save($path, $name, $template, $local=null, $private=null) {

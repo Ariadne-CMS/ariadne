@@ -22,9 +22,10 @@
 			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
 			$realpath = realpath($realpath) .'/';
 
-			// FIXME 'netjes' een path opzoeken hier voor
 			$cachepath = sha1($path . $name);
-			$cacheroot = '/home/muller/devel/site/files/temp/';
+			$tempOb    = ar::context()->getObject();
+			$cacheroot = $tempOb->store->get_config('files').'temp/';
+
 			if ( 
 				! file_exists( $cacheroot . $cachepath )  ||
 				( filemtime($cacheroot . $cachepath ) < filemtime ( $realpath  . $name ) )
@@ -61,7 +62,23 @@
 			}
 			$realpath = $this->config['path'] . substr($arpath,strlen($this->path));
 			$realpath = realpath($realpath) .'/';
+			$traverse = 'src/';
+			if (!file_exists($realpath . 'library.json')) {
+				$realparent = path::parent($realpath);
+				$node = basename($realpath);
+				if ($node === 'tests' && file_exists($realparent . 'library.json') ) {
+					// special case
+					// system/lib/libname/tests/ is a sibling of src instead of a child library
+					$traverse = 'tests/';
+					$arpath   = path::parent($path);
+					$realpath = $realparent;
+				} else {
+					return [];
+				}
+			}
+
 			$config = json_decode(file_get_contents($realpath . 'library.json'),true);
+
 			if(!isset($config['exports']) ) {
 				$config['exports'] = [];
 			}
@@ -73,48 +90,57 @@
 
 			$traverseDir = function ($path, $type = 'pobject', $nls = 'any') use ($arpath, &$result, $config, &$traverseDir, $realpath) {
 				$path = path::collapse($path);
-				$index = scandir($path, SCANDIR_SORT_NONE);
-				if($index !== false) {
-					list($maintype, $subtype) = explode('.', $type,2);
-					foreach($index as $filename) {
-						if($filename[0] === "." ) {
-							continue;
-						}
-						$filepath = $path . $filename;
-						if ( is_dir($filepath) ) {
-							if (strlen($filename) == 2) {
-								$traverseDir(path::collapse($filename, $path), $type, $filename);
-							} else {
-								$traverseDir(path::collapse($filename, $path), $filename);
+				if (is_dir($path) ) {
+					$index = scandir($path, SCANDIR_SORT_NONE);
+					if($index !== false) {
+						list($maintype, $subtype) = explode('.', $type,2);
+						foreach($index as $filename) {
+							if($filename[0] === "." ) {
+								continue;
 							}
-						} else if ( is_file($filepath) ) {
-							$tempname = sprintf("%s.%s.%s",$type,$filename,$nls);
-							$confname = sprintf("%s::%s",$type,$filename);
-							$private = true;
-							if (isset( $config['exports'] ) ) {
-								$private = ! in_array($confname, $config['exports']);
+							$filepath = $path . $filename;
+							if ( is_dir($filepath) ) {
+								if (strlen($filename) == 2) {
+									$traverseDir(path::collapse($filename, $path), $type, $filename);
+								} else {
+									$traverseDir(path::collapse($filename, $path), $filename);
+								}
+							} else if ( is_file($filepath) ) {
+								$tempname = sprintf("%s.%s.%s",$type,$filename,$nls);
+								$confname = sprintf("%s::%s",$type,$filename);
+								$private = true;
+								if (isset( $config['exports'] ) ) {
+									if ($config['exports'][0] === '*') {
+										$private = false;
+									} else {
+										$private = ! (
+											in_array($filename, $config['exports']) ||
+											in_array($confname, $config['exports'])
+										);
+									}
+								}
+								$local = false;
+								if (isset( $config['local'] ) ) {
+									$local = in_array($confname, $config['local']);
+								}
+								$result[$filename][] = [
+									'id'       => PHP_INT_MAX,
+									'path'     => $arpath,
+									'type'     => $maintype,
+									'subtype'  => $subtype,
+									'name'     => $tempname,
+									'filename' => substr($filepath,strlen($realpath)),
+									'language' => $nls,
+									'private'  => $private,
+									'local'    => $local,
+								];
 							}
-							$local = false;
-							if (isset( $config['local'] ) ) {
-								$local = in_array($confname, $config['local']);
-							}
-							$result[$filename][] = [
-								'id'       => PHP_INT_MAX,
-								'path'     => $arpath,
-								'type'     => $maintype,
-								'subtype'  => $subtype,
-								'name'     => $tempname,
-								'filename' => substr($filepath,strlen($realpath)),
-								'language' => $nls,
-								'private'  => $private,
-								'local'    => $local,
-							];
 						}
 					}
 				}
 
 			};
-			$traverseDir($realpath . 'src/');
+			$traverseDir($realpath . $traverse );
 			return $result;
 		}
 
