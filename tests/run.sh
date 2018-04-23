@@ -19,6 +19,10 @@ fi
 
 TMPDIR=`mktemp -d `
 
+lynx ${URL} >  ${TMPDIR}/url.check.txt
+
+cat ${TMPDIR}/url.check.txt
+
 echo 'language=en&step=step2' | lynx -post_data ${URL}install/index.php >  ${TMPDIR}/installer.check.txt
 
 cat ${TMPDIR}/installer.check.txt
