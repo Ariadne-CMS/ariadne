@@ -19,7 +19,7 @@ fi
 
 TMPDIR=`mktemp -d `
 
-lynx ${URL} >  ${TMPDIR}/url.check.txt
+wget -q -O ${TMPDIR}/url.check.txt
 
 cat ${TMPDIR}/url.check.txt
 
