@@ -29,6 +29,7 @@ before_install:
     - phpenv rehash
     - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
     - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo chown -R www-data:www-data /var/lib/apache2/fastcgi ; fi
+    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo chown -R www-data:www-data /var/www.ariadne ; fi
     - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo service apache2 restart ; fi
     - if [ "${SYNTAX:-no}" != "yes" ] ; then  svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn ; svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log ; fi
 
