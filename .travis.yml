@@ -23,7 +23,7 @@ before_install:
     - echo 'date.timezone = "Europe/Amsterdam"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo a2enmod rewrite actions fastcgi alias ; fi
     - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne ; fi
+    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/html/ariadne ; fi
     - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/default ; fi
     - if [  -e ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ] ; then cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf ; fi
     - phpenv rehash
