@@ -19,7 +19,7 @@ fi
 
 TMPDIR=`mktemp -d `
 
-wget -q -O ${TMPDIR}/url.check.txt ${URL}
+echo 'language=en' | lynx -post_data ${URL} >  ${TMPDIR}/url.check.txt
 
 cat ${TMPDIR}/url.check.txt
 
