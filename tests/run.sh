@@ -19,7 +19,7 @@ fi
 
 TMPDIR=`mktemp -d `
 
-wget -q -O ${TMPDIR}/url.check.txt
+wget -q -O ${TMPDIR}/url.check.txt ${URL}
 
 cat ${TMPDIR}/url.check.txt
 
