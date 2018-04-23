@@ -4,7 +4,7 @@
   <Directory "/var/www/">
     Options FollowSymLinks MultiViews ExecCGI
     AllowOverride All
-    Order allow,deny
+    Order deny,allow
     Allow from all
   </Directory>
 
