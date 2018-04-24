@@ -13,6 +13,7 @@
 		"nikic/php-parser": "~2",
 		"firebase/php-jwt": "^3.0",
 		"paragonie/random_compat": "^2.0",
-		"phpunit/phpunit": "^5.3"
+		"phpunit/phpunit": "^5.3",
+		"php-amqplib/php-amqplib": "^2.6"
 	}
 }

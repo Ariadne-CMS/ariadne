@@ -127,6 +127,7 @@
 				case 'copies':
 				case 'dpi':
 				case 'minimum-font-size':
+				case 'page-offset':
 					$this->options[ $name ] = (int) $value;
 				break;
 				case 'margin-bottom':

@@ -48,11 +48,12 @@
 			$rawemails = $emails;
 			if (!is_array($emails)) {
 				$emails=explode(",",$emails);
-				if ($emails[0]) {
-					$this->data->emails=$emails;
-				} else {
-					unset($this->data->emails);
-				}
+
+			}
+
+			$emails = array_values(array_filter($emails));
+			if (isset($emails[0])  && $emails[0]) {
+				$this->data->emails=$emails;
 			}
 
 			if (!$this->data->nls) {

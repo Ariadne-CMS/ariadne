@@ -329,6 +329,7 @@ abstract class store {
 			foreach ( $properties as $property => $property_set ) {
 				$this->del_property((int)$id, $property);
 				if (is_array($property_set)) {
+					$property_set = array_unique($property_set,SORT_REGULAR);
 					foreach ( $property_set as $values ) {
 						$this->add_property((int)$id, $property, $values);
 					}
