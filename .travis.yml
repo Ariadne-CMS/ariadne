@@ -33,7 +33,7 @@ before_script:
   - sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/000-default.conf
   - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
   - sudo service apache2 restart
-  - sudo cp -a ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
+  - sudo ln -s ${TRAVIS_BUILD_DIR}/www ${TRAVIS_BUILD_DIR}/ariadne
   - svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn ; svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log
   - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
   - sh -c "if [ ${DB} = 'mysql' ]; then mysqladmin -u root create ariadne; fi"
