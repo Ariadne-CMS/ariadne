@@ -25,7 +25,7 @@
 	$ARnls['install:recheck']		= 'Opnieuw controleren';
 	$ARnls['install:check_ok']		= 'Geslaagd';
 	$ARnls['install:check_failed']		= 'Mislukt';
-	$ARnls['install:check_php_version']	= 'PHP &gt;= 5.4.7';
+	$ARnls['install:check_php_version']	= 'PHP &gt;= 5.6.2';
 	$ARnls['install:check_database_support']= 'Ondersteunde database';
 	$ARnls['install:check_webserver']	= 'Ondersteunde webserver';
 	$ARnls['install:check_accept_path_info']= 'AcceptPathInfo regel in httpd.conf';
