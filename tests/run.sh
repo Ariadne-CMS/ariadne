@@ -21,6 +21,8 @@ TMPDIR=`mktemp -d `
 
 echo 'language=en&step=step2' | lynx -post_data ${URL}install/index.php >  ${TMPDIR}/installer.check.txt
 
+cat ${TMPDIR}/installer.check.txt
+
 CHECKFAILED=`grep -i failed ${TMPDIR}/installer.check.txt | wc -l`
 if [ ${CHECKFAILED} -ge 3 ] ; then
 	echo 'Failed pre installer checks'
