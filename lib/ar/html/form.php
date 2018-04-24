@@ -532,7 +532,7 @@
 			}
 		}
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null ) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null) {
 			if (!isset($type)) {
 				$type = $this->type;
 			}
@@ -730,7 +730,7 @@
 			);
 		}
 
-		public function getLabel() {
+		public function getLabel($label=null, $id=null, $attributes=null) {
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getLabel = ar_html_form::$customTypes[ $this->type ]['getLabel'];
 				if ( isset( $getLabel ) ) {
@@ -740,7 +740,7 @@
 			return parent::getLabel();
 		}
 
-		public function getInput() {
+		public function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null) {
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getInput = ar_html_form::$customTypes[ $this->type ]['getInput'];
 				return $getInput($this);
@@ -879,7 +879,7 @@
 
 	class ar_html_formInputPassword extends ar_html_formInputText {
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null ) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null, $size=null) {
 			$value = ''; // never display a password's value
 			return parent::getInput($type, $name, $value, $disabled, $id, $title);
 		}
@@ -1064,7 +1064,7 @@
 
 	class ar_html_formInputButtonList extends ar_html_formInputSelect {
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -1166,7 +1166,7 @@
 			return (string) $this->getField();
 		}
 
-		public function getField() {
+		public function getField($content=null) {
 			$content = ar_html::nodes();
 			if (isset($this->uncheckedValue)) {
 				$content[] = $this->getInput('hidden', $this->name, $this->uncheckedValue, false,
@@ -1225,7 +1225,7 @@
 			$this->options	= isset($field->options) ? $field->options : array();
 		}
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $options=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -1310,7 +1310,7 @@
 
 	class ar_html_formInputHtml extends ar_html_formInput {
 
-		public function getField() {
+		public function getField($content=null) {
 			$content = ar_html::nodes();
 			if ($this->label) {
 				$content[] = $this->getLabel($this->label);
