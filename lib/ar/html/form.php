@@ -1225,7 +1225,7 @@
 			$this->options	= isset($field->options) ? $field->options : array();
 		}
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $options=null, $multiple=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
