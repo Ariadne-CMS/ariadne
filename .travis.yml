@@ -17,25 +17,27 @@ matrix:
         - php: 7.0
           env: SYNTAX=yes
 
-before_install:
-    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo apt-get update -qq ; sudo apt-get install -qq apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy poppler-utils ; fi
-    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-    - echo 'date.timezone = "Europe/Amsterdam"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo a2enmod rewrite actions fastcgi alias ; fi
-    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne ; fi
-    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/default ; fi
-    - if [  -e ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ] ; then cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf ; fi
-    - phpenv rehash
-    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-    - if [ "${SYNTAX:-no}" != "yes" ] ; then  sudo service apache2 restart ; fi
-    - if [ "${SYNTAX:-no}" != "yes" ] ; then  svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn ; svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log ; fi
-
 
 before_script:
-    - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
-    - sh -c "if [ ${DB} = 'mysql' ]; then mysqladmin -u root create ariadne; fi"
-    - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
+  - sudo apt-get update
+  - sudo apt-get install apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy poppler-utils
+  # enable php-fpm
+  - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+  - if [  -e ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ] ; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf ; fi
+  - sudo a2enmod rewrite actions fastcgi alias
+  - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
+  - sudo chown -R travis:travis /var/lib/apache2/fastcgi
+  - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+  # configure apache virtual hosts
+  - sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/000-default.conf
+  - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
+  - sudo service apache2 restart
+  - sudo ln -s ${TRAVIS_BUILD_DIR}/www ${TRAVIS_BUILD_DIR}/ariadne
+  - svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn ; svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log
+  - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
+  - sh -c "if [ ${DB} = 'mysql' ]; then mysqladmin -u root create ariadne; fi"
+  - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
 
 script:
     - if [ "${SYNTAX:-no}" == "yes" ] ; then  bash ./tests/syntax.sh ; fi
