@@ -14,9 +14,6 @@ php:
 
 matrix:
     allow_failures:
-        - php: 7.0
-          env: SYNTAX=yes
-
 
 before_script:
   - sudo apt-get update
