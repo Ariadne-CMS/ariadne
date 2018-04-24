@@ -35,11 +35,9 @@ before_script:
   - sudo service apache2 restart
   - sudo cp -a ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
   - svnadmin create ${TRAVIS_BUILD_DIR}/files/temp/testsvn ; svnadmin load ${TRAVIS_BUILD_DIR}/files/temp/testsvn < ${TRAVIS_BUILD_DIR}/tests/svnrepo.log
-
-before_script:
-    - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
-    - sh -c "if [ ${DB} = 'mysql' ]; then mysqladmin -u root create ariadne; fi"
-    - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
+  - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
+  - sh -c "if [ ${DB} = 'mysql' ]; then mysqladmin -u root create ariadne; fi"
+  - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
 
 script:
     - if [ "${SYNTAX:-no}" == "yes" ] ; then  bash ./tests/syntax.sh ; fi
