@@ -37,7 +37,7 @@
 			$criteria["login"]["value"]["="]=$login;
 
 			$siteConfig = $this->loadConfig($ARLoginPath);
-			foreach ($siteConfig['userdirs'] as $userdir) {
+			foreach ((array)$siteConfig['userdirs'] as $userdir) {
 
 				$user = current($store->call("system.authenticate.phtml", array("ARPassword" => $password),
 						$store->find($userdir, $criteria, 1, 0)));
