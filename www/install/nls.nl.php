@@ -53,6 +53,7 @@
 	$ARnls['install:check_tar_class']	= 'Archive/Tar class is beschikbaar';
 	$ARnls['install:check_mb_functions'] = 'Multibyte string support is beschikbaar';
 	$ARnls['install:check_mcrypt'] = 'Mcrypt support is beschikbaar';
+	$ARnls['install:check_domdocument_class'] = 'DOMDocument class is beschikbaar';
 
 	$ARnls['install:check_default_nls']	= 'Standaard NLS taalbestanden zijn beschikbaar';
 	$ARnls['install:check_connect_db']	= 'Verbinding maken naar database server';

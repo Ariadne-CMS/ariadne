@@ -205,6 +205,13 @@
 		return false;
 	}
 
+	function check_domdocument_class() {
+		if (class_exists("DOMDocument")) {
+			return true;
+		}
+		return false;
+	}
+
 	function check_svn_binary() {
 		$bin = find_in_path('svn');
 		if (is_executable($bin)) {
@@ -525,6 +532,7 @@
 		"check_base_ax"	=> check_base_ax(),
 		"check_tar_class" => check_tar_class(),			// Check if Archive/Tar class is available to import packages with.
 		"check_mb_functions" => check_mb_functions(),			// Check if Archive/Tar class is available to import packages with.
+		"check_domdocument_class" => check_domdocument_class(),
 	);
 
 	$recommended_checks = array(
