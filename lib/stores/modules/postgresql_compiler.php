@@ -289,7 +289,7 @@ class postgresql_compiler extends sql_compiler {
 	function priv_sql_compile($tree) {
 		$this->custom_ref = 0;
 		$this->custom_id = 0;
-		$this->used_tables="";
+		$this->used_tables=array();
 		$this->compile_tree($tree);
 
 		if ( $this->error ) {
