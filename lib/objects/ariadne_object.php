@@ -643,14 +643,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				return $this->parent;
 				break;
 			default:
-				return $this->store->make_path($this->path, $path);
+				return self::sanitizePath($this->store->make_path($this->path, $path));
 		}
 	}
 
 	public function make_ariadne_url($path="") {
 		global $AR;
 		$path = $this->make_path($path);
-		return $AR->host . $AR->root . $this->store->get_config('rootoptions') . $path;
+		return self::sanitizeUrl($AR->host . $AR->root . $this->store->get_config('rootoptions') . $path);
 	}
 
 
@@ -740,7 +740,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$url = $protocol . $requestedHost . $AR->root . $rootoptions . $path;
 			}
 		}
-		return $url;
+		return self::sanitizeUrl($url);
 	}
 
 	protected function compare_hosts($url1, $url2) {
@@ -819,7 +819,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		} else {
 			$rest=substr($path, strlen($site));
 		}
-		return $site_url.$rest;
+		return self::sanitizeUrl($site_url.$rest);
+	}
+	public function sanitizeUrl($url) {
+		// remove unexpected chars from the url;
+		return preg_replace("/[^\/{}:.A-Za-z0-9_-]/", "", $url);
+	}
+	public function sanitizePath($path) {
+		// remove unexpected chars from the path; same as url for now;
+		return self::sanitizeUrl($path);
 	}
 
 	public function AR_implements($implements) {

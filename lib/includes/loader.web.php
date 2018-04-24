@@ -618,6 +618,12 @@
 			if ( array_key_exists( $current, $cookies ) ) {
 				$session_id = $current;
 			}
+		} elseif (isset($_SERVER['PHP_AUTH_USER'])) {
+			$cookies = (array) ldGetCredentials();
+			$current = ldGetCookieSession();
+			if ( array_key_exists( $current, $cookies ) ) {
+				$session_id = $current;
+			}
 		}
 
 		// set the default user (public)
@@ -885,6 +891,12 @@
 			$mod_auth = new $auth_class($auth_config);
 			$username = ( isset($args["ARLogin"]) ? $args["ARLogin"] : null );
 			$password = ( isset($args["ARPassword"]) ? $args["ARPassword"] : null );
+			if (!$username && $_SERVER['REQUEST_METHOD'] != "GET") {
+				debug('logging in with basic auth');
+				$username = $_SERVER["PHP_AUTH_USER"];
+				$password = $_SERVER["PHP_AUTH_PW"];
+			}
+
 			$result = $mod_auth->checkLogin($username, $password, $path);
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {

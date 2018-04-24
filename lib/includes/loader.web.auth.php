@@ -46,6 +46,8 @@
 		$cookies = (array)$_COOKIE["ARSessionCookie"];
 		$https = ($_SERVER['HTTPS']=='on');
 
+		$currentCookies = array();
+
 		foreach($cookies as $sessionid => $cookie){
 			if(!$AR->hideSessionIDfromURL){
 				if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")) {
@@ -56,9 +58,22 @@
 							// but do kill it if it's older than one day
 							unset($cookies[$sessionid]);
 							setcookie("ARSessionCookie[".$sessionid."]",false);
+						} else {
+							$currentCookies[$sessionid] = $data['timestamp'];
 						}
 					}
 				}
+			}
+		}
+
+		// Keep a maximum of 15 session cookies for one client
+		if (sizeof($currentCookies) > 15) {
+			sort($currentCookies);
+			$removed = array_slice(array_keys($input), 15); // grab the session ids for all the older sessions
+			foreach ($removed as $sessionid) {
+				// and kill those sessions
+				unset($cookies[$sessionid]);
+				setcookie("ARSessionCookie[".$sessionid."]",false);
 			}
 		}
 
