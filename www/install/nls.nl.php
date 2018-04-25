@@ -84,9 +84,9 @@
 	$ARnls['install:ariadne_basic']		= 'Ariadne basis instellingen';
 	$ARnls['install:ariadne_location']	= 'Pad naar Ariadne op schijf';
 	$ARnls['install:ariadne_location_help']	= 'Dit is het pad waar de bestanden van Ariadne op de server staan. Dit moet een pad buiten de webroot zijn.';
-	$ARnls['install:setup_admin_acc'] 	= 'Administrator account informatie';
-	$ARnls['install:admin_pass']		= 'Administator wachtwoord';
-	$ARnls['install:admin_pass_help']	= 'Voer het wachtwoord in voor het administrator account. Dit wachtwoord wordt bij installatie op het administrator account ingesteld.';
+	$ARnls['install:setup_admin_acc'] 	= 'Admin account informatie';
+	$ARnls['install:admin_pass']		= 'Admin wachtwoord';
+	$ARnls['install:admin_pass_help']	= 'Voer het wachtwoord in voor het admin account. Dit wachtwoord wordt bij installatie op het admin account ingesteld.';
 	$ARnls['install:admin_pass_repeat']	= 'Bevestig administator wachtwoord';
 	$ARnls['install:admin_pass_repeat_help']= 'Voer nogmaals hetzelfde wachtwoord in. Dit is om te bevestigen dat beide wachtwoorden identiek zijn.';
 	$ARnls['install:install_modules']	= 'Installeer extra modules';

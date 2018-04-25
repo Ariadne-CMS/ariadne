@@ -82,10 +82,10 @@
 	$ARnls['install:ariadne_basic']		= 'Ariadne basic settings';
 	$ARnls['install:ariadne_location']	= 'Path to Ariadne on disk';
 	$ARnls['install:ariadne_location_help']	= 'This is the path where the Ariadne installation resides on the server. This should be a path outside the webroot.';
-	$ARnls['install:setup_admin_acc'] 	= 'Administrator account information';
-	$ARnls['install:admin_pass']		= 'Administator password';
-	$ARnls['install:admin_pass_help']	= 'Enter the password for the administrator account. This password will be set on installation.';
-	$ARnls['install:admin_pass_repeat']	= 'Confirm administator password';
+	$ARnls['install:setup_admin_acc'] 	= 'Admin account information';
+	$ARnls['install:admin_pass']		= 'Admin password';
+	$ARnls['install:admin_pass_help']	= 'Enter the password for the admin account. This password will be set on installation.';
+	$ARnls['install:admin_pass_repeat']	= 'Confirm admin password';
 	$ARnls['install:admin_pass_repeat_help']= 'Enter the same password as entered before. This is to ensure the passwords match.';
 	$ARnls['install:install_modules']	= 'Install extra modules';
 	$ARnls['install:enable_svn']		= 'Enable SVN support in Ariadne';
