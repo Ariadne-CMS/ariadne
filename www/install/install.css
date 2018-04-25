@@ -91,6 +91,7 @@
 	left: 0px;
 	height: 28px;
 	width: 0%;
+	max-width: 100%;
 	overflow: hidden;
 	background-image: url('../images/sprite.png');
 	background-position: 0px -1400px;

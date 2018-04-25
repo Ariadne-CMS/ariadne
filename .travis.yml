@@ -11,6 +11,7 @@ cache: apt
 php:
     - 5.6
     - 7.0
+    - 7.1
 
 matrix:
     allow_failures:

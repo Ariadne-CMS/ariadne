@@ -397,7 +397,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $properties;
 	}
 
-	public function save($properties="", $vtype="") {
+	public function save($properties=array(), $vtype="") {
 	/***********************************************************************
 	  save the current object.
 	  if this is a new object ($this->arIsNewObject) the path is checked and
@@ -3299,7 +3299,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $object;
 	}
 
-	public function _save($properties="", $vtype="") {
+	public function _save($properties=array(), $vtype="") {
 		if (isset($properties) && is_array($properties)) {
 			// isn't this double work, the save function doesn this again
 			foreach ($properties as $prop_name => $prop) {

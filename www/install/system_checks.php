@@ -2,7 +2,7 @@
 	$ariadne = '';
 
 	function check_php_version() {
-		if (version_compare(PHP_VERSION, '5.4.7', '>=')) {
+		if (version_compare(PHP_VERSION, '5.6.2', '>=')) {
 			return true;
 		}
 		return false;
@@ -200,6 +200,13 @@
 	function check_svn_class() {
 		@include_once("VersionControl/SVN.php");
 		if (class_exists("VersionControl_SVN")) {
+			return true;
+		}
+		return false;
+	}
+
+	function check_domdocument_class() {
+		if (class_exists("DOMDocument")) {
 			return true;
 		}
 		return false;
@@ -514,7 +521,7 @@
 	$found_bins = array(); // will be filled by the check functions
 
 	$required_checks = array(
-		"check_php_version" => check_php_version(),		// php => 5.4.0
+		"check_php_version" => check_php_version(),		// php => 5.6.2
 		"check_database_support" => check_database_support(),	// MySQL or Postgres
 		"check_webserver" => check_webserver(),			// Apache, IIS, NGINX?
 		"check_accept_path_info" => check_accept_path_info(),	// Apache config: AcceptPathInfo
@@ -525,6 +532,7 @@
 		"check_base_ax"	=> check_base_ax(),
 		"check_tar_class" => check_tar_class(),			// Check if Archive/Tar class is available to import packages with.
 		"check_mb_functions" => check_mb_functions(),			// Check if Archive/Tar class is available to import packages with.
+		"check_domdocument_class" => check_domdocument_class(),
 	);
 
 	$recommended_checks = array(
