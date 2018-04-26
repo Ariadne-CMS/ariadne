@@ -18,8 +18,8 @@
 		$ARCurrent->nolangcheck = true;
 
 		// become admin
-		$AR->user=new object;
-		$AR->user->data=new object;
+		$AR->user=new baseObject;
+		$AR->user->data=new baseObject;
 		$AR->user->data->login=$ARLogin="admin";
 
 		$ax_config["writeable"]=false;
@@ -51,8 +51,8 @@
 		$origARConfig  = clone $ARConfig;
 
 		// become admin
-		$AR->user=new object;
-		$AR->user->data=new object;
+		$AR->user=new baseObject;
+		$AR->user->data=new baseObject;
 		$AR->user->data->login=$ARLogin="admin";
 
 		/* instantiate the store */
@@ -96,8 +96,8 @@
 			$store = new $inst_store($root,$store_config);
 
 			/* now load a user (admin in this case)*/
-			$AR->user = new object();
-			$AR->user->data = new object();
+			$AR->user = new baseObject();
+			$AR->user->data = new baseObject();
 			$AR->user->data->login = "admin";
 		}
 
