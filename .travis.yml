@@ -19,7 +19,7 @@ matrix:
 
 before_script:
   - sudo apt-get update
-  - sudo apt-get install apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy poppler-utils
+  - sudo apt-get install apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy poppler-utils php-mcrypt php-xml
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
   - if [  -e ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ] ; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf ; fi
