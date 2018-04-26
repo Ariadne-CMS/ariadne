@@ -2331,8 +2331,8 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$result=$arStoreVars[$nls][$varname];
 			}
 			if ($result===false) {
-				if (isset($this->data->${nls}) && isset($this->data->${nls}->${varname})) {
-					$result=$this->data->${nls}->${varname};
+				if (isset($this->data->{$nls}) && isset($this->data->{$nls}->{$varname})) {
+					$result=$this->data->{$nls}->{$varname};
 				}
 			}
 		} else { // language independant variable.
