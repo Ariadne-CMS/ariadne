@@ -32,6 +32,13 @@
 		$AR->dir->www = '/ariadne';
 	}
 
+	if (!isset($AR->dir->install)){
+		$AR->dir->install = '/';
+	}
+
+	if (!isset($AR->OS)) {
+		$AR->OS = "dummy";
+	}
 	/**************************************************************************/
 	/* Dummy values for DB, prevents PHP 7.2 from complaining                 */
 	/**************************************************************************/
