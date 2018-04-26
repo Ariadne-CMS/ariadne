@@ -35,7 +35,7 @@
 
 debug("pobject: Load","object");
 
-abstract class ariadne_object extends object { // ariadne_object class definition
+abstract class ariadne_object extends baseObject { // ariadne_object class definition
 
 	public $store;
 	public $path;
