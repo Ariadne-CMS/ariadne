@@ -67,8 +67,8 @@
 		}
 
 		// declare default object,
-		if (!class_exists('object',false)) {
-			class object { }           // do not change
+		if (!class_exists('baseObject',false)) {
+			class baseObject { }           // do not change
 		}
 
 		// Generate the config file.
