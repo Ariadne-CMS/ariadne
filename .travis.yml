@@ -1,9 +1,9 @@
 # .travis.yml
 env:
-    - DB=mysql WORKSPACE=yes
-    - DB=mysql WORKSPACE=no
-    - DB=postgresql
     - SYNTAX=yes
+    - DB=mysql WORKSPACE=no
+    - DB=mysql WORKSPACE=yes
+    - DB=postgresql
 
 language: php
 cache: apt
