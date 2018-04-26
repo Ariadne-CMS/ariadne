@@ -33,6 +33,15 @@
 	}
 
 	/**************************************************************************/
+	/* Dummy values for DB, prevents PHP 7.2 from complaining                 */
+	/**************************************************************************/
+	$AR->DB->dbms     = "dummy";
+	$AR->DB->host     = "dummy";
+	$AR->DB->database = "dummy";
+	$AR->DB->user     = "dummy";
+	$AR->DB->password = "dummy";
+
+	/**************************************************************************/
 	/* Add extra PINP-Safe functions to the following Array                   */
 	/**************************************************************************/
 
@@ -133,7 +142,7 @@
 		$AR->dir->root = $AR->dir->docroot.$AR->dir->www;
 	}
 	$AR->dir->root = (string)\arc\path::collapse($AR->dir->root);
-	if ($AR->dir->docroot[0] !== '/') {
+	if (substr($AR->dir->docroot, 0, 1) !== '/') {
 	    $AR->dir->root = substr($AR->dir->root, 1);
 	}
 
