@@ -544,7 +544,7 @@
 		"check_html_tidy" => check_html_tidy(),
 		"check_grep" => check_grep(),
 		"check_demo_ax" => check_demo_ax(),
-		"check_mcrypt" => check_mcrypt(),
+//		"check_mcrypt" => check_mcrypt(),
 //		"check_libs_ax" => check_libs_ax(),
 //		"check_docs_ax" => check_docs_ax()
 	);
