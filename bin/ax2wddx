@@ -59,8 +59,8 @@
 
 	if ($arg_c>=2) {
 		$ARLogin="admin";
-		$AR->user=new object;
-		$AR->user->data=new object;
+		$AR->user=new baseObject;
+		$AR->user->data=new baseObject;
 		$AR->user->data->login="admin";
 
 		$ARCurrent->allnls = true;
