@@ -20,6 +20,10 @@
 	/* in '/var/www/ariadne/', then the correct entry is '/ariadne'.          */
 	/**************************************************************************/
 
+	if (!isset($AR)) {
+		$AR = new baseObject;
+	}
+
 	if (!isset($AR->dir)) {
 		$AR->dir = new baseObject;
 	}
