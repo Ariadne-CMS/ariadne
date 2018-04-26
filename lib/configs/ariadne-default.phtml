@@ -37,16 +37,16 @@
 	}
 
 	if (!isset($AR->OS)) {
-		$AR->OS = "dummy";
+		$AR->OS = "";
 	}
 	/**************************************************************************/
 	/* Dummy values for DB, prevents PHP 7.2 from complaining                 */
 	/**************************************************************************/
-	$AR->DB->dbms     = "dummy";
-	$AR->DB->host     = "dummy";
-	$AR->DB->database = "dummy";
-	$AR->DB->user     = "dummy";
-	$AR->DB->password = "dummy";
+	$AR->DB->dbms     = "";
+	$AR->DB->host     = "";
+	$AR->DB->database = "";
+	$AR->DB->user     = "";
+	$AR->DB->password = "";
 
 	/**************************************************************************/
 	/* Add extra PINP-Safe functions to the following Array                   */
