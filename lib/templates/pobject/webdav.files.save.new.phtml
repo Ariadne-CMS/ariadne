@@ -30,7 +30,7 @@
 		debug("saving new file of type $arNewType");
 		$arNewFilename=$fileinfo["name"];
 		$arNewPath=$this->make_path($arNewFilename);
-		$arNewData=new object;
+		$arNewData=new baseObject;
 
 		$arNewObj=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewdata);
 		$arNewObj->arIsNewObject=true;

@@ -5,7 +5,7 @@
 			foreach ($result as $object) {
 				$changed = false;
 				if (!$object->data->config) {
-					$config = new object;
+					$config = new baseObject;
 				} else {
 					$config = $object->data->config;
 				}

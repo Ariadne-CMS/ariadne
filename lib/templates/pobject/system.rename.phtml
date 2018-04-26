@@ -6,7 +6,7 @@
 			$target=$this->getdata("target");
 			$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
 
-			$eventData = new object();
+			$eventData = new baseObject();
 			$eventData->arTarget = $target;
 			$eventData = ar_events::fire( 'onbeforemove', $eventData );
 			if ( !$eventData || ar_error::isError( $eventData ) ) {

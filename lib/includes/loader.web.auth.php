@@ -107,7 +107,7 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$eventData = new object();
+		$eventData = new baseObject();
 		$eventData->arCallPath = $path;
 		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
@@ -143,7 +143,7 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$eventData = new object();
+		$eventData = new baseObject();
 		$eventData->arCallPath = $path;
 		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
@@ -180,7 +180,7 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$eventData = new object();
+		$eventData = new baseObject();
 		$eventData->arCallPath = $path;
 		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arLoginMessage = $message;

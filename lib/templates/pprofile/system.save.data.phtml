@@ -20,7 +20,7 @@
 				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
 			}
 			if (!isset($this->data) || ar_error::isError($this->data)) {
-				$this->data = new object;
+				$this->data = new baseObject;
 			}
 		}
 

@@ -24,7 +24,7 @@
 				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
 			}
 			if (!isset($this->data) || ar_error::isError($this->data)) {
-				$this->data = new object;
+				$this->data = new baseObject;
 			}
 			$arIsNewObject=true;
 		}
@@ -114,7 +114,7 @@
 			if ($allowDisableUser) {
 				debug("Allowing disable user: $allowDisableUser", "all");
 				if (!is_object($this->data->config)) {
-					$this->data->config = new object;
+					$this->data->config = new baseObject;
 				}
 				$this->data->config->disabled = $disabled;
 			} else {

@@ -7,17 +7,17 @@
   /*   // do not change                                                     */
   /**************************************************************************/
 
-	if (!class_exists('object',false)) {
-		class object { }           // do not change
+	if (!class_exists('baseObject',false)) {
+		class baseObject { }           // do not change
 	}
-	$AR = new object;             // do not change
-	$AR->dir = new object;        // do not change
-	$AR->IM = new object;         // do not change
-	$AR->DB = new object;         // do not change 
-	$AR->SVN = new object;        // do not change 
-	$AR->Tidy = new object;       // do not change 
-	$AR->Grep = new object;       // do not change 
-	$AR->Webkit2png = new object; // do not change 
+	$AR = new baseObject;             // do not change
+	$AR->dir = new baseObject;        // do not change
+	$AR->IM = new baseObject;         // do not change
+	$AR->DB = new baseObject;         // do not change 
+	$AR->SVN = new baseObject;        // do not change 
+	$AR->Tidy = new baseObject;       // do not change 
+	$AR->Grep = new baseObject;       // do not change 
+	$AR->Webkit2png = new baseObject; // do not change 
 
 
   /**************************************************************************/
@@ -296,7 +296,7 @@
   /* list below. Do not use html entities like &eacute;                     */
   /**************************************************************************/
 
-  $AR->nls=new object;                         // do not change
+  $AR->nls=new baseObject;                         // do not change
 
   $AR->nls->list['nl']      = 'Nederlands';
   $AR->nls->list['en']      = 'English';
@@ -325,11 +325,11 @@
   /* you really don't want to change anything below this line                  */
   /**************************************************************************/
 
-  $ARConfig=new object;                        // do not change
+  $ARConfig=new baseObject;                        // do not change
 
   /* make default nls available for the root ********************************/
 
-  $ARConfig->cache['..']=new object;           // do not change
+  $ARConfig->cache['..']=new baseObject;           // do not change
   $ARConfig->cache['..']->nls=$AR->nls;        // do not change
   $ARConfig->cache['..']->root['path']='/';    /* must always start with a '/' */
   $ARConfig->cache['..']->root['value']=$AR->host.$AR->root;  // do not change
@@ -358,7 +358,7 @@
   /* Setup the variable repository for putvar/getvar                        */
   /**************************************************************************/
 
-  $ARCurrent=new object;                       // do not change
+  $ARCurrent=new baseObject;                       // do not change
 
   /**************************************************************************/
   /* Global defines, used for the login functions, don't change these!      */

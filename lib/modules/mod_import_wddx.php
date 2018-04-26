@@ -43,7 +43,7 @@ class import_wddx {
 			case "struct":
 				if(($attribs["class"] == "object" || $attribs["class"] == "stdClass") && ($attribs["type"] == "object" ))
 				{
-					$value = new object();
+					$value = new baseObject();
 				} else
 				{
 					$value = Array();

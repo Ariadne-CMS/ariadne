@@ -5,7 +5,7 @@
 		} else if (!$arNewFilename) {
 			error("no arNewFilename.");
         } else {
-			$arNewData=new object;
+			$arNewData=new baseObject;
 			$arNewPath=$this->make_path($arNewFilename);
 			$arCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 			$arCallObject->arIsNewObject=true;

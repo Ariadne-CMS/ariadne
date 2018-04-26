@@ -214,11 +214,11 @@
 
 		/* create a dummy object for later use */
 		$dummy = new pobject;
-		$dummy->nls = new object;
+		$dummy->nls = new baseObject;
 		$dummy->axflags = true;
 		$dummy->type = "pobject";
 		foreach($AR->nls->list as $key => $value){
-			$dummy->$key=new object;
+			$dummy->$key=new baseObject;
 			$dummy->$key->name="Dummy node";
 			$dummy->nls->list[$key]=$val;
 		}

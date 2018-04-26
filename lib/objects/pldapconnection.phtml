@@ -390,7 +390,7 @@ class pldapconnection extends pconnector { // psearch class definition
 		$save_path=$this->path;
 		unset($this->path);
 
-		$nls=new object;
+		$nls=new baseObject;
 		$nls->default='en';
 		$nls->list['en']=$AR->nls->list['en'];
 
@@ -403,8 +403,8 @@ class pldapconnection extends pconnector { // psearch class definition
 			// This part does the magic thing of mapping the
 			// LDAP data to Ariadne data
 			unset($this->data);
-			$this->data=new object;
-			$this->data->en=new object;
+			$this->data=new baseObject;
+			$this->data->en=new baseObject;
 			$this->data->nls=$nls;
 
 			//print "***".$entry["displayname"][0]."<br>\n";

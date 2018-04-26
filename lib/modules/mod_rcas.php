@@ -41,7 +41,7 @@
 							"$user_dir$login/",
 							"$user_dir",
 							$userType,
-							new object);
+							new baseObject);
 
 				$user->arIsNewObject = true;
 				$user->call('system.save.data.phtml', $data);

@@ -19,7 +19,7 @@
 
 			debug("soap.createobject.phtml: arNewFilename='$arNewFilename'");
 			$arNewFilename=$this->getdata("arNewFilename","none");
-			$arNewData=new object;
+			$arNewData=new baseObject;
 			$arNewPath=$this->make_path($arNewFilename);
 			$arNewParent=$this->store->make_path($arNewFilename, "..");
 			debug("soap.createobject.phtml: arNewFilename($arNewFilename) arNewType($arNewType)");

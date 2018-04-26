@@ -3,7 +3,7 @@
 	if( $this->CheckLogin("read") && $this->CheckConfig() ) {
 		$arNewFilename = $this->getdata("arNewFilename", "none");
 
-		$eventData = new object();
+		$eventData = new baseObject();
 		$eventData->arCallArgs = $arCallArgs;
 		$eventData->arCallFunction = $context['arCallFunction'];
 		$eventData->arIsNewObject = true;

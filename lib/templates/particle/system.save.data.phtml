@@ -22,7 +22,7 @@
 				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
 			}
 			if (!isset($this->data) || ar_error::isError($this->data)) {
-				$this->data = new object;
+				$this->data = new baseObject;
 			}
 		}
 
@@ -66,7 +66,7 @@
 
 					if (!$this->data->nls) {
 						// its a new object, no nls data specified yet, create it
-						$this->data->nls=new object;
+						$this->data->nls=new baseObject;
 					}
 					// data for the default language has been entered, so make sure
 					// it is set as the default language for this object too.
@@ -78,7 +78,7 @@
 						if ($name=$this->getdata("name",$key)) { 
 							// the name is the minimum requirement for an nls aware	object.
 							if (!$this->data->$key) {
-								$newnlsdata=new object;
+								$newnlsdata=new baseObject;
 							} else {
 								$newnlsdata=$this->data->$key;
 							}
