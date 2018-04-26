@@ -111,6 +111,9 @@
 	if (!isset($AR->dir->docroot)) {
 		$AR->dir->docroot = $_SERVER['DOCUMENT_ROOT'];
 	}
+	if (!isset($AR->dir->docroot)) {
+		$AR->dir->docroot = '';
+	}
 
 	$AR->dir->www  = (string)\arc\path::collapse($AR->dir->www);
 
