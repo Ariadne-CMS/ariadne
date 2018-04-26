@@ -205,6 +205,10 @@ class axstore {
 		return $result;
 	}
 
+	private function fixObjectClass($value) {
+		return str_replace('O:6:"object"', 'O:8:"stdClass"', $value);
+	}
+
 	function is_supported($feature) {
 	/**********************************************************************************
 		This function takes as argument a feature description and returns
@@ -702,8 +706,8 @@ class axstore {
 			$line.=$rline;
 
 			if ($line && sizeof($fdata=explode("&", $line))) {
-				$object->properties=unserialize(base64_decode($fdata[6]));
-				$object->data=unserialize(base64_decode($fdata[5]));
+				$object->properties=unserialize(self::fixObjectClass(base64_decode($fdata[6])));
+				$object->data=unserialize(self::fixObjectClass(base64_decode($fdata[5])));
 				$result=1;
 			}
 		}
