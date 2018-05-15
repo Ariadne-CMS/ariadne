@@ -60,6 +60,7 @@
 	$ARnls['install:check_select_db']	= 'Database bestaat en kan gebruikt worden';
 	$ARnls['install:check_db_grants']	= 'Database-rechten zijn gezet voor database-gebruiker';
 	$ARnls['install:check_db_is_empty']	= 'Gekozen database voor installatie is leeg';
+	$ARnls['install:check_db_charset']	= 'Gekozen database character set en collation is compatible';
 	$ARnls['install:check_files']		= 'Files map bestaat en is leesbaar';
 	$ARnls['install:check_base_ax']		= 'Pakket "Ariadne Basis" bestaat en is leesbaar';
 	$ARnls['install:check_demo_ax']		= 'Pakket "Voorbeeldsites en vormgevingen" bestaat en is leesbaar';

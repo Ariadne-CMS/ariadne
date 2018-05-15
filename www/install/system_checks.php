@@ -296,6 +296,21 @@
 		return false;
 	}
 
+	function check_db_charset($conf) {
+		if ($conf && $conf->dbms) {
+			switch ( $conf->dbms ) {
+				case 'mysql':
+				case 'mysql_workspaces':
+					return check_db_charset_mysql($conf) && check_db_collation_mysql($conf);
+				break;
+				case 'postgresql':
+					return true; // No known issues for postgres
+				break;
+			}
+		}
+		return false;
+	}
+
 	function check_db_grants_mysql($conf) {
 		$dbh = getConnection($conf);
 		if (!$dbh->connect_errno) {
@@ -406,6 +421,36 @@
 			$result = $dbh->query($query);
 			if (!$dbh->errno && $result->num_rows == 0) {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	function check_db_collation_mysql($conf) {
+		$dbh = getConnection($conf);
+		if (!$dbh->connect_errno) {
+			$query = "SHOW VARIABLES LIKE 'collation_server'";
+			$result = $dbh->query($query);
+			if (!$dbh->errno && $result->num_rows) {
+				$vars = mysqli_fetch_row($result);
+				if ($vars && $vars[1] && ($vars[1] == "latin1_swedish_ci")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	function check_db_charset_mysql($conf) {
+		$dbh = getConnection($conf);
+		if (!$dbh->connect_errno) {
+			$query = "SHOW VARIABLES LIKE 'character_set_server'";
+			$result = $dbh->query($query);
+			if (!$dbh->errno && $result->num_rows) {
+				$vars = mysqli_fetch_row($result);
+				if ($vars && $vars[1] && ($vars[1] == "latin1")) {
+					return true;
+				}
 			}
 		}
 		return false;
