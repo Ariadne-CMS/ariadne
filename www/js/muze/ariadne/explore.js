@@ -1281,7 +1281,11 @@ muze.namespace( 'muze.ariadne.explore.dialog', function () {
 			muze.dialog.open(href + pathmode, 'dialog_rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog_rename'] } )
 			.on('renamed', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
-				muze.ariadne.explore.objectadded(); // Objectadded to refresh the view instead of browsing to the renamed object.
+				if (muze.ariadne.explore.viewpane.selectedPath != muze.ariadne.explore.viewpane.path) {
+					muze.ariadne.explore.view(muze.ariadne.explore.viewpane.path);
+				} else {
+					muze.ariadne.explore.view(args['path']);
+				}
 			})
 			.always( function() {
 				this.close();
