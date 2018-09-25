@@ -532,7 +532,7 @@
 	}
 
 	function check_mcrypt() {
-		if (extension_loaded('mcrypt')) {
+		if (function_exists('mcrypt_encrypt')) {
 			return true;
 		}
 		return false;
