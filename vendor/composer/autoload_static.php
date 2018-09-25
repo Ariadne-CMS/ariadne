@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticIniteef39da1cce8a07b979c95efd954282c
+class ComposerStaticInitc7aa906634e623e2b3d24decba872560
 {
     public static $files = array (
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
@@ -39,15 +39,15 @@ class ComposerStaticIniteef39da1cce8a07b979c95efd954282c
     public static $prefixDirsPsr4 = array (
         'arc\\' => 
         array (
-            0 => __DIR__ . '/..' . '/arc/prototype/src',
-            1 => __DIR__ . '/..' . '/arc/grants/src',
-            2 => __DIR__ . '/..' . '/arc/html/src',
-            3 => __DIR__ . '/..' . '/arc/web/src',
-            4 => __DIR__ . '/..' . '/arc/base/src',
-            5 => __DIR__ . '/..' . '/arc/events/src',
-            6 => __DIR__ . '/..' . '/arc/config/src',
-            7 => __DIR__ . '/..' . '/arc/cache/src',
-            8 => __DIR__ . '/..' . '/arc/xml/src',
+            0 => __DIR__ . '/..' . '/arc/base/src',
+            1 => __DIR__ . '/..' . '/arc/xml/src',
+            2 => __DIR__ . '/..' . '/arc/web/src',
+            3 => __DIR__ . '/..' . '/arc/prototype/src',
+            4 => __DIR__ . '/..' . '/arc/html/src',
+            5 => __DIR__ . '/..' . '/arc/grants/src',
+            6 => __DIR__ . '/..' . '/arc/events/src',
+            7 => __DIR__ . '/..' . '/arc/config/src',
+            8 => __DIR__ . '/..' . '/arc/cache/src',
         ),
         'Symfony\\Component\\Yaml\\' => 
         array (
@@ -602,11 +602,11 @@ class ComposerStaticIniteef39da1cce8a07b979c95efd954282c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticIniteef39da1cce8a07b979c95efd954282c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticIniteef39da1cce8a07b979c95efd954282c::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticIniteef39da1cce8a07b979c95efd954282c::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticIniteef39da1cce8a07b979c95efd954282c::$fallbackDirsPsr0;
-            $loader->classMap = ComposerStaticIniteef39da1cce8a07b979c95efd954282c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$fallbackDirsPsr0;
+            $loader->classMap = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$classMap;
 
         }, null, ClassLoader::class);
     }
