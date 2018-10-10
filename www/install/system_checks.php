@@ -532,7 +532,7 @@
 	}
 
 	function check_mcrypt() {
-		if (extension_loaded('mcrypt')) {
+		if (function_exists('mcrypt_encrypt')) {
 			return true;
 		}
 		return false;
@@ -589,7 +589,7 @@
 		"check_html_tidy" => check_html_tidy(),
 		"check_grep" => check_grep(),
 		"check_demo_ax" => check_demo_ax(),
-//		"check_mcrypt" => check_mcrypt(),
+		"check_mcrypt" => check_mcrypt(),
 //		"check_libs_ax" => check_libs_ax(),
 //		"check_docs_ax" => check_docs_ax()
 	);
