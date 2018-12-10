@@ -221,13 +221,10 @@
 		}
 
 		protected static function nextToken(&$parser) {
-			$tokens = &$parser['tokens'];
 			$scanner = &$parser['scanner'];
-			if (count($tokens) == 0) {
-				$new_token = static::scan($scanner, $new_value);
-			} else {
-				list($new_token, $new_value) = each(array_shift($tokens));
-			}
+
+			$new_token = static::scan($scanner, $new_value);
+
 			if (isset($parser["token_ahead"])) {
 				$parser["token"] = $parser["token_ahead"];
 				$parser["token_value"] = $parser["token_ahead_value"];
