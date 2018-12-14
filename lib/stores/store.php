@@ -436,7 +436,7 @@ abstract class store {
 			if ($decryptedValue[0] === "O" && $decryptedValue[1] === ":") {
 				return unserialize(self::fixObjectClass($decryptedValue));
 			} else {
-				$dummy = self::fixObjectClass(unserialize('O:6:"object":7:{s:5:"value";s:0:"";s:3:"nls";O:6:"object":2:{s:7:"default";s:2:"nl";s:4:"list";a:1:{s:2:"nl";s:10:"Nederlands";}}s:2:"nl";O:6:"object":1:{s:4:"name";s:14:"Crypted object";}s:6:"config";O:6:"object":2:{s:10:"owner_name";s:6:"Nobody";s:5:"owner";s:6:"nobody";}s:5:"mtime";i:0;s:5:"ctime";i:0;s:5:"muser";s:6:"nobody";}'));
+				$dummy = unserialize('O:8:"stdClass":7:{s:5:"value";s:0:"";s:3:"nls";O:8:"stdClass":2:{s:7:"default";s:2:"nl";s:4:"list";a:1:{s:2:"nl";s:10:"Nederlands";}}s:2:"nl";O:8:"stdClass":1:{s:4:"name";s:14:"Crypted object";}s:6:"config";O:8:"stdClass":2:{s:10:"owner_name";s:6:"Nobody";s:5:"owner";s:6:"nobody";}s:5:"mtime";i:0;s:5:"ctime";i:0;s:5:"muser";s:6:"nobody";}');
 				$dummy->failedDecrypt = true;
 				$dummy->originalData = $value;
 				return $dummy;
