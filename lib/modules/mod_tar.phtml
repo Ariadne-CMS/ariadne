@@ -63,7 +63,7 @@
 				}
 			}
 			$result = $archive->addModify($filelist, "", $srcdir);
-			$archive->__destruct();
+			unset($archive);
 			return $result;
 		}
 
