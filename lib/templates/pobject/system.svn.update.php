@@ -65,10 +65,9 @@
 							$updated_templates[] = $item['name'];
 							break;
 					}
-
 					$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
 					if( ar_error::isError($props)) {
-						echo "<span>".$props->getMessage()."</span>";
+						echo "<span>Error: ".$props->getMessage()."</span>";
 					} else if( $item["filestate"]  == "A" ) {
 						echo "<span class='svn_addtemplateline'>Added ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
 					} elseif( $item["filestate"] == "U" ) { // substr to work around bugs in SVN.php
@@ -107,7 +106,7 @@
 				);
 
 			}
-			if ($result === false) {
+			if ($result === false || ar_error::isError($result)) {
 				echo "Update failed.\n";
 				if (count($errs = $fstore->svnstack->getErrors())) {
 					foreach ($errs as $err) {
