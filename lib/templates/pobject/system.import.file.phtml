@@ -50,7 +50,7 @@
 		}
 
 		if ($createnew && !$this->error) {
-			$arNewData=new object;
+			$arNewData=new baseObject;
 			$arNewObj=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 			$arNewObj->arIsNewObject=true;
 			$arResult=$arNewObj->call("system.import.file.save.phtml", $arCallArgs);

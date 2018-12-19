@@ -201,7 +201,7 @@
 					"arCallFunction" => $requestedtemplate
 				) );
 
-				$eventData = new object();
+				$eventData = new baseObject();
 				$eventData->arCallPath = $requestedpath;
 				$eventData->arCallFunction = $requestedtemplate;
 				$eventData->arCallArgs = $arCallArgs;

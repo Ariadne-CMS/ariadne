@@ -16,10 +16,10 @@
 				return false;
 			}
 			if ( !$this->cachestore->exists('/') ) {
-				$this->cachestore->save( '/', 'pobject', new object );
+				$this->cachestore->save( '/', 'pobject', new baseObject );
 			}
 
-			$data = new object;
+			$data = new baseObject;
 			$data->filename = $filename;
 			$data->objectChain = $objectChain;
 			$data->templateChain = $templateChain;

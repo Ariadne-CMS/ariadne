@@ -20,8 +20,36 @@
 	/* in '/var/www/ariadne/', then the correct entry is '/ariadne'.          */
 	/**************************************************************************/
 
+	if (!isset($AR)) {
+		$AR = new baseObject;
+	}
+
+	if (!isset($AR->dir)) {
+		$AR->dir = new baseObject;
+	}
+
 	if (!isset($AR->dir->www)){
 		$AR->dir->www = '/ariadne';
+	}
+
+	if (!isset($AR->dir->install)){
+		$AR->dir->install = '/';
+	}
+
+	if (!isset($AR->OS)) {
+		$AR->OS = "";
+	}
+	/**************************************************************************/
+	/* Dummy values for DB, prevents PHP 7.2 from complaining                 */
+	/**************************************************************************/
+	if (!isset($AR->DB)) {
+		$AR->DB = new baseObject;
+		$AR->DB->dbms     = "";
+		$AR->DB->host     = "";
+		$AR->DB->database = "";
+		$AR->DB->user     = "";
+		$AR->DB->password = "";
+		$AR->DB->crypto   = "";
 	}
 
 	/**************************************************************************/
@@ -64,7 +92,7 @@
 		}
 
 
-		if ($_SERVER['HTTPS']=='on') {
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
 			$url->scheme = 'https';
 		} else {
 			$url->scheme = 'http';
@@ -107,6 +135,9 @@
 	if (!isset($AR->dir->docroot)) {
 		$AR->dir->docroot = $_SERVER['DOCUMENT_ROOT'];
 	}
+	if (!isset($AR->dir->docroot)) {
+		$AR->dir->docroot = '';
+	}
 
 	$AR->dir->www  = (string)\arc\path::collapse($AR->dir->www);
 
@@ -122,7 +153,7 @@
 		$AR->dir->root = $AR->dir->docroot.$AR->dir->www;
 	}
 	$AR->dir->root = (string)\arc\path::collapse($AR->dir->root);
-	if ($AR->dir->docroot[0] !== '/') {
+	if (substr($AR->dir->docroot, 0, 1) !== '/') {
 	    $AR->dir->root = substr($AR->dir->root, 1);
 	}
 
@@ -162,7 +193,7 @@
 	/**************************************************************************/
 
 	if (!isset($AR->nls)) {
-		$AR->nls=new object;                         // do not change
+		$AR->nls=new baseObject;                         // do not change
 	}
 	if (!isset($AR->nls->list)){
 		$AR->nls->list['nl']      = 'Nederlands';
@@ -195,11 +226,11 @@
 	/* you really don't want to change anything below this line                  */
 	/**************************************************************************/
 
-	$ARConfig=new object;                        // do not change
+	$ARConfig=new baseObject;                        // do not change
 
 	/* make default nls available for the root ********************************/
 
-	$ARConfig->cache['..']=new object;           // do not change
+	$ARConfig->cache['..']=new baseObject;           // do not change
 	$ARConfig->cache['..']->nls=$AR->nls;        // do not change
 	$ARConfig->cache['..']->root['path']='/';    /* must always start with a '/' */
 	$ARConfig->cache['..']->root['value']=$AR->host.$AR->root;  // do not change
@@ -230,7 +261,7 @@
 	/* Setup the variable repository for putvar/getvar                        */
 	/**************************************************************************/
 
-	$ARCurrent=new object;                       // do not change
+	$ARCurrent=new baseObject;                       // do not change
 
 	/**************************************************************************/
 	/* Global defines, used for the login functions, don't change these!      */

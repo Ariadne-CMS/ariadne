@@ -20,7 +20,7 @@
 				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
 			}
 			if (!isset($this->data) || ar_error::isError($this->data)) {
-				$this->data = new object;
+				$this->data = new baseObject;
 			}
 		}
 
@@ -40,7 +40,7 @@
 			$arResult = false;
 		} else {
 			if (!$this->data->nls) {
-				$this->data->nls=new object;
+				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			$this->data->scaffold = $this->getdata('scaffold','none');
@@ -51,7 +51,7 @@
 
 				if ($name=$this->getdata("name",$key)) { 
 					if (!$this->data->$key) {
-						$newnlsdata=new object;
+						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
 					}

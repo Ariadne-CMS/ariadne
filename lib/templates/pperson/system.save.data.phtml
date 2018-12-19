@@ -20,7 +20,7 @@
 				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
 			}
 			if (!isset($this->data) || ar_error::isError($this->data)) {
-				$this->data = new object;
+				$this->data = new baseObject;
 			}
 		}
 
@@ -44,20 +44,20 @@
 				$this->data->name.=" ".$this->data->middlename;
 			}
 			if (!$this->data->nls) {
-				$this->data->nls=new object;
+				$this->data->nls=new baseObject;
 			}
 			$properties["name"][]["value"]=$this->data->name;
 			$properties["text"][]["value"]=$this->data->name;
 
 			if (!$this->data->nls) {
-				$this->data->nls=new object;
+				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
 				if ($summary=$this->getdata("summary", $key)) {
 					if (!$this->data->$key) {
-						$newnlsdata=new object;
+						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
 					}

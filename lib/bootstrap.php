@@ -3,8 +3,8 @@
 	global $auth_config,$store_config,$cache_config,$session_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader,$ARnls;
 
 	// declare default object,
-	if (!class_exists('object',false)) {
-		class object { }           // do not change
+	if (!class_exists('baseObject',false)) {
+		class baseObject { }           // do not change
 	}
 
 	if(!defined('AriadneBasePath') ) {

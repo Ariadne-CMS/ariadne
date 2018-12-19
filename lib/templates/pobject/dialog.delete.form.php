@@ -12,7 +12,6 @@
 		} else {
 			$targets = array($this->path);
 		}
-
 ?>
 
         <fieldset id="data" class="delete">
@@ -105,7 +104,7 @@
 
 		if (($total == 0) && (sizeof($targets) == 1)) {
 			echo '<p>' . $ARnls["q:removeobject"] . '</p>';
-		} else if (($total == 0) && sizeof($targets > 1)) {
+		} else if (($total == 0) && sizeof($targets) > 1) {
 			echo '<p>' . $ARnls["q:removeobjects"] . '</p>';
 		}
 

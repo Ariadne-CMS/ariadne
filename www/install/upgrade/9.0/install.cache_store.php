@@ -16,7 +16,7 @@
 		$cachestore->add_type("pcache","pobject");
 		$cachestore->add_type("pcache","pcache");
 
-		$cachestore->save( '/', 'pobject', new object );
+		$cachestore->save( '/', 'pobject', new baseObject );
 	} else {
 		error("store not initialized.");
 	}

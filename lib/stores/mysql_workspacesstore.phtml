@@ -100,13 +100,13 @@ class mysql_workspacesstore extends mysqlstore {
 							} else if (substr($key, 0, strlen('old_')) == 'old_') {
 								$field = substr($key, strlen('old_'));
 								if ($field == 'data') {
-									$value = unserialize($value);
+									$value = unserialize(self::fixObjectClass($value));
 								}
 								$record['old'][$field] = $value;
 							} else if (substr($key, 0, strlen('new_')) == 'new_') {
 								$field = substr($key, strlen('new_'));
 								if ($field == 'data') {
-									$value = unserialize($value);
+									$value = unserialize(self::fixObjectClass($value));
 								}
 								$record['new'][$field] = $value;
 							}

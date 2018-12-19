@@ -993,8 +993,10 @@ class pinp {
 				$call_args .= $this->token_value;
 
 				$result = "{'".$func_prefix."'.ltrim(".$index.", '_')}".$call_args;
-			} else {
+			} else if ($this->token_ahead == PT_OBJECT_OPERATOR) {
 				$result = "$var_prefix"."{".$index."}".$array_index."$noise";
+			} else {
+				$result = "$var_prefix"."{'".$index."'}".$array_index."$noise";
 			}
 		} else {
 			$this->error = "Unexpected '".$this->token_ahead_value."' following '".$this->token_value."' at line: ".$this->scanner->YYLINE;
@@ -1310,7 +1312,7 @@ class pinp {
 				case PT_VAR_CBRACE_OPEN:
 					$this->scanner->YYSTATE = YY_STATE_PINP;
 						$this->next_token();
-						$stmt = $this->var_prefix.'{'.$this->parse_statement().'}';
+						$stmt = $this->var_prefix."{'".$this->parse_statement()."'}";
 						if ($this->token_ahead != PT_CBRACE_CLOSE) {
 							$this->error = "Expected '}' instead of '".$this->token_ahead_value."' in double quoted string at line: ".$this->scanner->YYLINE;
 							return false;
@@ -1417,7 +1419,7 @@ class pinp {
 
 							$functionPreable = ' '.substr($this->var_prefix,0,-2).' = new ar_core_pinpSandbox('.$this->var_prefix.'this);';
 							foreach($arguments['arguments'] as $arg ) {
-								$functionPreable .= ' '.$this->var_prefix.'{'.$arg .'} = ${'.$arg.'}; ';
+								$functionPreable .= ' '.$this->var_prefix."{'".$arg ."'}" .' = $' . "{'".$arg."'}; ";
 							}
 							$result .= $functionPreable;
 

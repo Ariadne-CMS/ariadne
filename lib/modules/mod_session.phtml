@@ -33,10 +33,10 @@ class session {
 				debug("new id is $id","store");
 			} while ($this->sessionstore->exists("/".$id."/"));
 			// save new session object
-			$this->data=new object;
+			$this->data=new baseObject;
 			$this->id=$id;
 			$this->lastchanged=time();
-			$this->system = new object;
+			$this->system = new baseObject;
 			$this->system->ARSessionTimedout=false;
 			$this->put("formSecret", bin2hex(random_bytes(16)));
 
@@ -111,7 +111,7 @@ class session {
 			$this->data->system = $this->system;
 			if ($this->changed || $forceupdate) {
 				if ( !$this->sessionstore->exists('/') ) {
-					$this->sessionstore->save( '/', 'pobject', new object );
+					$this->sessionstore->save( '/', 'pobject', new baseObject );
 				}
 				$this->sessionstore->save("/$id/","psession",$this->data);
 			} else if( ($now - $interval ) > $this->lastchanged ) {

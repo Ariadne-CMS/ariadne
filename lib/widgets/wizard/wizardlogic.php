@@ -22,7 +22,7 @@ if (!$wgWizCallObject) {
 			$wgWizNewFilename="{5:id}";
 		}
 		if (!$wgWizNewData) {
-			$wgWizNewData=new object;
+			$wgWizNewData=new baseObject;
 		}
 		$wgWizNewPath=$this->make_path($wgWizNewFilename);
 		$wgWizCallObject=$this->store->newobject($wgWizNewPath, $this->path, $wgWizNewType, $wgWizNewData);

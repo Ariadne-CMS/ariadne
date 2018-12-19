@@ -8,7 +8,7 @@
 			echo $ARnls['data'];
 		}
 		echo '</legend>';
-		$arNewData=new object;
+		$arNewData=new baseObject;
 		$arNewPath=$this->make_path($arNewFilename);
 		$wgWizCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 		$wgWizCallObject->arIsNewObject=true;

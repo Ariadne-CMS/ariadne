@@ -44,7 +44,7 @@
 
 			$archive = new Archive_Tar($archive);
 			$result = $archive->extract($dstdir);
-			$archive->_Archive_Tar();
+			unset($archive);
 
 			debug("untar_pear [return]");
 			return $result;
@@ -63,7 +63,7 @@
 				}
 			}
 			$result = $archive->addModify($filelist, "", $srcdir);
-			$archive->_Archive_Tar();
+			unset($archive);
 			return $result;
 		}
 

@@ -61,7 +61,7 @@ class StoreTest extends AriadneBaseTest
 		$testpath = $store->make_path('/',$testpath);
 
 		// create object
-		$ret = $store->save($store->make_path('/',$testpath),'pobject',new object());
+		$ret = $store->save($store->make_path('/',$testpath),'pobject',new baseObject());
 		$this->assertEquals($testpath, $ret);
 		return $ret;
 	}
@@ -75,7 +75,7 @@ class StoreTest extends AriadneBaseTest
 		$id = $store->get_nextid(TESTBASE, $mask);
 
 		// create object
-		$ret = $store->save($store->make_path('/',$testpath),'pobject',new object());
+		$ret = $store->save($store->make_path('/',$testpath),'pobject',new baseObject());
 		$this->assertNotEquals($testpath, $ret);
 
 		$prep = str_replace ( '{5:id}', $id, $testpath);
@@ -85,7 +85,7 @@ class StoreTest extends AriadneBaseTest
 		$id = $store->get_nextid(TESTBASE, $mask);
 
 		// create object
-		$ret2 = $store->save($store->make_path('/',$testpath),'pobject',new object());
+		$ret2 = $store->save($store->make_path('/',$testpath),'pobject',new baseObject());
 		$this->assertNotEquals($testpath, $ret2);
 		$this->assertNotEquals($ret, $ret2);
 
@@ -101,7 +101,7 @@ class StoreTest extends AriadneBaseTest
 		$row1 = $store->call('system.get.phtml','',$dbobj);
 		$this->assertNotEquals('2', $row1->data->test);
 
-		$data = new object();
+		$data = new baseObject();
 		$data->test = "2";
 		$ret = $store->save($path,'pobject',$data);
 		$this->assertEquals($path, $ret);

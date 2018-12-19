@@ -20,7 +20,7 @@
 				$this->data = current(ar::get($scaffold)->call('system.get.data.phtml'));
 			}
 			if (!isset($this->data) || ar_error::isError($this->data)) {
-				$this->data = new object;
+				$this->data = new baseObject;
 			}
 		}
 
@@ -33,7 +33,7 @@
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 		} else {
 			if (!$this->data->nls) {
-				$this->data->nls=new object;
+				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 
@@ -62,7 +62,7 @@
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					if (!$this->data->$key) {
 						debug("$key not yet set","all");
-						$newnlsdata=new object;
+						$newnlsdata=new baseObject;
 					} else {
 						debug("$key was set","all");
 						$newnlsdata=$this->data->$key;

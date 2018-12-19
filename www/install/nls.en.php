@@ -58,6 +58,7 @@
 	$ARnls['install:check_select_db']	= 'Database exists and can used';
 	$ARnls['install:check_db_grants']	= 'Database grants are set for database user';
 	$ARnls['install:check_db_is_empty']	= 'Database to install in is empty';
+	$ARnls['install:check_db_charset']      = 'Database character set and collation is compatible';
 	$ARnls['install:check_files']		= 'Files directory exists and is readable';
 	$ARnls['install:check_base_ax']		= 'Ariadne Base package exists and is readable';
 	$ARnls['install:check_demo_ax']		= 'Sample sites and layouts package exists and is readable';

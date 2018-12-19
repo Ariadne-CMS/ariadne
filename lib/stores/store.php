@@ -407,9 +407,13 @@ abstract class store {
 		return serialize($value);
 	}
 
+	private function fixObjectClass($value) {
+		return str_replace('O:6:"object"', 'O:8:"stdClass"', $value);
+	}
+
 	protected function unserialize($value, $path) {
 		if ($value[0] === "O" && $value[1] === ":") {
-			return unserialize($value);
+			return unserialize(self::fixObjectClass($value));
 		} else if ($this->config['crypto'] instanceof \Closure) {
 			$crypto = $this->config['crypto']();
 			list($token,$datavalue) = explode(':', $value, 2);
@@ -430,9 +434,9 @@ abstract class store {
 			}
 
 			if ($decryptedValue[0] === "O" && $decryptedValue[1] === ":") {
-				return unserialize($decryptedValue);
+				return unserialize(self::fixObjectClass($decryptedValue));
 			} else {
-				$dummy = unserialize('O:6:"object":7:{s:5:"value";s:0:"";s:3:"nls";O:6:"object":2:{s:7:"default";s:2:"nl";s:4:"list";a:1:{s:2:"nl";s:10:"Nederlands";}}s:2:"nl";O:6:"object":1:{s:4:"name";s:14:"Crypted object";}s:6:"config";O:6:"object":2:{s:10:"owner_name";s:6:"Nobody";s:5:"owner";s:6:"nobody";}s:5:"mtime";i:0;s:5:"ctime";i:0;s:5:"muser";s:6:"nobody";}');
+				$dummy = unserialize('O:8:"stdClass":7:{s:5:"value";s:0:"";s:3:"nls";O:8:"stdClass":2:{s:7:"default";s:2:"nl";s:4:"list";a:1:{s:2:"nl";s:10:"Nederlands";}}s:2:"nl";O:8:"stdClass":1:{s:4:"name";s:14:"Crypted object";}s:6:"config";O:8:"stdClass":2:{s:10:"owner_name";s:6:"Nobody";s:5:"owner";s:6:"nobody";}s:5:"mtime";i:0;s:5:"ctime";i:0;s:5:"muser";s:6:"nobody";}');
 				$dummy->failedDecrypt = true;
 				$dummy->originalData = $value;
 				return $dummy;

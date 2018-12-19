@@ -83,7 +83,7 @@ class axstore {
 										$object->type=$data[1];
 										$object->vtype=$data[2];
 										$object->lastchanged=(int)$data[3];
-										$object->storage=new object;
+										$object->storage=new baseObject;
 										$object->storage->fp=$this->ofile;
 										$object->storage->offset=$currentoffset;
 										$object->refcount=1;
@@ -108,7 +108,7 @@ class axstore {
 							if ($fp_nodes) {
 								while ($data=fgets($fp_nodes)) {
 									$data=explode("&", $data);
-									$node=new object;
+									$node=new baseObject;
 									$node->path=$data[0];
 									$node->nextid=$data[2];
 									$node->priority=$data[3];
@@ -203,6 +203,10 @@ class axstore {
 		$result = $this->$field;
 		debug("axstore::get_config: end", "all");
 		return $result;
+	}
+
+	private function fixObjectClass($value) {
+		return str_replace('O:6:"object"', 'O:8:"stdClass"', $value);
 	}
 
 	function is_supported($feature) {
@@ -346,7 +350,7 @@ class axstore {
 			}
 			$id=$this->exists($source);
 			if ($id) {
-				$node=new object;
+				$node=new baseObject;
 				$node->path=$destination;
 				$node->object=$this->objects[$id];
 				$this->nodes[$destination]=$node;
@@ -561,7 +565,7 @@ class axstore {
 
 			$this->objects[$object->id]=$object;
 
-			$node=new object;
+			$node=new baseObject;
 			$node->path=$path;
 			$node->priority=$epriority;
 			$node->axflags=$axflags;
@@ -675,7 +679,7 @@ class axstore {
 		if (!$this->error) {
 			fseek($this->sfp, 0, SEEK_END);
 			if (!$object->storage) {
-				$object->storage=new object;
+				$object->storage=new baseObject;
 			}
 			$object->storage->fp=$this->sfp;
 			$object->storage->offset=ftell($this->sfp);
@@ -702,8 +706,8 @@ class axstore {
 			$line.=$rline;
 
 			if ($line && sizeof($fdata=explode("&", $line))) {
-				$object->properties=unserialize(base64_decode($fdata[6]));
-				$object->data=unserialize(base64_decode($fdata[5]));
+				$object->properties=unserialize(self::fixObjectClass(base64_decode($fdata[6])));
+				$object->data=unserialize(self::fixObjectClass(base64_decode($fdata[5])));
 				$result=1;
 			}
 		}

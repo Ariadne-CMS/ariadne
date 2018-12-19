@@ -6,7 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'arc\\' => array($vendorDir . '/arc/prototype/src', $vendorDir . '/arc/grants/src', $vendorDir . '/arc/html/src', $vendorDir . '/arc/web/src', $vendorDir . '/arc/base/src', $vendorDir . '/arc/events/src', $vendorDir . '/arc/config/src', $vendorDir . '/arc/cache/src', $vendorDir . '/arc/xml/src'),
+    'phpseclib\\' => array($vendorDir . '/phpseclib/phpseclib/phpseclib'),
+    'arc\\' => array($vendorDir . '/arc/base/src', $vendorDir . '/arc/xml/src', $vendorDir . '/arc/web/src', $vendorDir . '/arc/prototype/src', $vendorDir . '/arc/html/src', $vendorDir . '/arc/grants/src', $vendorDir . '/arc/events/src', $vendorDir . '/arc/config/src', $vendorDir . '/arc/cache/src'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'PhpAmqpLib\\' => array($vendorDir . '/php-amqplib/php-amqplib/PhpAmqpLib'),

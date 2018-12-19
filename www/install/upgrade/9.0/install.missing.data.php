@@ -18,8 +18,8 @@ function importMissingData($path) {
 		$ARCurrent->AXAction == "import";
 
 		// become admin
-		$AR->user=new object;
-		$AR->user->data=new object;
+		$AR->user=new baseObject;
+		$AR->user->data=new baseObject;
 		$AR->user->data->login=$ARLogin="admin";
 
 		$ax_config["writeable"]=false;

@@ -10,8 +10,8 @@
 
 	/* become admin */
 	$ARLogin="admin";
-	$AR->user=new object;
-	$AR->user->data=new object;
+	$AR->user=new baseObject;
+	$AR->user->data=new baseObject;
 	$AR->user->data->login="admin";
 
 	$inst_store = $store_config["dbms"]."store";

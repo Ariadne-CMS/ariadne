@@ -12,7 +12,7 @@
 	} else if ($this->CheckLogin("add", $arNewType) && $this->CheckConfig()) {
 		include_once($this->store->get_config("code")."widgets/wizard/code.php");
 		$arNewFilename=$this->getdata("arNewFilename","none");
-		$arNewData=new object;
+		$arNewData=new baseObject;
 		$arNewPath=$this->make_path($arNewFilename);
 		$arNewParent=$this->make_path($arNewPath.'../');
 		$arNewCallObject=$this->store->newobject($arNewPath, $arNewParent, $arNewType, $arNewData);
