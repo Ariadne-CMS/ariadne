@@ -652,8 +652,8 @@
 			if ( getOption('tagBoundaries') ) {
 				vedor.editor.actions['vedor-show-tags'](document.getElementById('vdShowTagBoundaries'));
 			}
-			if ( getOption('properties') ) {
-				vedor.editor.actions['vedor-properties'](document.getElementById('VD_META'));
+			if ( getOption('properties') || vdOpenMetaPane ) {
+				vedor.editor.actions['vedor-properties'](document.getElementById('VD_META'),true);
 			}
 			if ( getOption('tagStack')===false ) { // default is on, this toggles it
 				vedor.editor.actions['vedor-show-tags-stack'](document.getElementById('vdShowTagStack'));
@@ -2008,10 +2008,16 @@
 	var arObjectRegistry	= new Array();
 	var arChangeRegistry	= new Array();
 	var arGroupRegistry	= new Array();
+	var arGroupRegistryQueue = new Array();
 	var currentEditableField= false;
 
 	function registerDataField(fieldId, fieldName, objectPath, objectId) {
 		arFieldRegistry[fieldId]=new dataField(fieldId, fieldName, objectPath, objectId);
+                if ( arGroupRegistryQueue[fieldId] ) {
+                        arFieldRegistry[fieldId].group = arGroupRegistryQueue[fieldId];
+                        arGroupRegistryQueue[fieldId] = null;
+                }
+
 		if (!arObjectRegistry[objectId]) {
 			arObjectRegistry[objectId]=new Array();
 		}
@@ -2036,6 +2042,8 @@
 		arGroupRegistry[group].push(fieldId);
 		if (arFieldRegistry[fieldId]) {
 			arFieldRegistry[fieldId].group=group;
+		} else {
+			arGroupRegistryQueue[fieldId] = group;
 		}
 	}
 
@@ -3681,8 +3689,10 @@
 			}
 			window_onresize();
 		},
-		"vedor-properties" : function(el) {
-			VD_META_onclick();
+		"vedor-properties" : function(el, enabled) {
+			if ( vdMetaDataSlideEnabled != enabled ) {
+				VD_META_onclick();
+			}
 			return false;
 		},
 		"vedor-insert-gadget" : function(el) {

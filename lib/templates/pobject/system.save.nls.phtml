@@ -18,7 +18,7 @@
 			if ($this->data->nls && !$this->data->nls->list[$default]) {
 				$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$ARConfig->nls->list[$default]);
 			} else {
-				$this->data->config->nlsconfig=new object;
+				$this->data->config->nlsconfig=new baseObject;
 				$this->data->config->nlsconfig->default=$default;
 				reset($available);
 				while (list($key, $lang)=each($available)) {

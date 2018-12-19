@@ -22,7 +22,7 @@
 			// the defined interface: $arCallArgs)
 			$this->data=current($this->get(".","system.get.data.phtml"));
 		} else {
-			$this->data=new object;
+			$this->data=new baseObject;
 		}
 
 		$this->error = null;
@@ -34,7 +34,7 @@
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 		} else {
 			if (!$this->data->nls) {
-				$this->data->nls=new object;
+				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
@@ -44,7 +44,7 @@
 				if ($name=$this->getdata("name",$key)) {
 					// (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
 					if (!$this->data->$key) {
-						$newnlsdata=new object;
+						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
 					}

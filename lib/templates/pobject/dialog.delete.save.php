@@ -138,7 +138,7 @@
 			} else  {
 				// backward compatibility with pre muze.dialog openers
 				if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
-					window.opener.muze.ariadne.explore.view('<?php echo (($this->getvar("childrenonly") || sizeof($targets > 1)) ? $this->path : $this->parent );?>');
+					window.opener.muze.ariadne.explore.view('<?php echo (($this->getvar("childrenonly") || sizeof($targets) > 1) ? $this->path : $this->parent );?>');
 				}
 				window.close();
 			}

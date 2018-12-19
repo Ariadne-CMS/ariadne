@@ -17,7 +17,7 @@
 	if ( $this->CheckConfig() ) {
 
 		$arNewFilename = $this->getdata("arNewFilename","none");
-		$arNewData = new object();
+		$arNewData = new baseObject();
 		$container = $this->getdata("location") ? $this->getdata("location") : $this->path;
 		$arNewPath = $this->make_path($container . $arNewFilename);
 		$wgWizCallObject = $this->store->newobject($arNewPath, $container, $arNewType, $arNewData);

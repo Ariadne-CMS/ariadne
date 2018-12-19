@@ -2,7 +2,7 @@
 	$ariadne = '';
 
 	function check_php_version() {
-		if (version_compare(PHP_VERSION, '5.4.7', '>=')) {
+		if (version_compare(PHP_VERSION, '5.6.2', '>=')) {
 			return true;
 		}
 		return false;
@@ -205,6 +205,13 @@
 		return false;
 	}
 
+	function check_domdocument_class() {
+		if (class_exists("DOMDocument")) {
+			return true;
+		}
+		return false;
+	}
+
 	function check_svn_binary() {
 		$bin = find_in_path('svn');
 		if (is_executable($bin)) {
@@ -283,6 +290,21 @@
 				break;
 				case 'postgresql':
 					return check_db_grants_postgresql($conf);
+				break;
+			}
+		}
+		return false;
+	}
+
+	function check_db_charset($conf) {
+		if ($conf && $conf->dbms) {
+			switch ( $conf->dbms ) {
+				case 'mysql':
+				case 'mysql_workspaces':
+					return check_db_charset_mysql($conf) && check_db_collation_mysql($conf);
+				break;
+				case 'postgresql':
+					return true; // No known issues for postgres
 				break;
 			}
 		}
@@ -404,6 +426,36 @@
 		return false;
 	}
 
+	function check_db_collation_mysql($conf) {
+		$dbh = getConnection($conf);
+		if (!$dbh->connect_errno) {
+			$query = "SHOW VARIABLES LIKE 'collation_server'";
+			$result = $dbh->query($query);
+			if (!$dbh->errno && $result->num_rows) {
+				$vars = mysqli_fetch_row($result);
+				if ($vars && $vars[1] && ($vars[1] == "latin1_swedish_ci")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	function check_db_charset_mysql($conf) {
+		$dbh = getConnection($conf);
+		if (!$dbh->connect_errno) {
+			$query = "SHOW VARIABLES LIKE 'character_set_server'";
+			$result = $dbh->query($query);
+			if (!$dbh->errno && $result->num_rows) {
+				$vars = mysqli_fetch_row($result);
+				if ($vars && $vars[1] && ($vars[1] == "latin1")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	function check_db_is_empty_postgresql($conf) {
 		if (check_connect_db_postgresql($conf)) {
 			$query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';";
@@ -480,7 +532,7 @@
 	}
 
 	function check_mcrypt() {
-		if (extension_loaded('mcrypt')) {
+		if (function_exists('mcrypt_encrypt')) {
 			return true;
 		}
 		return false;
@@ -514,7 +566,7 @@
 	$found_bins = array(); // will be filled by the check functions
 
 	$required_checks = array(
-		"check_php_version" => check_php_version(),		// php => 5.4.0
+		"check_php_version" => check_php_version(),		// php => 5.6.2
 		"check_database_support" => check_database_support(),	// MySQL or Postgres
 		"check_webserver" => check_webserver(),			// Apache, IIS, NGINX?
 		"check_accept_path_info" => check_accept_path_info(),	// Apache config: AcceptPathInfo
@@ -525,6 +577,7 @@
 		"check_base_ax"	=> check_base_ax(),
 		"check_tar_class" => check_tar_class(),			// Check if Archive/Tar class is available to import packages with.
 		"check_mb_functions" => check_mb_functions(),			// Check if Archive/Tar class is available to import packages with.
+		"check_domdocument_class" => check_domdocument_class(),
 	);
 
 	$recommended_checks = array(

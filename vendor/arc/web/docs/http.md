@@ -1,7 +1,7 @@
 arc\http
 ========
 
-This component provides a very basic http client.
+This component provides a very basic http client using PHP stream handling.
 
 \arc\http::get
 --------------------
@@ -13,10 +13,9 @@ This component provides a very basic http client.
 --------------------
     (string) \arc\http::get( $url = null, $query = null, $options = array() )
 
-```php5
-<?php
-    $htmlResult = \arc\http::get( 'http://www.ariadne-cms.org/', '?foo=bar' );
-```
+    <?php
+        $htmlResult = \arc\http::get( 'http://www.ariadne-cms.org/', '?foo=bar' );
+
 These methods send a http requests to the given url with the given query arguments. 
 The options array is a optional list of [http context options](http://www.php.net/manual/en/context.http.php).
 
@@ -25,10 +24,9 @@ The options array is a optional list of [http context options](http://www.php.ne
 --------------------
     (string) \arc\http::request( $method = null, $url = null, $query = null, $options = array() )
 
-```php5
-<?php
-    $htmlResult = \arc\http::request( 'GET', 'http://www.ariadne-cms.org/', '?foo=bar' );
-```
+    <?php
+        $htmlResult = \arc\http::request( 'GET', 'http://www.ariadne-cms.org/', '?foo=bar' );
+
 This method sends a http request with the given method to the given url with the given query arguments.
 The options array is a optional list of [http context options](http://www.php.net/manual/en/context.http.php).
 

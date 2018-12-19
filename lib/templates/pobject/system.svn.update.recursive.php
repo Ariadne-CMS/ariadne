@@ -31,7 +31,7 @@
 			flush();
 		} else {
 			// we really need to update this, call the update template
-			$result = $this->call('system.svn.update.php');
+			$result = $this->call('system.svn.update.php', $arCallArgs);
 
 			// Run update on the existing subdirs.
 			$arCallArgs['repoPath'] = $this->path;

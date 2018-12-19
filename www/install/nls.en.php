@@ -23,7 +23,7 @@
 	$ARnls['install:recheck']		= 'Re-run checks';
 	$ARnls['install:check_ok']		= 'Passed';
 	$ARnls['install:check_failed']		= 'Failed';
-	$ARnls['install:check_php_version']	= 'PHP &gt;= 5.4.7';
+	$ARnls['install:check_php_version']	= 'PHP &gt;= 5.6.2';
 	$ARnls['install:check_database_support']= 'Supported database';
 	$ARnls['install:check_webserver']	= 'Supported webserver';
 	$ARnls['install:check_accept_path_info']= 'AcceptPathInfo directive in httpd.conf';
@@ -51,12 +51,14 @@
 	$ARnls['install:check_tar_class']	= 'Archive/Tar class is available';
 	$ARnls['install:check_mb_functions'] = 'Multibyte string support is available';
 	$ARnls['install:check_mcrypt'] = 'Mcrypt support is available';
+	$ARnls['install:check_domdocument_class'] = 'DOMDocument class is available';
 
 	$ARnls['install:check_default_nls']	= 'Default nls language files are available';
 	$ARnls['install:check_connect_db']	= 'Connect to database server';
 	$ARnls['install:check_select_db']	= 'Database exists and can used';
 	$ARnls['install:check_db_grants']	= 'Database grants are set for database user';
 	$ARnls['install:check_db_is_empty']	= 'Database to install in is empty';
+	$ARnls['install:check_db_charset']      = 'Database character set and collation is compatible';
 	$ARnls['install:check_files']		= 'Files directory exists and is readable';
 	$ARnls['install:check_base_ax']		= 'Ariadne Base package exists and is readable';
 	$ARnls['install:check_demo_ax']		= 'Sample sites and layouts package exists and is readable';
@@ -81,10 +83,10 @@
 	$ARnls['install:ariadne_basic']		= 'Ariadne basic settings';
 	$ARnls['install:ariadne_location']	= 'Path to Ariadne on disk';
 	$ARnls['install:ariadne_location_help']	= 'This is the path where the Ariadne installation resides on the server. This should be a path outside the webroot.';
-	$ARnls['install:setup_admin_acc'] 	= 'Administrator account information';
-	$ARnls['install:admin_pass']		= 'Administator password';
-	$ARnls['install:admin_pass_help']	= 'Enter the password for the administrator account. This password will be set on installation.';
-	$ARnls['install:admin_pass_repeat']	= 'Confirm administator password';
+	$ARnls['install:setup_admin_acc'] 	= 'Admin account information';
+	$ARnls['install:admin_pass']		= 'Admin password';
+	$ARnls['install:admin_pass_help']	= 'Enter the password for the admin account. This password will be set on installation.';
+	$ARnls['install:admin_pass_repeat']	= 'Confirm admin password';
 	$ARnls['install:admin_pass_repeat_help']= 'Enter the same password as entered before. This is to ensure the passwords match.';
 	$ARnls['install:install_modules']	= 'Install extra modules';
 	$ARnls['install:enable_svn']		= 'Enable SVN support in Ariadne';

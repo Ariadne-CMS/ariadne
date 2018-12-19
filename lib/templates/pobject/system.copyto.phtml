@@ -15,7 +15,7 @@
 					if (preg_match("/^[a-z0-9_\{\}\.\:-]+$/i", basename($target))) {
 						if (!$this->exists($target)) {
 						
-							$eventData = new object();
+							$eventData = new baseObject();
 							$eventData->arTarget = $target;
 							$eventData->arSource = $this->path;
 							$eventData->arSearch = $search;

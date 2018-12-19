@@ -43,8 +43,12 @@ class config
         return self::getConfiguration()->cd( $path );
     }
 
-    public static function root($root)
-    {
-        return self::getConfiguration()->root( $root );
+    public static function reset($config = null) {
+        $context = \arc\context::$context;
+        $config = new \arc\config\Configuration( 
+            \arc\tree\expand($config)
+            ->cd( $context->arcPath ) 
+        );
+        $context->push( [ 'arcConfig' => $config ] );
     }
 }

@@ -1,15 +1,27 @@
 language: php
 php:
-  - 5.4
-  - 5.5
+  - '5.6'
+  - '7.0'
+  - 'hhvm'
+
+matrix:
+   allow_failures:
+         - php: 'hhvm'
 
 before_script:
    - composer install
-   - composer --working-dir=tests install
 
-script: php ./tests/testall.php
+script: vendor/bin/phpunit -d zend.enable_gc=0 --coverage-clover=coverage.clover
 
 notifications:
   email: false
-  irc: "open.ircnet.org#ariadne"
+  irc:
+    channels:
+        secure: "B+0BkpJH9k+WNuyChB4B5KORDqxj9SmsMSn3eaelDxhfJSZVagVToj1qtZUHqar3Bh7jKnT1/JD7PS/WFDGVMlkFftDae0cYoVXxbW32lUS3iNwJAWEmLqKIeYiMIt0+WTK8FKYc8u8KhtVVCG4RnUreofR3urj/z5mAxEqAUqk="
+    on_success: change
+    on_failure: always
+after_script:
+  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi;'
+  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi;'
 
+sudo: false

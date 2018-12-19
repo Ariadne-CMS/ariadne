@@ -80,7 +80,7 @@
 			$ob_id = str_replace("/", ":", $path);
 	?>
 			<label for="select_<?php echo $ob_id; ?>" class="block item <?php if($path == $selectedpath) { echo " selected";} ?>" title="<?php echo $info['name'];?>">
-				<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], size => 'medium')); ?>" alt="<?php echo $info['type'];?>">
+				<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], 'size' => 'medium')); ?>" alt="<?php echo $info['type'];?>">
 				<div class="object">
 					<span class="name"><?php echo yui::labelspan($info['name'], 24); ?></span><br>
 					<span class="path"><?php echo yui::labelspan($path, 24); ?></span>

@@ -25,7 +25,7 @@
 	$ARnls['install:recheck']		= 'Opnieuw controleren';
 	$ARnls['install:check_ok']		= 'Geslaagd';
 	$ARnls['install:check_failed']		= 'Mislukt';
-	$ARnls['install:check_php_version']	= 'PHP &gt;= 5.4.7';
+	$ARnls['install:check_php_version']	= 'PHP &gt;= 5.6.2';
 	$ARnls['install:check_database_support']= 'Ondersteunde database';
 	$ARnls['install:check_webserver']	= 'Ondersteunde webserver';
 	$ARnls['install:check_accept_path_info']= 'AcceptPathInfo regel in httpd.conf';
@@ -53,12 +53,14 @@
 	$ARnls['install:check_tar_class']	= 'Archive/Tar class is beschikbaar';
 	$ARnls['install:check_mb_functions'] = 'Multibyte string support is beschikbaar';
 	$ARnls['install:check_mcrypt'] = 'Mcrypt support is beschikbaar';
+	$ARnls['install:check_domdocument_class'] = 'DOMDocument class is beschikbaar';
 
 	$ARnls['install:check_default_nls']	= 'Standaard NLS taalbestanden zijn beschikbaar';
 	$ARnls['install:check_connect_db']	= 'Verbinding maken naar database server';
 	$ARnls['install:check_select_db']	= 'Database bestaat en kan gebruikt worden';
 	$ARnls['install:check_db_grants']	= 'Database-rechten zijn gezet voor database-gebruiker';
 	$ARnls['install:check_db_is_empty']	= 'Gekozen database voor installatie is leeg';
+	$ARnls['install:check_db_charset']	= 'Gekozen database character set en collation is compatible';
 	$ARnls['install:check_files']		= 'Files map bestaat en is leesbaar';
 	$ARnls['install:check_base_ax']		= 'Pakket "Ariadne Basis" bestaat en is leesbaar';
 	$ARnls['install:check_demo_ax']		= 'Pakket "Voorbeeldsites en vormgevingen" bestaat en is leesbaar';
@@ -83,9 +85,9 @@
 	$ARnls['install:ariadne_basic']		= 'Ariadne basis instellingen';
 	$ARnls['install:ariadne_location']	= 'Pad naar Ariadne op schijf';
 	$ARnls['install:ariadne_location_help']	= 'Dit is het pad waar de bestanden van Ariadne op de server staan. Dit moet een pad buiten de webroot zijn.';
-	$ARnls['install:setup_admin_acc'] 	= 'Administrator account informatie';
-	$ARnls['install:admin_pass']		= 'Administator wachtwoord';
-	$ARnls['install:admin_pass_help']	= 'Voer het wachtwoord in voor het administrator account. Dit wachtwoord wordt bij installatie op het administrator account ingesteld.';
+	$ARnls['install:setup_admin_acc'] 	= 'Admin account informatie';
+	$ARnls['install:admin_pass']		= 'Admin wachtwoord';
+	$ARnls['install:admin_pass_help']	= 'Voer het wachtwoord in voor het admin account. Dit wachtwoord wordt bij installatie op het admin account ingesteld.';
 	$ARnls['install:admin_pass_repeat']	= 'Bevestig administator wachtwoord';
 	$ARnls['install:admin_pass_repeat_help']= 'Voer nogmaals hetzelfde wachtwoord in. Dit is om te bevestigen dat beide wachtwoorden identiek zijn.';
 	$ARnls['install:install_modules']	= 'Installeer extra modules';

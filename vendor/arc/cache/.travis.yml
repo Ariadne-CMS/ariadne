@@ -1,15 +1,24 @@
 language: php
 php:
-  - 5.4
-  - 5.5
+  - '5.6'
+  - '7.0'
+  - 'hhvm'
 
 before_script:
    - composer install
-   - composer --working-dir=tests install
 
-script: php ./tests/testall.php
+script: vendor/bin/phpunit --coverage-clover=coverage.clover
 
 notifications:
   email: false
-  irc: "open.ircnet.org#ariadne"
+  irc:
+    channels:
+       secure: "DYD4TgeQd84i1MCnl7xH0ErATgtUnhyzuLqpHfgs9/54y4B5RH5o0qR+hDS4JyrpJbPPt6BxQMk606sXu393I07k1MCPppxnhqLdL4t26VX5uWJFAPJ5FF/aD0kALVYUmJICIgjqD1fdlgdOPqCq/YXMk9N1o0XGtK9YKpq30V0="
+    on_success: change
+    on_failure: always
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
+
+sudo: false

@@ -21,7 +21,7 @@
 			} else if (!in_array($default, $available)) {
 				$this->error = $ARnls['err:defaultlanguagenotavailable'];
 			} else {
-				$this->data->config->nlsconfig=new object;
+				$this->data->config->nlsconfig=new baseObject;
 				$this->data->config->nlsconfig->default=$default;
 				reset($available);
 				while (list($key, $lang)=each($available)) {

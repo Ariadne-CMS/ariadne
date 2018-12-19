@@ -16,7 +16,6 @@ class session {
 		if ((!$id) || (!$this->sessionstore->exists("/$id/"))) {
 			debug("session: generating new id", "all");
 			// generate new id
-			mt_srand((int) (microtime(true)*1000000));
 			do {
 				$attempts++;
 				$id = false;
@@ -29,17 +28,17 @@ class session {
 				}
 				if (!$id ) {
 					// base36 encoded 4 char length == 36^4-1 == 1679615
-					$id = sprintf("%04s",base_convert(mt_rand(0,1679615),10,36));
+					$id = sprintf("%04s",base_convert(random_int(0,1679615),10,36));
 				}
 				debug("new id is $id","store");
 			} while ($this->sessionstore->exists("/".$id."/"));
 			// save new session object
-			$this->data=new object;
+			$this->data=new baseObject;
 			$this->id=$id;
 			$this->lastchanged=time();
-			$this->system = new object;
+			$this->system = new baseObject;
 			$this->system->ARSessionTimedout=false;
-			$this->put("formSecret", md5(uniqid(rand(), TRUE)));
+			$this->put("formSecret", bin2hex(random_bytes(16)));
 
 			$this->save(0, 1);
 		} else { // retrieve session
@@ -112,7 +111,7 @@ class session {
 			$this->data->system = $this->system;
 			if ($this->changed || $forceupdate) {
 				if ( !$this->sessionstore->exists('/') ) {
-					$this->sessionstore->save( '/', 'pobject', new object );
+					$this->sessionstore->save( '/', 'pobject', new baseObject );
 				}
 				$this->sessionstore->save("/$id/","psession",$this->data);
 			} else if( ($now - $interval ) > $this->lastchanged ) {

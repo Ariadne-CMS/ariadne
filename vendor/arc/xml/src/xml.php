@@ -11,56 +11,203 @@
 
 namespace arc;
 
+/**
+ * Any method statically called on this class
+ * will reroute the call to the XML writer instance at 
+ * \arc\xml::$writer. Except for the methods:
+ * parse, css2XPath, name, value, attribute, comment, cdata and preamble
+ * If you need those call the Writer instance directly
+ */
 class xml
 {
+    /**
+     * @var xml\Writer The writer instance to use by default
+     */
+    public static $writer = null;
 
-    static public function __callStatic( $name, $args )
+    public static function __callStatic( $name, $args )
     {
-        return call_user_func_array( [ new xml\Writer(), $name ], $args );
+        if ( !isset(static::$writer) ) {
+            static::$writer = new xml\Writer();
+        }
+        return call_user_func_array( [ static::$writer, $name ], $args );
     }
 
-    static public function parse( $xml, $encoding = null )
+    /**
+     * This parses an XML string and returns a Proxy
+     * @param string|Proxy $xml
+     * @return Proxy
+     * @throws \arc\UnknownError
+     */
+    public static function parse( $xml=null, $encoding = null )
     {
         $parser = new xml\Parser();
         return $parser->parse( $xml, $encoding );
     }
 
-    static public function css2XPath( $cssSelector )
+    /**
+     * This method turns a single CSS 2 selector into an XPath query
+     * @param string $cssSelector
+     * @return string
+     */
+    public static function css2XPath( $cssSelector )
     {
-        /* (c) Tijs Verkoyen - http://blog.verkoyen.eu/blog/p/detail/css-selector-to-xpath-query/ */
-        $cssSelectors = array(
+        $tag = '(?:\w+\|)?\w+';
+        /* based on work by Tijs Verkoyen - http://blog.verkoyen.eu/blog/p/detail/css-selector-to-xpath-query/ */
+        $translateList = array(
             // E F: Matches any F element that is a descendant of an E element
-            '/(\w)\s+(\w)/',
+            '/('.$tag.')\s+(?=(?:[^"]*"[^"]*")*[^"]*$)('.$tag.')/'
+            => '\1//\2',
             // E > F: Matches any F element that is a child of an element E
-            '/(\w)\s*>\s*(\w)/',
+            '/('.$tag.')\s*>\s*('.$tag.')/'
+            => '\1/\2',
             // E:first-child: Matches element E when E is the first child of its parent
-            '/(\w):first-child/',
+            '/('.$tag.'|(\w+\|)?\*):first-child/'
+            => '*[1]/self::\1',
+            // Matches E:checked, E:disabled or E:selected (and just for scrutinizer: this is not code!)
+            '/('.$tag.'|(\w+\|)?\*):(checked|disabled|selected)/'
+            => '\1 [ @\3 ]',
             // E + F: Matches any F element immediately preceded by an element
-            '/(\w)\s*\+\s*(\w)/',
+            '/('.$tag.')\s*\+\s*('.$tag.')/'
+            => '\1/following-sibling::*[1]/self::\2',
+            // E ~ F: Matches any F element preceded by an element
+            '/('.$tag.')\s*\~\s*('.$tag.')/'
+            => '\1/following-sibling::*/self::\2',
             // E[foo]: Matches any E element with the "foo" attribute set (whatever the value)
-            '/(\w)\[([\w\-]+)]/',
+            '/('.$tag.')\[([\w\-]+)]/'
+            => '\1 [ @\2 ]',
             // E[foo="warning"]: Matches any E element whose "foo" attribute value is exactly equal to "warning"
-            '/(\w)\[([\w\-]+)\=\"(.*)\"]/',
+            '/('.$tag.')\[([\w\-]+)\=\"(.*)\"]/'
+            => '\1[ contains( concat( " ", normalize-space(@\2), " " ), concat( " ", "\3", " " ) ) ]',
+            // .warning: HTML only. The same as *[class~="warning"]
+            '/(^|\s)\.([\w\-]+)+/'
+            => '*[ contains( concat( " ", normalize-space(@class), " " ), concat( " ", "\2", " " ) ) ]',
             // div.warning: HTML only. The same as DIV[class~="warning"]
-            '/(\w+|\*)?\.([\w\-]+)+/',
+            '/('.$tag.'|(\w+\|)?\*)\.([\w\-]+)+/'
+            => '\1[ contains( concat( " ", normalize-space(@class), " " ), concat( " ", "\3", " " ) ) ]',
             // E#myid: Matches any E element with id-attribute equal to "myid"
-            '/(\w+)+\#([\w\-]+)/',
-                // #myid: Matches any E element with id-attribute equal to "myid"
-                '/\#([\w\-]+)/'
-                );
-
-        $xPathQueries = array(
-            '\1//\2',
-            '\1/\2',
-            '*[1]/self::\1',
-            '\1/following-sibling::*[1]/self::\2',
-            '\1 [ @\2 ]',
-            '\1[ contains( concat( " ", @\2, " " ), concat( " ", "\3", " " ) ) ]',
-            '\1[ contains( concat( " ", @class, " " ), concat( " ", "\2", " " ) ) ]',
-            '\1[ @id = "\2" ]',
-            '*[ @id = "\1" ]'
+            '/('.$tag.')\#([\w\-]+)/'
+            => "\\1[@id='\\2']",
+            // #myid: Matches any E element with id-attribute equal to "myid"
+            '/\#([\w\-]+)/'
+            => "*[@id='\\1']",
+            // namespace|
+            '/(\w+)\|/'
+            => "\\1:"
         );
 
-        return (string) '//'. preg_replace($cssSelectors, $xPathQueries, $cssSelector);
+        $cssSelectors = array_keys($translateList);
+        $xPathQueries = array_values($translateList);
+        do {
+            $continue    = false;
+            $cssSelector = (string) preg_replace($cssSelectors, $xPathQueries, $cssSelector);
+            foreach ( $cssSelectors as $selector ) {
+                if ( preg_match($selector, $cssSelector) ) {
+                    $continue = true;
+                    break;
+                }
+            }
+        } while ( $continue );
+        return '//'.$cssSelector;
     }
+
+    /**
+     * Returns a guaranteed valid XML name. Removes illegal characters from the name.
+     * @param string $name
+     * @return string
+     */
+    public static function name( $name)
+    {
+        return preg_replace( '/^[^:a-z_]*/isU', '',
+            preg_replace( '/[^-.0-9:a-z_]/isU', '', $name
+        ) );
+    }
+
+    /**
+     * Returns a guaranteed valid XML attribute value. Removes illegal characters.
+     * @param string|array|bool $value
+     * @return string
+     */
+    public static function value( $value)
+    {
+        if (is_array( $value )) {
+            $content = array_reduce( $value, function( $result, $value)
+            {
+                return $result . ' ' . static::value( $value );
+            } );
+        } else if (is_bool( $value )) {
+            $content = $value ? 'true' : 'false';
+        } else {
+            $value = (string) $value;
+            if (preg_match( '/^\s*<!\[CDATA\[/', $value )) {
+                $content = $value;
+            } else {
+                $content = htmlspecialchars( (string) $value, ENT_QUOTES, 'UTF-8' );
+            }
+        }
+        return $content;
+    }
+
+    /**
+     * Returns a guaranteed valid XML attribute. Removes illegal characters.
+     * @param string $name
+     * @param string|array|bool $value
+     * @return string
+     */
+    public static function attribute( $name, $value)
+    {
+        return ' ' . static::name( $name ) . '="' . static::value( $value ) . '"';
+    }
+
+    /**
+     * Returns a guaranteed valid XML comment. Removes illegal characters.
+     * @param string $content
+     * @return string
+     */
+    public static function comment( $content)
+    {
+        return static::raw('<!-- ' . static::value( $content ) . ' -->');
+    }
+
+    /**
+     * Returns a guaranteed valid XML CDATA string. Removes illegal characters.
+     * @param string $content
+     * @return string
+     */
+    public static function cdata( $content)
+    {
+        return static::raw('<![CDATA[' . str_replace( ']]>', ']]&gt;', $content ) . ']]>');
+    }
+
+    /**
+     * Returns an XML preamble.
+     * @param string $version Defaults to '1.0'
+     * @param string $encoding Defaults to null
+     * @param string $standalone Defaults to null
+     * @return string
+     */
+    public static function preamble( $version = '1.0', $encoding = null, $standalone = null)
+    {
+        if (isset($standalone)) {
+            if ($standalone === 'false') {
+                $standalone = 'no';
+            } else if ($standalone !== 'no') {
+                $standalone = ( $standalone ? 'yes' : 'no' );
+            }
+            $standalone = static::attribute( 'standalone', $standalone );
+        } else {
+            $standalone = '';
+        }
+        $preamble = '<?xml version="' . static::value($version) . '"';
+        if (isset( $encoding )) {
+            $preamble .= ' " encoding="' . static::value($encoding) . '"';
+        }
+        $preamble .= $standalone . ' ?>';
+        return $preamble;
+    }
+
+    public static function raw( $contents='' ) {
+        return new xml\RawXML($contents);
+    }
+
 }

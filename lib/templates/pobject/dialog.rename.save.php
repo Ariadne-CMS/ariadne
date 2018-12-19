@@ -67,7 +67,7 @@
 			<script type="text/javascript">
 				if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
 					window.opener.muze.dialog.callback( window.name, 'renamed', {
-						'path': '<?php echo $returnpath; ?>',
+						'path': '<?php echo $target; ?>',
 						'url' : '<?php echo $this->make_url($target); ?>'
 					});
 				} else {

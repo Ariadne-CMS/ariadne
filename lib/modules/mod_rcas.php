@@ -24,11 +24,9 @@
 				$data = Array();
 				$data["arNewFilename"] = "$user_dir$login/";
 
-				srand((double)microtime(true)*1000000);
-				$password = md5(uniqid(rand(), true));
 				$data["name"] = $login;
-				$data["newpass1"] = $password;
-				$data["newpass2"] = $password;
+				$data["newpass1"] = '!';
+				$data["newpass2"] = '!';
 				$data["profile"] = $user_profile;
 				$data["setowner"] = true;
 				$data["email"] = $userInfo["email"];
@@ -43,7 +41,7 @@
 							"$user_dir$login/",
 							"$user_dir",
 							$userType,
-							new object);
+							new baseObject);
 
 				$user->arIsNewObject = true;
 				$user->call('system.save.data.phtml', $data);

@@ -7,11 +7,15 @@
 
 	class ar_store extends arBase {
 		static public $rememberShortcuts = true;
+		static public $searchObject = false;
 
 		public static function configure( $option, $value ) {
 			switch ($option) {
 				case 'rememberShortcuts' :
 					self::$rememberShortcuts = $value;
+				break;
+				case 'searchObject' :
+					self::$searchObject = $value;
 				break;
 			}
 		}
@@ -32,6 +36,17 @@
 
 		public static function find( $query = "" ) {
 			return new ar_storeFind( ar::context()->getPath(), $query);
+		}
+
+		public static function getSearchPath( $path ) {
+			return ar::context()->getPath( array(
+				'searchObject' => self::$searchObject,
+				'path' => $path
+			) );
+		}
+
+		public static function getSearchQuery( $query ) {
+			return ar::context()->getQuery( $query );
 		}
 
 		public static function get( $path = "" ) {
@@ -160,6 +175,11 @@
 		public function __construct( $path = '/', $query = '' ) {
 			$this->path = (string)$path;
 			$this->query = (string)$query;
+
+			if ( ar_store::$searchObject ) {
+				$this->query = ar_store::getSearchQuery( $query );
+				$this->path = ar_store::getSearchPath( $path );
+			}
 		}
 
 		public function call( $template, $args = null ) {
@@ -177,6 +197,21 @@
 				$query .= ' order by '.$this->order;
 			}
 			$result = $store->call( $template, $args, $store->find( $path, $query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
+			return $result;
+		}
+
+		public function info() {
+			global $store;
+			if (ar_store::$rememberShortcuts) {
+				$path = ar_store::makeRealPath( $this->path );
+			} else {
+				$path = $this->path;
+			}
+			$query = $this->query;
+			if ($this->order) {
+				$query .= ' order by '.$this->order;
+			}
+			$result = $store->info( $store->find( $path, $query, $this->limit, $this->offset), array( 'usePathAsKey' => true ));
 			return $result;
 		}
 
@@ -247,6 +282,16 @@
 			return $store->call( $template, $args, $store->get( $path ), array( 'usePathAsKey' => true ) );
 		}
 
+		public function info() {
+			global $store;
+			if ( ar_store::$rememberShortcuts ) {
+				$path = ar_store::makeRealPath( $this->path );
+			} else {
+				$path = $this->path;
+			}
+			return $store->info( $store->get( $path ), array( 'usePathAsKey' => true ));
+		}
+
 		public function parents() {
 			return new ar_storeParents( $this->path );
 		}
@@ -298,6 +343,40 @@
 			return $store->call( $template, $args,
 				$store->parents( $this->path, $this->top ),
 				array( 'usePathAsKey' => true )
+			);
+		}
+
+		public function info(){
+			global $store;
+
+			if ( ar_store::$rememberShortcuts) {
+				$path     = ar_store::makePath( $this->path );
+				$realpath = ar_store::makeRealPath( $this->path );
+				if ($realpath != $path ) {
+					// must do a call for each seperate path.
+					$list   = array();
+					$parent = $path;
+					while ( $realpath != $this->top && $parent != $this->top && end( $list ) != $realpath ) {
+						$list[$parent] = $realpath;
+						$parent        = ar_store::makePath( $parent . '../' );
+						$realpath      = ar_store::makeRealPath( $parent );
+					}
+					if ( ( $realpath == $this->top ) || ( $parent == $this->top ) ) {
+						$list[$parent] = $realpath;
+					}
+					$list = array_reverse( $list );
+					$result = array();
+					foreach ( $list as $virtualpath => $path ) {
+						$result[$virtualpath] = current( $store->info(
+							$store->get( $path )
+						));
+					}
+					return $result;
+				}
+			}
+
+			return $store->info(
+				$store->parents( $this->path, $this->top ), array( 'usePathAsKey' => true )
 			);
 		}
 

@@ -1079,7 +1079,6 @@
 		}
 
 
-	sleep(1);
 //	debugon("pinp");
 
 	// set PHP error handling
@@ -1088,7 +1087,7 @@
 	error_reporting(1);
 	set_time_limit(0);
 
-	$FTP = new object;
+	$FTP = new stdClass;
 	$inst_store = $store_config["dbms"]."store";
 	$store=new $inst_store("", $store_config);
 

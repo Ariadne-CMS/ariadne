@@ -65,6 +65,14 @@
 			return $loader->getvar( $name, $method );
 		}
 
+		public static function inputStream() {
+			return new ar_content_filesFile(fopen("php://input", "r"));
+		}
+
+		public static function outputStream() {
+			return new ar_content_filesFile(fopen('php://output','w'));
+		}
+
 		public static function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = null ) {
 			$loader = self::getLoader();
 			if (!isset($keephost)) {

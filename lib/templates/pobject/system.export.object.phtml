@@ -13,7 +13,7 @@
 				&& ($ARCurrent->AXHeader["version"] <= 1.4)) {
 
 			if (!$data->config) {
-				$data->config = new object;
+				$data->config = new baseObject;
 			}
 			if ($data->templates) {
 				$data->config->templates = $data->templates;

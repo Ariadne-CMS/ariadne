@@ -1,3 +1,61 @@
+===================
+Changes Ariadne 9.7
+===================
+
+Bug fixes
+- Fixed bug when locking passwords, now correctly stores '!' as the hashed
+  password. This means that user cannot login anymore.
+- Fixed bug when importing files from older Ariadne versions, which had
+  duplicate file storage. In certain cases files would be de-duplicated on
+  import, but the reference would be to removed file instead of the kept file.
+  This means that import would create a pfile object without a real file.
+
+===================
+Changes Ariadne 9.6
+===================
+
+Changes
+- IMPORTANT: this release no longer supports old passwords stored as MD5 hashes. If you can no longer login, reset the password using an administrator account. This should only be an issue if you upgrade from a very old Ariadne release (<9).
+- Added ar('loader')->stdin()/stdout()/stderr() functions that return the php IO streams
+- The Ariadne loader now also handles PUT requests, use ar('loader')->stdin() to get the php://input stream
+- Improved security code by using the new random_bytes()/random_int() functions, with a secure fallback for older PHP versions.
+
+Bug fixes
+- Fixed bug in mod_edit that broke grouping of related fields
+- Fixed a number of warnings by better use of isset()
+- Fixed the browse dialog: selection in the right pane and pagination now work again.
+- Fixed incorrect content-length header in cache images that use session placeholders.
+- Fixed a bug in the importer that in very specific circumstances could misapply grants to the wrong group.
+- Fixed that ar_url can handle ar_tainted options and untaint them when applied to a url
+
+===================
+Changes Ariadne 9.5
+===================
+
+Changes:
+- the ariadne backend details view can now be configured to show different
+  columns. In addition you can add custom filters or completely rewrite the
+  query
+- ar\url now users arc\url, which supports all valid URL formats
+- php7 support improved
+- onbeforesave and workflow.pre now have access to the complete set of
+  customdata
+- added ar\store::info method, that returns meta information about objects.
+  This is faster and uses less memory than calling templates.
+
+Bug fixes:
+- fixed a bug in the html cleaner that broke html5 custom tags / web
+  components
+- fixed a bug that allowed onbeforesave / user.workflow.pre to overwrite
+  properties
+- fixed bug in upgrade script that prevented upgrades from 8.4 to 9.x
+- fixed possible XSS attacks with file names in a file upload
+- ar\contents\file::getContents now forces the stream pointer to stay put,
+  this fixes problems in specific php versions.
+- fixed use of array functions in pinp that update the array by reference
+  (usort, uasort, array_walk, etc.)
+
+
 ========================
 Changes Ariadne 9.4
 ========================

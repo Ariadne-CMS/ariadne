@@ -35,7 +35,7 @@
 
 debug("pobject: Load","object");
 
-abstract class ariadne_object extends object { // ariadne_object class definition
+abstract class ariadne_object extends baseObject { // ariadne_object class definition
 
 	public $store;
 	public $path;
@@ -46,7 +46,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$this->path=$path;
 		$this->data=$data;
 		if ( !isset($this->data->config) ) {
-			$this->data->config = new object();
+			$this->data->config = new baseObject();
 		}
 	}
 
@@ -212,7 +212,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 							if (!class_exists($arType, false)) {
 								// the given class was not yet loaded, so do that now
-								$this->store->newobject('','',$arType,new object);
+								$this->store->newobject('','',$arType,new baseObject);
 							}
 							$arSuper=get_parent_class($arType);
 
@@ -364,7 +364,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// array with the name $custom, or $custom comes from the object and is an array and as such
 		// parse_str fails miserably thus keeping the array $custom intact.
 
-		$i=0;
 		if (isset($this->data->custom) && is_array($this->data->custom)) {
 			foreach($this->data->custom as $nls => $cdata) {
 				foreach($cdata as $name => $value){
@@ -377,16 +376,19 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					if ($configcache->custom[$name]['property']) {
 						if (isset($value) && is_array($value)) {
 							foreach($value as $valkey => $valvalue ) {
-								$properties["custom"][$i]["name"]=$name;
-								$properties["custom"][$i]["value"]=$valvalue;
-								$properties["custom"][$i]["nls"]=$nls;
-								$i++;
+								$properties["custom"][] = [
+									"name"  => $name,
+									"value" => $valvalue,
+									"nls"   => $nls,
+								];
 							}
 						} else {
-							$properties["custom"][$i]["name"]=$name;
-							$properties["custom"][$i]["value"]=$value;
-							$properties["custom"][$i]["nls"]=$nls;
-							$i++;
+							$properties["custom"][] = [
+								"name"  => $name,
+								"value" => $value,
+								"nls"   => $nls,
+							];
+
 						}
 					}
 				}
@@ -395,7 +397,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $properties;
 	}
 
-	public function save($properties="", $vtype="") {
+	public function save($properties=array(), $vtype="") {
 	/***********************************************************************
 	  save the current object.
 	  if this is a new object ($this->arIsNewObject) the path is checked and
@@ -419,7 +421,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				if (!$this->exists($this->path)) { //arNewFilename)) {
 					if ($this->exists($arNewParent)) {
 						if (!$config = $this->data->config) {
-							$config=new object();
+							$config=new baseObject();
 						}
 					} else {
 						$this->error = ar::error( sprintf($ARnls["err:noparent"],$arNewParent), 1102);
@@ -463,10 +465,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$wf_object->arIsNewObject=$arIsNewObject;
 		}
 
+		/* save custom data */
+		$properties = $this->saveCustomData($configcache, $properties);
+
 		// this makes sure the event handlers are run on $wf_object, so that $this->data changes don't change the data of the object to be saved
 		$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
 
-		$eventData = new object();
+		$eventData = new baseObject();
 		$eventData->arCallArgs = $arCallArgs;
 		$eventData->arCallFunction	= $context['arCallFunction'];
 		$eventData->arIsNewObject = $arIsNewObject;
@@ -524,8 +529,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$properties["time"][0]["mtime"]=$this->data->mtime;
 		$properties["time"][0]["muser"]=$this->data->muser;
 
-		/* save custom data */
-		$properties = $this->saveCustomData($configcache, $properties);
 
 		if (!$this->error) {
 			if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
@@ -604,7 +607,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		$context = $this->getContext();
 
-		$eventData = new object();
+		$eventData = new baseObject();
 		$eventData->arCallArgs = $arCallArgs;
 		$eventData->arCallFunction = $context['arCallFunction'];
 		$eventData = ar_events::fire( 'onbeforedelete', $eventData );
@@ -640,14 +643,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				return $this->parent;
 				break;
 			default:
-				return $this->store->make_path($this->path, $path);
+				return self::sanitizePath($this->store->make_path($this->path, $path));
 		}
 	}
 
 	public function make_ariadne_url($path="") {
 		global $AR;
 		$path = $this->make_path($path);
-		return $AR->host . $AR->root . $this->store->get_config('rootoptions') . $path;
+		return self::sanitizeUrl($AR->host . $AR->root . $this->store->get_config('rootoptions') . $path);
 	}
 
 
@@ -737,7 +740,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$url = $protocol . $requestedHost . $AR->root . $rootoptions . $path;
 			}
 		}
-		return $url;
+		return self::sanitizeUrl($url);
 	}
 
 	protected function compare_hosts($url1, $url2) {
@@ -816,7 +819,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		} else {
 			$rest=substr($path, strlen($site));
 		}
-		return $site_url.$rest;
+		return self::sanitizeUrl($site_url.$rest);
+	}
+	public function sanitizeUrl($url) {
+		// remove unexpected chars from the url;
+		return preg_replace("/[^\/{}:.A-Za-z0-9_-]/", "", $url);
+	}
+	public function sanitizePath($path) {
+		// remove unexpected chars from the path; same as url for now;
+		return self::sanitizeUrl($path);
 	}
 
 	public function AR_implements($implements) {
@@ -1099,14 +1110,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$isadmin = $this->CheckAdmin($AR->user);
 
 		if (!$isadmin && !$AR->user->grants[$this->path]) {
-			$AR->user->grants[$this->path]=$this->GetValidGrants();
+			$grants = $this->GetValidGrants();
+		} else {
+			$grants = $AR->user->grants[$this->path];
 		}
+
 		if ($AR->user->data->login!="public") {
 			// Don't remove this or MSIE users won't get uptodate pages...
 			ldSetClientCache(false);
 		}
 
-		$grants=$AR->user->grants[$this->path];
 		if ( 	( !$grants[$grant]
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
 				) && !$isadmin ) {
@@ -1128,7 +1141,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$result=false;
 		if (!$AR->public) {
-			$this->pushContext(array("scope" => "php"));
+			$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
 				$AR->public=current($this->get("/system/users/public/", "system.get.phtml"));
 			$this->popContext();
 		}
@@ -1229,6 +1242,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	protected function getConfig() {
 	global $ARConfig, $ARCurrent, $ARConfigChecked;
+		$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
 		// $context=$this->getContext(0);
 		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
 		// debug(print_r($ARConfig->nls, true));
@@ -1299,6 +1313,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$ARCurrent->arLoginSilent = $loginSilent;
 		$ARCurrent->arConfig = $prevArConfig;
+		$this->popContext();
 	}
 
 	protected function getConfigData() {
@@ -1307,21 +1322,18 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
 			// first inherit parent configuration data
 			$configcache= clone $ARConfig->cache[$this->parent];
-			unset($configcache->localTemplates);
+			$configcache->localTemplates = [];
+			$configcache->pinpTemplates = [];
+			$configcache->id = $this->id;
+
 			// cache default templates
 			if (isset($this->data->config->templates) && count($this->data->config->templates)) {
-				$configcache->templates=&$this->data->config->templates;
-			}
-			if (isset($this->data->config->privatetemplates) && count($this->data->config->privatetemplates)) {
-				$configcache->privatetemplates=&$this->data->config->privatetemplates;
-			}
+				$configcache->pinpTemplates    = $this->data->config->pinp;
+				$configcache->privatetemplates = $this->data->config->privatetemplates;
+				$configcache->localTemplates   = $this->data->config->templates;
 
-			// Speedup check for config.ini
-
-			if(isset($this->data->config->templates) && is_array($this->data->config->templates) ) {
-				$configcache->localTemplates = $this->data->config->templates;
 				if( !$configcache->hasDefaultConfigIni ) {
-					foreach($this->data->config->templates as $type => $templates ) {
+					foreach($configcache->localTemplates as $type => $templates ) {
 						if( isset($templates["config.ini"]) ) {
 							$configcache->hasDefaultConfigIni = true;
 							$configcache->hasConfigIni = true;
@@ -1329,6 +1341,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						}
 					}
 				}
+			} else if (isset($this->data->config->pinp) && count($this->data->config->pinp)) {
+				$configcache->pinpTemplates    = $this->data->config->pinp;
 			}
 
 			if( !$configcache->hasDefaultConfigIni ) {
@@ -1465,102 +1479,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return (array)$config;
 	}
 
-	protected function getTemplateFromCache($path, $type, $function, &$arSuperContext) {
-	global $AR, $ARConfig;
-		$templatesList = $ARConfig->libraryCache[$path][$function];
-		if (!is_array($templatesList)) {
-			return false;
-		}
-		foreach ($templatesList as $checkpath => $templates) {
-			$arType = $type;
-			while ($arType!='ariadne_object') {
-//				echo "checking $i::$arType<br>\n";
-				if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType][$this->reqnls])) {
-					$arCallTemplate=$arType.".".$function.".".$this->reqnls;
-					$arCallTemplateName = $function;
-					$arCallTemplateNLS = $this->reqnls;
-					break 2;
-				} else if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType]['any'])) {
-					$arCallTemplate=$arType.".".$function.".any";
-					$arCallTemplateName = $function;
-					$arCallTemplateNLS = "any";
-					break 2;
-				} else {
-
-					if (!($arSuper=$AR->superClass[$arType])) {
-						// no template found, no default.phtml found, try superclass.
-						if ($subcpos = strpos($arType, '.')) {
-							$arSuper = substr($arType, 0, $subcpos);
-						} else {
-							if (!class_exists($arType, false)) {
-								// the given class was not yet loaded, so do that now
-								$arTemp=$this->store->newobject('','',$arType,new object);
-							} else {
-								$arTemp=new $arType();
-							}
-							$arSuper=get_parent_class($arTemp);
-						}
-						$AR->superClass[$arType]=$arSuper;
-					}
-					$arType=$arSuper;
-				}
-			}
-		}
-
-		$config = ($ARConfig->cache[$arTemplate["arLibraryLocalPath"]]) ? $ARConfig->cache[$arTemplate["arLibraryLocalPath"]] : $this->loadConfig($arTemplate["arLibraryLocalPath"]);
-		$arPrivateTemplate = $config->privatetemplates[$arType][$function];
-
-		return array(
-			"arTemplateId" => $arTemplate["arTemplateId"],
-			"arCallTemplate" => $arCallTemplate,
-			"arCallType" => $type,
-			"arCallTemplateName" => $arCallTemplateName,
-			"arCallTemplateNLS" => $arCallTemplateNLS,
-			"arCallTemplateType" => $arType,
-			"arCallTemplatePath" => $arTemplate["arLibraryLocalPath"],
-			"arLibrary" => "current",
-			"arLibraryPath" => $arTemplate["arLibraryPath"],
-			"arPrivateTemplate" => $arPrivateTemplate
-		);
-	}
-
-	public function loadLibraryCache($base, $path, $arLibraryPath = "") {
-	global $ARConfig;
-		if (!$arLibraryPath) {
-			$arLibraryPath = $path;
-		}
-		$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-		$templates = $config->localTemplates;
-		if (isset($templates) && is_array($templates)) {
-			$list = array();
-			foreach ($templates as $type => $functions) {
-				foreach ($functions as $function => $template) {
-					foreach ($template as $nls => $templateId) {
-						$list[$function][$type][$nls] = array(
-								"arTemplateId" => $templateId,
-								"arLibraryPath" => $arLibraryPath,
-								"arLibraryLocalPath" => $path
-						);
-					}
-				}
-			}
-
-			foreach ($list as $function => $types) {
-				if (!is_array($ARConfig->libraryCache[$base][$function])) {
-					$ARConfig->libraryCache[$base][$function] = array(
-						$path => $types
-					);
-				} else {
-					$ARConfig->libraryCache[$base][$function][$path] = $types;
-				}
-			}
-		}
-		list($basetype,) = explode('.', $config->type,2);
-		if ($path != '/' && $basetype != 'psection') {
-			$this->loadLibraryCache($base, $this->store->make_path($path, '../'), $arLibraryPath);
-		}
-	}
-
 	public function loadLibrary($name, $path) {
 	global $ARConfig;
 		$path=$this->make_path($path);
@@ -1569,37 +1487,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if (strstr($path, $this->path)===0) {
 				return ar::error('You cannot load an unnamed library from a child object.', 1109);
 			} else {
-				if (!$ARConfig->libraries[$this->path]) {
-					$ARConfig->libraries[$this->path]=array();
-				}
-				array_unshift($ARConfig->libraries[$this->path],$path);
-				if (!$ARConfig->cacheableLibraries[$this->path]) {
-					$ARConfig->cacheableLibraries[$this->path] = array($path);
+				if (!isset($ARConfig->libraries[$this->path])) {
+					$ARConfig->libraries[$this->path] = [ $path ];
 				} else {
-					array_unshift($ARConfig->cacheableLibraries[$this->path], $path);
+					array_unshift($ARConfig->libraries[$this->path],$path);
 				}
 			}
 		} else if ($name && is_string($name)) {
-			if (!$ARConfig->cache[$this->path]) {
-debug("loadLibrary: loading cache for $this->path");
-				$this->loadConfig($this->path);
-			}
 			$ARConfig->libraries[$this->path][$name]=$path;
-			$ARConfig->cache[$this->path]->libraries[$name]=$path;
-			$ARConfig->pinpcache[$this->path]["library"][$name] = $path;
 		} else if (is_int($name)) {
-			if (!$ARConfig->cache[$this->path]) {
-				$this->loadConfig($this->path);
-			}
 			$ARConfig->libraries[$this->path][$name]=$path;
-			if (!$ARConfig->cacheableLibraries[$this->path]) {
-				$ARConfig->cacheableLibraries[$this->path] = array($name => $path);
-			} else {
-				$ARConfig->cacheableLibraries[$this->path][$name] = $path;
-			}
-			// make sure that unnamed libraries don't get added to the configcache
-			unset($ARConfig->cache[$this->path]->libraries[$name]);
-			unset($ARConfig->pinpcache[$this->path]["library"][$name]);
 		} else {
 			return ar::error('Illegal library name: '.$name, 1110);
 		}
@@ -1630,6 +1527,55 @@ debug("loadLibrary: loading cache for $this->path");
 		return $this->mergeLibraryConfig( $defaultLibraryName, $defaults );
 	}
 
+	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
+
+		while ($arType!='ariadne_object' ) {
+			list($arMatchType,$arMatchSubType) = explode('.',$arType,2);
+			$local = ($path === $this->path);
+			$templates = ar('template')->ls($path);
+			if(isset($templates[$arCallFunction])) {
+				$template = null;
+				if (!isset($arSuperContext[$path.":".$arType.":".$arCallFunction])) {
+					$template = array_reduce($templates[$arCallFunction] , function($carry, $item) use ($arMatchType,$arMatchSubType, $reqnls, $local) {
+						if ( ( $item['local'] == true && $local == true ) || $item['local'] == false ) {
+							if ($item['type'] === $arMatchType && ($item['subtype'] == $arMatchSubType) ) {
+								if (isset($carry) && $carry['language'] !== 'any') {
+									return $carry;
+								} else if ($item['language'] === 'any' || $item['language'] === $reqnls ) {
+									return $item;
+								}
+							}
+						}
+						return $carry;
+					}, null);
+				}
+				if ( isset($template) && !isset($arSuperContext[$path.":".$arType.":".$arCallFunction])) {
+					return $template;
+				}
+			}
+			if (!isset($AR->superClass[$arType])) {
+				// no template found, no default.phtml found, try superclass.
+				if ($subcpos = strpos($arType, '.')) {
+					$arSuper = substr($arType, 0, $subcpos);
+				} else {
+					if (!class_exists($arType, false )) {
+						// the given class was not yet loaded, so do that now
+						$arTemp=$this->store->newobject('','',$arType,new baseObject);
+					} else {
+						$arTemp=new $arType();
+					}
+					$arSuper=get_parent_class($arTemp);
+				}
+				$AR->superClass[$arType]=$arSuper;
+			} else {
+				$arSuper=$AR->superClass[$arType];
+			}
+			$arType=$arSuper;
+		}
+
+		return null;
+	}
+
 	public function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR, $ARConfigChecked;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary","class");
@@ -1642,142 +1588,136 @@ debug("loadLibrary: loading cache for $this->path");
 			$arSuperContext = array();
 		}
 
-		if (($libpos=strpos($arCallFunction,":"))!==false && $libpos!==strpos($arCallFunction, "::")) {
-			// template of a specific library defined via call("library:template");
-			$arLibrary = substr($arCallFunction, 0, $libpos);
+		$matches = [];
+		preg_match('/^
+		    ( (?<libname> [^:]+) :  )?
+		    ( (?<calltype>[^:]+) :: )?
+		      (?<template>[^:]+)
+		    $/x', $arCallFunction, $matches);
+
+		$arCallFunction = $matches['template'];
+
+		if($matches['calltype'] != '') {
+			$arCallType = $matches['calltype'];
+		} else {
+			$arCallType = $this->type;
+		}
+
+		if ( $matches['libname'] != '' ) {
+			$arLibrary      = $matches['libname'];
+
 			if ($arLibrary == 'current') {
 				// load the current arLibrary
-				$context = $this->getContext(1);
-				$arLibrary = $context['arLibrary'];
+				$context       = $this->getContext(1);
+				$arLibrary     = $context['arLibrary'];
 				$arLibraryPath = $context['arLibraryPath'];
 			} else {
-				$config = (isset($ARConfig->cache[$path])) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-				$arLibraryPath = $config->libraries[$arLibrary];
+				$libpath = $path;
+				while (!isset($arLibraryPath) && $libpath!=$lastlibpath) {
+					$lastlibpath = $libpath;
+					if (isset($ARConfig->libraries[$libpath][$arLibrary])) {
+						$arLibraryPath = $ARConfig->libraries[$libpath][$arLibrary];
+					} else {
+						if ($libpath == $top) {
+							break;
+						}
+						$libpath=$this->store->make_path($libpath, "..");
+					}
+				}
 			}
-			$arCallFunction = substr($arCallFunction, $libpos+1);
 			if ($arLibraryPath) {
-				debug("getPinpTemplate: found library '$arLibrary'. Searching for $arCallFunction on '".$config->libraries[$arLibrary]."' up to '$top'");
+				debug("getPinpTemplate: found library '$arLibrary'. Searching for [".$arCallType."] $arCallFunction on '".$arLibraryPath."' up to '$top'");
 				$librariesSeen[$arLibraryPath] = true;
 				$inLibrary = true;
 				$path = $arLibraryPath;
 			} else {
 				debug("getPinpTemplate: Failed to find library $arLibrary");
-				return false;
 			}
 			$path = $this->make_path($path);
 		}
-		if (strpos($arCallFunction,"::")!==false) {
-			// template of a specific class defined via call("class::template");
-			list($arCallType, $arCallFunction)=explode("::",$arCallFunction);
-		} else {
-			$arCallType=$this->type;
-		}
 
-		/* first check current templates */
-		if ($this->path == $path) {
-			$curr_templates = $this->data->config->pinp;
-		} else {
-			$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-			$curr_templates = $config->templates;
-		}
-
-		$checkpath=$path;
-		$lastcheckedpath="";
+		$checkpath           = $path;
+		$lastcheckedpath     = "";
 		$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
-		$arSetType = $arCallType;
-		while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
+		$reqnls              = $this->reqnls;
+		$template            = null;
+		while (!$arCallClassTemplate && !isset($template) && $checkpath!=$lastcheckedpath) {
 			$lastcheckedpath = $checkpath;
-			$arType = $arSetType;
-			while ($arType!='ariadne_object' && !$arCallTemplate) {
-				if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls])) {
-					$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
-					$arCallTemplateName = $arCallFunction;
-					$arCallTemplateNLS = $this->reqnls;
-				} else if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any'])) {
-					$arCallTemplate=$arType.".".$arCallFunction.".any";
-					$arCallTemplateName = $arCallFunction;
-					$arCallTemplateNLS = 'any';
-				} else {
 
-					if (!($arSuper=$AR->superClass[$arType])) {
-						// no template found, no default.phtml found, try superclass.
-						if ($subcpos = strpos($arType, '.')) {
-							$arSuper = substr($arType, 0, $subcpos);
-						} else {
-							if (!class_exists($arType, false )) {
-								// the given class was not yet loaded, so do that now
-								$arTemp=$this->store->newobject('','',$arType,new object);
-							} else {
-								$arTemp=new $arType();
-							}
-							$arSuper=get_parent_class($arTemp);
-						}
-						$AR->superClass[$arType]=$arSuper;
-					}
-					$arType=$arSuper;
-				}
-			}
-			if ($inLibrary) {
+			$template = $this->findTemplateOnPath( $checkpath, $arCallFunction, $arCallType, $reqnls, $arSuperContext);
+
+			if (isset($template)) {
+				// haal info uit template
+				// debug("getPinpTemplate: found ".$arCallFunction." on ".$checkpath);
+			} else if ($inLibrary) {
 
 				// faster matching on psection, prefix doesn't have to be a valid type
 				$prefix = substr($ARConfig->cache[$checkpath]->type,0,8);
 
 				if ($prefix === 'psection') {
-					// debug("BREAKING; $arTemplateId");
+					 // debug("BREAKING; $arTemplateId");
 					// break search operation when we have found a
 					// psection object
 					break;
 				}
-			}
+			} else {
+				if (isset($ARConfig->libraries[$checkpath])) {
+					// need to check for unnamed libraries
+					$libraries = array_filter($ARConfig->libraries[$checkpath],'is_int',ARRAY_FILTER_USE_KEY);
+					foreach( $libraries as $key => $libpath ) {
+						$arLibraryPath = $libpath;
+						$arLibrary     = $key;
 
-			if (!$arTemplateId && $ARConfigChecked) {
-				if ($ARConfig->cacheableLibraries[$checkpath]) {
-					foreach ($ARConfig->cacheableLibraries[$checkpath] as $library => $path) {
-						if (is_int($library) && !$librariesSeen[$path]) {
-							$librariesSeen[$path] = true;
-							if ($ARConfigChecked) {
-								if (!$ARConfig->librariesCached[$checkpath][$path]) {
-									$this->loadLibraryCache($checkpath, $path);
-									unset($ARConfig->cacheableLibraries[$checkpath][$library]);
-								}
+						$libprevpath = null;
+						while($libpath != $libprevpath ) {
+							$libprevpath = $libpath;
+
+							$template = $this->findTemplateOnPath( $libpath, $arCallFunction, $arCallType, $reqnls, $arSuperContext);
+							if (isset($template)) {
+								break 2;
 							}
+
+							$prefix = substr($ARConfig->cache[$libpath]->type,0,8);
+							if ($prefix === 'psection' || $top == $libpath) {
+								break;
+							}
+
+							$libpath = $this->store->make_path($libpath, "..");
 						}
 					}
+					debug("getPinpTemplate: found ".$arCallFunction." on ".$template['path']);
 				}
 
-				if (isset($ARConfig->cacheableLibraries[$checkpath])) {
-					$template = $this->getTemplateFromCache($checkpath, $arCallType, $arCallFunction, $arSuperContext);
-					if ($template["arTemplateId"]) {
-						return $template;
-					}
-				}
 			}
+
 			if ($checkpath == $top) {
 				break;
 			}
 
+			debug("getPinpTemplate: DONE checking for ".$arCallFunction." on ".$checkpath);
 			$checkpath=$this->store->make_path($checkpath, "..");
-			$config = ($ARConfig->cache[$checkpath]) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
-			$curr_templates = $config->templates;
-			$arSetType = $arCallType;
+			
 		}
-
-		$config = ($ARConfig->cache[$lastcheckedpath]) ? $ARConfig->cache[$lastcheckedpath] : $this->loadConfig($lastcheckedpath);
-		$arPrivateTemplate = $config->privatetemplates[$arCallType][$arCallFunction];
-
-		//debug("getPinpTemplate END; $arTemplateId; $checkpath;");
-		$result["arTemplateId"] = $arTemplateId;
-		$result["arCallTemplate"] = $arCallTemplate;
-		$result["arCallType"] = $arCallType;
-		$result["arCallTemplateName"] = $arCallTemplateName;
-		$result["arCallTemplateNLS"] = $arCallTemplateNLS;
-		$result["arCallTemplateType"] = $arType;
-		$result["arCallTemplatePath"] = $lastcheckedpath;
-		$result["arLibrary"] = $arLibrary;
-		$result["arLibraryPath"] = $arLibraryPath;
-		$result["arLibrariesSeen"] = $librariesSeen;
-		$result["arPrivateTemplate"] = $arPrivateTemplate;
-
+		$result = null;
+		if(isset($template)) {
+			$result = [];
+			//debug("getPinpTemplate END; ".$template['id'] .' '.$template['path']);
+			$type = $template['type'];
+			if(isset($template['subtype'])) {
+				$type .= '.' . $template['subtype'];
+			}
+			$result["arTemplateId"]       = $template['id'];
+			$result["arCallTemplate"]     = $template['filename'];
+			$result["arCallType"]         = $arCallType;
+			$result["arCallTemplateName"] = $arCallFunction;
+			$result["arCallTemplateNLS"]  = $template['language'];
+			$result["arCallTemplateType"] = $type;
+			$result["arCallTemplatePath"] = $template['path'];
+			$result["arLibrary"]          = $arLibrary;
+			$result["arLibraryPath"]      = $arLibraryPath;
+			$result["arLibrariesSeen"]    = $librariesSeen;
+			$result["arPrivateTemplate"]  = $template['private'];
+		}
 		return $result;
 	}
 
@@ -1860,7 +1800,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 			if (!$ARConfigChecked) {
 				// this template is the first template called in this request.
-				$eventData = new object();
+				$eventData = new baseObject();
 				$eventData->arCallArgs = $arCallArgs;
 				$eventData->arCallFunction = $arCallFunction;
 
@@ -1879,7 +1819,7 @@ debug("loadLibrary: loading cache for $this->path");
 					if (!$ARCurrent->forcenls && (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls])) {
 						if (!$ARCurrent->nolangcheck && $arCallFunction != 'config.ini') {
 							$ARCurrent->nolangcheck=1;
-							$eventData = new object();
+							$eventData = new baseObject();
 							$eventData->arCallFunction = $arCallFunction;
 							$eventData->arCallArgs = $arCallArgs;
 							$eventData->arRequestedNLS = $reqnls;
@@ -1910,9 +1850,9 @@ debug("loadLibrary: loading cache for $this->path");
 				if (isset($redirects) && is_array($redirects)) {
 					$redirpath = $this->path;
 					while (!$template['arTemplateId'] &&
-								($redir = array_pop($redirects)) &&
-									$redir["keepurl"] &&
-										(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
+							($redir = array_pop($redirects)) &&
+							$redir["keepurl"] &&
+							(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
 					) {
 						$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"]);
 						$redirpath = $redir['src'];
@@ -1946,9 +1886,8 @@ debug("loadLibrary: loading cache for $this->path");
 					// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 					$arTemplates=$this->store->get_filestore("templates");
-					if (
-						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc")
-					) {
+					$exists = ar('template')->exists($template['arCallTemplatePath'],$template["arCallTemplate"]);
+					if ( $exists ) {
 						// check if the requested language exists, if not do not display anything,
 						// unless otherwise indicated by $ARCurrent->allnls
 						// This triggers only for pinp templates called by other templates,
@@ -1963,8 +1902,8 @@ debug("loadLibrary: loading cache for $this->path");
 
 						if (!is_string($arCallArgs)) {
 							$arCallArgs['arCallFunction'] = $arCallFunction;
-							$arCallArgs['arLibrary'] = $arLibrary;
-							$arCallArgs['arLibraryPath'] = $template["arLibraryPath"];
+							$arCallArgs['arLibrary']      = $arLibrary;
+							$arCallArgs['arLibraryPath']  = $template["arLibraryPath"];
 						}
 
 						$ARCurrent->arCallStack[]=$arCallArgs;
@@ -1972,22 +1911,22 @@ debug("loadLibrary: loading cache for $this->path");
 
 						$this->pushContext(
 							array(
-								"scope" => "pinp",
-								"arLibrary" => $arLibrary,
-								"arLibraryPath" => $template['arLibraryPath'],
-								"arCallFunction" => $arCallFunction,
-								"arCurrentObject" => $this,
-								"arCallType" => $template['arCallType'],
+								"scope"              => "pinp",
+								"arLibrary"          => $arLibrary,
+								"arLibraryPath"      => $template['arLibraryPath'],
+								"arCallFunction"     => $arCallFunction,
+								"arCurrentObject"    => $this,
+								"arCallType"         => $template['arCallType'],
 								"arCallTemplateName" => $template['arCallTemplateName'],
-								"arCallTemplateNLS" => $template['arCallTemplateNLS'],
+								"arCallTemplateNLS"  => $template['arCallTemplateNLS'],
 								"arCallTemplateType" => $template['arCallTemplateType'],
 								"arCallTemplatePath" => $template['arCallTemplatePath'],
-								"arLibrariesSeen" => $template['arLibrariesSeen']
+								"arLibrariesSeen"    => $template['arLibrariesSeen']
 							)
 						);
 
 						// FIXME: is 2 het correcte getal? Kan dit minder magisch?
-						if (count($ARCurrent->arCallStack) == 2 && $template['arPrivateTemplate']) {
+						if (count($ARCurrent->arCallStack) == 2 && true === $template['arPrivateTemplate']) {
 							// Do not allow private templates to be called first in the stack.
 							// echo "Bad request";
 
@@ -2017,7 +1956,7 @@ debug("loadLibrary: loading cache for $this->path");
 							$continue=false;
 						}
 						if ($continue) {
-							$eventData = new object();
+							$eventData = new baseObject();
 							if ( !$AR->contextCallHandler ) { /* prevent onbeforecall from re-entering here */
 								$AR->contextCallHandler = true;
 								$eventData->arCallArgs = $arCallArgs;
@@ -2040,7 +1979,10 @@ debug("loadLibrary: loading cache for $this->path");
 									echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
 								}
 								set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-								$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+								$func = ar('template')->get($template['arCallTemplatePath'],$template['arCallTemplate']);
+								if(is_callable($func)){
+									$arResult = $func($this);
+								}
 								restore_error_handler();
 								if (isset($arResult)) {
 									$ARCurrent->arResult=$arResult;
@@ -2063,7 +2005,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 						if ( !$initialConfigChecked && $arCallFunction != 'config.ini' ) {
 							// this template was the first template called in this request.
-							$eventData = new object();
+							$eventData = new baseObject();
 							$eventData->arCallArgs = $arCallArgs;
 							$eventData->arCallFunction = $arCallFunction;
 							ar_events::fire( 'onview', $eventData ); // no default action to prevent, so ignore return value.
@@ -2122,7 +2064,7 @@ debug("loadLibrary: loading cache for $this->path");
 					$ids=$this->store->info($this->store->find($path, "" , $limit, $offset));
 					while (is_array($ids) && count($ids)) {
 						foreach($ids as $value) {
-							$eventData = new object();
+							$eventData = new baseObject();
 							$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $value['type'], $value['path'] );
 							if ( !$eventData ) {
 								continue;
@@ -2136,7 +2078,7 @@ debug("loadLibrary: loading cache for $this->path");
 						$ids = $this->store->info($this->store->find($path, "", $limit, $offset));
 					}
 				} else {
-					$eventData = new object();
+					$eventData = new baseObject();
 					$eventData = ar_events::fire( 'onbeforeclearprivatecache', $eventData, $this->type, $this->path );
 					if ( $eventData ) {
 						$pcache->purge($this->id);
@@ -2279,7 +2221,8 @@ debug("loadLibrary: loading cache for $this->path");
 		if ($file=array_pop($ARCurrent->cache)) {
 			$image=ob_get_contents();
 			if ($image !== false) {
-				$result = $image;
+				$result = true;
+				$origimage = $image;
 
 				$contentType = $ARCurrent->ldHeaders['content-type'];
 				if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
@@ -2305,7 +2248,7 @@ debug("loadLibrary: loading cache for $this->path");
 					}
 				}
 				ob_end_clean();
-				echo $image;
+				echo $origimage;
 			} else {
 				debug("skipped saving cache - ob_get_contents returned false so output buffering was not active", "all");
 				$result = false;
@@ -2388,8 +2331,8 @@ debug("loadLibrary: loading cache for $this->path");
 				$result=$arStoreVars[$nls][$varname];
 			}
 			if ($result===false) {
-				if (isset($this->data->${nls}) && isset($this->data->${nls}->${varname})) {
-					$result=$this->data->${nls}->${varname};
+				if (isset($this->data->{$nls}) && isset($this->data->{$nls}->{$varname})) {
+					$result=$this->data->{$nls}->{$varname};
 				}
 			}
 		} else { // language independant variable.
@@ -2619,13 +2562,13 @@ debug("loadLibrary: loading cache for $this->path");
 		if (!$arCallArgs) {
 			$arCallArgs = end($ARCurrent->arCallStack);
 		}
-		$arSuperContext = (array)$context['arSuperContext'];
-		$arLibrary		= $context['arLibrary'];
-		$arLibraryPath	= $context['arLibraryPath'];
-		$arCallType		= $context['arCallTemplateType'];
-		$arSuperPath	= $context['arCallTemplatePath'];
+		$arSuperContext  = (array)$context['arSuperContext'];
+		$arLibrary       = $context['arLibrary'];
+		$arLibraryPath   = $context['arLibraryPath'];
+		$arCallType      = $context['arCallTemplateType'];
+		$arSuperPath     = $context['arCallTemplatePath'];
 		$arLibrariesSeen = $context['arLibrariesSeen'];
-		$arCallFunction = $arSuperFunction = $context['arCallFunction'];
+		$arCallFunction  = $arSuperFunction = $context['arCallFunction'];
 		if ($arLibrary) {
 			$arSuperFunction = str_replace($arLibrary.':', '', $arCallFunction);
 		}
@@ -2644,9 +2587,9 @@ debug("loadLibrary: loading cache for $this->path");
 		if (isset($redirects) && is_array($redirects)) {
 			$redirpath = $this->path;
 			while (!$template['arTemplateId'] &&
-						($redir = array_pop($redirects)) &&
-							$redir["keepurl"] &&
-								(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
+				($redir = array_pop($redirects)) &&
+				$redir["keepurl"] &&
+				(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
 			) {
 				debug("call_super: following shortcut redirect: $redirpath; to ".$redir["dest"]);
 				$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"], false, $arLibrariesSeen, $arSuperContext);
@@ -2660,8 +2603,8 @@ debug("loadLibrary: loading cache for $this->path");
 			$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, $arSuperContext);
 		}
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
-			$arTemplates=$this->store->get_filestore("templates");
-			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc")) {
+			$exists = ar('template')->exists($template['arCallTemplatePath'],$template["arCallTemplate"]);
+			if ( $exists ) {
 				debug("call_super: found template ".$template["arCallTemplate"]." on object with id ".$template["arTemplateId"]);
 				$arLibrary = $template['arLibrary'];
 				debug("call_super: found template on ".$template["arTemplateId"]);
@@ -2678,13 +2621,13 @@ debug("loadLibrary: loading cache for $this->path");
 				$ARCurrent->arCallStack[]=$arCallArgs;
 				$this->pushContext(
 					array(
-						"scope" => "pinp",
-						"arSuperContext" => $arSuperContext,
-						"arLibrary" => $arLibrary,
-						"arLibraryPath" => $template['arLibraryPath'],
-						"arCallFunction" => $arCallFunction,
-						"arCurrentObject" => $this,
-						"arCallType" => $template['arCallType'],
+						"scope"              => "pinp",
+						"arSuperContext"     => $arSuperContext,
+						"arLibrary"          => $arLibrary,
+						"arLibraryPath"      => $template['arLibraryPath'],
+						"arCallFunction"     => $arCallFunction,
+						"arCurrentObject"    => $this,
+						"arCallType"         => $template['arCallType'],
 						"arCallTemplateName" => $template['arCallTemplateName'],
 						"arCallTemplateNLS"  => $template['arCallTemplateNLS'],
 						"arCallTemplateType" => $template['arCallTemplateType'],
@@ -2692,7 +2635,7 @@ debug("loadLibrary: loading cache for $this->path");
 					)
 				);
 				$continue = true;
-				$eventData = new object();
+				$eventData = new baseObject();
 				if ( !$AR->contextCallHandler ) { /* prevent onbeforecall from re-entering here */
 					$AR->contextCallHandler = true;
 					$eventData->arCallArgs = $arCallArgs;
@@ -2705,7 +2648,10 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				if ( $continue ) {
 					set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-					$arResult = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+					$func = ar('template')->get($template['arCallTemplatePath'],$template['arCallTemplate']);
+					if(is_callable($func)){
+						$arResult = $func($this);
+					}
 					restore_error_handler();
 
 					if ( !$AR->contextCallHandler ) { /* prevent oncall from re-entering here */
@@ -2721,7 +2667,6 @@ debug("loadLibrary: loading cache for $this->path");
 				$this->popContext();
 			}
 		}
-
 		return $arResult;
 	}
 
@@ -3195,9 +3140,9 @@ debug("loadLibrary: loading cache for $this->path");
 			$this->data->$name = $value;
 		} else {
 			if (!$this->data->$nls) {
-				$this->data->$nls = new object;
+				$this->data->$nls = new baseObject;
 				if (!$this->data->nls) {
-					$this->data->nls = new object;
+					$this->data->nls = new baseObject;
 					$this->data->nls->default = $nls;
 				}
 				$this->data->nls->list[$nls] = $AR->nls->list[$nls];
@@ -3348,13 +3293,13 @@ debug("loadLibrary: loading cache for $this->path");
 	public function _newobject($filename, $type) {
 		$newpath=$this->make_path($filename);
 		$newparent=$this->store->make_path($newpath, "..");
-		$data=new object;
+		$data=new baseObject;
 		$object=$this->store->newobject($newpath, $newparent, $type, $data);
 		$object->arIsNewObject=true;
 		return $object;
 	}
 
-	public function _save($properties="", $vtype="") {
+	public function _save($properties=array(), $vtype="") {
 		if (isset($properties) && is_array($properties)) {
 			// isn't this double work, the save function doesn this again
 			foreach ($properties as $prop_name => $prop) {

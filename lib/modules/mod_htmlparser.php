@@ -131,8 +131,8 @@
 						$YYBUFFER[++$YYCURSOR];
 						return AR_HTMLPARSER_T_TEXT;
 					break;
-					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && (substr_compare($YYBUFFER, '<!--', $YYCURSOR) == 0 ):
-							$value		= "<!--"; $YYCURSOR+=3;
+					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT) && (substr_compare($YYBUFFER, '<!--', $YYCURSOR, 4) == 0 ):
+							$value		= "<!--"; $YYCURSOR+=4;
 							$YYSTATE	= AR_HTMLPARSER_STATE_COMMENT;
 							return AR_HTMLPARSER_T_TEXT;
 					break;
@@ -221,13 +221,10 @@
 		}
 
 		protected static function nextToken(&$parser) {
-			$tokens = &$parser['tokens'];
 			$scanner = &$parser['scanner'];
-			if (count($tokens) == 0) {
-				$new_token = static::scan($scanner, $new_value);
-			} else {
-				list($new_token, $new_value) = each(array_shift($tokens));
-			}
+
+			$new_token = static::scan($scanner, $new_value);
+
 			if (isset($parser["token_ahead"])) {
 				$parser["token"] = $parser["token_ahead"];
 				$parser["token_value"] = $parser["token_ahead_value"];

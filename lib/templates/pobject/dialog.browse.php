@@ -405,7 +405,7 @@
 					<input type="file" multiple name="file[]" id="upload">
 					<button for="upload" class="button" onclick="muze.event.fire(document.getElementById('upload'), 'click'); return false"><?php echo $ARnls['ariadne:uploader']; ?></button>
 					<?php
-					$extraButtonsEventData = new object();
+					$extraButtonsEventData = new baseObject();
 					$extraButtonsEventData = ar_events::fire( 'ariadne:onbeforebrowsebuttons', $extraButtonsEventData );
 					if ($extraButtonsEventData) {
 						$this->call("dialog.browse.buttons.html", array( "hideAdd" => $hideAdd ));

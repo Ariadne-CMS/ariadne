@@ -73,7 +73,7 @@ class htmlcleanertag {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE;
 		}
 
-		preg_match("|</?([a-zA-Z0-9:]+)|",$str,$matches);
+		preg_match("|</?([a-zA-Z0-9:-]+)|",$str,$matches);
 		$tagname = $matches[1];
 		$offset += strlen($tagname);
 
@@ -265,7 +265,7 @@ class htmlcleaner
 				$_buffer .= $chr;
 				if ($chr == '"' || $chr == "'") {
 
-					$regexp = '|'.$chr.'(.*?)'.$chr.'|';
+					$regexp = '|'.$chr.'(.*?)'.$chr.'|sm';
 					preg_match($regexp,$str,$matches,0,$i);
 
 					$_buffer .= $matches[1] . $chr;

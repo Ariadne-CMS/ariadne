@@ -201,7 +201,7 @@
 					"arCallFunction" => $requestedtemplate
 				) );
 
-				$eventData = new object();
+				$eventData = new baseObject();
 				$eventData->arCallPath = $requestedpath;
 				$eventData->arCallFunction = $requestedtemplate;
 				$eventData->arCallArgs = $arCallArgs;
@@ -618,6 +618,12 @@
 			if ( array_key_exists( $current, $cookies ) ) {
 				$session_id = $current;
 			}
+		} elseif (isset($_SERVER['PHP_AUTH_USER'])) {
+			$cookies = (array) ldGetCredentials();
+			$current = ldGetCookieSession();
+			if ( array_key_exists( $current, $cookies ) ) {
+				$session_id = $current;
+			}
 		}
 
 		// set the default user (public)
@@ -752,6 +758,8 @@
 						} else if ($session_id && $AR->hideSessionIDfromURL ) {
 							$data = str_replace($tag, '', $data);
 						}
+						$data_len = strlen($data);
+						header("Content-Length: ".$data_len);
 						echo $data;
 					}
 
@@ -764,8 +772,12 @@
 					} else {
 						$data = str_replace($tag, '', $data);
 					}
+					$data_len = strlen($data);
+					header("Content-Length: ".$data_len);
 					echo $data;
 				} else {
+					$data_len = filesize($cachedimage);
+					header("Content-Length: ".$data_len);
 					readfile($cachedimage);
 				}
 			}
@@ -879,6 +891,12 @@
 			$mod_auth = new $auth_class($auth_config);
 			$username = ( isset($args["ARLogin"]) ? $args["ARLogin"] : null );
 			$password = ( isset($args["ARPassword"]) ? $args["ARPassword"] : null );
+			if (!$username && $_SERVER['REQUEST_METHOD'] != "GET") {
+				debug('logging in with basic auth');
+				$username = $_SERVER["PHP_AUTH_USER"];
+				$password = $_SERVER["PHP_AUTH_PW"];
+			}
+
 			$result = $mod_auth->checkLogin($username, $password, $path);
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
@@ -931,6 +949,8 @@
 			$xss_vars = array();
 			ldGatherXSSInput($xss_vars, $_GET);
 			ldGatherXSSInput($xss_vars, $_POST);
+			$filenames = array_map(function ($e) { return $e['name']; }, $_FILES);
+			ldGatherXSSInput($xss_vars, $filenames);
 
 			ldGatherXSSInput( $xss_vars, $function );
 			ldGatherXSSInput( $xss_vars, $path );
@@ -1210,3 +1230,9 @@
 			echo $image;
 		}
 	}
+
+	function ldGetPutHandle() {
+		$stdin = fopen("php://input", "r");
+		return new ar_content_filesFile($stdin);
+	}
+

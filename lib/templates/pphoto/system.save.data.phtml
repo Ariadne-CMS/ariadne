@@ -13,7 +13,7 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
 			$this->CheckConfig()) {
 		if ($this->arIsNewObject) {
-			$this->data=new object;
+			$this->data=new baseObject;
 		} else {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
@@ -30,7 +30,7 @@
 			return false;
 		} else {
 			if (!$this->data->nls) {
-				$this->data->nls=new object;
+				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
@@ -40,7 +40,7 @@
 				if ($this->getdata("name",$key)) {
 					array_push($nlslist, $key);
 					if (!$this->data->$key) {
-						$newnlsdata=new object;
+						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
 					}

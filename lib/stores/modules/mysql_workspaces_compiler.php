@@ -13,7 +13,7 @@ class mysql_workspaces_compiler extends mysql_compiler {
 	protected function priv_sql_compile($tree) {
 		$this->custom_ref = 0;
 		$this->custom_id = 0;
-		$this->used_tables="";
+		$this->used_tables=array();
 		$this->compile_tree($tree);
 		$nodes=$this->tbl_prefix."nodes";
 		$objects=$this->tbl_prefix."objects";

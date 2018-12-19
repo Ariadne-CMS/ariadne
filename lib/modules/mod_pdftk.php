@@ -53,7 +53,7 @@
 					@unlink($file);
 				}
 				@unlink($outputFile);
-				return ar_error::raiseError( "pdftk: error ($execResult) while trying to generate PDF: " . implode( "\n", (array) $execOutput ), 203 );
+				return ar_error::raiseError( "pdftk: error ($execResult) [$execString] while trying to generate PDF: " . implode( "\n", (array) $execOutput ), 203 );
 			}
 
 			$result = file_get_contents( $outputFile );

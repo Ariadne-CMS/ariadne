@@ -103,11 +103,17 @@ class pfile extends pobject { // pfile class definition
 			$defaultnls = $this->data->nls->default;
 			$mimetype = $this->data->{$defaultnls}->mimetype;
 		}
-		if (!$mimetype && function_exists("get_content_type")) {
+		if ( !$mimetype ) {
+			$temp = ar_store_files::temp($file);
+			$temp_file_meta  = $temp->getMetaData();
+			$mimetype = get_mime_type($temp_file_meta['uri']);
+		}
+
+		if ($mimetype && function_exists("get_content_type")) {
 			$mimetype = get_content_type($mimetype, basename($this->path));
 		}
-		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
-			$ARCurrent->cachetime=-2; // set cache to onchange
+		if (!$ARCurrent->arDontCache && $ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] != -1 && $this->CheckPublic('read')) {
+			$ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] = -2;
 		}
 		$template = $this->getvar("arCallFunction");
 		if (!$template || $template == "view.html") {

@@ -31,20 +31,20 @@ loaded. Bz2 compression is also supported with the bz2 extension loaded.</descri
   <email>stig@php.net</email>
   <active>no</active>
  </helper>
- <date>2015-03-04</date>
- <time>16:39:32</time>
+ <date>2017-06-11</date>
+ <time>17:31:00</time>
  <version>
-  <release>1.3.15</release>
-  <api>1.3.1</api>
+  <release>1.4.3</release>
+  <api>1.4.0</api>
  </version>
  <stability>
   <release>stable</release>
   <api>stable</api>
  </stability>
- <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD
- License</license>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
  <notes>
-* Fixes composer.json parse error
+* Fix Bug #21218: Cannot use result of built-in function in write context in PHP
+   7.2.0alpha1 [mrook]
  </notes>
  <contents>
   <dir name="/">
@@ -60,20 +60,99 @@ loaded. Bz2 compression is also supported with the bz2 extension loaded.</descri
   <name>PEAR</name>
   <channel>pear.php.net</channel>
   <min>1.8.0</min>
-  <max>1.9.10</max>
+  <max>1.10.10</max>
  </compatible>
  <dependencies>
   <required>
    <php>
-    <min>4.3.0</min>
+    <min>5.2.0</min>
    </php>
    <pearinstaller>
-    <min>1.5.4</min>
+    <min>1.9.0</min>
    </pearinstaller>
   </required>
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <version>
+    <release>1.4.2</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2016-02-25</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+   <notes>
+* Fix reading of archives with files &gt; 8GB
+* Performance optimizations
+* Do not try to call require_once on PEAR.php if it has already been loaded by the autoloader
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.1</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2015-08-05</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+   <notes>
+* Update composer.json to use pear-core-minimal 1.10.0alpha2
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4.0</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2015-07-20</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+   <notes>
+* Add support for PHP 7
+* Drop support for PHP 4
+* Add visibility declarations to methods and properties
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.16</release>
+    <api>1.3.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2015-04-14</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+   <notes>
+* Fix Bug #20514: invalid package.xml; not installable with pyrus [mrook]
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.15</release>
+    <api>1.3.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2015-03-05</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+   <notes>
+* Fixes composer.json parse error
+   </notes>
+  </release>
   <release>
    <version>
     <release>1.3.14</release>
@@ -83,13 +162,14 @@ loaded. Bz2 compression is also supported with the bz2 extension loaded.</descri
     <release>stable</release>
     <api>stable</api>
    </stability>
+   <date>2015-02-26</date>
    <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
    <notes>
 * Fix Bug #18505: Possible incorrect handling of file names in TAR [mrook]
    </notes>
   </release>
   <release>
-    <version>
+   <version>
     <release>1.3.13</release>
     <api>1.3.1</api>
    </version>
