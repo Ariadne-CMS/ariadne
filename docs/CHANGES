@@ -1,3 +1,12 @@
+==================
+Changes Ariadne 10
+==================
+
+- This release officially supports PHP 7.2. This is the last release we tested on PHP 5.6 and PHP 7.0, since these versions will be no longer supported after jan. 1 2019.
+- Added pdftk module (mod_pdftk) - adds handling for PDF backgrounds, concats, splitting and other PDF juggling skills.
+- Updated Archive/Tar to the 1.4.3
+- Improved the SVN code to be more robust by adding extra error checks.
+
 ===================
 Changes Ariadne 9.7
 ===================
