@@ -1805,10 +1805,15 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$eventData->arCallFunction = $arCallFunction;
 
 				$ARConfigChecked = true;
-				$result = ar_events::fire( 'onbeforeview', $eventData );
+				$context = $this->getContext(ARCALLINGCONTEXT);
+				if ($context["scope"] != "php") {
+					$result = ar_events::fire( 'onbeforeview', $eventData );
+				}
 				$ARConfigChecked = $initialConfigChecked;
-				if ( !$result ) { //prevent default action: view
-					return false;
+				if ($context["scope"] != "php") {
+					if ( !$result ) { //prevent default action: view
+						return false;
+					}
 				}
 			}
 
