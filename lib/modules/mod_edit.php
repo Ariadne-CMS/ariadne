@@ -90,6 +90,7 @@
 		}
 
 		function getVedorVars($me, $name) {
+			$name = htmlentities($name, ENT_QUOTES);
 			$vedorVars  = "data-vedor-path='" . $me->path . "' data-vedor-id='" . $me->id . "' data-vedor-field='" . $name . "'".
 			              " ar:path='" . $me->path . "' ar:id='" . $me->id . "'";
 
