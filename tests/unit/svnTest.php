@@ -265,7 +265,8 @@ class svnTest extends AriadneBaseTest
 		$res = current(ar::get(self::$testpath)->call('system.get.template.php',$args));
 		$prep =
 "<<<<<<< .mine
-changed=======
+changed||||||| .r22
+template:test.view.html=======
 template:test.view.html
 test:serverdiff
 >>>>>>> .r23
