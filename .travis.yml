@@ -8,6 +8,9 @@ env:
 language: php
 cache: apt
 
+services:
+    - mysql
+
 php:
     - 5.6
     - 7.0
