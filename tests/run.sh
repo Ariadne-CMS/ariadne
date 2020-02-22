@@ -185,7 +185,7 @@ if [ $EXPLORE_ITEM -lt 1 ]; then
 	echo "Explore does not contain explore items.";
 	cat ${TMPDIR}/ariadne.explore.txt;
 	wget -q -O ${TMPDIR}/ariadne.explore.objects.txt ${URL}system.list.objects.json.php --post-data="ARLogin=admin&ARPassword=test"
-	cat ${TMPDIR}/ariadne.explore.objects,txt;
+	cat ${TMPDIR}/ariadne.explore.objects.txt;
 	exit 1;
 fi
 # Export /projects/demo/ from the commandline
