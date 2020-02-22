@@ -10,6 +10,7 @@ cache: apt
 
 services:
     - mysql
+    - postgresql
 
 php:
     - 5.6
