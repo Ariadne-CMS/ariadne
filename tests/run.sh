@@ -184,6 +184,8 @@ fi
 if [ $EXPLORE_ITEM -lt 1 ]; then
 	echo "Explore does not contain explore items.";
 	cat ${TMPDIR}/ariadne.explore.txt;
+	cat /var/log/apache2/error.log
+	cat /var/log/mysql/error.log
 	exit 1;
 fi
 # Export /projects/demo/ from the commandline
