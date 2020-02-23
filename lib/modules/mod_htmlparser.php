@@ -119,7 +119,7 @@
 						contine;
 					break;
 					case $yych === $scanner['class_whitespace'][$yych] && (($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG) || ($YYSTATE == AR_HTMLPARSER_STATE_CLOSE_TAG) || ($YYSTATE == AR_HTMLPARSER_STATE_DOCTYPE)):
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+						$yych = $YYBUFFER[++$YYCURSOR]; continue 2;
 					break;
 					case $yych === '-' && ($YYSTATE == AR_HTMLPARSER_STATE_COMMENT):
 						if (substr($YYBUFFER, $YYCURSOR, 3) == '-->') {
@@ -185,7 +185,7 @@
 						} else {
 							$YYSTATE = AR_HTMLPARSER_STATE_TEXT;
 						}
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+						$yych = $YYBUFFER[++$YYCURSOR]; continue 2;
 					break;
 					case ord($yych) === 0:
 						$value = $yych;
@@ -201,7 +201,7 @@
 						return AR_HTMLPARSER_T_ATTRIB_VAL;
 					break;
 					case $yych === $yych && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+						$yych = $YYBUFFER[++$YYCURSOR]; continue 2;
 					break;
 					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
 						$value = "";
@@ -328,7 +328,7 @@
 								$node['html'] = "</".$parser["token_value"].">";
 								$result[] = $node;
 							}
-							continue;
+							continue 2;
 						}
 
 						// if we do not resolve tags, we have to add this one as text
