@@ -60,6 +60,7 @@ fi
 if [ $INSTALL_ERRORS -gt 0 ]; then
 	echo "Installer reported errors:";
 	grep -i error ${TMPDIR}/installer.output.txt
+	cat ${BUILDROOT}/lib/configs/ariadne.phtml
 	exit 1;
 fi
 
@@ -69,7 +70,7 @@ if [ $INSTALL_WARNINGS -gt 0 ]; then
 	exit 1;
 fi
 
-if [ $INSTALL_ERRORS -gt 0 ]; then
+if [ $INSTALL_NOTICE -gt 0 ]; then
 	echo "Installer reported notices.";
 	grep -i notice ${TMPDIR}/installer.output.txt
 	exit 1;
@@ -184,6 +185,10 @@ fi
 if [ $EXPLORE_ITEM -lt 1 ]; then
 	echo "Explore does not contain explore items.";
 	cat ${TMPDIR}/ariadne.explore.txt;
+	wget -q -O ${TMPDIR}/ariadne.explore.objects.txt ${URL}system.list.objects.json.php --post-data="ARLogin=admin&ARPassword=test"
+	cat ${TMPDIR}/ariadne.explore.objects.txt;
+	sudo cat /var/log/apache2/error.log
+	sudo cat /var/log/mysql/error.log
 	exit 1;
 fi
 # Export /projects/demo/ from the commandline

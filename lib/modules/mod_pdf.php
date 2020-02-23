@@ -346,7 +346,7 @@ class pinp_FPDF extends FPDF
 			else
 			{
 				//Tag
-				if($e{0}=='/')
+				if($e[0]=='/')
 					$this->CloseTag(strtoupper(substr($e,1)));
 				else
 				{

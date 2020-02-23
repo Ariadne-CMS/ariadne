@@ -172,7 +172,7 @@
 						return $token;
 					break;
 					case $this->class_whitespace[$yych] === $yych:
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+						$yych = $YYBUFFER[++$YYCURSOR]; continue 2;
 					break;
 					case $this->class_number[$yych] === $yych:
 						$value = "";

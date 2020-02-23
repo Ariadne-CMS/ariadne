@@ -1528,7 +1528,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
-
+		global $AR;
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = explode('.',$arType,2);
 			$local = ($path === $this->path);
