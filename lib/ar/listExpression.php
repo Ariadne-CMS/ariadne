@@ -342,7 +342,7 @@
 					break;
 					case $this->class_whitespace[$yych] === $yych:
 						$yych = $YYBUFFER[++$YYCURSOR];
-						continue;
+						continue 2;
 					break;
 					case $this->class_number[$yych] === $yych:
 						$value = "";
