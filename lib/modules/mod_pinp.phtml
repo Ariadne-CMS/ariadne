@@ -996,7 +996,7 @@ class pinp {
 			} else if ($this->token_ahead == PT_OBJECT_OPERATOR) {
 				$result = "$var_prefix"."{".$index."}".$array_index."$noise";
 			} else {
-				$result = "$var_prefix"."{'".$index."'}".$array_index."$noise";
+				$result = "$var_prefix"."{".$index."}".$array_index."$noise";
 			}
 		} else {
 			$this->error = "Unexpected '".$this->token_ahead_value."' following '".$this->token_value."' at line: ".$this->scanner->YYLINE;

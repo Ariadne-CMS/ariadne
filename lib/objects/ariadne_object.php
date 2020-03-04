@@ -45,6 +45,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$this->store=$store;
 		$this->path=$path;
 		$this->data=$data;
+		if (!isset($this->data)) {
+			$this->data = new baseObject();
+		}
 		if ( !isset($this->data->config) ) {
 			$this->data->config = new baseObject();
 		}
