@@ -44,6 +44,7 @@
 	function ldCheckAllowedMethods($method = null) {
 		global $AR;
 		if (
+				isset($AR->loader) &&
 				is_array($AR->loader->web['AllowedMethods']) && isset($method) &&
 				!(in_array(strtoupper($method), $AR->loader->web['AllowedMethods']))
 		) {

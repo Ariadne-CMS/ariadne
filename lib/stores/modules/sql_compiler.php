@@ -168,13 +168,13 @@ abstract class sql_compiler {
 				$node["record_id"] = $record_id;
 			} else {
 				$node["id"]="property";
-				if ($match_3) {
+				if (isset($match_3)) {
 					$node["nls"] = $field;
 					$field = $match_3;
 				}
 				$node["table"]="prop_".$table;
 				$node["field"]="AR_".$field;
-				$node["record_id"] = $record_id;
+				$node["record_id"] = $record_id ?? null;
 			}
 		}
 		$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
@@ -248,7 +248,7 @@ abstract class sql_compiler {
 		$result=$this->parse_group_expr($YYBUFFER);
 		while (is_array($result)) {
 			$YYCURSOR = 0;
-			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			while (isset($YYBUFFER[$YYCURSOR],$this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
 				$YYCURSOR++;
 			}
 			$ident = strtolower(substr($YYBUFFER, $YYCURSOR, 3));
@@ -275,7 +275,7 @@ abstract class sql_compiler {
 		$result=$this->parse_and_expr($YYBUFFER);
 		while (is_array($result)) {
 			$YYCURSOR = 0;
-			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			while (isset($YYBUFFER[$YYCURSOR],$this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
 				$YYCURSOR++;
 			}
 			$ident = strtolower(substr($YYBUFFER, $YYCURSOR, 2));
@@ -442,7 +442,7 @@ abstract class sql_compiler {
 		}
 
 		$matching = preg_match('|^[[:space:]]*order[[:space:]]*by[[:space:]]+|i', $query, $regs);
-		if ( $matching || $no_selection ) {
+		if ( $matching || (isset($no_selection) && $no_selection) ) {
 			$query=substr($query, strlen($regs[0]));
 			$node["id"]="orderby";
 			$node["right"]=$this->parse_orderby($query);

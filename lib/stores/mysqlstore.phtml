@@ -41,11 +41,12 @@ class mysqlstore extends store{
 	protected $filestores;
 	protected static $connections = array();
 	protected $propertyRegister;
-	
+
 	public $total = 0;
 
 	protected function getConnection($host,$user,$password,$database) {
 		// get connection
+		$db = $database;
 		if (isset(self::$connections[$host][$user][$db])) {
 			// cached connection available
 			$dbh = self::$connections[$host][$user][$db];
@@ -63,7 +64,6 @@ class mysqlstore extends store{
 			$dbh = $this->getConnection($host,$user,$password,$database);
 			self::$connections[$host][$user][$db] = $dbh;
 		}
-
 		return $dbh;
 	}
 

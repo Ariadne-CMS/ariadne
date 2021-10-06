@@ -126,7 +126,7 @@ class mysql_compiler extends sql_compiler {
 			break;
 			case 'string':
 				$result = "'".addSlashes($node["value"])."'";
-				if ($escape_chars) {
+				if (isset($escape_chars) && $escape_chars) {
 					$result = preg_replace('/([^\\\])_/', '\\1\_', $result);
 				}
 				return $result;
@@ -224,7 +224,7 @@ class mysql_compiler extends sql_compiler {
 				}
 				if ($node["left"]["id"]!=="implements") {
 					$left=$this->compile_tree($node["left"]);
-					if ($likeOp) {
+					if (isset($likeOp) && $likeOp) {
 						$right=$this->compile_tree($node["right"], array('escape_chars' => true));
 					} else {
 						$right=$this->compile_tree($node["right"]);
@@ -295,7 +295,7 @@ class mysql_compiler extends sql_compiler {
 				}
 			break;
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	// mysql specific compiler function
@@ -325,8 +325,8 @@ class mysql_compiler extends sql_compiler {
 
 		$tables = implode(', ',array_keys($this->used_tables));
 		foreach ( $this->used_tables as $key => $val){
-			if ($this->select_tables[$key]) {
-				if ($this->join_target_properties[$key]) {
+			if (isset($this->select_tables[$key])) {
+				if (isset($this->join_target_properties[$key])) {
 					$prop_dep.=" and $val.object=target.object ";
 				} else {
 					$prop_dep.=" and $val.object=$objects.id ";

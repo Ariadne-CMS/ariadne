@@ -92,12 +92,12 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 		}
 
 		if( !$section ) {
-			if( !$this->loaded[$sectionCacheName][$nls] && ($fullFile = $this->baseDir.$nls) && file_exists($fullFile) ) {
+			if( !isset($this->loaded[$sectionCacheName][$nls]) && ($fullFile = $this->baseDir.$nls) && file_exists($fullFile) ) {
 				include($fullFile);
 				$this->loaded[$sectionCacheName][$nls] = true;
 				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$$varName);
 			}
-		} elseif( !$this->loaded[$sectionCacheName][$nls] ) {
+		} elseif( !isset($this->loaded[$sectionCacheName][$nls]) ) {
 			$this->loaded[$sectionCacheName][$nls] = true;
 			$fullFile = $this->baseDir.$section.".".$nls;
 			if( file_exists($fullFile) ) {

@@ -107,7 +107,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 		// now find the initial nls selection (CheckConfig is needed for per
 		// tree selected defaults)
-		if ($ARCurrent->nls) {
+		if (isset($ARCurrent->nls) && $ARCurrent->nls) {
 			$this->reqnls=$ARCurrent->nls;
 		} else if (isset($ARConfig->cache[$this->path]) && $ARConfig->cache[$this->path]->nls->default) {
 			$this->reqnls = $ARConfig->cache[$this->path]->nls->default;
@@ -207,7 +207,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 						include($this->store->get_config("code")."templates/".$arType."/default.phtml");
 						break;
 					} else {
-						if (!($arSuper=$AR->superClass[$arType])) {
+						if (!isset($AR->superClass)) {
+							$AR->superClass = [];
+						}
+						if (!isset($AR->superClass[$arType]) || !($arSuper=$AR->superClass[$arType])) {
 							// no template found, no default.phtml found, try superclass.
 
 							if (!class_exists($arType, false)) {
@@ -215,7 +218,6 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 								$this->store->newobject('','',$arType,new baseObject);
 							}
 							$arSuper=get_parent_class($arType);
-
 							$AR->superClass[$arType]=$arSuper;
 						}
 						$arType=$arSuper;
@@ -876,7 +878,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		return $result;
 	}
 
-	public function mogrify($id=0, $type, $vtype=null) {
+	public function mogrify($id=0, $type=null, $vtype=null) {
 		if (!$id) {
 			$id = $this->id;
 		}
@@ -1074,7 +1076,8 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 	public static function getContext($level=0) {
 	global $AR;
-		return $AR->context[count($AR->context)-(1+$level)];
+		$level = count($AR->context)-(1+$level);
+		return $AR->context[$level] ?? null;
 	}
 
 	public function CheckAdmin($user) {
@@ -1229,7 +1232,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function clearChildConfigs($path='') {
 	global $ARConfig;
 		$path = $this->make_path($path);
-		if ($ARConfig->cache[$path]) {
+		if (isset($ARConfig->cache[$path])) {
 			$path = preg_quote($path,'/');
 			$keys = preg_grep('/^'.$path.'./',array_keys($ARConfig->cache));
 			foreach($keys as $cachepath) {
@@ -1528,7 +1531,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
-
+		global $AR;
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = explode('.',$arType,2);
 			$local = ($path === $this->path);

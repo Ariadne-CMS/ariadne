@@ -24,14 +24,14 @@
 
 class mysqllock {
 
-	function __construct($tbl_prefix="", $dbh) {
+	function __construct($tbl_prefix="", $dbh=null) {
 		debug("mysqllock::mysqllock($tbl_prefix)");
 		  $this->tbl_prefix=$tbl_prefix;
 		  $this->dbh = $dbh;
 		  debug("mysqllock::mysqllock end","all");
 	}
 
-	function connect($host="localhost",$user="root",$password="", $database) {
+	function connect($host="localhost",$user="root",$password="", $database=null) {
 		debug("mysqllock::connect($host, $user, [password])","store");
 		$this->dbh = new mysqli('p:'.$host, $user, $password, $database);
 		if ($this->dbh->connect_errno) {

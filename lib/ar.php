@@ -9,7 +9,7 @@
 	ar_pinp::allow('ar_error');
 
 	class ar implements arKeyValueStoreInterface {
-		protected static $instances;
+		protected static $instances = [];
 		protected static $ar;
 		protected static $context = null;
 
@@ -61,7 +61,7 @@
 						require_once(ARBaseDir.$fileName.'.php');
 					}
 				}
-				if (!self::$instances[$name]) {
+				if (!isset(self::$instances[$name])) {
 					self::$instances[$name] = new $fullName();
 				}
 				return self::$instances[$name];
