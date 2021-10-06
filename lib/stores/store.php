@@ -341,7 +341,7 @@ abstract class store {
 
 	public function get_filestore($name) {
 		global $AR;
-		if (!$this->_filestores[$name]) {
+		if (!isset($this->_filestores[$name])) {
 			if ($AR->SVN->enabled && ($name == "templates")) {
 				require_once($this->code."modules/mod_filestore_svn.phtml");
 				$this->_filestores[$name]=new filestore_svn($name, $this->files, $this);

@@ -61,7 +61,7 @@
 				if (isset($names)) foreach($names as $name => $languages) {
 					if (isset($languages)) foreach($languages as $language => $id ) {
 						$tempname = sprintf("%s.%s.%s",$type,$name,$language);
-						list($maintype,$subtype) = explode('.', $type, 2);
+						list($maintype,$subtype) = array_pad(explode('.', $type, 2), 2, '');
 						if(!isset($result[$name])) {
 							$result[$name] = [];
 						}
