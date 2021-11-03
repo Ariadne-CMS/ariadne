@@ -3,3 +3,4 @@ www/ariadne.inc
 bin/createsymlinks.ini
 *~
 DEADJOE
+.env
