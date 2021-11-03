@@ -58,9 +58,13 @@
 				$srcdir.='/';
 			}
 			if (is_array($filelist)) {
-				while (list($key, $file) = each($filelist)) {
-					$filelist[$key] = $srcdir.$file;
-				}
+//				while (list($key, $file) = each($filelist)) {
+//					$filelist[$key] = $srcdir.$file;
+//				}
+
+                foreach ($filelist as $key => $file) {
+                    $filelist[$key] = $srcdir.$file;
+                }
 			}
 			$result = $archive->addModify($filelist, "", $srcdir);
 			unset($archive);
@@ -89,9 +93,9 @@
 						 );
 
 			$command = $this->tar_untar;
-			while (list($key, $val) = each($arguments)) {
-				$command = str_replace($key, $val, $command);
-			}
+            foreach ($arguments as $key => $argument) {
+                $command = str_replace($key, $argument, $command);
+            }
 
 			debug("untar cmd ($command)");
 			system($command,$retVar);

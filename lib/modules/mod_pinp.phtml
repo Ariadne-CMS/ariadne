@@ -854,13 +854,13 @@ class pinp {
 			$token = $this->scanner->scan($value);
 			if (is_array($value)) {
 				$this->tokens = $value;
-				list($token, $token_value) = each(array_shift($this->tokens));
+                foreach ($this->tokens as $token => $token_value) {}
 			} else {
 				$token = $token;
 				$token_value = $value;
 			}
 		} else {
-			list($token, $token_value) = each(array_shift($this->tokens));
+            foreach ($this->tokens as $token => $token_value) {}
 		}
 		if ($this->token_ahead) {
 			$this->token = $this->token_ahead;
@@ -1555,7 +1555,7 @@ class pinp {
 				default:
 					$statement = $this->parse_statement();
 					if (!$statement && !$this->error) {
-						$this->error = "Unexpected '".chop($this->token_ahead_value)."' at line ".$this->scanner->YYLINE;
+						$this->error = "Unexpected '".rtrim(json_encode($this->token_ahead_value))."' at line ".$this->scanner->YYLINE;
 					} else {
 						$result .= $statement;
 					}

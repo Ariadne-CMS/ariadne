@@ -1140,12 +1140,12 @@ class mysqlstore extends store{
 
 		if ($object && is_array($values) && count($values) ) {
 			$values = (array) $values + array('scope' => $scope);
-			while (list($name, $value)=each($values)) {
-				if ($value!="") {
-					$query_names.="AR_".AddSlashes($name).", ";
-					$query_values.= "'".AddSlashes($value) ."', ";
-				}
-			}
+            foreach ($values as $name => $value) {
+                if ($value!="") {
+                    $query_names.="AR_".AddSlashes($name).", ";
+                    $query_values.= "'".AddSlashes($value) ."', ";
+                }
+            }
 			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 									$query_names."object ) values ( ".$query_values."$object )";
 			$this->store_run_query($query_string);
@@ -1177,10 +1177,10 @@ class mysqlstore extends store{
 					$values = array();
 				}
 				$values += array( 'scope' => $scope );
-				while (list($name, $value)=each($values)) {
-					$value = "'".addSlashes($value)."'";
-					$query_string.="AR_".AddSlashes($name)."=$value and ";
-				}
+                foreach ($values as $name => $value ) {
+                    $value = "'".addSlashes($value)."'";
+                    $query_string.="AR_".AddSlashes($name)."=$value and ";
+                }
 				$query_string.="object=$object";
 				$qresult = $this->store_run_query($query_string);
 				if($qresult ){
