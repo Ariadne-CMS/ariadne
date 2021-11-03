@@ -1,0 +1,45 @@
+version: '3.1'
+
+services:
+
+  app-php-apache:
+    build:
+      args:
+        container_project_path: /var/www/html/
+        host_project_path: ./ariadne
+        uid: 1000
+        user: $USER
+      context: .
+      dockerfile: ./Dockerfile
+    image: app-php-apache
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www/html/
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+
+  # MySQL database service
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-db-ariadne
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - ./.env
+    networks:
+      - app-network
+
+volumes:
+  mysql-data:
+
+networks:
+  app-network:
+    driver: bridge
