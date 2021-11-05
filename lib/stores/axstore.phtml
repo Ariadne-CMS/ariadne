@@ -262,9 +262,6 @@ class axstore {
 		}
 		if (is_array($node->children)) {
 			reset($node->children);
-//			while (($limit>0 || $limit < 0) && (list(,$child)=each($node->children))) {
-//				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
-//			}
             if($limit>0 || $limit<0){
                 foreach ($node->children as $child) {
                     $this->_recurse_find($child, $result, $criteria, $limit, $offset);
@@ -425,27 +422,6 @@ class axstore {
                 $node->object->runtime_ref--;
                 $this->_free_object_data($node->object);
             }
-//			while (list(,$node)=each($objects["list"])) {
-//				$this->_load_object_data($node->object);
-//				$node->object->init($this, $node->path, $node->object->data);
-//				$node->object->runtime_ref++;
-//				$parent=$this->make_path($node->path, "..");
-//				if ($parent=="/") {
-//					$parent="..";
-//				}
-//				$node->object->parent=$parent;
-//				$node->object->axflags=$node->axflags;
-//				$node->object->priority=$node->priority;
-//				$callobject = clone $node->object;
-//				unset($callobject->properties);
-//				if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
-//					$result[$node->path] = $callobject->call($template, $args);
-//				} else {
-//					$result[] = $callobject->call($template, $args);
-//				}
-//				$node->object->runtime_ref--;
-//				$this->_free_object_data($node->object);
-//			}
 		}
 
 		return $result;

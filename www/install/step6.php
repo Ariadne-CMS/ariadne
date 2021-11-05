@@ -73,7 +73,6 @@
 
 		// Generate the config file.
 		ob_start();
-error_reporting( E_ALL ^ E_WARNING);
             include("conf/global.conf");
 			echo "\$AR->OS = '$ar_os';\n";
 			include("conf/errors.conf");

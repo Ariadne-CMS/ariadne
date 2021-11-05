@@ -58,10 +58,6 @@
 				$srcdir.='/';
 			}
 			if (is_array($filelist)) {
-//				while (list($key, $file) = each($filelist)) {
-//					$filelist[$key] = $srcdir.$file;
-//				}
-
                 foreach ($filelist as $key => $file) {
                     $filelist[$key] = $srcdir.$file;
                 }
