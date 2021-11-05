@@ -28,9 +28,10 @@ if (! ( $templates && is_array($templates) && !empty($templates) ) && !$ARCurren
 				$templates=$this->data->config->pinp;
 				reset($templates);
 				display("\n	exporting/importing templates\n");
-				while (is_array($templates) && (list($type, $functions)=each($templates))) {
-					while (is_array($functions) && (list($function, $languages)=each($functions))) {
-						while (is_array($languages) && (list($language, $file)=each($languages))) {
+
+				foreach ($templates as $type => $functions) {
+					foreach ($functions as $function => $languages) {
+						foreach ($languages as $language => $file) {
 							display("	template [$type][$function][$language]\n");
 							$tmtime = $orig_filestore->mtime($this->id, "$type.$function.$language.pinp");
 							$tdata = $orig_filestore->read($this->id, "$type.$function.$language.pinp");

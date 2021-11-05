@@ -51,18 +51,17 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	KEY implements (implements)
 ) ENGINE " . $this->engine ;
 
-		while ((list($key, $query)=each($queries)) && (!$error)) {
-			if ($query["msg"]) {
-				echo $query["msg"]."\n";
-			}
-			$qresult = $this->store_run_query($query["query_string"]);
+        foreach ($queries as $key => $query) {
+            if ($query['msg']) {
+                echo $query["msg"]."]\n";
+            }
+            $qresult = $this->store_run_query($query["query_string"]);
 
-			if (!$qresult) {
-				$error=$this->dbh->errno;
+            if (!$qresult) {
+                $error=$this->dbh->errno;
 				error("Mysql: $errno: $error");
-			}
-		}
-
+            }
+        }
 
 		if (!$error) {
 			$return=true;

@@ -73,7 +73,7 @@
 
 		// Generate the config file.
 		ob_start();
-			include("conf/global.conf");
+            include("conf/global.conf");
 			echo "\$AR->OS = '$ar_os';\n";
 			include("conf/errors.conf");
 			echo "\$AR->dir->www = '$ar_dir_www';\n";
@@ -95,7 +95,6 @@
 			include("conf/grep.conf");
 		$configfile = ob_get_contents();
 		ob_end_clean();
-
 		eval($configfile);
 
 		function write_config($location, $configfile) {

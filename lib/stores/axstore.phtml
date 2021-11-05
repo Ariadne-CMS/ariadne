@@ -262,9 +262,11 @@ class axstore {
 		}
 		if (is_array($node->children)) {
 			reset($node->children);
-			while (($limit>0 || $limit < 0) && (list(,$child)=each($node->children))) {
-				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
-			}
+            if($limit>0 || $limit<0){
+                foreach ($node->children as $child) {
+                    $this->_recurse_find($child, $result, $criteria, $limit, $offset);
+                }
+            }
 		}
 	}
 
@@ -399,27 +401,27 @@ class axstore {
 		$result = Array();
 		if (is_array($objects["list"])) {
 			reset($objects["list"]);
-			while (list(,$node)=each($objects["list"])) {
-				$this->_load_object_data($node->object);
-				$node->object->init($this, $node->path, $node->object->data);
-				$node->object->runtime_ref++;
-				$parent=$this->make_path($node->path, "..");
-				if ($parent=="/") {
-					$parent="..";
-				}
-				$node->object->parent=$parent;
-				$node->object->axflags=$node->axflags;
-				$node->object->priority=$node->priority;
-				$callobject = clone $node->object;
-				unset($callobject->properties);
-				if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
-					$result[$node->path] = $callobject->call($template, $args);
-				} else {
-					$result[] = $callobject->call($template, $args);
-				}
-				$node->object->runtime_ref--;
-				$this->_free_object_data($node->object);
-			}
+            foreach ($objects["list"] as $node) {
+                $this->_load_object_data($node->object);
+                $node->object->init($this, $node->path, $node->object->data);
+                $node->object->runtime_ref++;
+                $parent=$this->make_path($node->path, "..");
+                if ($parent=="/") {
+                    $parent="..";
+                }
+                $node->object->parent=$parent;
+                $node->object->axflags=$node->axflags;
+                $node->object->priority=$node->priority;
+                $callobject = clone $node->object;
+                unset($callobject->properties);
+                if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
+                    $result[$node->path] = $callobject->call($template, $args);
+                } else {
+                    $result[] = $callobject->call($template, $args);
+                }
+                $node->object->runtime_ref--;
+                $this->_free_object_data($node->object);
+            }
 		}
 
 		return $result;
@@ -635,19 +637,21 @@ class axstore {
 			$currProp=0;
 			foreach ($property as $prop_key => $prop) {
 				reset($prop);
-				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
-					if (($name!="object")&&(!is_int($name))) {
-						if (is_string($val)) {
-							if ($this->header["version"] < 1.5) {
-								$result[$currProp][$name] = $val;
-							} else {
-								$result[$currProp][$name]=substr($val, 1, -1);
-							}
-						} else {
-							$result[$currProp][$name]=$val;
-						}
-					}
-				}
+                if (is_array($prop)) {
+                    foreach ($prop as $name => $val) {
+                        if (($name!="object")&&(!is_int($name))) {
+                            if (is_string($val)) {
+                                if ($this->header["version"] < 1.5) {
+                                    $result[$currProp][$name] = $val;
+                                } else {
+                                    $result[$currProp][$name]=substr($val, 1, -1);
+                                }
+                            } else {
+                                $result[$currProp][$name]=$val;
+                            }
+                        }
+                    }
+                }
 				$currProp++;
 			}
 		}
