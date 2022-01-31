@@ -130,7 +130,7 @@
 		 <div class="bd">
 			  <ul class="first-of-type">
 <?php
-	if ($svn_enabled && $svn_info['revision']) {
+	if ($svn_enabled && isset($svn_info) && isset($svn_info['revision']) && $svn_info['revision']) {
 
 		$filename = $type.".".$function.".".$language.".pinp";
 		switch($svn_status[$filename]['wc-status']['item']) {

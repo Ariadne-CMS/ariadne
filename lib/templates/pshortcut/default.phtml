@@ -1,7 +1,22 @@
 <?php
 	$path=$this->store->make_path($this->parent, $data->path);
 	$MAXLOOPCOUNT=10;
-	if ($ARBeenhere[$arCallFunction][$path]<$MAXLOOPCOUNT) {
+	if (
+		!isset($ARBeenHere) ||
+		!isset($ARBeenHere[$arCallFunction]) ||
+		!isset($ARBeenHere[$arCallFunction][$path]) ||
+		($ARBeenHere[$arCallFunction][$path]<$MAXLOOPCOUNT)
+	) {
+		if (!isset($ARBeenHere)) {
+			$ARBeenHere = array();
+		}
+		if (!isset($ARBeenHere[$arCallFunction])) {
+			$ARBeenHere[$arCallFunction] = array();
+		}
+		if (!isset($ARBeenHere[$arCallFunction][$path])) {
+			$ARBeenHere[$arCallFunction][$path] = 0;
+		}
+		
 		$ARBeenHere[$arCallFunction][$path]+=1;
 
 		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {

@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin('read')) {
-		if (!$type) {
+		if (!isset($type)) {
 			$type = $this->type;
 		}
 		if (!$ARCurrent->arTypeIcons[$this->type]) {

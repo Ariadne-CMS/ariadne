@@ -28,7 +28,7 @@
 
 		public static function getLoader() {
 			global $AR;
-			if ($AR->request && isset($AR->request['loader'])) {
+			if (isset($AR->request) && $AR->request && isset($AR->request['loader'])) {
 				return $AR->request['loader'];
 			} else {
 				return new ar_core_loader_http();

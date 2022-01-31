@@ -1,21 +1,21 @@
 <?php
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin('read')) {
-		if (!$type) {
+		if (!isset($type)) {
 			$type = $this->type;
 		}
-		if (!$ARCurrent->arTypeIcons[$this->type]) {
+		if (!isset($ARCurrent->arTypeIcons[$this->type])) {
 			// FIXME: for performance the check above is necessary, but
 			// it does make it possible to get the wrong icon...
 
 			// get typetree to get the correct icon
 			$this->call('typetree.ini');
 		}
-		if (!$size || $size == "large") {
+		if (!isset($size) || !$size || $size == "large") {
 			$size = "default";
 		}
 
-		$icon=$ARCurrent->arTypeIcons[$type][$size];
+		$icon=(isset($ARCurrent->arTypeIcons[$type][$size]) ? $ARCurrent->arTypeIcons[$type][$size] : null);
 		if (!$icon) {
 			$dotPos=strpos($type, '.');
 			if (false!==$dotPos) {

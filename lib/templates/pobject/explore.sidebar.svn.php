@@ -66,7 +66,7 @@
 
 		$svn_icon = false;
 		$label = $ARnls['ariadne:svn:settings'];
-		if ($svn_revision) {
+		if (isset($svn_revision) && $svn_revision) {
 			$svn_icon = $AR->dir->images. 'svn/InSubVersionIcon.png';
 			$svn_status = $fstore->svn_status($svn);
 			if ($svn_status) {

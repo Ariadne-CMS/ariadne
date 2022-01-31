@@ -8,7 +8,7 @@
 		}
 
 
-		if( !$arLanguage ) {
+		if( !isset($arLanguage) || !$arLanguage ) {
 			$arLanguage = $nls;
 		}
 
@@ -16,8 +16,8 @@
 		if( !$owner ) {
 			$owner = $this->data->owner_name;
 		}
-		$date = strftime("%m-%d-%Y",$this->data->ctime);
-		$modified = strftime("%m-%d-%Y",$this->data->mtime);
+		$date = strftime("%m-%d-%Y",(isset($this->data->ctime) ? $this->data->ctime : null));
+		$modified = strftime("%m-%d-%Y",(isset($this->data->mtime) ? $this->data->mtime : null));
 
 		$userConfig = $this->loadUserConfig();
 		$authconfig = $userConfig['authentication'];
@@ -34,21 +34,21 @@
 
 		$name = $this->nlsdata->name;
 
-		if (!$ARCurrent->arTypeTree) {
+		if (!isset($ARCurrent->arTypeTree)) {
 			$this->call("typetree.ini");
 		}
-		$icon = $ARCurrent->arTypeIcons[$this->type]['default'] ? $ARCurrent->arTypeIcons[$this->type]['default'] : $this->call("system.get.icon.php");
+		$icon = isset($ARCurrent->arTypeIcons[$this->type]['default']) ? $ARCurrent->arTypeIcons[$this->type]['default'] : $this->call("system.get.icon.php");
 		$iconalt = $this->type;
 		if( $this->implements("pshortcut") ) {
 			$overlay_icon = $icon;
 			$overlay_alt = $this->type;
-			$icon = $ARCurrent->arTypeIcons[$this->vtype]['default'] ? $ARCurrent->arTypeIcons[$this->vtype]['default'] : current($this->get($this->data->path, "system.get.icon.php"));
+			$icon = isset($ARCurrent->arTypeIcons[$this->vtype]['default']) ? $ARCurrent->arTypeIcons[$this->vtype]['default'] : current($this->get($this->data->path, "system.get.icon.php"));
 			$iconalt = $this->vtype;
 		}
 ?>
 <img src="<?php echo $icon; ?>" alt="<?php echo htmlspecialchars($iconalt); ?>" title="<?php echo htmlspecialchars($iconalt); ?>" class="icon">
 <?php
-	if( $overlay_icon ) {
+	if( isset($overlay_icon) && $overlay_icon ) {
 ?>
 <img src="<?php echo $overlay_icon; ?>" alt="<?php echo htmlspecialchars($overlay_alt); ?>" title="<?php echo htmlspecialchars($overlay_alt); ?>" class="overlay_icon">
 <?php
@@ -64,7 +64,7 @@
 	</div>
 	<div id="browseheaderright">
 <?php
-	if( !$this->data->name ) {
+	if( !isset($this->data->name) || !$this->data->name ) {
 		$config = $this->loadConfig();
 		foreach( $config->nls->list as $key => $value ) {
 			if( $arLanguage == $key ) {
@@ -72,7 +72,7 @@
 			} else {
 				$class = "unselected";
 			}
-			if( $this->data->{$key}->name ) {
+			if( isset($this->data->{$key}->name) ) {
 				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
 			} else {
 				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/faded/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";

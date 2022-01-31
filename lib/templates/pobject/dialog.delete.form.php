@@ -60,7 +60,7 @@
 			$crumbs = htmlspecialchars( $crumbs . "/ " . $targetob->nlsdata->name );
 			$oldcrumbs = htmlspecialchars( $oldcrumbs . "/ " . $targetob->nlsdata->name );
 
-			if( !$ARCurrent->arTypeTree ) {
+			if( !isset($ARCurrent->arTypeTree) ) {
 				$targetob->call('typetree.ini');
 			}
 			$icons = $ARCurrent->arTypeIcons;

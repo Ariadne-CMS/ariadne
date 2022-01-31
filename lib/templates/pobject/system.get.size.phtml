@@ -16,7 +16,7 @@
 		$arResult += $this->data->filesize;
 	}
 
-	if (is_array($this->data->nls->list)) {
+	if (isset($this->data->nls->list) && is_array($this->data->nls->list)) {
 		foreach ($this->data->nls->list as $key => $language) {
 			if (isset($this->data->$key->filesize)) {
 				$arResult += $this->data->$key->filesize;

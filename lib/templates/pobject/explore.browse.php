@@ -8,13 +8,13 @@
 	}
 
 	require_once($this->store->get_config("code")."modules/mod_yui.php");
-	if (!$ARCurrent->arTypeTree) {
+	if (!isset($ARCurrent->arTypeTree)) {
 		$this->call("typetree.ini");
 	}
-	if (!$items_per_page) {
+	if (!isset($items_per_page) || !$items_per_page) {
 		$items_per_page = 60;
 	}
-	$current_page = $page;
+	$current_page = (isset($page) ? $page : null);
 	if (!$current_page) {
 		$current_page = 1;
 	}
@@ -129,7 +129,7 @@
 
 		$colDefs = $eventData['args']['columns'];
 		foreach($colDefs as $colKey => $colDef ) {
-			if ( $colDef['hide'] ) {
+			if ( isset($colDef['hide']) && $colDef['hide'] ) {
 				unset($colDefs[$colKey]);
 			} else {
 				$colDefs[$colKey] = array_merge($colDef, [ 'key' => $colKey ]);

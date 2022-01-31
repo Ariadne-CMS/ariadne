@@ -17,18 +17,18 @@
 			if(is_array($settings)) {
 				foreach ($settings as $item) {
 					$result .= '<a class="sidebar_task';
-					if ($item['class']) {
+					if (isset($item['class']) && $item['class']) {
 						$result .= ' ' . $item['class'];
 					}
 					$result .= '"';
 
-					if ($item['href']) {
+					if (isset($item['href']) && $item['href']) {
 						$result .= ' href="' . $item['href'] . '"';
 					}
-					if ($item['onclick']) {
+					if (isset($item['onclick']) && $item['onclick']) {
 						$result .= ' onclick="' . $item['onclick'] . '"';
 					}
-					if ($item['target']) {
+					if (isset($item['target']) && $item['target']) {
 						$result .= ' target="' . $item['target'] . '"';
 					} else {
 						// FIXME: This should not be used in strict doctype, but we don't want it in our
@@ -39,11 +39,14 @@
 
 					$result .= '>';
 
-					if ($item['icon']) {
+					if (!isset($item['iconalt'])) {
+						$item['iconalt'] = '';
+					}
+					if (isset($item['icon']) && $item['icon']) {
 						$result .= '<img class="task_icon" src="' . $item['icon'] . '" alt="' . $item['iconalt'] . '" title="' . $item['iconalt'] . '">&nbsp;&nbsp;';
 					}
 
-					$itemlabel = $item['nlslabel'];
+					$itemlabel = isset($item['nlslabel']) ? $item['nlslabel'] : '';
 					$maxlabellength = 25;
 					if (mb_strlen($itemlabel, "utf-8") > $maxlabellength) {
 						$origName = $itemlabel;
@@ -58,16 +61,16 @@
 
 
 		static public function getSection($section) {
-			$invisibleSections= $_COOKIE['invisibleSections'];
+			$invisibleSections = isset($_COOKIE['invisibleSections']) ? $_COOKIE['invisibleSections'] : null;
 
 			$maxheadlength = 18;
-			if ($section['icon']) {
+			if (isset($section['icon']) && $section['icon']) {
 				$maxheadlength = 14;
 			}
 
 			$sectionDisplayName = $section['label'];
 			$sectionName = $section['id'];
-			$icon = $section['icon'];
+			$icon = isset($section['icon']) ? $section['icon'] : null;
 
 			if (mb_strlen($sectionDisplayName, "utf-8") > $maxheadlength) {
 				$origName = htmlspecialchars($sectionDisplayName);
@@ -94,7 +97,7 @@
 				$sectionhead_class .= " iconsection";
 			}
 
-			if( $section['inline_icon'] ) {
+			if( isset($section['inline_icon']) && $section['inline_icon']) {
 				$sectionhead_class .= " iconinlinesection";
 				$icontag .= '<img src="' . $section['inline_icon'] . '" class="inline_icon" alt="' . $section['inline_iconalt'] . '" title="' . $section['inline_iconalt'] . '">';
 			}
@@ -115,12 +118,15 @@
 
 			$result .= '<div class="section_content">';
 
-			if ($section['details']) {
+			if (isset($section['details']) && $section['details']) {
 				$result .= '<div class="details">';
 				$result .= $section['details'];
 				$result .= '</div>';
 			}
 
+			if(!isset($section['tasks'])) {
+				$section['tasks'] = null;
+			}
 			$result .= self::getSectionContent($section['tasks']);
 			$result .= '</div>';
 
@@ -171,7 +177,7 @@
 				$nodes = ar_html::nodes();
 
 				foreach ($menuitems as $item) {
-					if (!$item['href']) {
+					if (!isset($item['href'])) {
 						$item['href'] = "#";
 					}
 
@@ -180,15 +186,15 @@
 						"href" => $item["href"],
 					);
 
-					if( $item["onclick"] ) {
+					if( isset($item["onclick"]) ) {
 						$link["onclick"] = $item["onclick"];
 					}
-					if( $item["icon"] ) {
+					if( isset($item["icon"]) ) {
 						$icon = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"], "title" => $item["iconalt"]));
 					} else {
 						$icon = false;
 					}
-					if( $item["label"] ) {
+					if( isset($item["label"]) ) {
 						$content = ar_html::tag("span", array("class" => "menulabel"), $item['label']);
 					} else {
 						$content = false;
@@ -196,10 +202,13 @@
 
 					$a = ar_html::tag("a", $link, $icon, $content);
 
-					if( is_array($item['submenu']) ) {
+					if( isset($item['submenu']) && is_array($item['submenu']) ) {
 						$submenu = self::yui_menuitems($item['submenu'], "yuimenu");
 					} else {
 						$submenu = false;
+					}
+					if (!isset($item['id'])) {
+						$item['id'] = '';
 					}
 					$nodes[] = ar_html::tag("li", array("id" => $item['id'], "class" => $menuname."item"), $a, $submenu);
 				}
@@ -386,7 +395,7 @@
 				$iconsrc = $AR->dir->images . 'svn/ModifiedIcon.png';
 				$alt = $ARnls['ariadne:svn:modified'];
 			}
-			if ($iconsrc) {
+			if (isset($iconsrc)) {
 				return ar_html::tag('img', array('class' => 'explore_svnicon', 'src' => $iconsrc, 'alt' => $alt, 'title' => $alt ));
 			} else {
 				return null;
@@ -406,6 +415,9 @@
 			}
 
 			$result = ar_html::nodes();
+			if (!isset($item['vtype'])) {
+				$item['vtype'] = '';
+			}
 			if( $type == "pshortcut" ) {
 				$result[] = ar_html::tag('img', array('title' => $item['vtype'], 'alt' => $item['vtype'], 'class' => 'explore_icon', 'src' => $item['icons'][$iconsize]) );
 				$result[] = ar_html::tag('img', array('title' => $item['type'], 'alt' => $item['type'], 'class' => 'explore_icon_shortcut_'.$viewtype, 'src' => $item['overlay_icons'][$iconsize]) );
@@ -677,6 +689,7 @@
 		}
 
 		static public function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
+			$class = '';
 			if (!$arObject->CheckSilent("add", $type)) {
 				$class .= "greyed";
 			}
@@ -701,7 +714,7 @@
 			return $result;
 		}
 
-		function getItems($arObject, $typeslist, $currentpath, $arReturnTemplate) {
+		public static function getItems($arObject, $typeslist, $currentpath, $arReturnTemplate) {
 			$result = array();
 			foreach( $typeslist as $type => $name ) {
 				$result[] = self::checkType($arObject, $type, $name, $currentpath, $arReturnTemplate);

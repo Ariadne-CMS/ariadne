@@ -12,7 +12,7 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		}
 
 		global $invisibleSections;
-		if (!$arLanguage) {
+		if (!isset($arLanguage) || !$arLanguage) {
 			$arLanguage=$nls;
 			if (is_array($arCallArgs)) {
 				$arCallArgs["arLanguage"]=$nls;
@@ -28,7 +28,7 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		$arCallArgs["shortcutSidebar"] = true;
 
 		//tasks
-		if( !$ARCurrent->arTypeTree ) {
+		if( !isset($ARCurrent->arTypeTree) ) {
 			$this->call("typetree.ini");
 		}
 

@@ -25,7 +25,7 @@
 
 		debug("ldSetCredentials($login)","object");
 
-		if (!$ARCurrent->session) {
+		if (!isset($ARCurrent->session) || !$ARCurrent->session) {
 			ldStartSession();
 		} else {
 			/* use the same sessionid if the user didn't login before */
@@ -44,7 +44,7 @@
 		$ARCurrent->session->save();
 
 		$cookies = (array)$_COOKIE["ARSessionCookie"];
-		$https = ($_SERVER['HTTPS']=='on');
+		$https = isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS']=='on');
 
 		$currentCookies = array();
 
@@ -155,7 +155,7 @@
 		if ( $eventData ) {
 
 			$arCallArgs = $eventData->arCallArgs;
-			$arCallArgs["arLoginMessage"] = $eventData->message;
+			$arCallArgs["arLoginMessage"] = isset($eventData->message) ? $eventData->message : '';
 
 			if (!$ARCurrent->arLoginSilent) {
 				$ARCurrent->arLoginSilent = true;

@@ -67,7 +67,7 @@ class puser extends pdir { // puser class definition
 	}
 
 	function GetGrants($path, &$result) {
-		if ($this->data->config->usergrants[$path]) {
+		if (isset($this->data->config->usergrants[$path])) {
 			foreach ($this->data->config->usergrants[$path] as $grant => $value) {
 				$result[$grant]=$value;
 			}

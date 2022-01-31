@@ -9,17 +9,17 @@
 		"type"        => $this->type,
 		"size"        => $this->size,
 		"owner"       => $this->data->config->owner,
-		"lastchanged" => date("Y-m-d H:i",$this->lastchanged),
-		"modified"    => date("Y-m-d H:i",$this->data->mtime),
-		"created"     => date("Y-m-d H:i",$this->data->ctime),
+		"lastchanged" => date("Y-m-d H:i",(isset($this->lastchanged) ? $this->lastchanged : null)),
+		"modified"    => date("Y-m-d H:i",(isset($this->data->mtime) ? $this->data->mtime : null)),
+		"created"     => date("Y-m-d H:i",(isset($this->data->ctime) ? $this->data->ctime : null)),
 		"language"    => $this->data->nls->list,
 		'local_url'   => $this->make_ariadne_url(),
 		'priority'    => $this->priority,
 		"vtype"       => $this->vtype,
 		"icons"       => array(
-			"small" => ( $ARCurrent->arTypeIcons[$this->type]["small"] ? $ARCurrent->arTypeIcons[$this->type]["small"] : $this->call('system.get.icon.php', array('size' => 'small')) ),
-			"medium" => ( $ARCurrent->arTypeIcons[$this->type]["medium"] ? $ARCurrent->arTypeIcons[$this->type]["medium"] : $this->call('system.get.icon.php', array('size' => 'medium')) ),
-			"large" => ( $ARCurrent->arTypeIcons[$this->type]["large"] ? $ARCurrent->arTypeIcons[$this->type]["large"] : $this->call('system.get.icon.php', array('size' => 'large')) )
+			"small" => ( isset($ARCurrent->arTypeIcons[$this->type]["small"]) ? $ARCurrent->arTypeIcons[$this->type]["small"] : $this->call('system.get.icon.php', array('size' => 'small')) ),
+			"medium" => ( isset($ARCurrent->arTypeIcons[$this->type]["medium"]) ? $ARCurrent->arTypeIcons[$this->type]["medium"] : $this->call('system.get.icon.php', array('size' => 'medium')) ),
+			"large" => ( isset($ARCurrent->arTypeIcons[$this->type]["large"]) ? $ARCurrent->arTypeIcons[$this->type]["large"] : $this->call('system.get.icon.php', array('size' => 'large')) )
 		)
 	);
 
@@ -35,9 +35,9 @@
 	foreach($colDefs as $key => $colDef ) {
 		if ( array_key_exists($key, $defaults)) {
 			$arResult[$key] = $defaults[$key];
-		} else if ( $colDef['call'] ) {
+		} else if ( isset($colDef['call']) && $colDef['call'] ) {
 			$arResult[$key] = ar::call($colDef['call'], $colDef);
-		} else if ( $colDef['entry'] ) {
+		} else if ( isset($colDef['entry']) && $colDef['entry'] ) {
 			$root = \arc\path::head($colDef['entry']);
 			$tail = \arc\path::tail($colDef['entry']);
 			switch( $root ) {
@@ -97,12 +97,12 @@
 
 		$filestore = $this->store->get_filestore_svn("templates");
 		$svn_object = $filestore->connect($this->id);
-		$svn_status = $this->getdatacache(sprintf("svn-status-%s",$svn_object));
+		$svn_status = $this->getdatacache(sprintf("svn-status-%s", $this->id));
 
 		if ( !(isset($svn_status) && is_array($svn_status)) ) {
 			$svn_status = $filestore->svn_status($svn_object);
 			if (isset($svn_status) && is_array($svn_status)) {
-				$this->savedatacache(sprintf("svn-status-%s",$svn_object), $svn_status, 999);
+				$this->savedatacache(sprintf("svn-status-%s",$this->id), $svn_status, 999);
 			}
 		}
 
@@ -123,6 +123,12 @@
 			$svn['status'] = 'notinsubversion';
 		}
 
+		if (!isset($svn)) {
+			$svn = null;
+		}
+		if (!isset($svn_icon)) {
+			$svn_icon = null;
+		}
 		$arResult['svn'] = $svn;
 		$arResult['svn_icon'] = $svn_icon;
 	}

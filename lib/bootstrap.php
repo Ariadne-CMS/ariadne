@@ -11,6 +11,23 @@
 		define('AriadneBasePath', $ariadne);
 	}
 
+	// Polyfill for 'each' that was removed in php 8
+	if (!function_exists('each')) {
+	    function each(array &$array) {
+		$value = current($array);
+		$key = key($array);
+
+		if (is_null($key)) {
+		    return false;
+		}
+
+		// Move pointer.
+		next($array);
+
+		return array(1 => $value, 'value' => $value, 0 => $key, 'key' => $key);
+	    }
+	}
+
 	$loaderType = ($ARLoader)?$ARLoader:'web';
 
 	require_once(AriadneBasePath."/../vendor/autoload.php");

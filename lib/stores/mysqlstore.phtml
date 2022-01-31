@@ -93,7 +93,7 @@ class mysqlstore extends store{
 		$password = $config["password"];
 		$config["password"]="";
 
-		if(is_array($config['crypto'])) {
+		if(isset($config['crypto']) && is_array($config['crypto'])) {
 			$crypto = $config['crypto'];
 			// hide crypto configuration from var_dump e.d.
 			$config['crypto'] = function () use ($crypto) {
@@ -108,7 +108,7 @@ class mysqlstore extends store{
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
 		$this->mod_lock=new mysqllock($config["prefix"],$this->dbh);
-		$this->mod_lock->lock_duration=$config["lock_duration"];
+		$this->mod_lock->lock_duration=isset($config["lock_duration"]) ? $config["lock_duration"] : null;
 
 		if (isset($config['filestores']) && is_array($config['filestores'])) {
 			$this->filestores = $config['filestores'];
@@ -183,6 +183,9 @@ class mysqlstore extends store{
 			}
 		}
 
+		if (!isset($this->total)) {
+			$this->total = 0;
+		}
 		$this->total += $count;
 		return $result;
 	}
@@ -492,6 +495,10 @@ class mysqlstore extends store{
 					$where.=" ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
+			if (!isset($types)) {
+				$types = '';
+			}
+
 			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
 			$where=substr($where,4);
 			if ($where) { 
@@ -674,7 +681,7 @@ class mysqlstore extends store{
 							$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath', '$eparent', $id, $epriority)";
 							$qresult = $this->store_run_query($query_string);
 							if ($qresult) {
-								if ($needunlocking) {
+								if (isset($needunlocking) && $needunlocking) {
 									$query_string = "unlock tables";
 									$this->store_run_query($query_string);
 									$needunlocking = false;
@@ -695,7 +702,7 @@ class mysqlstore extends store{
 
 				}
 
-				if ($needunlocking) {
+				if (isset($needunlocking) && $needunlocking) {
 					$query_string = "unlock tables";
 					$this->store_run_query($query_string);
 					$needunlocking = false;
@@ -1049,6 +1056,9 @@ class mysqlstore extends store{
 		if ($row) {
 			$result=1;
 		}
+		if (!isset($result)) {
+			$result = null;
+		}
 		return $result;
 	}
 	
@@ -1142,6 +1152,12 @@ class mysqlstore extends store{
 			$values = (array) $values + array('scope' => $scope);
 			while (list($name, $value)=each($values)) {
 				if ($value!="") {
+					if (!isset($query_names)) {
+						$query_names = '';
+					}
+					if (!isset($query_values)) {
+						$query_values = '';
+					}
 					$query_names.="AR_".AddSlashes($name).", ";
 					$query_values.= "'".AddSlashes($value) ."', ";
 				}

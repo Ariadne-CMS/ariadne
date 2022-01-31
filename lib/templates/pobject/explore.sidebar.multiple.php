@@ -150,7 +150,7 @@
 			'tasks' => $tasks
 		);
 		if( $shortcutSidebar ) {
-			if (!$ARCurrent->arTypeTree) {
+			if (!isset($ARCurrent->arTypeTree)) {
 				$this->call('typetree.ini');
 			}
 			$section['inline_icon'] = $ARCurrent->arTypeIcons[$this->type]['small'] ? $ARCurrent->arTypeIcons[$this->type]['small'] : $this->call('system.get.icon.php', array('size' => 'small'));

@@ -199,7 +199,7 @@
 			$ns = $x->query('namespace::*', $DOMElement);
 			foreach( $ns as $node) {
 				$uri = $DOMElement->lookupNamespaceURI( $node->localName );
-				if ($allns[$node->localName]!=$uri && $node->localName!='xmlns') {
+				if (isset($allns[$node->localName]) && $allns[$node->localName]!=$uri && $node->localName!='xmlns') {
 					$declaredns['xmlns:'.$node->localName] = $uri;
 				}
 			}

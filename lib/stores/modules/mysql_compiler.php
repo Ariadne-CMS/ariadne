@@ -28,6 +28,9 @@ class mysql_compiler extends sql_compiler {
 		if ($arguments) {
 			extract($arguments);
 		}
+		if (!$node) {
+			return null;
+		}
 		switch ((string)$node["id"]) {
 			case 'property':
 				$table=$this->tbl_prefix.$node["table"];

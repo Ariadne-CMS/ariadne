@@ -5,7 +5,7 @@
 
 		$editor="dialog.templates.edit.php";
 
-		if( !$ARCurrent->arTypeTree ) {
+		if( !isset($ARCurrent->arTypeTree) ) {
 			$this->call('typetree.ini');
 		}
 		$icons = $ARCurrent->arTypeIcons;
@@ -241,6 +241,10 @@
 						$flagbuttons = '';
 						$flag_svn = '';
 						$grep_results = '';
+						$svn_style = '';
+						$svn_style_hide = '';
+						$svn_img = '';
+						
 						foreach ($templatelist as $language => $template) {
 							$filename = $type . "." . $function . "." . $language . ".pinp";
 							$filename_short = $type . "." . $function . "." . $language;
@@ -288,7 +292,7 @@
 								}
 							}
 
-							$flag = "<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\">";
+							$flag = "<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".(isset($AR->nls->list[$language]) ? $AR->nls->list[$language] : "")."\">";
 							if ($svn_enabled && (count($templatelist) > 1) && $svn_img ) {
 								$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 								$flag_svn = '<img class="flag_svn_icon" alt="' . $svn_alt . '" src="' . $svn_img_src . '">';
@@ -319,7 +323,7 @@
 							<td class="svn">
 								<?php
 									if ($svn_enabled) {
-										if ($svn_img) {
+										if (isset($svn_img) && $svn_img) {
 											$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 											?><img class="svn_icon" alt="<?php echo $svn_alt; ?>" src="<?php echo $svn_img_src;?>"><?php
 										}
@@ -327,20 +331,20 @@
 								?>
 							</td>
 						       <td align="left" valign="middle" style="height:23px;">
-								<div class="<?php echo $svn_style; ?>">
+								<div class="<?php echo (isset($svn_style) ? $svn_style : ''); ?>">
 									<img class="type_icon" alt="<?php echo $icon_alt; ?>" src="<?php echo $icon_src; ?>">
 								<?php echo $type; ?>&nbsp;</div></td>
-							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo $svn_style; ?>"><?php
-								if (!$templates[$type][$function]) {
+							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo (isset($svn_style) ? $svn_style : ''); ?>"><?php
+								if (!isset($templates[$type][$function]) || !$templates[$type][$function]) {
 									echo "<img class='local' src='{$AR->dir->images}local.gif' alt='local'>&nbsp;";
 								}
-								if ($privatetemplates[$type][$function]) {
+								if (isset($privatetemplates[$type][$function]) && $privatetemplates[$type][$function]) {
 									echo "<img class='private' src='{$AR->dir->images}private.png' alt='" . $ARnls['ariadne:template:private'] . "' title='" . $ARnls['ariadne:template:private'] . "'>";
 								}
 							?>
 							<?php echo $function; ?></div>
 							</td>
-							<td><div class="<?php echo $svn_style; ?>"><?php
+							<td><div class="<?php echo (isset($svn_style) ? $svn_style : ''); ?>"><?php
 								echo $flagbuttons;
 							?></div></td>
 								<?php

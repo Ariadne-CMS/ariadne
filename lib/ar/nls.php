@@ -115,7 +115,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 					debug('No current object found on the context stack, skipping loadtext', 'all');
 					return $this;
 				}
-				$arResult = $ARCurrent->arResult;
+				$arResult = isset($ARCurrent->arResult) ? $ARCurrent->arResult : null;
 				$me->pushContext(array());
 					$oldnls = $me->reqnls;
 					$me->reqnls = $nls;
@@ -131,7 +131,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 					$nlsarray = $ARCurrent->arResult;
 				} elseif( is_array($me->{$varName}) ) {
 					$nlsarray = $me->{$varName};
-				} elseif( is_array($ARCurrent->{$varName}) ) {
+				} elseif( isset($ARCurrent->{$varName}) && is_array($ARCurrent->{$varName}) ) {
 					$nlsarray = $ARCurrent->{$varName};
 				}
 				$ARCurrent->arResult = $arResult;

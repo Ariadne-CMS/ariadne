@@ -11,7 +11,7 @@
 				'icon' => $AR->dir->images . 'icons/small/cache.png',
 				'nlslabel' => $ARnls['caching']
 			);
-			if ($this->data->config->cacheconfig) {
+			if (isset($this->data->config->cacheconfig) && $this->data->config->cacheconfig) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
@@ -23,7 +23,7 @@
 				'icon' => $AR->dir->images . 'icons/small/templates.png',
 				'nlslabel' => $ARnls['templates']
 			);
-			if ($this->data->config->pinp) {
+			if (isset($this->data->config->pinp) && $this->data->config->pinp) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
@@ -34,7 +34,7 @@
 				'icon' => $AR->dir->images . 'icons/small/customfields.png',
 				'nlslabel' => $ARnls["ariadne:customfields"]
 			);
-			if ($this->data->config->customconfig) {
+			if (isset($this->data->config->customconfig) && $this->data->config->customconfig) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
@@ -45,7 +45,7 @@
 				'icon' => $AR->dir->images . 'icons/small/language.png',
 				'nlslabel' => $ARnls['language']
 			);
-			if ($this->data->config->nlsconfig) {
+			if (isset($this->data->config->nlsconfig) && $this->data->config->nlsconfig) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
@@ -58,11 +58,11 @@
 				'icon' => $AR->dir->images . 'icons/small/grants.png',
 				'nlslabel' => $ARnls['grants']
 			);
-			if($this->data->config->grants) {
+			if(isset($this->data->config->grants) && $this->data->config->grants) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
-			if( !$shortcutSidebar ) {
+			if( !isset($shortcutSidebar) || !$shortcutSidebar ) {
 				$task = array(
 					'href' => $this->make_ariadne_url() . "dialog.owner.php",
 					'onclick' => "muze.ariadne.explore.arshow('dialog.owner', this.href); return false;",
@@ -73,7 +73,7 @@
 			}
 		}
 
-		if ($this->CheckSilent("edit") && !$shortcutSidebar) {
+		if ($this->CheckSilent("edit") && (!isset($shortcutSidebar) || !$shortcutSidebar)) {
 			$task = array(
 				'href' => $this->make_ariadne_url() . "dialog.priority.php",
 				'onclick' => "muze.ariadne.explore.arshow('dialog.priority',this.href); return false;",
@@ -90,8 +90,8 @@
 		);
 		$section = $this->call('explore.sidebar.settings.extra.html', array("section" => $section, "images" => $AR->dir->images));
 		if (count($section['tasks'])) {
-			if( $shortcutSidebar ) {
-				if (!$ARCurrent->arTypeTree) {
+			if( isset($shortcutSidebar) && $shortcutSidebar ) {
+				if (!isset($ARCurrent->arTypeTree)) {
 					$this->call('typetree.ini');
 				}
 				$section['inline_icon'] = $ARCurrent->arTypeIcons[$this->type]['small'] ? $ARCurrent->arTypeIcons[$this->type]['small'] : $this->call('system.get.icon.php', array('size' => 'small'));

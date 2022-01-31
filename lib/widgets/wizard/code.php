@@ -33,7 +33,7 @@ if( !function_exists("wgWizKeepVars") ) {
 		if ($prefix==="arStoreVars[") {
 			$toplevel=true;
 		}
-		if (!($regexp=$ARCurrent->regexp)) {
+		if (!($regexp=(isset($ARCurrent->regexp) ? $ARCurrent->regexp : ''))) {
 			$regexp='/^arStoreVars\[(';
 			reset($AR->nls->list);
 			foreach( $AR->nls->list as $key => $value ) {
@@ -54,7 +54,7 @@ if( !function_exists("wgWizKeepVars") ) {
 		if( is_array($array ) ) {
 			reset($array);
 			foreach( $array as $key => $value ) {
-				if( !$ignoreVars[$key] ) {
+				if( !isset($ignoreVars[$key]) || !$ignoreVars[$key] ) {
 					if (is_array($value)) {
 						if ($key!=="arStoreVars") {
 							wgWizKeepVars($value, $prefix.$key.$postfix);
@@ -67,10 +67,10 @@ if( !function_exists("wgWizKeepVars") ) {
 						}
 						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
-					} elseif (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
+					} elseif ((!isset($ARCurrent->seenit) || !isset($ARCurrent->seenit[$prefix]) || !$ARCurrent->seenit[$prefix]) && !$toplevel) { // value part of array
 						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
-					} elseif (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
+					} elseif ((!isset($ARCurrent->seenit) || !isset($ARCurrent->seenit[$prefix.$key.$postfix]) || !$ARCurrent->seenit[$prefix.$key.$postfix]) && $toplevel) { // value not in array
 						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
 					}
@@ -100,7 +100,7 @@ if( !function_exists("wgWizGetAction") ) {
 	}
 }
 	// code for pinp: calculate and return (preliminary) wgWizNextStep
-	if (!$wgWizControl) {
+	if (!isset($wgWizControl) || !$wgWizControl) {
 		$wgWizControl=$this->getdata("wgWizControl","none");
 	}
 	if ($wgWizControl) {

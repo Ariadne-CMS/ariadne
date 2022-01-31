@@ -5,8 +5,12 @@
   // since this object is not available within the requested language, we have to set
   // allnls to true. 
   $ARCurrent->allnls=true;
+  var_dump($this->reqnls);
   if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
+  	var_dump($this->reqnls);
+  	if (file_exists($this->store->get_config("code")."nls/ariadne.".$this->reqnls)) {
+	  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
+	}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>

@@ -19,23 +19,29 @@ class ar_core_pinpSandbox extends arBase {
 	public $ARnls;
 
 	public function __construct($scope) {
+		$properties = array(
+			"data",
+			"customdata",
+			"nlsdata",
+			"customnlsdata",
+			"path",
+			"parent",
+			"type",
+			"vtype",
+			"priority",
+			"id",
+			"lastchanged",
+			"size",
+			"nls",
+			"reqnls",
+			"arIsNewObject",
+			"ARnls"
+		);
+		
 		$this->this          = $scope;
-		$this->data          = $scope->data;
-		$this->customdata    = $scope->customdata;
-		$this->nlsdata       = $scope->nlsdata;
-		$this->customnlsdata = $scope->customnlsdata;
-		$this->path          = $scope->path;
-		$this->parent        = $scope->parent;
-		$this->type          = $scope->type;
-		$this->vtype         = $scope->vtype;
-		$this->priority      = $scope->priority;
-		$this->id            = $scope->id;
-		$this->lastchanged   = $scope->lastchanged;
-		$this->size          = $scope->size;
-		$this->nls           = $scope->nls;
-		$this->reqnls        = $scope->reqnls;
-		$this->arIsNewObject = $scope->arIsNewObject;
-		$this->ARnls         = $scope->ARnls;
+		foreach ($properties as $property) {
+			$this->{$property} = isset($scope->{$property}) ? $scope->{$property} : null;
+		}
 	}
 
 	private function isSafeCallable( $callable ) {

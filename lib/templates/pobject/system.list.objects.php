@@ -6,10 +6,10 @@
 		} else {
 			$query="object.parent='".AddSlashes($this->path)."'";
 
-			if ($type) {
+			if (isset($type)) {
 				$query.=" and object.implements='".AddSlashes($type)."'";
 			}
-			if ($name) {
+			if (isset($name)) {
 				$query.=" and name.value ~= '%".AddSlashes($name)."%'";
 			}
 			$filter = $this->getvar('filter');
@@ -54,14 +54,17 @@
 			$orderqueries['modified'] = $orderqueries['mtime'];
 			$orderqueries['filename'] = $orderqueries['path'];
 
-			if ($filterqueries[$filter]) {
+			if (isset($filter) && $filterqueries[$filter]) {
 				$query .= " and " . $filterqueries[$filter];
 			}
 
-			if (!$orderqueries[$order]) {
+			if (!isset($order) || !$orderqueries[$order]) {
 				$order = 'name';
 			}
 
+			if (!isset($direction)) {
+				$direction = null;
+			}
 			if ($orderqueries[$order]) {
 				$directionpart = (strtolower($direction) == 'desc' ? " DESC" : " ASC");
 				$querypart = implode($directionpart . ", ", (array)$orderqueries[$order]);
@@ -71,11 +74,11 @@
 
 		// echo $query;
 
-		if (!$limit) {
+		if (!isset($limit) || !$limit) {
 			$limit=0;
 		}
 
-		if (!$offset) {
+		if (!isset($offset) || !$offset) {
 			$offset = 0;
 		}
 
@@ -84,12 +87,12 @@
 		// vanuit willekeurige plekken gewoon sys.objects.list.phtml
 		// kan oproepen, ook als het om veel objecten gaat.
 
-		if (!$ARCurrent->arTypeIcons) {
+		if (!isset($ARCurrent->arTypeIcons) || !$ARCurrent->arTypeIcons) {
 			$this->call('typetree.ini');
 		}
 
 		$countQuery = "object.parent='".AddSlashes($this->path)."'";
-		if ($filterqueries[$filter]) {
+		if (isset($filter) && $filterqueries[$filter]) {
 			$countQuery .= " and " . $filterqueries[$filter];
 		}
 
@@ -100,7 +103,7 @@
 			$objects = $this->find(".", $query, "system.list.entry.php", "", $limit, $offset);
 		}
 
-		if ($name || $type) {
+		if ((isset($name) && $name) || (isset($type) && $type)) {
 			$total=$this->count_find(".", $query);
 		} else {
 			$total = $foldertotal;

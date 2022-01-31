@@ -1,4 +1,7 @@
 <?php
+	if (!isset($context)) {
+		$context=$this->getContext(ARCALLINGCONTEXT);
+	}
 	$ARCurrent->nolangcheck = true;
 	if( $this->CheckLogin("read") && $this->CheckConfig() ) {
 		$arNewFilename = $this->getdata("arNewFilename", "none");

@@ -160,7 +160,7 @@
 				pobject::pinpErrorHandler($error['type'], $error['message'], $error['file'], $error['line'], null);
 			}
 		}
-		if ($ARCurrent->session) {
+		if (isset($ARCurrent->session)) {
 			$ARCurrent->session->save();
 		}
 		if ($store) {
@@ -262,12 +262,12 @@
 
 	function ldGetRequestedHost() {
 	global $AR;
-		$requestedHost = $_SERVER['HTTP_X_FORWARDED_HOST'];
+		$requestedHost = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : false;
 		if (!$requestedHost) {
 			$requestedHost = $_SERVER['HTTP_HOST'];
 		}
 		$protocol = 'http://';
-		if ($_SERVER['HTTPS']=='on') {
+		if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] =='on')) {
 			$protocol = 'https://';
 		}
 		return $protocol . $requestedHost;
@@ -337,7 +337,7 @@
 					$imagesize = fwrite($fpi, $image);
 					fclose($fpi);
 
-					if ( !touch($imagetemp, $time)) {
+					if ( !@touch($imagetemp, $time)) {
 						debug("ldSetCache: ERROR: couldn't touch image","object");
 					}
 
@@ -417,9 +417,15 @@
 	function ldHeader($header,$replace=true) {
 	global $ARCurrent;
 		$result=false;
+		if (!isset($ARCurrent->arNoHeaders)) {
+			$ARCurrent->arNoHeaders = false;
+		}
+		
 		if ( !Headers_sent() && !$ARCurrent->arNoHeaders ) {
 			$result=true;
-			list($key,$value) = explode(':',$header,2);
+			$headerInfo = explode(':',$header,2);
+			$key = $headerInfo[0];
+			$value = isset($headerInfo[1]) ? $headerInfo[1] : null;
 			Header($header,$replace);
 			if($replace){
 				$ARCurrent->ldHeaders[strtolower($key)]=$header;
@@ -461,7 +467,6 @@
 		} else {
 			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
 		}
-		return $result;
 	}
 
 	function ldSetContent($mimetype, $size=0) {
@@ -523,7 +528,11 @@
 			$parts = explode(',', $cc);
 			foreach($parts as $part) {
 				$part = trim ($part);
-				list($key,$value) = explode('=', $part,2);
+				$parts = explode("=", $part, 2);
+				$key = $parts[0];
+				$value = isset($parts[1]) ? $parts[1] : null;
+				
+				// list($key,$value) = explode('=', $part,2);
 				$key = trim($key);
 				switch($key) {
 					case "no-cache":
@@ -894,8 +903,8 @@
 			$password = ( isset($args["ARPassword"]) ? $args["ARPassword"] : null );
 			if (!$username && $_SERVER['REQUEST_METHOD'] != "GET") {
 				debug('logging in with basic auth');
-				$username = $_SERVER["PHP_AUTH_USER"];
-				$password = $_SERVER["PHP_AUTH_PW"];
+				$username = isset($_SERVER["PHP_AUTH_USER"]) ? $_SERVER["PHP_AUTH_USER"] : null;
+				$password = isset($_SERVER["PHP_AUTH_PW"]) ? $_SERVER["PHP_AUTH_PW"] : null;
 			}
 
 			$result = $mod_auth->checkLogin($username, $password, $path);
@@ -913,14 +922,14 @@
 			}
 
 			// valid new login, without a session, morph to login.redirect.php to redirect to a session containing url
-			if( !$session_id && $args["ARLogin"] && $args["ARPassword"] && $function !== false && !$AR->hideSessionIDfromURL ) {
+			if( !$session_id && isset($args["ARLogin"])  && isset($args["ARPassword"]) && $function !== false && !$AR->hideSessionIDfromURL ) {
 				if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
 					$ARCurrent->session->put("oldGET", $_GET, 1);
 					$ARCurrent->session->put("oldPOST", $_POST, 1);
 					$ARCurrent->session->put("oldArCallArgs", $args, 1);
 					$ARCurrent->session->save(0, true);
 				}
-				if ($arDefaultFunction !== $function) {
+				if (!isset($arDefaultFunction) || ($arDefaultFunction !== $function)) {
 					$args["arRequestedTemplate"] = $function;
 				} else {
 					$args["arRequestedTemplate"] = "";
@@ -1022,10 +1031,10 @@
 			if ($_SERVER['REQUEST_METHOD']!='GET' || ($DB["wasUsed"] > 0)) {
 				// Do not cache on client.
 				ldSetBrowserCache(false);
-			} else if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
+			} else if (isset($ARCurrent->cache) && is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				// This will generate an error, do not cache on client;
 				ldSetBrowserCache(false);
-			} else if ($ARCurrent->arDontCache) {
+			} else if (isset($ARCurrent->arDontCache) && $ARCurrent->arDontCache) {
 				// PINP told us not to cache;
 				ldSetBrowserCache(false);
 			} else if (!$writecache) {
@@ -1049,16 +1058,22 @@
 					// With session, disk templates only
 					$browserCachePrivate = true;
 					$browserCacheMaxAge = 0;
+					$browserCacheSMaxAge = 0;
 					$browserCacheNoStore = true;
 					$browserCacheNoCache = true;
 					$browserCacheMustRevalidate = true;
+					$browserCacheNoTransform = false;
+					$browserCacheProxyRevalidate = false;
 				} else {
 					// Without session and all other corner cases;
 					$browserCachePrivate = false;
 					$defaultMaxAge = 1800;
+					$browserCacheSMaxAge = 0;
 					$browserCacheNoStore = false;
 					$browserCacheNoCache = false;
 					$browserCacheMustRevalidate = false;
+					$browserCacheNoTransform = false;
+					$browserCacheProxyRevalidate = false;
 				}
 
 				$browserCachecacheSetting = 0; // Default = inherit;
@@ -1066,12 +1081,12 @@
 				// FIXME: The defaults for with session ID are now to not cache;
 				if(is_array($ARCurrent->cacheCallChainSettings) ) {
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
-						$browserCachePrivate = $browserCachePrivate || $pathCacheSetting['browserCachePrivate']; // If anyone says 'private', make it so.
-						$browserCacheNoStore = $browserCacheNoStore || $pathCacheSetting['browserCacheNoStore']; // If anyone says 'no-store', make it so.
-						$browserCacheNoCache = $browserCacheNoCache || $pathCacheSetting['browserCacheNoCache']; // If anyone says 'no-cache', make it so.
-						$browserCacheMustRevalidate = $browserCacheMustRevalidate || $pathCacheSetting['browserCacheMustRevalidate']; // If anyone says 'must-revalidate', make it so.
-						$browserCacheNoTransform = $browserCacheNoTransform || $pathCacheSetting['browserCacheNoTransform']; // If anyone says 'no-transform', make it so.
-						$browserCacheProxyRevalidate = $browserCacheProxyRevalidate || $pathCacheSetting['browserCacheProxyRevalidate']; // If anyone says 'proxy-revalidate', make it so.
+						$browserCachePrivate = $browserCachePrivate || (isset($pathCacheSetting['browserCachePrivate']) ? $pathCacheSetting['browserCachePrivate'] : false); // If anyone says 'private', make it so.
+						$browserCacheNoStore = $browserCacheNoStore || (isset($pathCacheSetting['browserCacheNoStore']) ? $pathCacheSetting['browserCacheNoStore'] : false); // If anyone says 'no-store', make it so.
+						$browserCacheNoCache = $browserCacheNoCache || (isset($pathCacheSetting['browserCacheNoCache']) ? $pathCacheSetting['browserCacheNoCache'] : false); // If anyone says 'no-cache', make it so.
+						$browserCacheMustRevalidate = $browserCacheMustRevalidate || (isset($pathCacheSetting['browserCacheMustRevalidate']) ? $pathCacheSetting['browserCacheMustRevalidate'] : false); // If anyone says 'must-revalidate', make it so.
+						$browserCacheNoTransform = $browserCacheNoTransform || (isset($pathCacheSetting['browserCacheNoTransform']) ? $pathCacheSetting['browserCacheNoTransform'] : false); // If anyone says 'no-transform', make it so.
+						$browserCacheProxyRevalidate = $browserCacheProxyRevalidate || (isset($pathCacheSetting['browserCacheProxyRevalidate']) ? $pathCacheSetting['browserCacheProxyRevalidate'] : false); // If anyone says 'proxy-revalidate', make it so.
 
 						if (isset($pathCacheSetting['browserCacheMaxAge']) && is_numeric($pathCacheSetting['browserCacheMaxAge'])) {
 							if (isset($browserCacheMaxAge)) {
@@ -1112,7 +1127,7 @@
 
 			$image_len = strlen($image);
 
-			if ($ARCurrent->session && $ARCurrent->session->id) {
+			if (isset($ARCurrent->session) && $ARCurrent->session && $ARCurrent->session->id) {
 				$ldCacheFilename = "/session".$ldCacheFilename;
 				$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
 			} else {
@@ -1140,10 +1155,10 @@
 			if ($_SERVER['REQUEST_METHOD']!='GET' || ($DB["wasUsed"] > 0)) {
 				// Do not cache on server.
 				// header("X-Ariadne-Cache-Skipped: DB Used");
-			} else if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
+			} else if (isset($ARCurrent->cache) && is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
 				// header("X-Ariadne-Cache-Skipped: cached problem.");
-			} else if ($ARCurrent->arDontCache) {
+			} else if (isset($ARCurrent->arDontCache) && $ARCurrent->arDontCache) {
 				// PINP told us not to cache;
 				// header("X-Ariadne-Cache-Skipped: arDontCache");
 			} else if (!$writecache) {
@@ -1162,7 +1177,7 @@
 				if( is_array($ARCurrent->cacheCallChainSettings)) {
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
 						// FIXME: also 'resolve' $serverCachePrivate
-						$serverCache = $pathCacheSetting['serverCache'];
+						$serverCache = isset($pathCacheSetting['serverCache']) ? $pathCacheSetting['serverCache'] : 0;
 
 						if ($serverCache == 0 || !isset($serverCache)) {
 							// This path does not want to play;
@@ -1187,9 +1202,12 @@
 					}
 				}
 				// header("X-Ariadne-Cache-Setting: $cacheSetting");
-				if ($ARCurrent->session->id && $cacheSetting > 0) {
+				if (isset($ARCurrent->session) && $ARCurrent->session->id && $cacheSetting > 0) {
 					// we have a session id, can we cache ?
 					// FIXME: add support for $serverCachePrivate in the config and cache dialog
+					if (!isset($ARCurrent->arDoCachePrivate)) {
+						$ARCurrent->arDoCachePrivate = null;
+					}
 					if ( ! ( $serverCachePrivate === 1  || $ARCurrent->arDoCachePrivate != false ) ) {
 						$cacheSetting = -1;
 					}

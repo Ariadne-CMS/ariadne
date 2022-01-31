@@ -8,7 +8,7 @@
 		}
 
 		global $invisibleSections;
-		if (!$arLanguage) {
+		if (!isset($arLanguage)) {
 			$arLanguage=$nls;
 			if (is_array($arCallArgs)) {
 				$arCallArgs["arLanguage"]=$nls;
@@ -22,7 +22,7 @@
 		}
 
 		//tasks
-		if (!$ARCurrent->arTypeTree) {
+		if (!isset($ARCurrent->arTypeTree)) {
 			$this->call("typetree.ini");
 		}
 

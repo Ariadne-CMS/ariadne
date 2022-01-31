@@ -152,7 +152,7 @@
 			self::untaint( $value, $options['filter'], $options['flags'] );
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			global $ARCurrent, $ARConfig;
 
 			if ($ARCurrent->arCallStack) {
@@ -172,7 +172,7 @@
 			return ar_loader::getvar( $name );
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			global $ARCurrent;
 			$ARCurrent->$name = $value;
 		}
@@ -483,17 +483,17 @@
 		public static function getPath( $options = array() ) {
 			$me = self::getObject( $options );
 			if ($me) {
-				$path = $me->make_path( $options['path'] );
-				if ($options['skipShortcuts']) {
+				$path = $me->make_path( (isset($options['path']) ? $options['path'] : null) );
+				if (isset($options['skipShortcuts']) && $options['skipShortcuts']) {
 					$me->_load('mod_keepurl.php');
 					$realpath = pinp_keepurl::_make_real_path( $path );
 					if ($realpath) {
 						$path = $realpath;
 					}
-				} else if ($options['rememberShortcuts']) {
+				} else if (isset($options['rememberShortcuts']) && $options['rememberShortcuts']) {
 					$me->_load('mod_keepurl.php');
 					$path = pinp_keepurl::_make_path( $path );
-				} else if ( $options['searchObject'] ) {
+				} else if ( isset($options['searchObject']) && $options['searchObject'] ) {
 					if (isset($me->data->path)) {
 						$path = $me->data->path;
 					}
@@ -539,7 +539,7 @@
 				$data = $me->loadUserConfig();
 				$vars = explode('.', $varname);
 				foreach( $vars as $var ) {
-					$data = $data[$var];
+					$data = isset($data[$var]) ? $data[$var] : null;
 				}
 				return $data;
 			}
@@ -559,9 +559,9 @@
 
 	interface arKeyValueStoreInterface {
 
-		public function getvar( $name );
+		public static function getvar( $name );
 
-		public function putvar( $name, $value );
+		public static function putvar( $name, $value );
 
 	}
 

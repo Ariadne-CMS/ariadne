@@ -93,7 +93,7 @@ abstract class sql_compiler {
 			$yych = $YYBUFFER[++$YYCURSOR];
 			while (isset($this->_SCAN_AZ_09[$yych])) {
 				$value .= $yych;
-				$yych = $YYBUFFER[++$YYCURSOR];
+				$yych = (isset($YYBUFFER[++$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null);
 			}
 			$match_1 = $value; $value = '';
 			if ($yych === ':') {
@@ -133,7 +133,7 @@ abstract class sql_compiler {
 
 
 		if($match_1) {
-			if (!$match_2) {
+			if (!isset($match_2) || !$match_2) {
 				/* default table is 'object' */
 				$match_2 = $match_1;
 				$match_1 = "object";
@@ -302,12 +302,12 @@ abstract class sql_compiler {
 		$field = $this->parse_ident($YYBUFFER);
 
 		$YYCURSOR = 0;
-		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+		while (isset($YYBUFFER[$YYCURSOR]) && isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
 			$YYCURSOR++;
 		}
 		$value = '';
-		$yych  = $YYBUFFER[$YYCURSOR];
-		if ($this->_SCAN_AZ[$yych]) {
+		$yych  = isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null;
+		if (isset($this->_SCAN_AZ[$yych])) {
 			$value .= $yych;
 			$yych = $YYBUFFER[++$YYCURSOR];
 			while (isset($this->_SCAN_AZ[$yych])) {
@@ -323,17 +323,17 @@ abstract class sql_compiler {
 		} else {
 			$sort_type = 'ASC';
 		}
-		while (is_array($field)) {
+		while (isset($field) && is_array($field)) {
 			$result = array(
 				'id' => 'orderbyfield',
 				'type' => $sort_type,
 				'right' => $field,
-				'left' => $result
+				'left' => (isset($result) ? $result : null)
 			);
-			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			while (isset($this->_SCAN_WS[(isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null)])) {
 				$YYCURSOR++;
 			}
-			$yych  = $YYBUFFER[$YYCURSOR];
+			$yych  = (isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null);
 			if ($yych !== ',') {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 				unset($field);
@@ -351,7 +351,8 @@ abstract class sql_compiler {
 					$yych = $YYBUFFER[++$YYCURSOR];
 					while (isset($this->_SCAN_AZ[$yych])) {
 						$value .= $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];
+						$YYCURSOR++;
+						$yych = isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null;
 					}
 					$sort_type = strtoupper($value);
 					if (!($sort_type == 'ASC' || $sort_type == 'DESC')) { // If sort type is anything else than ASC or DESC, it is not part of the order by.

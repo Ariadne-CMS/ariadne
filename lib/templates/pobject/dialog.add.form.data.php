@@ -15,6 +15,10 @@
 		$wgWizCallObject->error = $this->error;
 
 		$configcache=$ARConfig->cache[$this->path]; // use parent path
+		if (!isset($configcache->custom)) {
+			$configcache->custom = null;
+		}
+		
 		if ($configcache->custom) {
 			foreach( $configcache->custom as $key => $definition ) {
 				if (($definition["type"]==$arNewType) || // use new type
@@ -68,12 +72,12 @@
 
 		$showLanguageSelect = false;
 		foreach ($wgWizFlow as $step) {
-			if ($step['title']) {
+			if (isset($step['title']) && $step['title']) {
 				echo '<fieldset class="flowStep"><legend>' . $step['title'] . '</legend></fieldset>';
 			}
-			if ($step['template']) {
+			if (isset($step['template']) && $step['template']) {
 				$wgWizCallObject->call($step['template'], array("arNewType" => $arNewType, "arLanguage" => $arLanguage));
-				if (!$step['nolang']) {
+				if (!isset($step['nolang']) || !$step['nolang']) {
 					$showLanguageSelect = true;
 				}
 			}

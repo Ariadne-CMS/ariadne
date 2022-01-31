@@ -68,8 +68,8 @@ class psite extends psection {  // psite class definition
 				$url=$this->data->workspaceurl;
 			}
 		} else {
-			if (($sitenls=$url_list["host"][$hostsubwww]) 
-				|| (($sitenls=$url_list["host"]["www.".$hostsubwww]))) {
+			if (($sitenls=(isset($url_list["host"][$hostsubwww]) ? $url_list["host"][$hostsubwww] : null)) 
+				|| (($sitenls=(isset($url_list["host"]["www.".$hostsubwww]) ? $url_list["host"]["www.".$hostsubwww] : null)))) {
 
 				$url = $url_list["nls"][$sitenls];
 				if (is_array($url)) {
@@ -90,7 +90,7 @@ class psite extends psection {  // psite class definition
 				}
 
 			}
-			if (!$url) {
+			if (!isset($url) || !$url) {
 				$url=$this->data->url;
 			}
 		}

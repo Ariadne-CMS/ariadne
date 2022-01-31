@@ -64,7 +64,7 @@
 				$templates->remove($this->id, $file);
 
 				$templates->write($template, $this->id, $file.".pinp");
-				if ($mtime) {
+				if (isset($mtime) && $mtime) {
 					$templates->touch($this->id, $file.".pinp", $mtime);
 				}
 				$templateCode = $templates->templateCodeFunction($compiled);
@@ -73,7 +73,7 @@
 				$optimized = sprintf($AR->PINPtemplate, $compiled);
 
 				$templates->write($optimized, $this->id, $file.".inc");
-				if ($mtime) {
+				if (isset($mtime) && $mtime) {
 					$templates->touch($this->id, $file.".inc", $mtime);
 				}
 
