@@ -9,8 +9,7 @@ class session {
 
 		$inst_store = $session_config["dbms"]."store";
 		include_once($session_config["code"]."stores/$inst_store.phtml");
-		$sessionRoot = isset($session_config['root']) ? $session_config['root'] : null;
-		$this->sessionstore=new $inst_store($sessionRoot, $session_config);
+		$this->sessionstore=new $inst_store(($session_config['root'] ?? null), $session_config);
 
 		$this->timeout=$session_config["timeout"];
 		$this->updateInterval = $session_config["timeout"]/10;
@@ -57,7 +56,7 @@ class session {
 				$this->timeout = $this->system->timeout;
 			}
 			unset($result->data->system);
-			if ((isset($result->data->ARSessionTimedout) && $result->data->ARSessionTimedout) || $this->timeout && $this->lastchanged < (time()-$this->timeout)) {
+			if (($result->data->ARSessionTimedout ?? null) || $this->timeout && $this->lastchanged < (time()-$this->timeout)) {
 				debug("session: ".$this->id." ARSessionTimedout", "all");
 				$this->system->ARSessionTimedout = true;
 			}
@@ -71,12 +70,12 @@ class session {
 	function put($varname, $value, $system=0) {
 		debug("session->put($varname," . print_r($value, true) . ",$system)","store");
 		if (!$system) {
-			if (!isset($this->data->$varname) || ($this->data->$varname !== $value)) {
+			if (($this->data->$varname ?? null) !== $value) {
 				$this->data->$varname=$value;
 				$this->changed = true;
 			}
 		} else {
-			if (!isset($this->system->$varname) || ($this->system->$varname !== $value)) {
+			if (($this->system->$varname ?? null) !== $value) {
 				$this->system->$varname=$value;
 				$this->changed = true;
 			}
@@ -89,7 +88,7 @@ class session {
 		if (!$system) {
 			$result = $this->data->$varname;
 		} else {
-			$result = isset($this->system->$varname) ? $this->system->$varname : null;
+			$result = $this->system->$varname ?? null;
 		}
 		debug("session->get: end","all");
 		return $result;

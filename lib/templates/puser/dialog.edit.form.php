@@ -28,7 +28,7 @@
 	</div>
 	<div class="field">
 		<label for="password" class="required"><?php echo $ARnls["password"]; ?>
-		<?php if ($auth_config['expiry'] && $this->data->password_expiry) {
+		<?php if (($auth_config['expiry'] ?? null) && $this->data->password_expiry) {
 			echo "&nbsp;(" . $ARnls['expires'] . " " . date("d M Y, G:i", $this->data->password_expiry) .")";
 		} ?>
 		</label>
@@ -41,7 +41,7 @@
 			value="">
 	</div>
 	<?php
-		if($auth_config["expiry"] && $this->CheckSilent("config")) {
+		if(($auth_config["expiry"] ?? null) && $this->CheckSilent("config")) {
 			if ($this->data->password_expiry) {
 				$checked = "";
 			} else {
@@ -60,7 +60,7 @@
 			<option value=""><?php echo $ARnls["noprofile"]; ?></option>
 			<?php
 				$userConfig  = $this->loadUserConfig();
-				$profileDirs = (array)$userConfig["authentication"]["profiledirs"];
+				$profileDirs = (array)($userConfig["authentication"]["profiledirs"] ?? []);
 				array_unshift($profileDirs, "/system/profiles");
 				foreach ($profileDirs as $profileDir) {
 					$this->find(
@@ -78,10 +78,7 @@
 
 	<?php
 
-		$disabled = $this->getvar('disabled');
-		if (!isset($disabled)) {
-			$disabled = $this->data->config->disabled;
-		}
+		$disabled = $this->getvar('disabled') ?? ($this->data->config->disabled ?? null);
 		if (!in_array($this->data->login, array("admin", "public")) && $this->CheckSilent('config')) {
 			if ($disabled) {
 				$checked = "checked ";
@@ -104,7 +101,7 @@
 			value="0" class="inputradio"<?php if (!$setowner) echo " checked"; ?>><?php echo $ARnls["no"]; ?>
 	</div>
 	<?php
-		if ( $arNewType ) {
+		if ( $arNewType ?? null ) {
 			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
 		}
 	?>

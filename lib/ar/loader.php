@@ -28,11 +28,7 @@
 
 		public static function getLoader() {
 			global $AR;
-			if (isset($AR->request) && $AR->request && isset($AR->request['loader'])) {
-				return $AR->request['loader'];
-			} else {
-				return new ar_core_loader_http();
-			}
+			return $AR->request['loader'] ?? new ar_core_loader_http();
 		}
 
 		public static function header( $header ) {

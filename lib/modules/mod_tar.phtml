@@ -70,6 +70,8 @@
 
 
 		function untar_system($tarfile, $file, $dstdir) {
+			$this->error = $this->error ?? '';
+
 			debug("untar_system($tarfile, $file, $dstdir)");
 
 			if ($this->tar_error_handler) {

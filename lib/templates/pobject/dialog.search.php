@@ -48,7 +48,7 @@
 			$spath."datatable/datatable-min.js"
 		);
 
-		if (!$wgWizNextStep) {
+		if (!($wgWizNextStep ?? null)) {
 			$searchcookie = ldGetUserCookie("ariadneDialogSearch");
 
 			if ($searchcookie['context'] == 1) {

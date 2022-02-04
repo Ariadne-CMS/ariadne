@@ -29,7 +29,7 @@
 <?php
 	} // end of no default style
 
-	if( is_array( $wgWizStyleSheets )) {
+	if( is_array( ($wgWizStyleSheets ?? null) )) {
 		foreach( $wgWizStyleSheets as $sheet ) {
 			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$sheet\">\n";
 		}
@@ -167,7 +167,7 @@
 <?php
 	if ($wgWizShowSections) {
 ?>
-		<div id="sections"<?php if ($wgWizTabsTemplate) {echo ' class="tabs"';}?>>
+		<div id="sections"<?php if ($wgWizTabsTemplate ?? null) {echo ' class="tabs"';}?>>
 <?php
 			for ($i=1; $i<sizeof($wgWizFlow); $i++) {
 				if ($wgWizFlow[$i]['title']) {
@@ -226,7 +226,7 @@
 </div>
 <div class="buttons" unselectable="on">
 <?php
-		if( !is_array($wgWizButtons) )  {
+		if( !is_array($wgWizButtons ?? null) )  {
 			// defaulting
 			$wgWizButtons = array(
 				"cancel" => array(

@@ -1139,7 +1139,7 @@ class mysqlstore extends store{
 				$currProp++;
 			}
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	public function add_property($object, $property, $values, $scope='') {

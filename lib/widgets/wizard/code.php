@@ -60,17 +60,17 @@ if( !function_exists("wgWizKeepVars") ) {
 							wgWizKeepVars($value, $prefix.$key.$postfix);
 						}
 					} elseif ($ARCurrent->override) { // don't check $ARCurrent->seenit, do set it.
-						if ($toplevel) { // this is a normal name-value pair
+						if ($toplevel ?? null) { // this is a normal name-value pair
 							$ARCurrent->seenit[$prefix.$key.$postfix]=true;
 						} else { // it's part of an array
 							$ARCurrent->seenit[$prefix]=true;
 						}
 						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
-					} elseif ((!isset($ARCurrent->seenit) || !isset($ARCurrent->seenit[$prefix]) || !$ARCurrent->seenit[$prefix]) && !$toplevel) { // value part of array
+					} elseif ((!isset($ARCurrent->seenit) || !isset($ARCurrent->seenit[$prefix]) || !$ARCurrent->seenit[$prefix]) && !($toplevel ?? null)) { // value part of array
 						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
-					} elseif ((!isset($ARCurrent->seenit) || !isset($ARCurrent->seenit[$prefix.$key.$postfix]) || !$ARCurrent->seenit[$prefix.$key.$postfix]) && $toplevel) { // value not in array
+					} elseif ((!isset($ARCurrent->seenit) || !isset($ARCurrent->seenit[$prefix.$key.$postfix]) || !$ARCurrent->seenit[$prefix.$key.$postfix]) && ($toplevel ?? null)) { // value not in array
 						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
 					}

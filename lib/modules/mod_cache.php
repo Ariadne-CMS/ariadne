@@ -5,8 +5,7 @@
 			// init cache store
 			$inst_store = $cache_config["dbms"]."store";
 			include_once($cache_config["code"]."stores/$inst_store.phtml");
-			$cacheRoot = isset($cache_config['root']) ? $cache_config['root'] : null;
-			$this->cachestore=new $inst_store($cacheRoot, $cache_config);
+			$this->cachestore=new $inst_store(($cache_config['root'] ?? null), $cache_config);
 		}
 
 		public function save($filename, $objectChain, $templateChain) {

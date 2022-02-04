@@ -45,7 +45,7 @@ $wgWizShowSections=false;
 $tcount = 0;
 if(isset($wgWizFlow) && is_array($wgWizFlow)){
 	foreach( $wgWizFlow as $wizStep ) {
-		if( $wizStep["template"]) {
+		if($wizStep["template"] ?? null) {
 			$tcount++;
 		}
 	}

@@ -483,17 +483,17 @@
 		public static function getPath( $options = array() ) {
 			$me = self::getObject( $options );
 			if ($me) {
-				$path = $me->make_path( (isset($options['path']) ? $options['path'] : null) );
-				if (isset($options['skipShortcuts']) && $options['skipShortcuts']) {
+				$path = $me->make_path( $options['path'] ?? null );
+				if ( $options['skipShortcuts'] ?? null ) {
 					$me->_load('mod_keepurl.php');
 					$realpath = pinp_keepurl::_make_real_path( $path );
 					if ($realpath) {
 						$path = $realpath;
 					}
-				} else if (isset($options['rememberShortcuts']) && $options['rememberShortcuts']) {
+				} else if ( $options['rememberShortcuts'] ?? null ) {
 					$me->_load('mod_keepurl.php');
 					$path = pinp_keepurl::_make_path( $path );
-				} else if ( isset($options['searchObject']) && $options['searchObject'] ) {
+				} else if ( $options['searchObject'] ?? null ) {
 					if (isset($me->data->path)) {
 						$path = $me->data->path;
 					}
@@ -539,7 +539,7 @@
 				$data = $me->loadUserConfig();
 				$vars = explode('.', $varname);
 				foreach( $vars as $var ) {
-					$data = isset($data[$var]) ? $data[$var] : null;
+					$data = $data[$var] ?? null;
 				}
 				return $data;
 			}

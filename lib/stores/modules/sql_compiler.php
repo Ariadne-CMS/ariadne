@@ -312,7 +312,7 @@ abstract class sql_compiler {
 			$yych = $YYBUFFER[++$YYCURSOR];
 			while (isset($this->_SCAN_AZ[$yych])) {
 				$value .= $yych;
-				$yych = $YYBUFFER[++$YYCURSOR];
+				$yych = $YYBUFFER[++$YYCURSOR] ?? null;
 			}
 			$sort_type = strtoupper($value);
 			if (!($sort_type == 'ASC' || $sort_type == 'DESC')) { // If sort type is anything else than ASC or DESC, it is not part of the order by.
@@ -447,7 +447,7 @@ abstract class sql_compiler {
 			$query=substr($query, strlen($regs[0]));
 			$node["id"]="orderby";
 			$node["right"]=$this->parse_orderby($query);
-			$node["left"]=$result;
+			$node["left"]=$result ?? null;
 			$result=$node;
 		}
 		if (preg_match('|^[[:space:]]*limit[[:space:]]+([0-9]+)[[:space:]]*([,][[:space:]]*([0-9]+))?|i', $query, $regs)) {

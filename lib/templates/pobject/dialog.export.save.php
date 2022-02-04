@@ -61,7 +61,7 @@
 		$ARCurrent->session->put("tempname",$ax_config["database"]);
 
 		$importStore=new axstore("", $ax_config);
-		if (!$importStore->error) {
+		if (!($importStore->error ?? null)) {
 			set_time_limit(0);
 			$ARCurrent->importStore=&$importStore;
 		}
@@ -83,7 +83,7 @@
 		<?php echo $ARnls['ariadne:export'] . " $srcpath"; ?>
 		<div class="progressbar">
 			<div class="progress" id="progress<?php echo $key; ?>"></div>
-			<div class="progress_text" id="progress_text<?php echo $key; ?>">0/<?php echo $total; ?></div>
+			<div class="progress_text" id="progress_text<?php echo $key; ?>">0/<?php echo ($total ?? 0); ?></div>
 		</div>
 	</div>
 <?php } ?>
@@ -95,7 +95,7 @@
 
 			$sourceob = current($this->get($srcpath, "system.get.phtml"));
 
-			if ($full_path) {
+			if ($full_path ?? null) {
 				$destpath="";
 			} else {
 				if ($sourceob->parent=="..") {
@@ -105,7 +105,7 @@
 				}
 			}
 
-			if (!$importStore->error) {
+			if (!($importStore->error ?? null)) {
 				$callArgs=array("srcpath" => $srcpath, "destpath" => $destpath);
 				$error = $this->call("system.export.phtml", $callArgs);
 			} else {

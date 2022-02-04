@@ -17,18 +17,18 @@
 			if(is_array($settings)) {
 				foreach ($settings as $item) {
 					$result .= '<a class="sidebar_task';
-					if (isset($item['class']) && $item['class']) {
+					if ($item['class'] ?? null) {
 						$result .= ' ' . $item['class'];
 					}
 					$result .= '"';
 
-					if (isset($item['href']) && $item['href']) {
+					if ($item['href'] ?? null) {
 						$result .= ' href="' . $item['href'] . '"';
 					}
-					if (isset($item['onclick']) && $item['onclick']) {
+					if ($item['onclick'] ?? null) {
 						$result .= ' onclick="' . $item['onclick'] . '"';
 					}
-					if (isset($item['target']) && $item['target']) {
+					if ($item['target'] ?? null) {
 						$result .= ' target="' . $item['target'] . '"';
 					} else {
 						// FIXME: This should not be used in strict doctype, but we don't want it in our
@@ -39,14 +39,12 @@
 
 					$result .= '>';
 
-					if (!isset($item['iconalt'])) {
-						$item['iconalt'] = '';
-					}
-					if (isset($item['icon']) && $item['icon']) {
+					$item['iconalt'] = $item['iconalt'] ?? '';
+					if ($item['icon'] ?? null) {
 						$result .= '<img class="task_icon" src="' . $item['icon'] . '" alt="' . $item['iconalt'] . '" title="' . $item['iconalt'] . '">&nbsp;&nbsp;';
 					}
 
-					$itemlabel = isset($item['nlslabel']) ? $item['nlslabel'] : '';
+					$itemlabel = $item['nlslabel'] ?? '';
 					$maxlabellength = 25;
 					if (mb_strlen($itemlabel, "utf-8") > $maxlabellength) {
 						$origName = $itemlabel;
@@ -61,16 +59,16 @@
 
 
 		static public function getSection($section) {
-			$invisibleSections = isset($_COOKIE['invisibleSections']) ? $_COOKIE['invisibleSections'] : null;
+			$invisibleSections = $_COOKIE['invisibleSections'] ?? null;
 
 			$maxheadlength = 18;
-			if (isset($section['icon']) && $section['icon']) {
+			if ($section['icon'] ?? null) {
 				$maxheadlength = 14;
 			}
 
 			$sectionDisplayName = $section['label'];
 			$sectionName = $section['id'];
-			$icon = isset($section['icon']) ? $section['icon'] : null;
+			$icon = $section['icon'] ?? null;
 
 			if (mb_strlen($sectionDisplayName, "utf-8") > $maxheadlength) {
 				$origName = htmlspecialchars($sectionDisplayName);
@@ -97,7 +95,7 @@
 				$sectionhead_class .= " iconsection";
 			}
 
-			if( isset($section['inline_icon']) && $section['inline_icon']) {
+			if( $section['inline_icon'] ?? null ) {
 				$sectionhead_class .= " iconinlinesection";
 				$icontag .= '<img src="' . $section['inline_icon'] . '" class="inline_icon" alt="' . $section['inline_iconalt'] . '" title="' . $section['inline_iconalt'] . '">';
 			}
@@ -118,16 +116,13 @@
 
 			$result .= '<div class="section_content">';
 
-			if (isset($section['details']) && $section['details']) {
+			if ($section['details'] ?? null) {
 				$result .= '<div class="details">';
 				$result .= $section['details'];
 				$result .= '</div>';
 			}
 
-			if(!isset($section['tasks'])) {
-				$section['tasks'] = null;
-			}
-			$result .= self::getSectionContent($section['tasks']);
+			$result .= self::getSectionContent($section['tasks'] ?? null);
 			$result .= '</div>';
 
 			$result .= '</div>';

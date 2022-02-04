@@ -53,7 +53,7 @@
 			}
 
 			if ($user) {
-				if ((!$user->data->config || !isset($user->data->config->disabled) || !$user->data->config->disabled)) {
+				if (!$user->data->config || !($user->data->config->disabled ?? null) ) {
 					if ($login !== "public") {
 						/* welcome to Ariadne :) */
 						ldSetCredentials($login, $ARUserDir);
@@ -92,7 +92,7 @@
 			);
 
 			if ($user) {
-				if ((!$user->data->config || !isset($user->data->config->disabled) || !$user->data->config->disabled)) {
+				if (!$user->data->config || !($user->data->config->disabled ?? null) ) {
 					$AR->user = $user;
 					$result = true;
 				} else {
@@ -113,7 +113,7 @@
 			$result = null;
 			if ($login) {
 				debug("checkLogin: initiating new login ($login)", "all");
-				if (isset($ARCurrent->session) && $ARCurrent->session) {
+				if ($ARCurrent->session ?? null) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
 					if (!$ARUserDir) {
 						$ARUserDir = "/system/users/";
@@ -163,7 +163,7 @@
 
 				}
 			} else {
-				if (isset($ARCurrent->session) && $ARCurrent->session) {
+				if ($ARCurrent->session ?? null) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
 					if (!$ARUserDir) {
 						$ARUserDir = "/system/users/";

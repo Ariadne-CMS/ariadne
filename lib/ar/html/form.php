@@ -238,9 +238,8 @@
 				foreach ($buttons as $key => $button) {
 					$newButtons[$key] = $this->parseButton($key, $button);
 				}
-				return $newButtons;
 			}
-			return null;
+			return $newButtons ?? null;
 		}
 
 		protected function getButton($button) {
@@ -1275,7 +1274,7 @@
 						$option['value'],
 						$option['name'],
 						$selectedValue,
-						(isset($option['disabled']) ? $option['disabled'] : null),
+						( $option['disabled'] ?? null ),
 						'radioButton',
 						$name.'_'.$count
 					);

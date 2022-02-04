@@ -40,7 +40,7 @@ class ar_core_pinpSandbox extends arBase {
 		
 		$this->this          = $scope;
 		foreach ($properties as $property) {
-			$this->{$property} = isset($scope->{$property}) ? $scope->{$property} : null;
+			$this->{$property} = $scope->{$property} ?? null;
 		}
 	}
 

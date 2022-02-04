@@ -1,7 +1,5 @@
 <?php
-
-
-		if (is_array($ARCurrent->options['rewrite_urls'])) {
+		if (is_array($ARCurrent->options['rewrite_urls'] ?? null)) {
 			$nls_list = $AR->nls->list;
 			$nls_list['none'] = 'None';
 			foreach ($ARCurrent->options['rewrite_urls'] as $oldURL => $newURL) {

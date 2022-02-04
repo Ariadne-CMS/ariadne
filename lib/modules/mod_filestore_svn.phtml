@@ -91,7 +91,7 @@
 			
 			global $AR;
 			
-			if( !isset($AR->SVN->instance) || !$AR->SVN->instance ) {
+			if( !($AR->SVN->instance ?? null) ) {
 
 				$AR->SVN->instance = VersionControl_SVN::factory(array(
 					"add",

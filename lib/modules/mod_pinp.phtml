@@ -293,17 +293,17 @@ class scanner {
 						/*
 							Single characters directly beneath here
 						*/
-						case ';': ((isset($token) && $token) || $token = PT_END_STMT);
-						case '{': ((isset($token) && $token) || $token = PT_CBRACE_OPEN);
-						case '}': ((isset($token) && $token) || $token = PT_CBRACE_CLOSE);
-						case ',': ((isset($token) && $token) || $token = PT_COMMA);
-						case '(': ((isset($token) && $token) || $token = PT_PAR_OPEN);
-						case ')': ((isset($token) && $token) || $token = PT_PAR_CLOSE);
-						case '[': ((isset($token) && $token) || $token = PT_BRACKET_OPEN);
-						case ']': ((isset($token) && $token) || $token = PT_BRACKET_CLOSE);
-						case '\\':((isset($token) && $token) || $token = PT_NAMESPACE_SEPERATOR);
+						case ';': ($token = $token ?? PT_END_STMT);
+						case '{': ($token = $token ?? PT_CBRACE_OPEN);
+						case '}': ($token = $token ?? PT_CBRACE_CLOSE);
+						case ',': ($token = $token ?? PT_COMMA);
+						case '(': ($token = $token ?? PT_PAR_OPEN);
+						case ')': ($token = $token ?? PT_PAR_CLOSE);
+						case '[': ($token = $token ?? PT_BRACKET_OPEN);
+						case ']': ($token = $token ?? PT_BRACKET_CLOSE);
+						case '\\':($token = $token ?? PT_NAMESPACE_SEPERATOR);
 							$yych = $YYBUFFER[++$YYCURSOR];
-							while (isset($YYCLASSES["NOISE"][$yych])) {
+							while ($YYCLASSES["NOISE"][$yych] ?? null) {
 								if ($yych == "\n") {
 									$this->YYLINE++;
 								}
@@ -328,12 +328,12 @@ class scanner {
 									array_push($result, Array(PT_VAR_REFERENCE => $yych));
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
-								if (isset($YYCLASSES["ID_FIRST"][$yych])) {
+								if ($YYCLASSES["ID_FIRST"][$yych] ?? null) {
 									$yych = $YYBUFFER[++$YYCURSOR];
-									while (isset($YYCLASSES["ID_SECOND"][$yych])) {
+									while ($YYCLASSES["ID_SECOND"][$yych] ?? null) {
 										$yych = $YYBUFFER[++$YYCURSOR];
 									}
-									while (isset($YYCLASSES["NOISE"][$yych])) {
+									while ($YYCLASSES["NOISE"][$yych] ?? null) {
 										if ($yych == "\n") {
 											$this->YYLINE++;
 										}
@@ -370,7 +370,7 @@ class scanner {
 								$token	= PT_ARRAY_OP;
 								$yych	= $YYBUFFER[++$YYCURSOR];
 							}
-							while (isset($YYCLASSES["NOISE"][$yych])) {
+							while ($YYCLASSES["NOISE"][$yych] ?? null) {
 								if ($yych == "\n") {
 									$this->YYLINE++;
 								}
@@ -520,20 +520,20 @@ class scanner {
 							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
 							return PT_NUMBER;
 						break;
-						case (isset($this->YYCLASSES["ID_FIRST"][$yych]) ? $this->YYCLASSES["ID_FIRST"][$yych] : null) :
+						case ( $this->YYCLASSES["ID_FIRST"][$yych] ?? null) :
 							/* Identifier */
 							$yych = $YYBUFFER[++$YYCURSOR];
-							while (isset($YYCLASSES["ID_SECOND"][$yych])) {
+							while ($YYCLASSES["ID_SECOND"][$yych] ?? null) {
 								$yych = $YYBUFFER[++$YYCURSOR];
 							}
-							while (isset($YYCLASSES["NOISE"][$yych])) {
+							while ($YYCLASSES["NOISE"][$yych] ?? null) {
 								if ($yych == "\n") {
 									$this->YYLINE++;
 								}
 								$yych = $YYBUFFER[++$YYCURSOR];
 							}
 							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-							$construct = (isset($this->YYLANG_CONSTRUCTS[chop(strtolower($result))]) ? $this->YYLANG_CONSTRUCTS[chop(strtolower($result))] : null);
+							$construct = ( $this->YYLANG_CONSTRUCTS[chop(strtolower($result))] ?? null);
 							if ($construct) {
 								return $construct;
 							} else {
@@ -579,7 +579,7 @@ class scanner {
 								$yych = $YYBUFFER[++$YYCURSOR];
 							}
 							if (ord($yych)!==0) {
-								while (isset($YYCLASSES["NOISE"][$yych = $YYBUFFER[++$YYCURSOR]])) {
+								while (($YYCLASSES["NOISE"][$yych = $YYBUFFER[++$YYCURSOR]]) ?? null) {
 									if ($yych == "\n") {
 										$this->YYLINE++;
 									}
@@ -613,14 +613,14 @@ class scanner {
 							$result = $yych;
 							return PT_EOF;
 						break;
-						case (isset($YYCLASSES["START_TRANSITION"][$yych]) ? $YYCLASSES["START_TRANSITION"][$yych] : null):
+						case ($YYCLASSES["START_TRANSITION"][$yych]) ?? null) :
 							// unhandled start_transition
 							++$YYCURSOR;
 							$result = $yych;
 							return PT_UNPARSED;
 						break;
 						default:
-							while ((!isset($YYCLASSES["START_TRANSITION"][$yych]) || !$YYCLASSES["START_TRANSITION"][$yych]) && ord($yych) !== 0) {
+							while (!($YYCLASSES["START_TRANSITION"][$yych] ?? null) && ord($yych) !== 0) {
 								if ($yych == "\n") {
 									$this->YYLINE++;
 								}
@@ -861,7 +861,7 @@ class pinp {
 		} else {
 			list($token, $token_value) = each(array_shift($this->tokens));
 		}
-		if (isset($this->token_ahead) && $this->token_ahead) {
+		if ($this->token_ahead ?? null) {
 			$this->token = $this->token_ahead;
 			$this->token_value = $this->token_ahead_value;
 		}
@@ -907,7 +907,7 @@ class pinp {
 		do {
 			// T_PAR_OPEN or T_COMMA 
 			$this->next_token();
-			$result .= (isset($this->token_value) ? $this->token_value : null);
+			$result .= $this->token_value ?? null;
 
 			if ($this->token_ahead == PT_COMMA) {
 				// also accept an empty argument
@@ -1157,10 +1157,10 @@ class pinp {
 				if (!$inDQString && $this->token_ahead == PT_PAR_OPEN) {
 					// we don't have to prefix the function identifier if we already have done that.
 					if (!$identSet) {
-						if (!isset($this->allowed_functions[strtolower($iname)])) {
-								$result = $this->var_prefix.ltrim($this->token_value, '_');
+						if (!($this->allowed_functions[strtolower($iname)] ?? null)) {
+							$result = $this->var_prefix.ltrim($this->token_value, '_');
 						} else {
-								$result = $this->token_value;
+							$result = $this->token_value;
 						}
 					}
 					$result .= $this->parse_func_call_args();
@@ -1208,7 +1208,7 @@ class pinp {
 			break;
 		}	
 
-		if (isset($parseReturnValues) && $parseReturnValues) {
+		if ($parseReturnValues ?? null) {
 				$i = 0;
 				while (!$this->error &&	
 							($this->token_ahead == PT_OBJECT_OPERATOR 

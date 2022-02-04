@@ -5,7 +5,7 @@
 		}
 		if (!$grant || $this->CheckSilent($grant, $modifier)) {
 			?><option value="<?php echo $this->path; ?>"<?php
-					if ($selected[$this->path]) { 
+					if ($selected[$this->path] ?? null) { 
 						echo " selected"; 
 					}
 			?>><?php echo $nlsdata->name; ?></option>

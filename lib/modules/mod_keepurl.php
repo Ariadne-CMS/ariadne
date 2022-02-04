@@ -8,7 +8,7 @@
 			$me = $context["arCurrentObject"];
 			$path = $me->make_path($path);
 			$newpath = $path;
-			$redirects = isset($ARCurrent->shortcut_redirect) ? $ARCurrent->shortcut_redirect : null;
+			$redirects = $ARCurrent->shortcut_redirect ?? null;
 			if (is_array($redirects)) {
 				while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest'] && $redir['keepurl']) {
 					$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));

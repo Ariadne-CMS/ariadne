@@ -9,6 +9,7 @@
 	*/
 	$this->call('typetree.ini');
 	asort($ARCurrent->arTypeNames);
+	$haveselected = false;
 	foreach ($ARCurrent->arTypeNames as $typeValue => $typeName) {
 		if ($selected == $typeValue) {
 			$selected_option = " selected";

@@ -1,5 +1,5 @@
 <?php
-	if (!$setDummyObject) {
+	if (!($setDummyObject ?? null)) {
 		$this->properties=$this->load_properties('%'); // get properties in all scopes
 
 		/* 

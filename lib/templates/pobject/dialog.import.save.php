@@ -3,6 +3,9 @@
 		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
+	if (!isset($srcpath)) {
+		$srcpath = '';
+	}
 	ldDisablePostProcessing();
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		function progress($current, $total) {
@@ -31,7 +34,7 @@
                 <?php echo $ARnls['importobject'] . " $srcpath"; ?>
 		<div id="progressbar">
 			<div id="progress"></div>
-			<div id="progress_text">0/<?php echo $total; ?></div>
+			<div id="progress_text">0/<?php echo ($total ?? 0); ?></div>
 		</div>
 	</div>
 </div>

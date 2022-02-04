@@ -3,10 +3,10 @@
 	$orig_filestore=$this->store->get_filestore("files");
 	$orig_files=$orig_filestore->ls($this->id);
 
-	if( ( !is_array($orig_files) || empty($orig_files)) && !$ARCurrent->options["force"]){
+	if( ( !is_array($orig_files) || empty($orig_files)) && !($ARCurrent->options["force"] ?? null)){
 		// shortcut, we have almost nothing to do,  reversing some checks
 	} else {
-		if (!$ARCurrent->options["without_files"] && $this->CheckConfig("read") ) {
+		if (!($ARCurrent->options["without_files"] ?? null) && $this->CheckConfig("read") ) {
 			if (
 				(
 					$this->newObject->arIsNewObject &&
@@ -18,7 +18,7 @@
 			) {
 
 				$new_filestore=$this->newObject->store->get_filestore("files");
-				if ($ARCurrent->options["force"]) {
+				if ($ARCurrent->options["force"] ?? null) {
 					$new_filestore->purge($this->newObject->id);
 				}
 

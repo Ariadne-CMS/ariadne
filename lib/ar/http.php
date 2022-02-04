@@ -70,7 +70,7 @@
 				break;
 				default :
 					$result = !isset($name) ? $_REQUEST :
-						( isset($_POST[$name]) ? $_POST[$name] : (isset($_GET[$name]) ? $_GET[$name] : null) );
+						( $_POST[$name] ?? ( $_GET[$name] ?? null ) );
 				break;
 			}
 			if (self::$tainting) {
