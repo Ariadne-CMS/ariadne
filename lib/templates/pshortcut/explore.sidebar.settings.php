@@ -27,7 +27,7 @@
 				'icon' => $AR->dir->images . 'icons/small/customfields.png',
 				'nlslabel' => $ARnls["ariadne:customfields"]
 			);
-			if ($this->data->config->customconfig) {
+			if ($this->data->config->customconfig ?? null) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
@@ -38,7 +38,7 @@
 				'icon' => $AR->dir->images . 'icons/small/language.png',
 				'nlslabel' => $ARnls['language']
 			);
-			if ($this->data->config->nlsconfig) {
+			if ($this->data->config->nlsconfig ?? null) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
@@ -51,7 +51,7 @@
 				'icon' => $AR->dir->images . 'icons/small/grants.png',
 				'nlslabel' => $ARnls['grants']
 			);
-			if($this->data->config->grants) {
+			if($this->data->config->grants ?? null) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;

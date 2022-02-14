@@ -106,4 +106,8 @@ if( !function_exists("wgWizGetAction") ) {
 	if ($wgWizControl) {
 		$wgResult=wgWizGetAction($wgWizControl);
 	}
+	
+	if (!isset($wgWizAction)) {
+		$wgWizAction = null;
+	}
 ?>

@@ -130,7 +130,7 @@
 
 							if (
 									($object->lastchanged > $oldObject->lastchanged) || 
-									( ( $oldObject->axflags & AX_DUMMY) && !($object->axflags & AX_DUMMY) )) {
+									( ( ($oldObject->axflags ?? null) & AX_DUMMY) && !(($object->axflags??null) & AX_DUMMY) )) {
 								display("(updating)");
 								$save_obj = true;
 							} else {

@@ -22,10 +22,10 @@
 		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 			if ($path && $this->store->exists($path)) {
 				$arCallArgs["arShortCut"] = $this->path;
-				if (!is_array($ARCurrent->shortcut_redirect)) {
+				if (!is_array($ARCurrent->shortcut_redirect ?? null)) {
 					$ARCurrent->shortcut_redirect = array();
 				}
-				array_push($ARCurrent->shortcut_redirect, array("src" => $this->path, "dest" => $path, "keepurl" => $this->data->keepurl));
+				array_push($ARCurrent->shortcut_redirect, array("src" => $this->path, "dest" => $path, "keepurl" => ($this->data->keepurl ?? null)));
 					$arResult=current($this->get($path, $arCallFunction, $arCallArgs));
 				array_pop($ARCurrent->shortcut_redirect);
 			} else {

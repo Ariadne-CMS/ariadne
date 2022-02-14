@@ -205,7 +205,7 @@ class mysqlstore extends store{
 				}
 			}
 		}
-		return $result;
+		return $result??null;
 	}
 
 	public function get($path) {
@@ -432,7 +432,10 @@ class mysqlstore extends store{
 			$objects_tbl=$this->tbl_prefix."objects";
 			$types_tbl=$this->tbl_prefix."types";
 
-			while (list($property, $values)=@each($criteria)) {
+			if(!is_array($criteria)) {
+				$criteria = array();
+			}
+			while (list($property, $values)=each($criteria)) {
 				$eproperty=AddSlashes($property);
 				if ($property!="object") {
 					$from.=", ".$this->tbl_prefix."prop_$eproperty";

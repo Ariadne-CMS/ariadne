@@ -112,7 +112,7 @@ class pfile extends pobject { // pfile class definition
 		if ($mimetype && function_exists("get_content_type")) {
 			$mimetype = get_content_type($mimetype, basename($this->path));
 		}
-		if (!$ARCurrent->arDontCache && $ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] != -1 && $this->CheckPublic('read')) {
+		if (!($ARCurrent->arDontCache??null) && ($ARCurrent->cacheCallChainSettings[$this->id]['serverCache']??null) != -1 && $this->CheckPublic('read')) {
 			$ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] = -2;
 		}
 		$template = $this->getvar("arCallFunction");
@@ -126,7 +126,7 @@ class pfile extends pobject { // pfile class definition
 		if (ldSetContent($mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
-			if (!$ARCurrent->arDontCache) {
+			if (!($ARCurrent->arDontCache??null)) {
 				if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
 					// always set the client side cache headers, independant of
 					// server side cache configuration. Except for private content

@@ -3,7 +3,7 @@
 	if( $this->CheckConfig() ) {
 		require_once($this->store->get_config("code")."modules/mod_unicode.php");
 
-		if (!$arLanguage) {
+		if (!($arLanguage ?? null)) {
 			$arLanguage=$nls;
 		}
 		if (isset($data->$arLanguage)) {

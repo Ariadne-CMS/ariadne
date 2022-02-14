@@ -6,11 +6,11 @@
 			"searchname" => $this->getdata("searchname"),
 			"searchtext" => $this->getdata("searchtext"),
 			"arimplements" => $this->getdata("arimplements"),
-			"context" => $context,
+			"context" => $context ?? null,
 			"advanced" => $advanced ?? null
 		), "ariadneDialogSearch");
 
-		$query = $this->call("dialog.search.results.query.php", array("context" => $context, "advanced" => ($advanced ?? null)));
+		$query = $this->call("dialog.search.results.query.php", array("context" => ($context ?? null), "advanced" => ($advanced ?? null)));
 
 		if ($query || $this->getvar("wgWizAction") === "0" ) {
 ?>

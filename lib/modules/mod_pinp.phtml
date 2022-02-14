@@ -253,7 +253,7 @@ class scanner {
 						case '"':
 							$result = $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
-							while ($YYCLASSES["NOISE"][$yych]) {
+							while ($YYCLASSES["NOISE"][$yych]??null) {
 								$result .= $yych;
 								if ($yych == "\n") {
 									$this->YYLINE++;
@@ -511,7 +511,7 @@ class scanner {
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
 							}
-							while ($YYCLASSES["NOISE"][$yych]) {
+							while ($YYCLASSES["NOISE"][$yych] ?? null) {
 								if ($yych == "\n") {
 									$this->YYLINE++;
 								}
@@ -600,7 +600,7 @@ class scanner {
 							} else {
 								$token = PT_UNPARSED;
 							}
-							while ($YYCLASSES["NOISE"][$yych]) {
+							while ($YYCLASSES["NOISE"][$yych]??null) {
 								if ($yych == "\n") {
 									$this->YYLINE++;
 								}
@@ -613,7 +613,7 @@ class scanner {
 							$result = $yych;
 							return PT_EOF;
 						break;
-						case ($YYCLASSES["START_TRANSITION"][$yych]) ?? null) :
+						case ($YYCLASSES["START_TRANSITION"][$yych] ?? null) :
 							// unhandled start_transition
 							++$YYCURSOR;
 							$result = $yych;
@@ -1044,6 +1044,7 @@ class pinp {
 
 
 	function parse_object_operator($inDQString = false) {
+		$result = '';
 		while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
 			$this->next_token();
 			$result .= $this->token_value.$this->parse_var_index("", "_", $inDQString);
@@ -1186,7 +1187,7 @@ class pinp {
 				$result = $this->token_ahead_value;
 				$this->next_token();
 				// parse casting, e.g. (int) (float)
-				if ($this->token_ahead == PT_IDENT && $this->language_types[strtolower(trim($this->token_ahead_value))]) {
+				if ($this->token_ahead == PT_IDENT && ($this->language_types[strtolower(trim($this->token_ahead_value))]??null)) {
 					$this->next_token();
 					$result .= $this->token_value;
 					if ($this->token_ahead != PT_PAR_CLOSE) {
@@ -1254,14 +1255,14 @@ class pinp {
 		do {
 			switch($this->token_ahead) {
 				case PT_DQ_STRING:
-					if (!$hereDoc) {
+					if (!($hereDoc??null)) {
 						break 2;
 					}
 					$this->next_token();
 					$result .= $this->token_value;
 				break;
 				case PT_SUBSTRING:
-					if ($hereDoc && rtrim($this->token_ahead_value) == "$hereDoc;") {
+					if (($hereDoc??null) && rtrim($this->token_ahead_value) == "$hereDoc;") {
 						break 2;
 					}
 				case PT_CBRACE_OPEN:
@@ -1279,7 +1280,7 @@ class pinp {
 							$this->error = "Expected '}' instead of '".$this->token_ahead_value."' in double quoted string at line: ".$this->scanner->YYLINE;
 							break;
 						}
-					if (!$hereDoc) {
+					if (!($hereDoc??null)) {
 						$result .= '".('.$stmt.')."';
 					} else {
 						$result .= '${"hereDocResult".substr($hereDocResult = ('.$stmt.'), 0, 0)}';
@@ -1297,7 +1298,7 @@ class pinp {
 							break;
 						}
 						$varResWithoutNoise = rtrim($varRes);
-						if (!$hereDoc) {
+						if (!($hereDoc??null)) {
 							$result .= '".('.$varResWithoutNoise.')."';
 						} else {
 							$result .= '${"hereDocResult".substr($hereDocResult = ('.$varResWithoutNoise.'), 0, 0)}';

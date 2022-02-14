@@ -76,7 +76,7 @@ class axstore {
 									include_once($this->code."objects/".$class.".phtml");
 									// check if this is a link (does the object already exist?)
 
-									if (!$this->objects[$data[0]]) {
+									if (!($this->objects[$data[0]] ?? null)) {
 
 										$object=new $class;
 										$object->id=(int)$data[0];
@@ -140,7 +140,7 @@ class axstore {
 					} else {
 						$this->error="Possibly supplied an corrupted ax file: could not find ".$this->tempdir."/objects.data";
 					}
-
+					$this->error = $this->error ?? null;
 					if (!$this->error && file_exists($this->tempdir."/templates.tgz")) {
 						if (!$this->tar->extract($this->tempdir."/templates.tgz", "", $this->tempdir)) {
 							$this->error="Could not untar templates archive: ".$this->tar->error;
@@ -229,8 +229,8 @@ class axstore {
 		$node[path]->children[path]->children[path]
 	*/
 	function _recurse_find($node, &$result, &$criteria, &$limit, &$offset) {
-		if (!$criteria["object"]["type"]["="] || $criteria["object"]["type"]["="]=="'".$node->object->type."'") {
-			if (!$criteria["object"]["vtype"]["="] || $criteria["object"]["vtype"]["="]=="'".$node->object->vtype."'") {
+		if (!($criteria["object"]["type"]["="]??null) || $criteria["object"]["type"]["="]=="'".$node->object->type."'") {
+			if (!($criteria["object"]["vtype"]["="]??null) || $criteria["object"]["vtype"]["="]=="'".$node->object->vtype."'") {
 				$found=1;
 				if (is_array($criteria)) {
 					$found=0;
@@ -260,7 +260,7 @@ class axstore {
 				}
 			}
 		}
-		if (is_array($node->children)) {
+		if (is_array($node->children??null)) {
 			reset($node->children);
 			while (($limit>0 || $limit < 0) && (list(,$child)=each($node->children))) {
 				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
@@ -626,11 +626,11 @@ class axstore {
 				}
 			}
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	function load_property($object, $property, $values="") {
-		debug("axstore::load_property($object, $property, [values])","all");
+		debug("axstore::load_property($object, " . json_encode($property) . ", [values])","all");
 
 		if ($object) {
 			$currProp=0;
@@ -713,7 +713,7 @@ class axstore {
 				$result=1;
 			}
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	function _free_object_data($object) {
@@ -722,7 +722,7 @@ class axstore {
 			unset($object->properties);
 			$result=1;
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	function rm_dir($path) {

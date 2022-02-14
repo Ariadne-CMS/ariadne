@@ -481,7 +481,7 @@
 		if (!$server_var) {
 			return $_SERVER;
 		}
-		return $_SERVER[$server_var];
+		return $_SERVER[$server_var] ?? null;
 	}
 
 	function ldGetClientVar($client_var) {

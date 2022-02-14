@@ -1149,12 +1149,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	global $AR;
 
 		$result=false;
-		if (!$AR->public) {
+		if (!($AR->public??null)) {
 			$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
 				$AR->public=current($this->get("/system/users/public/", "system.get.phtml"));
 			$this->popContext();
 		}
-		if ($AR->public) {
+		if ($AR->public??null) {
 			$AR->private=$AR->user;
 			$AR->user=$AR->public;
 			$result=$this->CheckSilent($grant, $modifier);
@@ -1176,11 +1176,11 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 		if ($this->CheckAdmin($AR->user)) {
 			$result=1;
-		} else if ($grants=$AR->user->grants[$path]) {
+		} else if ($grants=$AR->user->grants[$path]??null) {
 			$result=$grants[$grant];
 		} else {
 			$grants=$this->GetValidGrants();
-			$result=$grants[$grant];
+			$result=$grants[$grant]??null;
 		}
 		if ($modifier && is_array($result)) {
 			$result=$result[$modifier];
