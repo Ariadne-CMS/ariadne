@@ -1524,7 +1524,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function getLibraries($path = '') {
 	global $ARConfig;
 		$path = $this->make_path($path);
-		return (array)$ARConfig->libraries[$path];
+		return (array)($ARConfig->libraries[$path]??null);
 	}
 
 	public function mergeLibraryConfig( $defaultLibraryName, $defaults ) {
