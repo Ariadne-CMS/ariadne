@@ -90,7 +90,7 @@
 	var name 	= "<?php echo addslashes($name); ?>";
 	var language 	= "<?php echo addslashes($language); ?>";
 	var type 	= "<?php echo addslashes($language); ?>";
-	var value 	= "<?php echo addslashes($content); ?>";
+	var value 	= "<?php echo addslashes($content??''); ?>";
 
 	var myEditor;
 	var callback = function(path) {}; // Callback function for browse windows.

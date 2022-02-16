@@ -56,7 +56,7 @@
 			// Password is set; Set expiry time here -
 			// if the checkbox for 'never expires' is set,
 			// it will be unset before the final save.  if
-			if ($authConfig["expiry"]) {
+			if ($authConfig["expiry"]??null) {
 				$this->data->password_expiry = time() + $authConfig['expiry'];
 			}
 		}
@@ -81,7 +81,7 @@
 		$this->data->telephone=$this->getdata("telephone","none");
 
 		// Password expiry flag can only be changed with config grants.
-		if ($authConfig["expiry"] && $this->CheckSilent("config")) {
+		if (($authConfig["expiry"]??null) && $this->CheckSilent("config")) {
 			$password_never_expires = $this->getdata("neverexpires",0);
 			if ($password_never_expires) {
 				unset($this->data->password_expiry);

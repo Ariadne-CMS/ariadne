@@ -8,7 +8,7 @@
 	include_once($this->store->get_config("code")."modules/mod_page.php");
 
 	class edit {
-		function reset() {
+		public static function reset() {
 			global $AR;
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
@@ -40,7 +40,7 @@
 			}
 		}
 
-		function init() {
+		public static function init() {
 			global $ARCurrent;
 			if (edit::getEditMode()) {
 				$context                = pobject::getContext();
@@ -56,47 +56,47 @@
 			}
 		}
 
-		function setEditMode($mode=false, $template='user.edit.page.html', $prefix="editable_") {
+		public static function setEditMode($mode=false, $template='user.edit.page.html', $prefix="editable_") {
 			global $mod_edit_data;
 			$mod_edit_data['editmode']     = $mode;
 			$mod_edit_data['edittemplate'] = $template;
 			$mod_edit_data['editprefix']   = $prefix;
 		}
 
-		function getEditMode() {
+		public static function getEditMode() {
 			global $mod_edit_data;
-			return $mod_edit_data['editmode'];
+			return $mod_edit_data['editmode']??null;
 		}
 
-		function getEditTemplate() {
+		public static function getEditTemplate() {
 			global $mod_edit_data;
-			return $mod_edit_data['edittemplate'];
+			return $mod_edit_data['edittemplate']??null;
 		}
 
-		function getEditPrefix() {
+		public static function getEditPrefix() {
 			global $mod_edit_data;
-			return $mod_edit_data['editprefix'];
+			return $mod_edit_data['editprefix']??null;
 		}
 
-		function getEditTarget() {
+		public static function getEditTarget() {
 			return '_self';
 		}
 
-		function registerDataField() {
+		public static function registerDataField() {
 			/* private method */
 			global $mod_edit_data;
 			$id     = ++$mod_edit_data['id'];
 			return $id;
 		}
 
-		function getVedorVars($me, $name) {
+		public static function getVedorVars($me, $name) {
 			$vedorVars  = "data-vedor-path='" . $me->path . "' data-vedor-id='" . $me->id . "' data-vedor-field='" . $name . "'".
 			              " ar:path='" . $me->path . "' ar:id='" . $me->id . "'";
 
 			return $vedorVars;		
 		}
 
-		function showInputText($var, $name, $title='', $extra='') {
+		public static function showInputText($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -113,7 +113,7 @@
 			return $id;
 		}
 
-		function showInput($var, $name, $title, $type='text', $extra='') {
+		public static function showInput($var, $name, $title, $type='text', $extra='') {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -130,7 +130,7 @@
 			return $id;
 		}
 
-		function registerGroup($name, $id) {
+		public static function registerGroup($name, $id) {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			/* private method - adds $id to group $name, a change in any member of the group, forces dirty on all members */
@@ -140,7 +140,7 @@
 			}
 		}
 
-		function showCheckbox($var, $name, $title, $extra='', $group='', $value='1' ) {
+		public static function showCheckbox($var, $name, $title, $extra='', $group='', $value='1' ) {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if(edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -162,7 +162,7 @@
 			return $id;
 		}
 
-		function showRadio($var, $name, $value, $title, $extra='' ) {
+		public static function showRadio($var, $name, $value, $title, $extra='' ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -181,7 +181,7 @@
 			return $id;
 		}
 
-		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
+		public static function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -218,7 +218,7 @@
 			return $id;
 		}
 
-		function fixSource($var) { // replace the fixed source code span with the fixed source code (base64encoded in vd:source)
+		public static function fixSource($var) { // replace the fixed source code span with the fixed source code (base64encoded in vd:source)
 			global $ARnls;
 
 			if (
@@ -242,7 +242,7 @@
 			return $var;
 		}
 
-		function fixEditSource($var) {
+		public static function fixEditSource($var) {
 			$var = preg_replace_callback(
 				'/(<(span|div)[^>]*vd:source=")([^"]*)("[^>]*>).*(<span[^>]*vd:endsource="true".*>.*<\/span>.*<\/(span|div)>)/isU',
 				function($matches) {
@@ -252,7 +252,7 @@
 			return $var;
 		}
 		
-		function showSpan($var, $name, $title='', $extra='') {
+		public static function showSpan($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -266,10 +266,10 @@
 			} else if (!edit::isEmpty($var)) {
 				echo page::stripARNameSpace(edit::fixSource(page::parse($var)));
 			}
-			return $id;
+			return $id??null;
 		}
 
-		function showTextSpan($var, $name, $title='', $extra='') {
+		public static function showTextSpan($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -283,10 +283,10 @@
 			} else if (!edit::isEmpty($var)) {
 				echo page::parse($var);
 			}
-			return $id;
+			return $id??null;
 		}
 
-		function showDiv($var, $name, $title='', $extra='') {
+		public static function showDiv($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -300,10 +300,10 @@
 			} else if (!edit::isEmpty($var)) {
 				echo page::stripARNameSpace(edit::fixSource(page::parse($var)));
 			}
-			return $id;
+			return $id??null;
 		}
 
-		function startContainer() {
+		public static function startContainer() {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -311,7 +311,7 @@
 			}
 		}
 
-		function endContainer() {
+		public static function endContainer() {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
@@ -319,7 +319,7 @@
 			}
 		}
 
-		function showLink($path='', $extra='', $url=false, $localurl=false) { 
+		public static function showLink($path='', $extra='', $url=false, $localurl=false) { 
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
@@ -341,7 +341,7 @@
 			}
 		}
 
-		function showEditableLink($path='', $extra='', $url=false, $localurl=false) {
+		public static function showEditableLink($path='', $extra='', $url=false, $localurl=false) {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
@@ -363,7 +363,7 @@
 			}
 		}
 		
-		function showHref($path='', $extra='', $localurl=false) {
+		public static function showHref($path='', $extra='', $localurl=false) {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
@@ -378,7 +378,7 @@
 			}
 		}
 
-        function showUrl($path='', $localurl=false) {
+        public static function showUrl($path='', $localurl=false) {
 			$context = pobject::getContext();
 			$me      = $context["arCurrentObject"];
 			if (!$localurl) {
@@ -393,7 +393,7 @@
             }
         }
 
-		function isEmpty($var) {
+		public static function isEmpty($var) {
 			if (strpos($var, 'vd:source')===false) {
 				return trim(preg_replace('/&nbsp;/',' ',strip_tags($var, '<script><input><img><object><embed><iframe>')))=='';
 			} else {
@@ -404,35 +404,35 @@
 
 	class pinp_edit {
 
-		function _reset() {
+		public static function _reset() {
 			return edit::reset();
 		}
 
-		function _init() {
+		public static function _init() {
 			return edit::init();
 		}
 
-		function _setEditMode($mode=false, $template='user.edit.page.html', $prefix='editable_') {
+		public static function _setEditMode($mode=false, $template='user.edit.page.html', $prefix='editable_') {
 			return edit::setEditMode($mode, $template, $prefix);
 		}
 
-		function _getEditMode() {
+		public static function _getEditMode() {
 			return edit::getEditMode();
 		}
 
-		function _getEditTemplate() {
+		public static function _getEditTemplate() {
 			return edit::getEditTemplate();
 		}
 
-		function _getEditPrefix() {
+		public static function _getEditPrefix() {
 			return edit::getEditPrefix();
 		}
 
-		function _getEditTarget() {
+		public static function _getEditTarget() {
 			return edit::getEditTarget();
 		}
 
-		function _registerDataField($name) {
+		public static function _registerDataField($name) {
 			$id      = edit::registerDataField();
 			// FIXME: Temporary fix voor older code which still use registerDataField
 			$context = pobject::getContext();
@@ -444,67 +444,67 @@
 
 		}
 
-		function _registerGroup($name, $id) {
+		public static function _registerGroup($name, $id) {
 			return edit::registerGroup($name, $id);
 		}
 		
-		function _showInputText($var, $name, $title='', $extra='') {
+		public static function _showInputText($var, $name, $title='', $extra='') {
 			return edit::showInputText($var, $name, $title, $extra);
 		}
 
-		function _showInput($var, $name, $title, $type='text', $extra='') {
+		public static function _showInput($var, $name, $title, $type='text', $extra='') {
 			return edit::showInput($var, $name, $title, $type, $extra);
 		}
 
-		function _showCheckbox($var, $name, $title, $extra='', $group='', $value='1' ) {
+		public static function _showCheckbox($var, $name, $title, $extra='', $group='', $value='1' ) {
 			return edit::showCheckbox($var, $name, $title, $extra, $group, $value );
 		}
 
-		function _showRadio($var, $name, $value, $title, $extra='' ) {
+		public static function _showRadio($var, $name, $value, $title, $extra='' ) {
 			return edit::showRadio($var, $name, $value, $title, $extra );
 		}
 
-		function _showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
+		public static function _showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
 			return edit::showSelect($var, $name, $title, $list, $bykey, $extra);
 		}
 
-		function _showSpan($var, $name, $title='', $extra='') {
+		public static function _showSpan($var, $name, $title='', $extra='') {
 			return edit::showSpan($var, $name, $title, $extra);
 		}
 
-		function _showTextSpan($var, $name, $title='', $extra='') {
+		public static function _showTextSpan($var, $name, $title='', $extra='') {
 			return edit::showTextSpan($var, $name, $title, $extra);
 		}
 
-		function _showDiv($var, $name, $title='', $extra='') {
+		public static function _showDiv($var, $name, $title='', $extra='') {
 			return edit::showDiv($var, $name, $title, $extra);
 		}
 
-		function _startContainer() {
+		public static function _startContainer() {
 			return edit::startContainer();
 		}
 
-		function _endContainer() {
+		public static function _endContainer() {
 			return edit::endContainer();
 		}
 
-		function _showLink($path='', $extra='', $url=false, $localurl=false) {
+		public static function _showLink($path='', $extra='', $url=false, $localurl=false) {
 			return edit::showLink($path, $extra, $url, $localurl);
 		}
 
-		function _showEditableLink($path='', $extra='', $url=false, $localurl=false) {
+		public static function _showEditableLink($path='', $extra='', $url=false, $localurl=false) {
 			return edit::showEditableLink($path, $extra, $url, $localurl);			
 		}
 		
-		function _showHref($path='', $localurl='') {
+		public static function _showHref($path='', $localurl='') {
 			return edit::showHref($path, $localurl);
 		}
 
-		function _showUrl($path='', $localurl=false) {
+		public static function _showUrl($path='', $localurl=false) {
 			return edit::showUrl($path, $localurl);
 		}
 
-		function _isEmpty($var) {
+		public static function _isEmpty($var) {
 			return edit::isEmpty($var);
 		}
 	}

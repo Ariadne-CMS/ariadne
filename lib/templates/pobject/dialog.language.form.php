@@ -8,7 +8,7 @@
 		<div class="left">
 			<div class="field">
 				<input type="radio" class="inputradio" id="inherit" name="inherit" value="1" <?php
-					if( !$this->data->config->nlsconfig->list) { // set for this object
+					if( !($this->data->config->nlsconfig->list??null)) { // set for this object
 						echo "checked";
 					}
 				?>>
@@ -42,7 +42,7 @@
 		<div class="right">
 			<div class="field">
 				<input type="radio" class="inputradio" id="use" name="inherit" value="0" <?php
-					if( $this->data->config->nlsconfig->list) { // set for this object
+					if( $this->data->config->nlsconfig->list??null ) { // set for this object
 						echo "checked";
 					}
 				?>>

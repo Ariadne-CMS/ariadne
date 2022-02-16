@@ -87,6 +87,7 @@
 			include("conf/salt.conf");
 			include("conf/session.conf");
 			include("conf/loader.conf");
+			include("conf/nls.conf");
 			include("conf/im.conf");
 			include("conf/svn.conf");
 

@@ -1329,7 +1329,7 @@
 
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
-			$this->children = $this->form->parseFields($field->children);
+			$this->children = $this->form->parseFields($field->children??null);
 		}
 
 		public function hasChildren() {
@@ -1502,7 +1502,7 @@
 
 			if ( isset( $field->value ) ) { // apply default behaviour, step 2
 				$this->normalizeChildren( $field->value );
-				$this->handleUpdates( $field->default );
+				$this->handleUpdates( $field->default??null );
 			}
 		}
 

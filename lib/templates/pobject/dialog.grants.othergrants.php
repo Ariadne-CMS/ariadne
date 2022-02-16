@@ -8,7 +8,7 @@
 	if ($this->exists($userPath)) {
 		$user = current($this->get($userPath, 'system.get.phtml'));
 		$userName = $user->data->name;
-		if (is_array($user->data->config->usergrants)) {
+		if (is_array($user->data->config->usergrants??null)) {
 				foreach ($user->data->config->usergrants as $grantsPath => $grantsArray) {
 					if (sizeof($grantsArray) && $this->exists($grantsPath)) {
 						$object = current($this->get($grantsPath, 'system.get.phtml'));

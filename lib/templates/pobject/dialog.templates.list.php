@@ -160,7 +160,7 @@
 				$file=substr($file, strrpos($file, '/'));
 				$file=substr($file, 2);
 				$file = substr($file, 0, strrpos($file, '.'));
-				if( !is_array($grepresults[$file])) {
+				if( !is_array($grepresults[$file]??null)) {
 					$grepresults[$file] = array();
 				}
 				$grepresults[$file][] = $linenr.": ".$line;

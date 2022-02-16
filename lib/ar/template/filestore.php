@@ -19,7 +19,7 @@
 			if($context->path == $path) {
 				$result = $context->id;
 			} else {
-				$result = $context->loadConfig($path)->id;
+				$result = $context->loadConfig($path)->id??null;
 			}
 			return $result;
 		}
@@ -56,7 +56,7 @@
 
 			$config = $this->getConfig($path);
 
-			$templates = $config->pinpTemplates;
+			$templates = $config->pinpTemplates??null;
 			if (isset($templates)) foreach($templates as $type => $names) {
 				if (isset($names)) foreach($names as $name => $languages) {
 					if (isset($languages)) foreach($languages as $language => $id ) {

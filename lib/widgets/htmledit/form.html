@@ -7,36 +7,21 @@
   // $wgHTMLEditLanguage = language (none for no language)
   // $wgHTMLEditValue = text displayed on the open editor button
   // $wgHTMLEditType = 'full'/'body' for full html page or only body.innerHTML  
-  if (!$wgHTMLEditRoot) {
-    $wgHTMLEditRoot=$this->store->get_config("root");
-  }
-  if (!$wgHTMLEditPath) {
-    $wgHTMLEditPath=$this->path;
-  }
-  if (!$wgHTMLEditLanguage) {
-    $wgHTMLEditLanguage="none";
-  }
-  if (!$wgHTMLEditName) {
-    $wgHTMLEditName="page";
-  }
-  if (!$wgHTMLEditType) {
-    $wgHTMLEditType="body";
-  }
-  if (!$wgHTMLEditTitle) {
-    $wgHTMLEditTitle=$nlsdata->name;
-  }
+
+  $wgHTMLEditRoot=$wgHTMLEditRoot??$this->store->get_config("root");
+  $wgHTMLEditPath=$wgHTMLEditPath??$this->path;
+  $wgHTMLEditLanguage=$wgHTMLEditLanguage??"none";
+  $wgHTMLEditName=$wgHTMLEditName??"page";
+  $wgHTMLEditType=$wgHTMLEditType??"body";
+  $wgHTMLEditTitle=$wgHTMLEditTitle??$nlsdata->name;
   if ($wgHTMLEditLanguage!='none') {
     $wgHTMLEditContentName=$wgHTMLEditLanguage."[".$wgHTMLEditName."]";
   } else {
     $wgHTMLEditContentName=$wgHTMLEditName;
   }
-  if (!$wgHTMLEditClass) {
-    $wgHTMLEditClass="wgHTMLEditButton";
-  }
-  if(!$wgHTMLEditValue) {
-  	$wgHTMLEditValue="Open Editor";
-  }
-  if ($this->arIsNewObject) {
+  $wgHTMLEditClass=$wgHTMLEditClass??"wgHTMLEditButton";
+  $wgHTMLEditValue=$wgHTMLEditValue??"Open Editor";
+  if ($this->arIsNewObject??null) {
     $wgHTMLEditSave2Form="true";
   } else {
     $wgHTMLEditSave2Form="false";
@@ -51,7 +36,7 @@
     echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
        "_button\" value=\"".htmlspecialchars($wgHTMLEditValue)."\" class=\"$wgHTMLEditClass\"".
-       $wgButtonState . " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
+       ($wgButtonState??'') . " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','" . ($wgHTMLEditFile??'') . "','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
        str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', this.form['$wgHTMLEditContentName'], ".$wgHTMLEditSave2Form.");\">"; 
 /*
   } else {

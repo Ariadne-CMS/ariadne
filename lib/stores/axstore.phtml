@@ -176,11 +176,11 @@ class axstore {
 
 
 	function get($path) {
-		$node = $this->nodes[$path];
+		$node = $this->nodes[$path]??null;
 		if ($node) {
 			$result["list"][0]=$node;
 		}
-		return $result;
+		return $result??null;
 	}
 
 	function ls($path) {
@@ -397,7 +397,7 @@ class axstore {
 
 	function call($template, $args, $objects, $options = array() ) {
 		$result = Array();
-		if (is_array($objects["list"])) {
+		if (is_array($objects["list"]??null)) {
 			reset($objects["list"]);
 			while (list(,$node)=each($objects["list"])) {
 				$this->_load_object_data($node->object);

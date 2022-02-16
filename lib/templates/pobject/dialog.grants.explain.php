@@ -8,11 +8,11 @@
 	if ($this->exists($userPath)) {
 		$user = current($this->get($userPath, 'system.get.phtml'));
 		$userName = $user->data->name;
-		$userGroupPaths = $user->data->groups;
+		$userGroupPaths = $user->data->groups??null;
 		if (!is_array($userGroupPaths)) {
 			$userGroupPaths = array();
 		}
-		if (!$userGroupPaths['/system/groups/public/'] && !$user->implements('pgroup')) {
+		if (!($userGroupPaths['/system/groups/public/']??null) && !$user->implements('pgroup')) {
 			$userGroupPaths['/system/groups/public'] = '/system/groups/public/';
 		}
 		$userGroups = array();
@@ -30,7 +30,7 @@
 		$grantsList = array();
 		do {
 			$object = current($this->get($grantsPath, 'system.get.phtml'));
-			if ($user->data->config->usergrants[$grantsPath]) {
+			if ($user->data->config->usergrants[$grantsPath]??null) {
 				array_unshift(
 					$grantsList,
 					array(
@@ -54,7 +54,7 @@
 			}
 
 			foreach ($userGroups as $group) {
-				if ($group->data->config->usergrants[$grantsPath]) {
+				if ($group->data->config->usergrants[$grantsPath]??null) {
 					array_unshift(
 						$grantsList,
 						array(

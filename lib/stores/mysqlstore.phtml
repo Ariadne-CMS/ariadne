@@ -1166,7 +1166,7 @@ class mysqlstore extends store{
 				}
 			}
 			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
-									$query_names."object ) values ( ".$query_values."$object )";
+									($query_names??'')."object ) values ( ".($query_values??'')."$object )";
 			$this->store_run_query($query_string);
 			$result=$this->dbh->affected_rows;
 		}

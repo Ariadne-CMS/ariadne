@@ -261,23 +261,23 @@
 	</div>
 	<div class="template_option">
 	<?php
-		if ($data->config->privatetemplates[$type][$function]) {
+		if ($data->config->privatetemplates[$type][$function]??null) {
 			$private=1;
 		}
 	?>
 		<label for="private" class="ontop"><?php echo $ARnls["ariadne:template:private"]; ?></label>
 		<input type="hidden" name="private" value="0">
-		<input type="checkbox" id="private" name="private" value="1" <?php if ($private) { echo " checked"; } ?>>
+		<input type="checkbox" id="private" name="private" value="1" <?php if ($private??null) { echo " checked"; } ?>>
 	</div>
 	<div class="template_option">
 	<?php
-		if ($data->config->templates[$type][$function][$language] || !$function) {
+		if ($data->config->templates[$type][$function][$language]??null || !($function??null)) {
 			$default=1;
 		}
 	?>
 		<label for="default" class="ontop"><?php echo $ARnls["default"]; ?></label>
 		<input type="hidden" name="default" value="0">
-		<input type="checkbox" id="default" name="default" value="1" <?php if ($default) { echo " checked"; } ?>>
+		<input type="checkbox" id="default" name="default" value="1" <?php if ($default??null) { echo " checked"; } ?>>
 	</div>
 
 	<input type="hidden" id="cursorOffset" name="cursorOffset">

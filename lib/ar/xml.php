@@ -1040,8 +1040,8 @@
 				// this bit of magic allows ar_xmlNodes->setAttribute to override only
 				// specific attribute values, leaving others alone, by specifying a
 				// non-number key.
-				if ( !is_array($this->attributes[$name]) ) {
-					$this->attributes[$name] = array( $this->attributes[$name] );
+				if ( !is_array($this->attributes[$name]??null) ) {
+					$this->attributes[$name] = array( $this->attributes[$name]??null );
 				}
 				$this->attributes[$name] = array_merge( $this->attributes[$name], $value );
 			} else {

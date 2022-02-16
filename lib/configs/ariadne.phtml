@@ -18,16 +18,15 @@
 	$AR->Tidy = new baseObject;       // do not change
 	$AR->Grep = new baseObject;       // do not change
 	$AR->Webkit2png = new baseObject; // do not change
-	$AR->loader = new baseObject;     // do not change
-	$AR->superClass = array();        // do not change
+        $AR->loader = new baseObject;     // do not change
+        $AR->superClass = array();        // do not change
 
-	$AR->ESI = false;
-	$AR->arNoHeaders = false;
-	$AR->session = new baseObject;
+        $AR->ESI = false;
+        $AR->arNoHeaders = false;
+        $AR->session = new baseObject;
 
-	$ARCurrent = new baseObject;
-	$ARCurrent->arNoHeaders = false;
-
+        $ARCurrent = new baseObject;
+        $ARCurrent->arNoHeaders = false;
 $AR->OS = 'UNIX';
 
   /**************************************************************************/
@@ -41,7 +40,7 @@ $AR->dir->www = '';
 $AR->dir->install = '/opt/ariadne';
 $AR->DB->dbms = 'mysql';
 $AR->DB->host = 'mysql';
-$AR->DB->database = 'ariadne';
+$AR->DB->database = 'ariadne2';
 $AR->DB->user = 'ariadne';
 $AR->DB->password = 'secret';
 
@@ -50,7 +49,7 @@ $AR->DB->password = 'secret';
   /* Set this key to a random string if you want to use the sg* functions   */
   /**************************************************************************/
 
-  $AR->sgSalt = 'wjkqliervj';
+  $AR->sgSalt = 'pwgqiyccpx';
   /**************************************************************************/
   /* sessionCryptoKey                                                       */
   /* contains a base64 encoded key for mcrypti                              */
@@ -58,7 +57,7 @@ $AR->DB->password = 'secret';
   /*             mcrypt_get_key_size(MCRYPT_RIJNDAEL_256,MCRYPT_MODE_CBC))  */
   /*           );                                                           */
   /**************************************************************************/
-  $AR->sessionCryptoKey = '3C0jOtwzBY1+8WBwvj19+zxwmKUOpT63BC/AOPBK1q0=';
+  $AR->sessionCryptoKey = 'j55EwpyhcHkvC77Njm2hofOPPWkawlfIaDAzQlwGS3Q=';
 
   /**************************************************************************/
   /* Allowed HTTP methods for loader.web                                    */
@@ -70,6 +69,44 @@ $AR->DB->password = 'secret';
   $AR->loader->web['AllowedMethods'] = array(
     "GET", "POST", "PUT", "DELETE", "HEAD"
   );
+	/**************************************************************************/
+	/* NLS System                                                             */
+	/* ==========                                                             */
+	/* This contains the list of available languages. In Ariadne you can set  */
+	/* the list of available languages per object/directory, selected from    */
+	/* list below. Do not use html entities like &eacute;                     */
+	/**************************************************************************/
+
+	if (!isset($AR->nls)) {
+		$AR->nls=new baseObject;                         // do not change
+	}
+	if (!isset($AR->nls->list)){
+		$AR->nls->list['nl']      = 'Nederlands';
+		$AR->nls->list['en']      = 'English';
+		$AR->nls->list['es']      = 'Español';
+		$AR->nls->list['de']      = 'Deutsch';
+		$AR->nls->list['pl']      = 'Polski';
+		$AR->nls->list['fr']      = 'Français';
+		$AR->nls->list['it']      = 'Italiana';
+		$AR->nls->list['sv']      = 'Svenska';
+		$AR->nls->list['hr']      = 'Hrvatski';
+		$AR->nls->list['pt']      = 'Português';
+
+		$AR->nls->locales['nl']   = 'nl_NL';
+		$AR->nls->locales['en']   = 'en_US';
+		$AR->nls->locales['es']   = 'es';
+		$AR->nls->locales['de']   = 'de';
+		$AR->nls->locales['pl']   = 'pl';
+		$AR->nls->locales['fr']   = 'fr_FR';
+		$AR->nls->locales['it']   = 'it_IT';
+		$AR->nls->locales['sv']   = 'sv_SE';
+		$AR->nls->locales['hr']   = 'hr_HR';
+		$AR->nls->locales['pt']	= 'pt_PT';
+	}
+
+	if (!isset($AR->nls->default)) {
+		$AR->nls->default         = 'en';
+	}
 
   /**************************************************************************/
   /* ImageMagick information                                                */

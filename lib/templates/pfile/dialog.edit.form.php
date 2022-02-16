@@ -29,7 +29,7 @@
 		<input id="name" type="text" name="<?php echo $selectednls."[name]"; ?>"
 			value="<?php $this->showdata("name", $selectednls); ?>" class="inputline wgWizAutoFocus">
 	</div>
-	<?php if (!$arNewType) { ?>
+	<?php if (!($arNewType??null)) { ?>
 	<div class="field">
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">

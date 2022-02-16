@@ -51,7 +51,7 @@
 		<input id="name" type="text" name="<?php echo $selectednls."[workspaceurl]"; ?>"
 			value="<?php
 					if (!$workspaceurl = $this->getdata("workspaceurl", $selectednls)) {
-						if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
+						if (!($this->arIsNewObject??null) && ($selectednls==$this->data->nls->default)) {
 							$url = $this->getdata("workspaceurl", "none");
 						}
 					}
@@ -61,7 +61,7 @@
 	<?php
 		}
 	?>
-	<?php if (!$arNewType) { ?>
+	<?php if (!($arNewType??null)) { ?>
 	<div class="field">
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
@@ -82,7 +82,7 @@
 	</div>
 	<?php } ?>
 	<?php
-		if ( $arNewType ) {
+		if ( $arNewType??null ) {
 			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
 		}
 	?>

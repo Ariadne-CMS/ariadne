@@ -154,7 +154,7 @@
 	function ldOnFinish() {
 	global $ARCurrent, $store;
 		$error = error_get_last();
-		if ($error['type'] == 1) { // Fatal error
+		if (($error['type']??null) == 1) { // Fatal error
 			$context = pobject::getContext();
 			if ($context['scope'] == 'pinp') {
 				pobject::pinpErrorHandler($error['type'], $error['message'], $error['file'], $error['line'], null);

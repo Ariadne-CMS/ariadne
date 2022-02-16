@@ -314,8 +314,10 @@
 			progress(0, $items_to_process);
 
 			$this->store->call($exportObject ,$arCallArgs,$this->store->find($srcpath,$criteria,0,0));
-			if (!$ARCurrent->options["without_grants"]) {
+			if (!($ARCurrent->options["without_grants"]??null)) {
 				// reset config
+				$arguments = $arguments??null;
+
 				$destobj = current($ARCurrent->importStore->call("system.get.phtml", $arguments,
 						$ARCurrent->importStore->get($destpath)));
 				$destobj->resetConfig();

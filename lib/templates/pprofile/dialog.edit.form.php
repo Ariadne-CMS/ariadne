@@ -10,7 +10,7 @@
 			value="<?php $this->showdata("name", "none"); ?>" class="inputline wgWizAutoFocus">
 	</div>
 	<?php
-		if ( $arNewType ) {
+		if ( $arNewType??null ) {
 			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
 		}
 	?>

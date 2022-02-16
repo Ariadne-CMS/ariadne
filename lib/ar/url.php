@@ -61,11 +61,11 @@
 			return (string)$url;
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->query->$name;
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
 
@@ -113,11 +113,11 @@
 			$this->query->{$name} = $value;
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->query->{$name};
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
 

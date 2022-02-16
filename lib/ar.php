@@ -507,7 +507,7 @@
 		public static function getObject( $options = array() ) {
 			if ( class_exists( 'pobject' ) ) {
 				$context = pobject::getContext();
-				$me = $context["arCurrentObject"];
+				$me = $context["arCurrentObject"]??null;
 			} else {
 				$me = null;
 			}

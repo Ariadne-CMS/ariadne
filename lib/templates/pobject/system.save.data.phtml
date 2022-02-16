@@ -50,7 +50,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 
 				if ($name=$this->getdata("name",$key)) { 
-					if (!$this->data->$key) {
+					if (!($this->data->$key??null)) {
 						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
@@ -71,7 +71,7 @@
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ($this->data->$key??null) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}

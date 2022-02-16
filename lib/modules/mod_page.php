@@ -180,7 +180,7 @@ class page {
 			unset($node['attribs'][$contentEditable]);
 			$result = true;
 		}
-		if ($node['attribs']['ar:type'] == "template") {
+		if (($node['attribs']['ar:type']??null) == "template") {
 				$path     = $node['attribs']['ar:path'];
 				$template = $node['attribs']['ar:name'];
 				$argsarr  = array();
@@ -202,7 +202,7 @@ class page {
 				// return from worker function
 				return true;
 		}
-		if (is_array($node['children'])) {
+		if (is_array($node['children']??null)) {
 			foreach ($node['children'] as $key => $child) {
 				// single | makes the following line always run the compileworker
 				// method, while any return true in that method makes $result true

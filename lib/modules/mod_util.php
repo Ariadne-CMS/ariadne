@@ -87,7 +87,7 @@
 
 	class pinp_util extends util {
 
-		function is_callback($callback) {
+		public static function is_callback($callback) {
 			// lambda functions do begin with a null character
 			// maybe there is a better check, but this will do it for now
 			$result =  ($callback[0] === "\000" && substr($callback, 1, strlen('lambda_')) == 'lambda_');
@@ -95,7 +95,7 @@
 		}
 
 
-		function _create_function($args, $code) {
+		public static function _create_function($args, $code) {
 		global $AR;
 			$pinp = new pinp($AR->PINP_Functions, 'var_', '$AR_this->_');
 			$safe_args = $pinp->compileFuncCallArgs("$args", "funcCallArgs");
@@ -104,7 +104,7 @@
 			return create_function($safe_args, $safe_code);
 		}
 
-		function _call_function($callback) {
+		public static function _call_function($callback) {
 			$args = array_slice(func_get_args(), 1);
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -117,7 +117,7 @@
 			return $result;
 		}
 
-		function _preg_replace_callback($regExp,$callback,$haystack) {
+		public static function _preg_replace_callback($regExp,$callback,$haystack) {
 				$context = pobject::getContext();
 				$me = $context["arCurrentObject"];
 				$result = false;
@@ -130,7 +130,7 @@
 		}
 
 
-		function _usort(&$array, $callback) {
+		public static function _usort(&$array, $callback) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$result = false;
@@ -142,7 +142,7 @@
 			return $result;
 		}
 
-		function _uasort(&$array, $callback) {
+		public static function _uasort(&$array, $callback) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$result = false;
@@ -154,15 +154,15 @@
 			return $result;
 		}
 
-		function _path_escape($path) {
+		public static function _path_escape($path) {
 			return parent::path_escape($path);
 		}
 
-		function _path_unescape($path) {
+		public static function _path_unescape($path) {
 			return parent::path_unescape($path);
 		}
 
-		function _getFileFromFTP($url, $fileName) {
+		public static function _getFileFromFTP($url, $fileName) {
 			return parent::getFileFromFTP($url, $fileName);
 		}
 

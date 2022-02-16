@@ -28,8 +28,8 @@
 		}
 
 		$languages=array_intersect(array_keys($languagelist), array_keys(
-				array_merge( ( $ARConfig->nls->list ? $ARConfig->nls->list : array() ),
-							 ( $this->data->config->nls->list ? $this->data->config->nls->list : array() )
+				array_merge( ( $ARConfig->nls->list ?? array() ),
+							 ( $this->data->config->nls->list ?? array() )
 							)
 						)
 				);
@@ -38,7 +38,7 @@
 		$itemlist = array();
 		foreach( $languages as $key => $nlskey ) {
 			$language=$AR->nls->list[$nlskey];
-			if (($this->data->config->nls->list[$nlskey]) || ($this->getdata('name',$nlskey))) {
+			if (($this->data->config->nls->list[$nlskey]??null) || ($this->getdata('name',$nlskey))) {
 				$image=$AR->dir->images."nls/small/".$nlskey.".gif";
 			} else {
 				$image=$AR->dir->images."nls/small/faded/".$nlskey.".gif";

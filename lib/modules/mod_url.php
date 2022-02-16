@@ -142,7 +142,7 @@ class URL {
 		$page = preg_replace($find, $repl, $page);
 
 		// FIXME: Maybe do not process arCall when ESI is enabled?
-		$page = URL::processArCall($page, $full);
+		$page = URL::processArCall($page, $full??null);
 
 		return $page;
 	}

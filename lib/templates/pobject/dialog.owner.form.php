@@ -32,10 +32,12 @@
 </script>
 <fieldset id="data" class="browse">
 		<legend><?php echo $ARnls["path"]; ?></legend>
-		<div class="field">
-			<label for="owner" class="required"><?php echo $ARnls["owner"]; ?></label>
-			<input type="text" id="owner" name="owner" value="<?php echo $wgBrowsePath; ?>" class="inputline wgWizAutoFocus">
-			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url($wgBrowseRoot); ?>" + "dialog.browse.php<?php if ($extraroots) { echo "?$extraroots"; }?>", "browse", "height=480,width=750"); return false;'>
+		<div class="browse_wrapper">
+			<div class="field">
+				<label for="owner" class="required"><?php echo $ARnls["owner"]; ?></label>
+				<input type="text" id="owner" name="owner" value="<?php echo $wgBrowsePath; ?>" class="inputline wgWizAutoFocus">
+				<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url($wgBrowseRoot); ?>" + "dialog.browse.php<?php if ($extraroots) { echo "?$extraroots"; }?>", "browse", "height=480,width=750"); return false;'>
+			</div>
 		</div>
 		<div class="field radio">
 			<input type="radio" id="normal" name="behaviour" value="0" checked>
