@@ -96,7 +96,7 @@
 
 		$loader = $this->store->get_config('root');
 		$wwwroot = $AR->dir->www;
-		$interface = $data->interface;
+		$interface = $data->interface ?? null;
 
 		$yui_base = $wwwroot . "js/yui/";
 	//	$yui_base = "http://developer.yahoo.com/yui/";
@@ -244,7 +244,7 @@
 		echo "\tmuze.ariadne.registry.set('window_new_grants', 1);\n";
 	}
 
-	foreach ((array)$extraroots as $extrapath) {
+	foreach (($extraroots??[]) as $extrapath) {
 		if ($extrapath != $path) {
 			$extrapath_ob = current($this->get($extrapath, "system.get.phtml"));
 			if ($extrapath_ob) {
@@ -408,7 +408,7 @@
 					$extraButtonsEventData = new baseObject();
 					$extraButtonsEventData = ar_events::fire( 'ariadne:onbeforebrowsebuttons', $extraButtonsEventData );
 					if ($extraButtonsEventData) {
-						$this->call("dialog.browse.buttons.html", array( "hideAdd" => $hideAdd ));
+						$this->call("dialog.browse.buttons.html", array( "hideAdd" => ($hideAdd ?? null)));
 						$this->call("dialog.browse.buttons.extra.html");
 						ar_events::fire('ariadne:onbrowsebuttons');
 					}

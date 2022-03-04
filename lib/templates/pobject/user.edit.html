@@ -5,10 +5,10 @@
 			$parentobj->CheckLogin("add")) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit")))
       && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if (!$wgHTMLEditTemplate) {
+		if (!($wgHTMLEditTemplate??null)) {
 			$wgHTMLEditTemplate='user.edit.page.html';
 		}
-		if (!$wgHTMLEditSaveTemplate) {
+		if (!($wgHTMLEditSaveTemplate??null)) {
 			$wgHTMLEditSaveTemplate='user.edit.save.html';
 		}
 		include($this->store->get_config("code")."widgets/vedor/editor.v9.php");

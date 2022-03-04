@@ -795,13 +795,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			}
 
 			if ($c_redirects_done == $c_redirects) {
-				$checkpath = $redir['src'];
+				$checkpath = $redir['src']??null;
 			}
 		}
 
 		do {
-			if (!$config=$ARConfig->cache[$checkpath]) {
-				$config=($ARConfig->cache[$checkpath]) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
+			if (!($config=$ARConfig->cache[$checkpath]??null)) {
+				$config=($ARConfig->cache[$checkpath]??null) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
 			}
 			if ($config) {
 				$checkNLS = $nls;

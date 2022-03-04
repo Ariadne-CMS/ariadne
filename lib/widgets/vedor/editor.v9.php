@@ -21,10 +21,10 @@
 
 	$getargs = "?vdLanguage=" . RawURLEncode($language);
 	// CAS vars;
-	if ($requestorHost) {
+	if ($requestorHost??null) {
 		$getargs .= "&requestorHost=" . RawURLEncode($requestorHost);
 	}
-	if ($requestorPort) {
+	if ($requestorPort??null) {
 		$getargs .= "&requestorPort=" . RawURLEncode($requestorPort);
 	}
 
@@ -41,10 +41,10 @@
 		}
 	}
 	$this->setnls($oldnls);
-	if ( !$vedorPortalLink) {
+	if ( !($vedorPortalLink??null)) {
 		$vedorPortalLink = 'http://www.vedor.nl/';
 	}
-	if ( !$wgHTMLEditManageTemplate ) {
+	if ( !($wgHTMLEditManageTemplate??null) ) {
 		$wgHTMLEditManageTemplate = 'user.edit.html';
 	}
  	if ( !$options['doctype'] ) {
@@ -3442,7 +3442,7 @@
 	/* FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
 		dit werkt tijdelijk om het probleem heen dat de editor niet gestart kan wordne als er geen default view is gedefinieerd
 	*/
-	$tmpshortcut_redirect = $ARCurrent->shortcut_redirect;
+	$tmpshortcut_redirect = $ARCurrent->shortcut_redirect??null;
 	$ARCurrent->shortcut_redirect = array();
 	$wgVedorEditTemplateArguments = "vdLanguage=$language";
 	if (strpos($wgHTMLEditTemplate, '?') !== false) {
