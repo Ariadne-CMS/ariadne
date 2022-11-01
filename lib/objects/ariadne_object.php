@@ -1612,7 +1612,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
 			}
 		}
-
+                $ob = current(ar::get($path)->call('system.get.phtml'));
+                if ($ob && $ob->type==='pshortcut' && $ob->data->path && $ob->data->path!==$path && ar::exists($ob->data->path)) {
+                        return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
+                }
 		return null;
 	}
 
