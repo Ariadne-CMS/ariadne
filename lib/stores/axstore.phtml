@@ -243,7 +243,7 @@ class axstore {
 										case '=':
 											@reset($node->object->properties);
 											$found=false;
-											while (!$found && (list(,$propvalue)=@each($node->object->properties[$criteria_table_key]))) {
+											while (!$found && isset($node->object->properties[$criteria_table_key]) && (list(,$propvalue)=@each($node->object->properties[$criteria_table_key]))) {
 												if ($criteria_condition_value==$propvalue[$criteria_table_prop_key]) {
 													$found=true;
 												}
