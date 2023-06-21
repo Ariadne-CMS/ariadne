@@ -42,7 +42,7 @@ class psite extends psection {  // psite class definition
 		pdir::getConfigData();
 
 		$configcache=$ARConfig->cache[$this->path];
-		$hostsubwww = $host = $_SERVER["HTTP_HOST"];
+		$hostsubwww = $host = ($_SERVER["HTTP_HOST"] ?? null);
 		if (substr($host, 0, 4) == 'www.') {
 			$hostsubwww = substr($host, 4);
 		}
