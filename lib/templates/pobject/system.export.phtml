@@ -122,8 +122,8 @@
 
 						// we may never overwrite an existing object with a
 						// dummy object
-						if (!($object->axflags & AX_DUMMY) && 
-								!($object->axflags & AX_WITHOUT_DATA)) {
+						if (!(($object->axflags ?? null) & AX_DUMMY) && 
+								!(($object->axflags ?? null) & AX_WITHOUT_DATA)) {
 
 							$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
 										$ARCurrent->importStore->get($newpath)));
@@ -349,7 +349,7 @@
 										break;
 									}
 								}
-								if( ! is_null($group) ) {
+								if( ! is_null($group ?? null ) ) {
 									display("	$newpath\n");
 									$result=current($group->get($newpath, "system.import.grants.phtml", 
 															array(
