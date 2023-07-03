@@ -1,6 +1,6 @@
 {
 	"require": {
-		"php": ">=5.6",
+		"php": ">=8.0",
 		"mrclay/jsmin-php": "~2.3",
 		"arc/arc": "~2.0",
 		"mishal/iless": "~1",
@@ -13,7 +13,6 @@
 		"nikic/php-parser": "~2",
 		"firebase/php-jwt": "^3.0",
 		"paragonie/random_compat": "^2.0",
-		"phpunit/phpunit": "^5.3",
 		"php-amqplib/php-amqplib": "^2.6",
 		"phpseclib/mcrypt_compat": "^1.0"
 	}
