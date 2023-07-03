@@ -64,7 +64,7 @@
 					$pinp_code = file_get_contents($f);
 
 					$compiler = new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
-					$optimized = sprintf($AR->PINPtemplate, $compiled);
+					$optimized = sprintf($AR->PINPtemplate, $compiled ?? "");
 					$compiled = $compiler->compile(strtr($pinp_code, "\r", ""));
 					if ($compiler->error) {
 						showCompilerError($compiler, $path.$file);
