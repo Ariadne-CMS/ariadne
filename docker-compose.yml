@@ -2,13 +2,14 @@ version: '3'
 services:
     php-apache:
         build:
-            context: ./docker/Dockerfile.php-apache
+            context: ./docker
+            dockerfile: Dockerfile.php-apache
         environment:
             XDEBUG_CONFIG: remote_host=${XDEBUG_REMOTE_HOST:-host.docker.internal}
         ports:
             - 80:80
         volumes:
-            - www/:/var/www/html
+            - ./www/:/var/www/html
             - .:/opt/ariadne
         links:
             - 'mysql'
