@@ -1,0 +1,9 @@
+FROM php:8.1-apache
+LABEL maintainer="yvo@muze.nl"
+RUN docker-php-ext-install mysqli
+#RUN docker-php-ext-install mbstring
+RUN apt-get update
+RUN apt-get install -y git
+RUN apt-get install -y subversion
+RUN apt-get install -y tidy
+RUN apt-get install -y imagemagick
