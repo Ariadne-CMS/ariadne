@@ -96,7 +96,7 @@
 			echo '( <span class="crumbs" title="' . $oldcrumbs . '">' . $crumbs . '</span> )';
 			echo '</div>';
 			echo '<div class="path">' . $path . '</div>';
-			if ($total > 0 && !$targetob->checkfailed) {
+			if ($total > 0 && !($targetob->checkfailed??null)) {
 				echo sprintf( $ARnls['q:removeall'], $targetob->nlsdata->name, $total);
 			}
                         echo '</div>';

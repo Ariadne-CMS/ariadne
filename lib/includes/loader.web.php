@@ -705,8 +705,8 @@
 			file_exists($cachedimage) &&
 			((($mtime=@filemtime($cachedimage)) > $timecheck) || ($mtime==0)) &&
 			($_SERVER["REQUEST_METHOD"]!="POST") &&
-			($ARCurrent->RequestCacheControl["no-cache"] != true ) &&
-			($ARCurrent->refreshCacheOnShutdown !== true)
+			(($ARCurrent->RequestCacheControl["no-cache"]??null) != true ) &&
+			(($ARCurrent->refreshCacheOnShutdown??null) !== true)
 		) {
 			$ctime=filemtime($cachedimage); // FIXME: Waarom moet dit mtime zijn? Zonder mtime werkt de if-modified-since niet;
 
@@ -717,7 +717,7 @@
 				header("X-Ariadne-Cache-Refresh: skipped, still fresh enough");
 			}
 
-			if (!$AR->ESI && $_SERVER['HTTP_IF_MODIFIED_SINCE'] && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime) {
+			if (!$AR->ESI && ($_SERVER['HTTP_IF_MODIFIED_SINCE']??null) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime) {
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
 				// as an object clears the cache upon a save.
 

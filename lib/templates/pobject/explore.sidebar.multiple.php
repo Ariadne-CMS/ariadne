@@ -142,14 +142,14 @@
 */
 		$arCallArgs["sectionName"] = "tasks";
 		$arCallArgs["sectionDisplayName"] = $ARnls["ariadne:options"];
-		$arCallArgs["icon"] = $icon;
+		$arCallArgs["icon"] = $icon??null;
 
 		$section = array(
 			'id' => 'tasks',
 			'label' => $ARnls["ariadne:options"],
 			'tasks' => $tasks
 		);
-		if( $shortcutSidebar ) {
+		if( $shortcutSidebar??null ) {
 			if (!isset($ARCurrent->arTypeTree)) {
 				$this->call('typetree.ini');
 			}

@@ -14,7 +14,7 @@
 				if ($this->delete() && !$this->error) {
 					$arResult = true;
 					// remove grants for this object in all user objects.
-					if ($clone->data->config->grants && is_array($clone->data->config->grants)) {
+					if (($clone->data->config->grants??null) && is_array($clone->data->config->grants)) {
 						foreach ($clone->data->config->grants as $type => $grantdata) {
 							foreach ($grantdata as $login => $grants) {
 								$query = "object.implements = '$type' and login.value = '$login'";

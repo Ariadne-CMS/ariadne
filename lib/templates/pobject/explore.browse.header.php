@@ -14,10 +14,10 @@
 
 		$owner = $this->data->config->owner_name;
 		if( !$owner ) {
-			$owner = $this->data->owner_name;
+			$owner = $this->data->owner_name??null;
 		}
-		$date = strftime("%m-%d-%Y",(isset($this->data->ctime) ? $this->data->ctime : null));
-		$modified = strftime("%m-%d-%Y",(isset($this->data->mtime) ? $this->data->mtime : null));
+		$date = date("m-d-Y",(isset($this->data->ctime) ? $this->data->ctime : null));
+		$modified = date("m-d-Y",(isset($this->data->mtime) ? $this->data->mtime : null));
 
 		$userConfig = $this->loadUserConfig();
 		$authconfig = $userConfig['authentication'];
