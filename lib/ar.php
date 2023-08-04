@@ -547,12 +547,12 @@
 
 		public static function callAtPath( $path, $callback ) {
 			$ob = current( ar_store::get($path)->call('system.get.phtml'));
-			pobject::pushContext( array(
+			$ob->pushContext( array(
 					"arCurrentObject" => $ob,
 					"scope" => "php"
 					) );
 			call_user_func( $callback );
-			pobject::popContext();
+			$ob->popContext();
 		}
 
 	}
