@@ -285,7 +285,7 @@ EOD;
 <pinp>
 	$test = 'outside';
 	$var = function () {
-		return $test;
+		return $test??null;
 	};
 
 	return $var($test);

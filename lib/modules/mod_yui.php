@@ -440,7 +440,7 @@
 				}
 				foreach ($data['objects'] as $node) {
 					$content = self::getTypeIcon($node, $viewtype);
-					if( is_array($node['svn']) ) {
+					if( is_array($node['svn'] ?? null) ) {
 						$content[] = self::getSvnIcon($node['svn']['status']);
 					}
 

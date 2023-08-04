@@ -1,4 +1,6 @@
 <?php
+	require_once dirname(__DIR__) . '/vendor/autoload.php';
+	use PHPUnit\Framework\TestCase;
 
 	global $store_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader;
 	$ariadne = getcwd().'/lib/';
@@ -13,7 +15,7 @@
 
 		/* instantiate the store */
 		$storetype = $store_config["dbms"]."store";
-		$store = new $storetype($root,$store_config);
+		$store = new $storetype(($root ?? null),$store_config);
 
 		$ARCurrent->nolangcheck = true;
 
@@ -57,7 +59,7 @@
 
 		/* instantiate the store */
 		$storetype = $store_config["dbms"]."store";
-		$store = new $storetype($root,$store_config);
+		$store = new $storetype($root ?? null,$store_config);
 		$res = ar::get('/projects/')->call('system.new.phtml', array (
 				'arNewType' => 'pproject',
 				'arNewFilename' => '/projects/{5:id}',
@@ -74,7 +76,7 @@
 		);
 		$base = current($res);
 		// set grants for testrunner user
-		ar::get($res)->call('system.save.grants.phtml', array(
+		ar::get($base)->call('system.save.grants.phtml', array(
 			"path"      => '/system/users/testrunner/',
 			"newgrants" => 'read add edit >delete config layout'
 		));
@@ -87,13 +89,13 @@
 		$ARConfig  = $origARConfig;
 	}
 
-	abstract class AriadneBaseTest extends PHPUnit_Framework_TestCase
+	abstract class AriadneBaseTest extends TestCase
 	{
-		protected function initAriadne() {
+		protected static function initAriadne() {
 			global $ariadne,$store_config,$store,$AR;
 			/* instantiate the store */
 			$inst_store = $store_config["dbms"]."store";
-			$store = new $inst_store($root,$store_config);
+			$store = new $inst_store(($root??null),$store_config);
 
 			/* now load a user (admin in this case)*/
 			$AR->user = new baseObject();
@@ -111,7 +113,7 @@
 			}
 		}
 
-		public static function setUpBeforeClass() {
+		public static function setUpBeforeClass(): void {
 			self::loadTestData();
 		}
 

@@ -37,19 +37,19 @@
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			return false;
 		} else {
-			if (!$this->data->nls) {
+			if (!($this->data->nls ?? null)) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 
-			if ($ContentEditOptionsPath) {
+			if ($ContentEditOptionsPath ?? null) {
 				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
 				if (!$arEditorSettings) {
 					$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
 					$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
 				}
 			} else {
-				$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+				$arEditorSettings=$ARCurrent->editorSettings[$this->path] ?? null;
 				if (!$arEditorSettings) {
 					$arEditorSettings=$this->call("editor.ini");
 					$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
@@ -66,7 +66,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					if (!$this->data->$key) {
+					if (!($this->data->$key ?? null)) {
 						debug("$key not yet set","all");
 						$newnlsdata=new baseObject;
 					} else {
@@ -107,7 +107,7 @@
 						$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
 								$newnlsdata->name." ".
 								$this->html_to_text($newnlsdata->summary)." ".
-								$newnlsdata->title." ".
+								($newnlsdata->title ?? null)." ".
 								$this->html_to_text($this->getdata("page",$key))
 								);
 						$properties["fulltext"][$count]["nls"]=$key;
@@ -115,7 +115,7 @@
 					$this->data->{$key}=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ($this->data->$key ?? null) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}

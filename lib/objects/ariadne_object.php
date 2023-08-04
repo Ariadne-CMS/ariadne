@@ -179,7 +179,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$ARCurrent->arCallClassTemplate = false;
 			}
 
-			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
+			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && ($context["scope"] ?? null)!= "pinp" ) {
 				$arResult = $this;
 			} else {
 				$libtemplate = strpos($arCallFunction,":");
@@ -481,7 +481,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		$eventData = new baseObject();
 		$eventData->arCallArgs = $arCallArgs;
-		$eventData->arCallFunction	= $context['arCallFunction'];
+		$eventData->arCallFunction	= $context['arCallFunction']??null;
 		$eventData->arIsNewObject = $arIsNewObject;
 		$eventData->arProperties = $properties;
 		$eventData = ar_events::fire( 'onbeforesave', $eventData );
@@ -529,9 +529,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 
 		$this->data->muser=$AR->user->data->login;
-		if( !$this->data->config->owner ) {
-			if( !$this->data->config->owner_name) {
-				$this->data->config->owner_name=$AR->user->data->name;
+		if( !($this->data->config->owner ?? null)) {
+			if( !($this->data->config->owner_name ?? null)) {
+				$this->data->config->owner_name=$AR->user->data->name ?? null;
 			}
 			$this->data->config->owner=$AR->user->data->login;
 			$properties["owner"][0]["value"]=$this->data->config->owner;
@@ -3084,7 +3084,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if (!$path) {
 			$path=$this->path;
 		}
-		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
+		$config=($ARConfig->cache[$path]??null) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->section;
 	}
 

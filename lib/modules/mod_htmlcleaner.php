@@ -117,7 +117,7 @@ class htmlcleanertag {
 
 				$_name = $matches[1];
 				$i += strlen($_name);
-				$chr = $str[$i];
+				$chr = $str[$i]??null;
 
 				if ($chr == '=') {
 					$_state = 3;
@@ -304,12 +304,12 @@ class htmlcleaner
 		}
 
 		$body = "<htmlcleaner>$body</htmlcleaner>";
-		$rewrite_rules = $config["rewrite"];
+		$rewrite_rules = $config["rewrite"]??null;
 		$return = '';
 		$parts = htmlcleaner::dessicate($body);
 
 		// flip emtied rules so we can use it as indexes
-		if (is_array($config["delete_emptied"])) {
+		if (is_array($config["delete_emptied"]??null)) {
 			$config["delete_emptied"] = array_flip($config["delete_emptied"]);
 		}
 		if (isset($config["delete_empty_containers"]) && is_array($config["delete_empty_containers"])) {

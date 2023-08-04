@@ -1178,7 +1178,8 @@ class mysqlstore extends store{
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-
+		$result = 0;
+		
 		if (intval($object)) {
 			if (!$property) { // remove all properties for $object
 				$query_string="select name from ".$this->tbl_prefix."properties";

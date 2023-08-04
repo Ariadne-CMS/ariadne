@@ -2,7 +2,7 @@
 
 class StorePropertyTest extends AriadneBaseTest
 {
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->initAriadne();
 	}

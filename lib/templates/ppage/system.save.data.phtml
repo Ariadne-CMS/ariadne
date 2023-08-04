@@ -5,12 +5,12 @@
  
 	******************************************************************/
         require_once($this->store->get_config('code')."modules/mod_page.php");
-	if ((($this->arIsNewObject &&
+	if (((($this->arIsNewObject??null) &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||
-			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
+			(!($this->arIsNewObject??null) && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
-		if (!$this->arIsNewObject) {
+		if (!($this->arIsNewObject??null)) {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
 		    $this->data=current($this->get(".","system.get.data.phtml"));
@@ -32,7 +32,7 @@
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 		} else {
-			if (!$this->data->nls) {
+			if (!($this->data->nls??null)) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
@@ -59,7 +59,7 @@
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					if (!$this->data->$key) {
+					if (!($this->data->$key??null)) {
 						debug("$key not yet set","all");
 						$newnlsdata=new baseObject;
 					} else {
@@ -110,13 +110,13 @@
 					$this->data->{$key}=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ($this->data->$key??null) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}
 				}
 			}
-			$arIsNewObject = $this->arIsNewObject;
+			$arIsNewObject = $this->arIsNewObject??null;
 			$arResult = $this->save($properties);
 
 			if (!$this->error) {

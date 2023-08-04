@@ -5,12 +5,12 @@ class psiteUrlSaveTtest extends AriadneBaseTest
 
 	static protected $testPath;
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->initAriadne();
 	}
 
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
 		self::initAriadne();
 		parent::setUpBeforeClass();

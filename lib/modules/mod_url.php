@@ -19,7 +19,7 @@ class URL {
 		/* find and replace the current page */
 		$find[] = "%\\Q".$me->make_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
-		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$me->path."\\E(user.edit.page.html|view.html)?%";
+		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".($ARCurrent->session->id??null)."-)?".$nls_match."\\Q".$me->path."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
 		$find[] = "%\\Q".$me->make_local_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
@@ -69,9 +69,9 @@ class URL {
 		}
 
 		// change hand pasted sources, which may or may not include session id's
-		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?(".$nls_match.")?/%";
+		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".($ARCurrent->session->id??null)."-)?(".$nls_match.")?/%";
 		$repl[] = "{arBase\\3}/";
-		if ($ARCurrent->session && $ARCurrent->session->id) {
+		if (($ARCurrent->session ?? null) && $ARCurrent->session->id) {
 			// check for other session id's:
 			$find[] = "%/-[^-]{4}-%";
 			$repl[] = "{arSession}";
@@ -90,7 +90,7 @@ class URL {
 		$find = array();
 		$repl = array();
 
-		if ($ARCurrent->session && $ARCurrent->session->id) {
+		if (($ARCurrent->session ?? null) && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
 			$session='';

@@ -2,7 +2,7 @@
 
 class StoreTest extends AriadneBaseTest
 {
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->initAriadne();
 	}
@@ -98,8 +98,8 @@ class StoreTest extends AriadneBaseTest
 		$path = self::testNew($path="storeTest-save");
 
 		$dbobj = $store->get($path);
-		$row1 = $store->call('system.get.phtml','',$dbobj);
-		$this->assertNotEquals('2', $row1->data->test);
+		$row1 = current($store->call('system.get.phtml','',$dbobj));
+		$this->assertNotEquals('2', $row1->data->test??null);
 
 		$data = new baseObject();
 		$data->test = "2";
@@ -107,8 +107,8 @@ class StoreTest extends AriadneBaseTest
 		$this->assertEquals($path, $ret);
 
 		$dbobj = $store->get($path);
-		$row2 = $store->call('system.get.phtml','',$dbobj);
-		$this->assertNotEquals('2', $row2->data->test);
+		$row2 = current($store->call('system.get.phtml','',$dbobj));
+		$this->assertNotEquals('2', $row2->data->test??nul);
 	}
 
 	public function testDelete() {

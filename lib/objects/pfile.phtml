@@ -123,7 +123,7 @@ class pfile extends pobject { // pfile class definition
 			$size = $file->size();
 		}
 
-		if (ldSetContent($mimetype, $size)) {
+		if (ldSetContent($mimetype, ($size??null))) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
 			if (!($ARCurrent->arDontCache??null)) {

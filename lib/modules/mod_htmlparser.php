@@ -330,7 +330,7 @@
 						}
 
 						// if we do not resolve tags, we have to add this one as text
-						if ($parser['options']['noTagResolving']) {
+						if ($parser['options']['noTagResolving']??null) {
 							$parentNode['htmlTagClose'] = "</".$parser['token_ahead_value'].">";
 						}
 
@@ -340,7 +340,7 @@
 						static::nextToken($parser);
 				}
 			}
-			if ($parser['options']['noTagResolving']) {
+			if ($parser['options']['noTagResolving']??null) {
 				$parentNode['htmlTagClose'] = "";
 			}
 			return $result;
@@ -348,7 +348,7 @@
 
 		protected static function compile_Attribs(&$node) {
 			$result = "";
-			if (is_array($node['attribs'])) {
+			if (is_array($node['attribs']??null)) {
 				foreach ($node['attribs'] as $key => $value) {
 					$result .= " $key";
 					if ($value !== false) {
