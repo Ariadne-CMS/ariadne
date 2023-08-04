@@ -7,3 +7,4 @@ RUN apt-get install -y git
 RUN apt-get install -y subversion
 RUN apt-get install -y tidy
 RUN apt-get install -y imagemagick
+RUN apt-get install -y poppler-utils
