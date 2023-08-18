@@ -97,7 +97,7 @@
 				echo '<fieldset class="editdata">';
 				echo '<legend>' . $ARnls['data'] . ' : ' . $ARConfig->nls->list[$extraLanguage] .'</legend>';
 				foreach ($wgWizFlow as $step) {
-					if ($step['template'] && !$step['nolang']) {
+					if ( ( $step['template'] ?? null ) && !( $step['nolang'] ?? null ) ) {
 						$wgWizCallObject->call($step['template'], array("arNewType" => $arNewType, "arLanguage" => $extraLanguage));
 					}
 				}

@@ -40,21 +40,23 @@
 		}
 
 		if ($scenario && $this->exists($scenario)) {
-			if ($displays=current($this->get($scenario, "system.get.displays.phtml"))) {
-				$this->data->priority=$displays->data->priority;
+			$scenarioObject = current( $this->get($scenario, "system.get.phtml" ) );
+			$displays = $scenarioObject->call( "system.get.displays.phtml" );
+			if ( $displays ) {
+				$this->data->priority = $scenario->data->priority ?? 0;
 
 				if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 					$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 					$arResult = false;
 				} else {
-					if ($ContentEditOptionsPath) {
+					if ($ContentEditOptionsPath ?? null) {
 						$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
 						if (!$arEditorSettings) {
 							$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
 							$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
 						}
 					} else {
-						$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+						$arEditorSettings=$ARCurrent->editorSettings[$this->path] ?? null;
 						if (!$arEditorSettings) {
 							$arEditorSettings=$this->call("editor.ini");
 							$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
@@ -64,7 +66,7 @@
 						}
 					}
 
-					if (!$this->data->nls) {
+					if ( !isset( $this->data->nls ) ) {
 						// its a new object, no nls data specified yet, create it
 						$this->data->nls=new baseObject;
 					}
@@ -77,7 +79,7 @@
 						// for each language in the list, get the nls specific data
 						if ($name=$this->getdata("name",$key)) { 
 							// the name is the minimum requirement for an nls aware	object.
-							if (!$this->data->$key) {
+							if ( !isset( $this->data->$key ) ) {
 								$newnlsdata=new baseObject;
 							} else {
 								$newnlsdata=$this->data->$key;
@@ -90,13 +92,13 @@
 							$count++;
 							$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
 
-							if ($arEditorSettings) {
-								if ($arEditorSettings["htmlcleaner"]["enabled"]) {
+							if ( $arEditorSettings ?? null ) {
+								if ($arEditorSettings["htmlcleaner"]["enabled"] ?? false) {
 									include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
 									$config = $arEditorSettings["htmlcleaner"];
 									$newnlsdata->summary = htmlcleaner::cleanup($newnlsdata->summary, $config);
 								}
-								if ($arEditorSettings["htmltidy"]["enabled"]) {
+								if ($arEditorSettings["htmltidy"]["enabled"] ?? false) {
 									include_once($this->store->get_config("code")."modules/mod_tidy.php");
 									$config=$arEditorSettings["htmltidy"];
 									$config["temp"]=$this->store->get_config("files")."temp/";
@@ -105,7 +107,7 @@
 									$result=$tidy->clean($newnlsdata->summary);
 									$newnlsdata->summary=$result["html"];
 								}
-								if ($arEditorSettings["allow_tags_summary"]) {
+								if ($arEditorSettings["allow_tags_summary"] ?? false) {
 									$newnlsdata->summary=strip_tags($newnlsdata->summary, $arEditorSettings["allow_tags_summary"]);
 								}
 							}
@@ -130,7 +132,7 @@
 							$this->data->$key=$newnlsdata;
 							$this->data->nls->list[$key]=$value;
 						} else { // clear language values for $key->name if set, keep the rest, just in case.
-							if ($this->data->$key) {
+							if ( isset( $this->data->$key ) ) {
 								unset($this->data->$key->name);
 								unset($this->data->nls->list[$key]);
 							}
@@ -187,8 +189,8 @@
 				}
 
 				$i=0;
-				@reset($displays);
-				while ((list($display,$val)=@each($displays))) {
+				reset($displays);
+				while ((list($display,$val)=each($displays))) {
 					$scenario_start=$this->data->startdate+$this->data->starttime +($val["start"]*3600*24);
 					$scenario_end=$this->data->enddate+$this->data->endtime+($val["end"]*3600*24);
 					$this->data->sstart[$display]=$scenario_start;

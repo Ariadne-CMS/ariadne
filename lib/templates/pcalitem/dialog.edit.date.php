@@ -2,16 +2,16 @@
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 
-		if (!$starttime) {
-			if ($data->starttime)	{
+		if ( !( $starttime ?? null ) ) {
+			if ($data->starttime ?? null)	{
 				$starttime=$data->starttime;
 			} else {
 				$starttime=time() ;
 			}
 		}
 		$stime_arr=getdate($starttime);
-		if (!$endtime) {
-			if ($data->endtime) {
+		if ( !( $endtime ?? null ) ) {
+			if ($data->endtime ?? null) {
 				$endtime=$data->endtime;
 				echo "<script>\n	endtime_changed=1;\n</script>";
 			} else { // default is starttime + 1 hour.
@@ -21,19 +21,19 @@
 		}
 		$date=$this->getdata("date", "none");
 		$etime_arr=getdate($endtime);
-		if (!$date) {
+		if ( !( $date ?? null ) ) {
 			$date=$starttime;
 		}
-		if (!$starthour) {
+		if ( !( $starthour ?? null ) ) {
 			$starthour=$stime_arr["hours"];
 		}
-		if (!$startminute) {
+		if ( !( $startminute ?? null ) ) {
 			$startminute=$stime_arr["minutes"];
 		}
-		if (!$endhour) {
+		if ( !( $endhour ?? null ) ) {
 			$endhour=$etime_arr["hours"];
 		}
-		if (!$endminute) {
+		if ( !( $endminute ?? null ) ) {
 			$endminute=$etime_arr["minutes"];
 		}
 

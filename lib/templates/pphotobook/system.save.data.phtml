@@ -34,14 +34,17 @@
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 		} else {
-			if ($ContentEditOptionsPath) {
+			if ( $ContentEditOptionsPath ?? null ) {
 				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
 				if (!$arEditorSettings) {
 					$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
 					$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
 				}
 			} else {
-				$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+				$arEditorSettings = null;
+				if ( isset( $ARCurrent->editorSettings ) ) {
+					$arEditorSettings = $ARCurrent->editorSettings[ $this->path ] ?? null;
+				}
 				if (!$arEditorSettings) {
 					$arEditorSettings=$this->call("editor.ini");
 					$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
@@ -50,7 +53,7 @@
 					}
 				}
 			}
-			if (!$this->data->nls) {
+			if ( !isset( $this->data->nls ) ) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
@@ -60,7 +63,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					if (!$this->data->$key) {
+					if ( !isset( $this->data->$key ) ) {
 						debug("$key not yet set","all");
 						$newnlsdata=new baseObject;
 					} else {
@@ -107,7 +110,7 @@
 					$this->data->{$key}=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ( isset( $this->data->$key ) ) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}

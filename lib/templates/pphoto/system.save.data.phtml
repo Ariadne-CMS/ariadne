@@ -29,7 +29,7 @@
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			return false;
 		} else {
-			if (!$this->data->nls) {
+			if ( !isset( $this->data->nls ) ) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
@@ -39,7 +39,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 				if ($this->getdata("name",$key)) {
 					array_push($nlslist, $key);
-					if (!$this->data->$key) {
+					if ( !isset( $this->data->$key ) ) {
 						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
@@ -64,7 +64,7 @@
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ( isset( $this->data->$key ) ) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}
@@ -139,13 +139,13 @@
 								$checksize=getimagesize($tempfile);
 								if ($checksize) {
 									$pixelsize=$checksize[0]*$checksize[1];
-									if ($AR->IM->hardLimit && ($pixelsize>$AR->IM->hardLimit)) {
+									if ( ( $AR->IM->hardLimit ?? null ) && ( $pixelsize > $AR->IM->hardLimit ) ) {
 										// FIXME: generate error: picture too large
 										// problem: error message displays back button, but object is already saved,
 										// next save action will trigger 'object already exists'.
 										// $this->error=sprintf($ARnls["err:imagetoolarge"],$AR->IM->hardLimit.' Pixels');
 										$this->data->toolarge=true;
-									} else if ($AR->IM->softLimit && ($pixelsize>$AR->IM->softLimit)) {
+									} else if ( ( $AR->IM->softLimit ?? null ) && ( $pixelsize > $AR->IM->softLimit ) ) {
 										$this->data->toolarge=false;
 										// generate smaller version, use that as default
 										$resizeFactor=sqrt($AR->IM->softLimit/($checksize[0]*$checksize[1]));
@@ -161,7 +161,7 @@
 									}
 								} else {
 									// FIXME: if getimagesize fails, check filesize
-									if ($AR->IM->hardLimitBytes && filesize($tempfile)>$AR->IM->hardLimitBytes) {
+									if ( ( $AR->IM->hardLimitBytes ?? null ) && filesize($tempfile)>$AR->IM->hardLimitBytes) {
 										// $this->error=sprintf($ARnls["err:imagetoolarge"],$AR->IM->hardLimitBytes.' Bytes');
 										$this->data->toolarge=true;
 									} else {

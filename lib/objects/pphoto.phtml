@@ -642,6 +642,7 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function getimageinfo(&$extrainfo=false, $nls = '') {
+		$result = 0;
 
 		$this->pushContext( Array( "arCurrentObject" => $this));
 		$file = "file";

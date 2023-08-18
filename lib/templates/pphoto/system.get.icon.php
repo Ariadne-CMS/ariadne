@@ -11,7 +11,7 @@
 			// get typetree to get the correct icon
 			$this->call('typetree.ini');
 		}
-		if (!$size || $size == "large") {
+		if ( !($size ?? null) || $size == "large") {
 			$size = "default";
 		}
 

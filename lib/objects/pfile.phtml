@@ -40,13 +40,14 @@ require_once(AriadneBasePath."/modules/mod_mimemagic.php");
 class pfile extends pobject { // pfile class definition
 
 	protected function getNlsForFile($file,$nls) {
+	global $ARConfig;
 		// private function, requires that the push/pop context will be done by the caller
 		if(!$nls){
 			$nls = $this->nls;
 		}
 		$ret = ar_store_files::exists($file, $nls);
 		if (!$ret) {
-			$nls = $this->data->nls->default;
+			$nls = $ARConfig->nls->default; //$this->data->nls->default;
 			$ret = ar_store_files::exists($file, $nls);
 			if (!$ret) {
 				$nls = null;
@@ -197,13 +198,16 @@ class pfile extends pobject { // pfile class definition
 
 		$nls = $this->getNlsForFile($file,$nls);
 
+		$mimetype = "";
 		if ( isset($this->data->$nls->mimetype) ) {
 			$mimetype = $this->data->$nls->mimetype;
 		}
 		if ( !$mimetype ) {
 			$defaultnls = $this->data->nls->default;
 			$nls = $defaultnls;
-			$mimetype = $this->data->{$defaultnls}->mimetype;
+			if ( isset( $this->data->{$defaultnls}->mimetype ) ) {
+				$mimetype = $this->data->{$defaultnls}->mimetype;
+			}
 		}
 		$file_plaintext = $file."_plaintext";
 

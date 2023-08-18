@@ -11,7 +11,7 @@
 			if (($selected??null)==$this->path) { 
 				echo " selected";
 			} 
-			?>><?php echo $this->showdata('name', $arLanguage); ?></option><?php
+			?>><?php echo $this->data->{$arLanguage}->name ?? $nlsdata->name; ?></option><?php
 		}
 	}
 ?>

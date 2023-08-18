@@ -16,7 +16,7 @@
 				'icon' => $AR->dir->images . 'icons/small/templates.png',
 				'nlslabel' => $ARnls['templates']
 			);
-			if ($this->data->config->pinp) {
+			if ($this->data->config->pinp ?? null) {
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;

@@ -39,7 +39,7 @@
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			$arResult = false;
 		} else {
-			if (!$this->data->nls) {
+			if ( !isset( $this->data->nls ) ) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;

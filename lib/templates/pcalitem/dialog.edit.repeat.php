@@ -68,7 +68,7 @@
 	document.wgWizForm.year_repeatn.value=value;
   }
 
-  var defaultSetDate = SetDate;
+  var defaultSetDate = ( typeof( SetDate ) !== "undefined" ) ? SetDate : null;
   // alternative SetDate for the date widget
   SetDate = function(name, date, formatted) {
 	if (defaultSetDate) {
@@ -114,7 +114,6 @@
 <div>
 	<input type="hidden" name="repeatn" value="<?php echo $repeatn; ?>">
 	<input type="hidden" name="repeatend" value="<?php echo $repeatend; ?>">
-	<input type="hidden" name="repeat_on" value="<?php echo $repeat_on; ?>">
 </div>
 
 <fieldset id="day" style="display: none;">
@@ -146,7 +145,7 @@
 		<?php
 			foreach( $woptions as $key => $option ) {
 				echo "<td><input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
-				if ($repeat_on[$key]) {
+				if ( $repeat_on[$key] ?? null ) {
 					echo " checked";
 						}
 						echo ">&nbsp;$option</td>";

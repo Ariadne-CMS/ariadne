@@ -1,5 +1,5 @@
 <?php
-	$path=$this->store->make_path($this->parent, $data->path);
+	$path=$this->store->make_path($this->parent, $data->path ?? null );
 	$MAXLOOPCOUNT=10;
 	if (
 		!isset($ARBeenHere) ||
@@ -33,7 +33,9 @@
 				debug("pshortuct::default.phtml: ".sprintf($ARnls["err:shortcutnopath"],$this->path,$path));
 			}
 		}
-		unset($ARConfig->cache[$this->data->path]->templates_path);
+		if ( $this->data->path ?? null ) {
+			unset($ARConfig->cache[$this->data->path]->templates_path);
+		}
 	} else {
 		error( sprintf($ARnls["err:shortcutloopexceed"],$data->path, $arCallFunction,$MAXLOOPCOUNT,$this->path) );
 	}

@@ -11,7 +11,7 @@
 			if (($selected??null)==$this->data->value) { 
 				echo " selected";
 			} 
-			?>><?php echo $nlsdata->name; ?></option><?php
+			?>><?php echo $this->data->{$arLanguage}->name ?? $nlsdata->name; ?></option><?php
 		}
 	}
 ?>

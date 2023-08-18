@@ -428,7 +428,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 				if (!$this->exists($this->path)) { //arNewFilename)) {
 					if ($this->exists($arNewParent)) {
-						if (!$config = $this->data->config) {
+						if ( ! ( $config = ( $this->data->config ?? null ) ) ) {
 							$config=new baseObject();
 						}
 					} else {
@@ -1888,7 +1888,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$redirects	= $ARCurrent->shortcut_redirect ?? null;
 				if (isset($redirects) && is_array($redirects)) {
 					$redirpath = $this->path;
-					while (!$template['arTemplateId'] &&
+					while ( !($template['arTemplateId'] ?? null) &&
 							($redir = array_pop($redirects)) &&
 							$redir["keepurl"] &&
 							(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
@@ -1897,7 +1897,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 						$redirpath = $redir['src'];
 					}
 
-					if (!$template["arTemplateId"] && $redirpath) {
+					if ( !( $template["arTemplateId"] ?? null ) && $redirpath) {
 						$template = $this->getPinpTemplate($arCallFunction, $redirpath);
 					}
 				}
