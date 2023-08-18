@@ -85,10 +85,15 @@ class session {
 
 	function get($varname, $system=0) {
 		debug("session->get($varname, $system)","store");
-		if (!$system) {
-			$result = $this->data->$varname;
+		$result = null;
+		if ( !$system ) {
+			if ( isset( $this->data->$varname ) ) {
+				$result = $this->data->$varname;
+			}
 		} else {
-			$result = $this->system->$varname ?? null;
+			if ( isset( $this->system->$varname ) ) {
+				$result = $this->system->$varname;
+			}
 		}
 		debug("session->get: end","all");
 		return $result;

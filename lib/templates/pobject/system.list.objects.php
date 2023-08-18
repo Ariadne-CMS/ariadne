@@ -23,6 +23,9 @@
 				"mtime-day" => "time.mtime > " . (strtotime("today") - 24*60*60)
 			);
 
+			if ( !isset( $nls ) ) {
+				$nls = $ARCurrent->nls;
+			}
 			$orderqueries = array(
 				"name" => array(
 					"name.$nls.value",
@@ -71,8 +74,6 @@
 				$query .= " order by " . $querypart . $directionpart;
 			}
 		}
-
-		// echo $query;
 
 		if (!isset($limit) || !$limit) {
 			$limit=0;

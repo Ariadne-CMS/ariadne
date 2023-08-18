@@ -15,7 +15,7 @@
 
 		$loader = $this->store->get_config('root');
 		$wwwroot = $AR->dir->www;
-		$interface = $data->interface;
+		$interface = $data->interface ?? null;
 
 		$yui_base = $wwwroot . "js/yui/";
 

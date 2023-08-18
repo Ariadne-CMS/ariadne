@@ -12,7 +12,7 @@
 			$arLanguage = $nls;
 		}
 
-		$owner = $this->data->config->owner_name;
+		$owner = isset( $this->data->config->owner_name ) ? $this->data->config->owner_name : null;
 		if( !$owner ) {
 			$owner = $this->data->owner_name;
 		}

@@ -473,8 +473,8 @@
 			echo $result."\n";
 		}
 
-		private function getPagingPrev($current_page) {
-			global $AR;
+		private static function getPagingPrev($current_page) {
+			global $AR, $ARnls;
 			return array(
 				"class" => "prev",
 				"image" => $AR->dir->www . "images/icons/small/prev.png",
@@ -484,8 +484,8 @@
 
 		}
 
-		private function getPagingNext($current_page) {
-			global $AR;
+		private static function getPagingNext($current_page) {
+			global $AR, $ARnls;
 			return array(
 				"class" => "next",
 				"image" => $AR->dir->www . "images/icons/small/next.png",
@@ -629,7 +629,7 @@
 			$result .= "'>";
 			foreach ($pagingentries as $entry) {
 				$result .= "<li";
-				if ($entry['class']) {
+				if ( $entry['class'] ?? "" ) {
 					$result .= ' class="' . $entry['class'] . '"';
 				}
 				$result .= ">";
@@ -638,11 +638,11 @@
 				if ($entry['onclick']) {
 					$result .= ' onclick="' . $entry['onclick'] . '"';
 				}
-				$result .= self::getPagingLink($entry['href']);
+				$result .= self::getPagingLink( ( $entry['href'] ?? "" ) );
 
 				$result .= ">";
 
-				$result .= self::getPagingImage($entry['image'], $entry['label']);
+				$result .= self::getPagingImage( $entry['image'] ?? "", $entry['label'] ?? "" );
 
 				$result .= "</a>";
 				$result .= "</li>";

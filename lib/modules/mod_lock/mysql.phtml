@@ -50,10 +50,12 @@ class mysqllock {
 
 	function get_locks($identity) {
 		debug("mysqllock:get_locks($identity)","store");
+		$result = [];
+		
 		$query_string="select `path`,`release`, `type`, `identity` from ".$this->tbl_prefix."locks where 
 		`release` >=".time()." and `identity`='".AddSlashes($identity)."'";
-		$query=@$this->dbh->query($query_string);
-		while ($temp=@$query->fetch_array()) {
+		$query=$this->dbh->query($query_string);
+		while ($temp=$query->fetch_array()) {
 			$result[$temp["path"]]=$temp;
 		}
 		debug("mysqllock:get_locks end","all");

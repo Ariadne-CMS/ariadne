@@ -298,7 +298,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$result = $this->store->call($function, $args, $objects);
 		} else {
 			$this->error = ar::error( ''.$this->store->error, 1110, $this->store->error );
-			$result = false;
+			$result = [];
 		}
 		return $result;
 	}
@@ -529,8 +529,8 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 
 		$this->data->muser=$AR->user->data->login;
-		if( !$this->data->config->owner ) {
-			if( !$this->data->config->owner_name) {
+		if( !isset( $this->data->config->owner ) || !$this->data->config->owner ) {
+			if( !isset( $this->data->config->owner_name ) || !$this->data->config->owner_name ) {
 				$this->data->config->owner_name=$AR->user->data->name;
 			}
 			$this->data->config->owner=$AR->user->data->login;
@@ -1876,6 +1876,14 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			*/
 			$ARConfigChecked = true;
 			if ($arCallFunction) { // don't search for templates named ''
+				$template =
+					[
+							"arTemplateId" => null,
+							"keepurl" => null,
+							"dest" => null,
+							"src" => null
+					]
+				;
 				// FIXME: Redirect code has to move to getPinpTemplate()
 				$redirects	= $ARCurrent->shortcut_redirect ?? null;
 				if (isset($redirects) && is_array($redirects)) {
@@ -1979,7 +1987,15 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 							// all objects must be displayed
 							// $this->reqnls=$this->nls; // set requested nls, for checks
 							$this->nls = isset($this->data->nls->default) ? $this->data->nls->default : $this->reqnls;
-							$this->nlsdata = $this->data->$nls ?: $this->data->{$this->nls} ?: $this->data;
+							$this->nlsdata = null;
+							if ( isset( $this->data->$nls ) && $this->data->$nls ) {
+								$this->nlsdata = $this->data->$nls;
+							} else
+							if ( isset( $this->data->{$this->nls} ) && $this->data->{$this->nls} ) {
+								$this->nlsdata = $this->data->{$this->nls};
+							} else {
+								$this->nlsdata = $this->data;
+							}
 							$continue=true;
 						} else {
 							debug("CheckConfig: requested language not available, allnls not set","object");
@@ -2351,17 +2367,17 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			
 			if (isset(${$nls}[$varname])) {
 				$result=${$nls}[$varname];
-			} else if ($ARCurrent->$nls->$varname ?? null) {
+			} else if ( isset( $ARCurrent->$nls->$varname ) ) {
 				$result=$ARCurrent->$nls->$varname;
-			} else if ($_POST[$nls][$varname] ?? null) {
+			} else if ( isset( $_POST[$nls][$varname] ) ) {
 				$values = $_POST[$nls];
 				$result=$_POST[$nls][$varname];
-			} else if ($_GET[$nls][$varname] ?? null) {
+			} else if ( isset( $_GET[$nls][$varname] ) ) {
 				$values = $_GET[$nls];
 				$result=$_GET[$nls][$varname];
-			} else if ($_POST["arStoreVars"][$nls][$varname] ?? null) {
+			} else if ( isset( $_POST["arStoreVars"][$nls][$varname] ) ) {
 				$result=$_POST["arStoreVars"][$nls][$varname];
-			} else if ($_GET["arStoreVars"][$nls][$varname] ?? null) {
+			} else if ( isset( $_GET["arStoreVars"][$nls][$varname] ) ) {
 				$result=$_GET["arStoreVars"][$nls][$varname];
 			}
 			if ($result===false) {
@@ -2618,6 +2634,14 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
 		// FIXME: Redirect code has to move to getPinpTemplate()
 		$redirects = $ARCurrent->shortcut_redirect ?? null;
+		$template =
+			[
+				"arTemplateId" => null,
+				"keepurl" => null,
+				"dest" => null,
+				"src" => null
+			]
+		;
 		if (isset($redirects) && is_array($redirects)) {
 			$redirpath = $this->path;
 			while (!$template['arTemplateId'] &&

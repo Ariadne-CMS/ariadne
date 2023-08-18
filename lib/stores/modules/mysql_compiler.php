@@ -37,7 +37,7 @@ class mysql_compiler extends sql_compiler {
 				$field=$node["field"];
 				$record_id=$node["record_id"];
 				if (!$record_id) {
-					if ($this->in_orderby && $node["nls"]) {
+					if ($this->in_orderby && ( $node[ "nls" ] ?? null ) ) {
 						/*
 							we do a left join so that we will also find non
 							matching objects

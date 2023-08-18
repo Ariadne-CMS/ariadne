@@ -88,7 +88,7 @@ abstract class sql_compiler {
 		$value = '';
 		$yych = $YYBUFFER[$YYCURSOR];
 
-		if ($this->_SCAN_AZ[$yych]) {
+		if (isset($this->_SCAN_AZ[$yych])) {
 			$value .= $yych;
 			$yych = $YYBUFFER[++$YYCURSOR];
 			while (isset($this->_SCAN_AZ_09[$yych])) {
@@ -106,7 +106,7 @@ abstract class sql_compiler {
 			}
 			if ($yych === '.') {
 				$yych = $YYBUFFER[++$YYCURSOR];
-				if ($this->_SCAN_AZ[$yych]) {
+				if (isset($this->_SCAN_AZ[$yych])) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
 					while (isset($this->_SCAN_AZ_09[$yych])) {
@@ -118,7 +118,7 @@ abstract class sql_compiler {
 			}
 			if ($yych === '.') {
 				$yych = $YYBUFFER[++$YYCURSOR];
-				if ($this->_SCAN_AZ[$yych]) {
+				if (isset($this->_SCAN_AZ[$yych])) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
 					while (isset($this->_SCAN_AZ_09[$yych])) {
@@ -478,11 +478,12 @@ abstract class sql_compiler {
 		$this->offset=$offset;
 		$this->layers=$layers;
 
-		$tree=$this->parse_query($query);
+		$parseQueryString = $query . "\0";
+		$tree=$this->parse_query( $parseQueryString );
 
 		if ( $this->error ) {
 			return null;
-		} else if ( trim($query) ) {
+		} else if ( trim($parseQueryString) ) {
 			// no error detected, but there is still a part of the query left
 			$this->error="unkown operator near '$query'";
 			return null;
