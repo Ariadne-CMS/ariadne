@@ -5,6 +5,8 @@
 	include_once($this->store->get_config("code")."modules/mod_grant.php");
 	include_once($this->store->get_config("code")."ar.php");
 
+	$error = "";
+
 	$maxloop = $maxloop ?? 0;
 
 	$userConfig = $this->loadUserConfig();
@@ -110,7 +112,7 @@
 
 	foreach ($extrausers as $key => $extrauser) {
 		if ($users[$extrauser]??null) {
-			if ($users[$extrauser]['grants_inherited']) {
+			if ($users[$extrauser]['grants_inherited'] ?? null) {
 				unset($users[$extrauser]);
 			} else {
 				continue;
@@ -314,9 +316,9 @@
 									}
 								}
 						?>
-							<div class="field checkbox <?php echo $class; ?>">
+							<div class="field checkbox <?php echo $class ?? ""; ?>">
 								<input name="data[<?php echo $selectedpath; ?>][<?php echo $path; ?>][grants][array][<?php echo $grant; ?>]" type='hidden' value='0'>
-								<input class="<?php echo $extraclass; ?>" name="data[<?php echo $selectedpath; ?>][<?php echo $path; ?>][grants][array][<?php echo $grant; ?>]" <?php echo $checked; ?> type='checkbox' id='<?php echo $grant; ?>' value='<?php echo $value;?>'>
+								<input class="<?php echo $extraclass ?? ""; ?>" name="data[<?php echo $selectedpath; ?>][<?php echo $path; ?>][grants][array][<?php echo $grant; ?>]" <?php echo $checked; ?> type='checkbox' id='<?php echo $grant; ?>' value='<?php echo $value;?>'>
 								<label class="<?php echo $labelclass; ?>" for='<?php echo $grant; ?>'><?php echo $grant_name; ?></label>
 								<label for="moregrants_<?php echo $grant; ?>" class="block more" title="More grants"></label>
 								<?php if ($grant == $moregrants) { ?>
@@ -365,7 +367,7 @@
 									</div>
 									<div class="types">
 										<?php
-											if (is_array($info['grants']['bytype']) && is_array($info['grants']['bytype'][$moregrants])) {
+											if (is_array($info['grants']['bytype']) && is_array($info['grants']['bytype'][$moregrants] ?? null) ) {
 												foreach ($info['grants']['bytype'][$moregrants] as $type => $value) {
 													$name = $typenames[$type];
 										?>

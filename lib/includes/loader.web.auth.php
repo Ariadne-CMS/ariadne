@@ -117,9 +117,9 @@
 		if ( $eventData ) {
 
 			$arCallArgs = $eventData->arCallArgs;
-			$arCallArgs["arLoginMessage"] = $eventData->message;
+			$arCallArgs["arLoginMessage"] = $eventData->message ?? "";
 
-			if (!$ARCurrent->arLoginSilent) {
+			if ( ! ( $ARCurrent->arLoginSilent ?? null ) ) {
 				$ARCurrent->arLoginSilent = true;
 				$store->call("user.session.timeout.html",
 					$arCallArgs,

@@ -11,7 +11,7 @@
 	// save the grants for the given path. Modify the type specific grants first though.
 	foreach ($data as $path => $users) {
 		foreach ($users as $user => $grants) {
-			if ($grants['grants']['grantsstring']) {
+			if ($grants['grants']['grantsstring'] ?? null) {
 				$this->get($path, "system.save.grants.phtml", array("path" => $user, "newgrants" => $data[$path][$user]['grants']['grantsstring']));
 			} else {
 				foreach ($grants['grants']['array'] as $grant => $value) {

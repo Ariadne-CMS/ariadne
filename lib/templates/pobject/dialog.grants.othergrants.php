@@ -3,25 +3,28 @@
 	include_once($this->store->get_config("code")."modules/mod_yui.php");
 
 	$grants = array();
+	$userName = "<strong>'No user selected'</strong>";
 
 	$userPath = $this->getvar('selecteduser');
-	if ($this->exists($userPath)) {
+	if ( $userPath && $this->exists($userPath) ) {
 		$user = current($this->get($userPath, 'system.get.phtml'));
-		$userName = $user->data->name;
-		if (is_array($user->data->config->usergrants??null)) {
-				foreach ($user->data->config->usergrants as $grantsPath => $grantsArray) {
-					if (sizeof($grantsArray) && $this->exists($grantsPath)) {
-						$object = current($this->get($grantsPath, 'system.get.phtml'));
-						$grants[$grantsPath] = array(
-							'name'		=> $object->nlsdata->name,
-							'type'		=> $object->type,
-							'grants'	=> array(
-								'array'		=> $grantsArray,
-								'string'	=> grantsArrayToString($grantsArray)
-							)
-						);
+		if ( $user->implements( 'puser' ) ) {
+			$userName = $user->data->name;
+			if (is_array($user->data->config->usergrants??null)) {
+					foreach ($user->data->config->usergrants as $grantsPath => $grantsArray) {
+						if (sizeof($grantsArray) && $this->exists($grantsPath)) {
+							$object = current($this->get($grantsPath, 'system.get.phtml'));
+							$grants[$grantsPath] = array(
+								'name'		=> $object->nlsdata->name,
+								'type'		=> $object->type,
+								'grants'	=> array(
+									'array'		=> $grantsArray,
+									'string'	=> grantsArrayToString($grantsArray)
+								)
+							);
+						}
 					}
-				}
+			}
 		}
 
 	}

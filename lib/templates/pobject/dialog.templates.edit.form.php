@@ -31,7 +31,7 @@
 	$template = $this->getvar("template");
 	if( !isset($template) ) {
 		$file = "";
-		if ($this->data->config->pinp[$type][$function][$language]) {
+		if ($this->data->config->pinp[$type][$function][$language] ?? null) {
 			$template=$type.".".$function.".".$language.".pinp";
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {

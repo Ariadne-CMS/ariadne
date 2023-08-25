@@ -52,11 +52,12 @@
 				<label for="available" class="ontop"><?php echo $ARnls["available"]; ?></label>
 				<select id="available" name="available[]" class="multiselect" multiple>
 				<?php
-					if ($data->config->nlsconfig->list) { // acquired from parents
+					$selected = [];
+					if ($data->config->nlsconfig->list ?? null) { // acquired from parents
 						$selected=$data->config->nlsconfig->list;
 					}
 					foreach( $AR->nls->list as $key => $value ) {
-						if ($selected[$key]) {
+						if ($selected[$key] ?? null) {
 							echo "<option value=\"$key\" selected>[$key] $value</option>\n";
 						} else {
 							echo "<option value=\"$key\">[$key] $value</option>\n";
@@ -69,12 +70,9 @@
 				<label for="default" class="ontop"><?php echo $ARnls["default"]; ?></label>
 				<select id="default" name="default">
 				<?php
-					unset($selected);
-					if ($data->config->nlsconfig->default) {
+					$selected = $config->nls->default ?? null;
+					if ($data->config->nlsconfig->default ?? null) {
 						$selected=$data->config->nlsconfig->default;
-					}
-					if (!$selected) {
-						$selected=$config->nls->default;
 					}
 					foreach( $AR->nls->list as $key => $value ) {
 						if ($selected==$key) {

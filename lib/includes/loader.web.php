@@ -604,6 +604,7 @@
 	function ldProcessRequest($AR_PATH_INFO=null) {
 		global $AR;
 		global $ARCurrent;
+		global $ARnls;
 		global $store_config;
 		global $auth_config;
 		global $cache_config;

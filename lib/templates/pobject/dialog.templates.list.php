@@ -187,9 +187,9 @@
 			</td>
 		</tr></thead><tbody>
 		<?php
-			$pinp = $data->config->pinp;
-			$templates = $data->config->templates;
-			$privatetemplates = $data->config->privatetemplates;
+			$pinp = $data->config->pinp ?? null;
+			$templates = $data->config->templates ?? null;
+			$privatetemplates = $data->config->privatetemplates ?? null;
 
 			if ($svn_enabled && $svn_status ) {
 				$deleted_templates = $data->config->deleted_templates;

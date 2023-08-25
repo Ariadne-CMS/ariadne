@@ -16,8 +16,8 @@
 			if (!$available) {
 				$available[]=$default;
 			}
-			if ($this->data->nls && !$this->data->nls->list[$default]) {
-				$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$ARConfig->nls->list[$default]);
+			if ( $this->data->nls && !( $this->data->nls->list[$default] ?? null ) ) {
+				$this->error = sprintf( $ARnls["err:nodatafordefaultlanguage"], $ARConfig->nls->list[$default] ?? $default );
 			} else if (!in_array($default, $available)) {
 				$this->error = $ARnls['err:defaultlanguagenotavailable'];
 			} else {

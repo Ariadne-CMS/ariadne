@@ -1418,7 +1418,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			}
 
 			if (isset($this->data->config->customconfig) && is_array($this->data->config->customconfig)) {
-				$configcache->custom=array_merge(is_array($configcache->custom)?$configcache->custom:array(), $this->data->config->customconfig);
+				$configcache->custom =
+					array_merge(
+						( isset( $configcache->custom ) && is_array( $configcache->custom ) ) ? $configcache->custom : [],
+						$this->data->config->customconfig
+					)
+				;
 			}
 			$ARConfig->cache[$this->path]=$configcache;
 

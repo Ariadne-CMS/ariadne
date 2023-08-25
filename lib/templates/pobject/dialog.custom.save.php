@@ -9,7 +9,7 @@
 
 	$this->call("system.save.custom.phtml", $arCallArgs);
 	if (!$this->error) {
-		if ($arReturnPage) {
+		if ($arReturnPage ?? null) {
 			ldHeader("Location: ".$this->store->get_config("root").$arReturnPage);
 		} else {
 		?>
