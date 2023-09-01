@@ -30,7 +30,7 @@
 	$extrapaths = $this->getdata("extrapaths");
 	if (is_array($extrapaths)) {
 		foreach ($extrapaths as $key => $extrapath) {
-			if ($objects[$extrapath] || !$this->exists($extrapath)) {
+			if ($objects[$extrapath] ?? null || !$this->exists($extrapath)) {
 				unset($extrapaths[$key]);
 				continue;
 			} else {

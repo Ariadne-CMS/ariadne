@@ -141,7 +141,7 @@
 							}
 							$g_comp->compile($newgrants, $grants);
 
-							if (!$g_comp->error) {
+							if ( !( $g_comp->error ?? null ) ) {
 								$this->data->config->grants[$type][$id] = $grants;
 								if (!@count($this->data->config->grants[$type][$id])) {
 									unset($this->data->config->grants[$type][$id]);
@@ -151,7 +151,7 @@
 								}
 
 
-								$this->save($properties);
+								$this->save( $properties ?? null );
 								$grants = $this->data->config->grants[$type][$id];
 
 								$result=current($this->get($path, "system.save.grants.user.phtml", array(

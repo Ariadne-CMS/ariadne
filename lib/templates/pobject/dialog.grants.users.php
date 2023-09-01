@@ -225,7 +225,7 @@
 	<?php } ?>
 	<?php	foreach ($users as $path => $info) {
 			$user_id = str_replace("/", ":", $path);
-			$formdata = $data[$selectedpath][$path]??null;
+			$formdata = $data[$selectedpath][$path] ?? [];
 			$stored_formdata = $stored_vars['data'][$selectedpath][$path]??null;
 
 			// Merge info fromdata form with $info
@@ -235,10 +235,12 @@
 //			echo "<pre>";
 //			print_r($info['grants']);
 			if (isset($textswitch) && $textswitch == 1) {
-				$grants = (array)$formdata['grants']['array'];
-				foreach ($grants as $key => $val) {
-					if ($val == 8) {
-						$grants[ $key ] = $formdata['grants']['bytype'][ $key ];
+				if ( isset( $formdata[ "grants" ][ "array" ] ) ) {
+					$grants = (array)$formdata['grants']['array'] ?? [];
+					foreach ($grants as $key => $val) {
+						if ($val == 8) {
+							$grants[ $key ] = $formdata['grants']['bytype'][ $key ] ?? null;
+						}
 					}
 				}
 				$info['grants']['grantsstring'] = grantsArrayToString($grants);
@@ -247,7 +249,7 @@
 				$newgrants = array();
 //				print_r($info['grants']);
 
-				$g_comp->compile($formdata['grants']['grantsstring'], $newgrants);
+				$g_comp->compile($formdata['grants']['grantsstring'] ?? "", $newgrants);
 
 				$grants_by_type = array();
 				foreach ($newgrants as $grantname => $grantvalue) {
@@ -259,8 +261,11 @@
 						$newgrants[$grantname] = ARGRANTBYTYPE;
 					}
 				}
-				$formdata['grants']['array'] = $newgrant;
+
+				$formdata['grants']['array'] = $newgrants;
+				$info[ "grants" ][ "array" ] = $newgrants;
 				$formdata['grants']['bytype'] = $grants_by_type;
+				$info[ "grants" ][ "bytype " ] = $grants_by_type;
 
 			}
 //			echo "</pre>";
@@ -280,7 +285,9 @@
 					<input class="hidden" type="submit" name="textmode" value="0" id="textmode">
 					<div class="grants_textmode">
 						<h2>Advanced grants</h2>
-						<textarea class="grantstext" name="data[<?php echo $selectedpath;?>][<?php echo $path; ?>][grants][grantsstring]" rows=4 cols=30><?php echo htmlspecialchars( $info['grants']['grantsstring'] ); ?></textarea>
+						<textarea class="grantstext" name="data[<?php echo $selectedpath;?>][<?php echo $path; ?>][grants][grantsstring]" rows=4 cols=30><?php
+							echo htmlspecialchars( $info['grants']['grantsstring'] );
+						?></textarea>
 					</div>
 				<?php	} else {	?>
 					<label class="textmode block" for="textmode"></label>
