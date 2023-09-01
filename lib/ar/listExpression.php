@@ -103,7 +103,7 @@
 			foreach ( $this->nodeLists as $i => $nodeList ) {
 				$item = $nodeList->run($length, $position);
 				if ( is_string( $item) ) {
-					$definition = $this->definitions[ $item ];
+					$definition = $this->definitions[ $item ]??null;
 					if ( isset($definition) ) {
 						if ( false !== $definition ) {
 							$result[$i] = $definition;
@@ -249,12 +249,11 @@
 		public $token_ahead;
 		public $token_ahead_value;
 
-
 		public function __construct($buffer) {
 			$this->YYBUFFER = $buffer."\000";
 			$this->YYLINE = 0;
 			$this->YYCURSOR = 0;
-			$this->YYSTATE = STATE_TEXT;
+			$this->YYSTATE = null;
 
 
 			// Identifiers [a-zA-Z]
@@ -281,7 +280,7 @@
 		}
 
 		public function next() {
-			if (count($this->tokens) == 0) {
+			if (count($this->tokens??[]) == 0) {
 				$new_token = $this->scan($new_value);
 			} else {
 				$elem = array_shift($this->tokens);
@@ -340,11 +339,11 @@
 						++$YYCURSOR;
 						return $token;
 					break;
-					case $this->class_whitespace[$yych] === $yych:
+					case ($this->class_whitespace[$yych]??null) === $yych:
 						$yych = $YYBUFFER[++$YYCURSOR];
-						continue;
+						// continue;
 					break;
-					case $this->class_number[$yych] === $yych:
+					case ($this->class_number[$yych]??null) === $yych:
 						$value = "";
 						while ($this->class_number[$yych] == $yych && ($yych != "\000")) {
 							$value .= $yych;
@@ -360,9 +359,9 @@
 						}
 						return ar_listExpression::T_NUMBER;
 					break;
-					case $this->class_ident[$yych] === $yych:
+					case ($this->class_ident[$yych]??null) === $yych:
 						$value = "";
-						while ($this->class_ident[$yych] == $yych && ($yych != "\000")) {
+						while (($this->class_ident[$yych]??null) == $yych && ($yych != "\000")) {
 							$value .= $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
@@ -575,7 +574,7 @@
 			if (isset($this->modifiers['dir'])) {
 				$modifiers['dir'] = $this->modifiers['dir'];
 			}
-			$modifiers['limit'] = $this->modifiers['limit'];
+			$modifiers['limit'] = ($this->modifiers['limit']??null);
 			return $modifiers;
 		}
 	}
@@ -585,7 +584,7 @@
 		public function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
 			if ($nodeLeft || $nodeRight) {
-				if ($nodeRight && $nodeRight->type == ar_listExpression::N_OR) {
+				if ($nodeRight && ($nodeRight->type??null) == ar_listExpression::N_OR) {
 					if (!$nodeLeft || $nodeRight->left && $nodeRight->left->min > $nodeLeft->min) {
 						$newNodeLeft  = $nodeRight->left;
 						$nodeRight    = ar_listExpression::createNode(ar_listExpression::N_OR, array('nodeLeft' => $nodeLeft, 'nodeRight' => $nodeRight->right));
@@ -643,7 +642,7 @@
 			$modifiers = $this->getModifiers($modifiers);
 
 			// FIXME: code duplication which we should be able to reduce by parameterizing 'left' and 'right'
-			if ($modifiers['dir'] == 'rtl') {
+			if (($modifiers['dir']??null) == 'rtl') {
 				if ($this->left->modifiers['limit']) {
 					$rightCount = (int)($count * (float)$this->left->modifiers['limit']);
 					$leftCount  = $count - $rightCount;
@@ -664,7 +663,7 @@
 					$leftCount   = $this->left->max;
 				}
 			} else {
-				if ($this->left->modifiers['limit']) {
+				if ($this->left->modifiers['limit']??null) {
 					$leftCount = (int)($count * (float)$this->left->modifiers['limit']);
 					$rightCount  = $count - $leftCount;
 					if ($this->left->req && $leftCount < $this->left->min) {

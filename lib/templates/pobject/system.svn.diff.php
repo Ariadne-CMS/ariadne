@@ -13,19 +13,21 @@
 
 		if ($type && $function && $language) {
 			$filename = $type . "." . $function . "." . $language . ".pinp";
-		}
 
-		$revision = $this->getvar("revision") ? $this->getvar("revision") : "";
-		$status = $fstore->svn_diff($svn, $filename, $revision);
+			$revision = $this->getvar("revision") ? $this->getvar("revision") : "";
+			$status = $fstore->svn_diff($svn, $filename, $revision);
 
-		if (ar('error')->isError($status)){
-			$arResult = $status;
-		} else {
-			if( $colorize ) {
-				$status = $this->call("system.svn.diff.colorize.php", array("diff" => $status, "nowrap" => $nowrap));
+			if (ar('error')->isError($status)){
+				$arResult = $status;
+			} else {
+				if( $colorize ) {
+					$status = $this->call("system.svn.diff.colorize.php", array("diff" => $status, "nowrap" => $nowrap));
+				}
+
+				$arResult = $status;
 			}
-
-			$arResult = $status;
+		} else {
+			$arResult = null;
 		}
 	}
 ?>

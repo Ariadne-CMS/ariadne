@@ -3,7 +3,7 @@
 class PhotoNlsTest extends AriadneBaseTest
 {
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->initAriadne();
 	}
@@ -20,7 +20,7 @@ class PhotoNlsTest extends AriadneBaseTest
 		unset($two['FILE']['FileName']);
 		unset($one['FILE']['FileDateTime']);
 		unset($two['FILE']['FileDateTime']);
-		$this->assertEquals($defaultnls,$one['IFD0']['ImageDescription']);
+		$this->assertEquals($defaultnls,$one['IFD0']['ImageDescription']??null);
 		$this->assertEquals($one,$two);
 	}
 
@@ -31,7 +31,7 @@ class PhotoNlsTest extends AriadneBaseTest
 
 		foreach($obj->data->nls->list as $nls => $language) {
 			$content = $obj->getExif(false,true,false, $nls);
-			$content = trim($content['IFD0']['ImageDescription']);
+			$content = trim($content['IFD0']['ImageDescription']??null);
 			$this->assertEquals($nls , $content);
 		}
 	}

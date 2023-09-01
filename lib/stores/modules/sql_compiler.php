@@ -47,7 +47,7 @@ abstract class sql_compiler {
 			break;
 			case $this->_SCAN_NUM_START[$yych]:
 				$value = $yych;
-				$yych = $YYBUFFER[++$YYCURSOR];
+				$yych = $YYBUFFER[++$YYCURSOR]??null;
 				while (isset($this->_SCAN_NUM[$yych])) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
@@ -82,11 +82,11 @@ abstract class sql_compiler {
 		$reg_id.='[[:space:]]*';
 
 		$YYCURSOR = 0;
-		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 			$YYCURSOR++;
 		}
 		$value = '';
-		$yych = $YYBUFFER[$YYCURSOR];
+		$yych = $YYBUFFER[$YYCURSOR]??null;
 
 		if (isset($this->_SCAN_AZ[$yych])) {
 			$value .= $yych;
@@ -132,7 +132,7 @@ abstract class sql_compiler {
 		}
 
 
-		if($match_1) {
+		if($match_1??null) {
 			if (!isset($match_2) || !$match_2) {
 				/* default table is 'object' */
 				$match_2 = $match_1;
@@ -178,7 +178,7 @@ abstract class sql_compiler {
 			}
 		}
 		$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
-		return $node;
+		return $node??null;
 	}
 
 	protected function parse_cmp_expr(&$YYBUFFER) {
@@ -217,15 +217,15 @@ abstract class sql_compiler {
 
 	protected function parse_group_expr(&$YYBUFFER) {
 		$YYCURSOR = 0;
-		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 			$YYCURSOR++;
 		}
-		$yych = $YYBUFFER[$YYCURSOR++];
+		$yych = $YYBUFFER[$YYCURSOR++]??null;
 		if ($yych === '(') {
 			$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 			$result = $this->parse_or_expr($YYBUFFER);
 			$YYCURSOR = 0;
-			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 				$YYCURSOR++;
 			}
 			$yych = $YYBUFFER[$YYCURSOR++];
@@ -341,12 +341,12 @@ abstract class sql_compiler {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 1);
 				$field = $this->parse_ident($YYBUFFER);
 				$YYCURSOR = 0;
-				while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+				while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 					$YYCURSOR++;
 				}
 				$value = '';
-				$yych  = $YYBUFFER[$YYCURSOR];
-				if ($this->_SCAN_AZ[$yych]) {
+				$yych  = $YYBUFFER[$YYCURSOR]??null;
+				if ($this->_SCAN_AZ[$yych]??null) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
 					while (isset($this->_SCAN_AZ[$yych])) {

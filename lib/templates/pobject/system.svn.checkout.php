@@ -20,11 +20,11 @@
 			$svn	= $fstore->connect($this->id, $username, $password);
 			$svn_info = $fstore->svn_info($svn);
 
-			if ($svn_info['revision']) {
+			if ($svn_info['revision']??null) {
 				echo $this->path . " is already under version control - update instead.\n";
 			} else {
 
-				if ($repoPath) {
+				if ($repoPath??null) {
 					$repo_subpath = substr($this->path, strlen($repoPath));
 				} else {
 					// This is also the first loop!
@@ -40,20 +40,19 @@
 				if( $checkunder ) {
 					$task = "Checking under";
 				}
-				if( !$repoPath ) { // echo on the first run
+				if( !($repoPath??null) ) { // echo on the first run
 					echo "<span class='svn_headerline'>".$task." ".$repository." on ".$this->path."</span>\n\n";
 					flush();
 				}
 
-				if( $checkunder ) {
+				if( $checkunder ?? null) {
 					$result = $fstore->svn_checkunder($svn, $repository, $revision);
 				} else {
 				// Checkout the templates.
 					$result = $fstore->svn_checkout($svn, $repository, $revision);
 				}
-				$last = array_pop($result);
-
-				if ($result) {
+				if ($result && !ar_error::isError($result)) {
+					$last = array_pop($result);
 					$templates = array();
 					foreach ($result as $item) {
 						$templates[] = $item['name'];
@@ -74,7 +73,7 @@
 						)
 					);
 				} else {
-					echo "<span class='svn_error'>Error: " . $svn['instance']->add->_stack->_errors[0]['params']['errstr'] . "</span>\n\n";
+					echo "<span class='svn_error'>Error: " . ($svn['instance']->add->_stack->_errors[0]['params']['errstr'] ?? "Unknown"). "</span>\n\n";
 				}
 			}
 		}

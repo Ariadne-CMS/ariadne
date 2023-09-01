@@ -51,11 +51,11 @@ class psite extends psection {  // psite class definition
 		$workspace = $ariadne_workspace && workspace::enabled($this->path);
 
 		if (isset($this->data->config->url_list)) { // backwards compat check; url_list has been moved to config
-			$url_list =  $this->data->config->url_list;
-			$workspaceurl_list = $this->data->config->workspaceurl_list;
+			$url_list =  $this->data->config->url_list??null;
+			$workspaceurl_list = $this->data->config->workspaceurl_list??null;
 		} else {
-			$url_list =  $this->data->url_list;
-			$workspaceurl_list = $this->data->workspaceurl_list;
+			$url_list =  $this->data->url_list??null;
+			$workspaceurl_list = $this->data->workspaceurl_list??null;
 		}
 
 		if ($workspace) {
@@ -92,7 +92,7 @@ class psite extends psection {  // psite class definition
 
 			}
 			if (!isset($url) || !$url) {
-				$url=$this->data->url;
+				$url=$this->data->url??null;
 			}
 		}
 

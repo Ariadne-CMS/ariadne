@@ -420,7 +420,7 @@ class scanner {
 										$ID_START = $YYCURSOR;
 										if ($YYCLASSES["ID_FIRST"][$yych]) {
 											$yych = $YYBUFFER[++$YYCURSOR];
-											while ($YYCLASSES["ID_SECOND"][$yych]) {
+											while ($YYCLASSES["ID_SECOND"][$yych]??null) {
 												$yych = $YYBUFFER[++$YYCURSOR];
 											}
 											if ($yych === "\r") {
@@ -1319,7 +1319,7 @@ class pinp {
 							$this->error = "Expected '}' instead of '".$this->token_ahead_value."' in double quoted string at line: ".$this->scanner->YYLINE;
 							return false;
 						}
-					if (!$hereDoc) {
+					if (!($hereDoc??null)) {
 						$result .= '".('.$stmt.')."';
 					} else {
 						$result .= '${"hereDocResult".substr($hereDocResult = ('.$stmt.'), 0, 0)}';
@@ -1399,7 +1399,7 @@ class pinp {
 								'arguments' => array()
 							);
 						}
-						$result .= $arguments['parsed'];
+						$result .= ($arguments['parsed'] ?? null);
 						if (!$this->error) {
 							if ($this->token_ahead != PT_PAR_CLOSE) {
 								$this->error = "Expected ')' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;

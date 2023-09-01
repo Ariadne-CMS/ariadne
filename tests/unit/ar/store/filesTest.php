@@ -3,7 +3,7 @@
 class arFilesTest extends AriadneBaseTest
 {
 
-	function setUp()
+	function setUp(): void
 	{
 		$this->initAriadne();
 	}

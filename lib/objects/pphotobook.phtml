@@ -41,11 +41,11 @@ class pphotobook extends pdir { // pphotobook class definition
 	global $ARConfig;
 		parent::getConfigData();
 		$configcache=$ARConfig->cache[$this->path];
-		if ($this->data->thumbwidth || $this->data->thumbheight) {
+		if (($this->data->thumbwidth ?? null) || ($this->data->thumbheight ?? null)) {
 			$configcache->thumb["width"]=$this->data->thumbwidth;
 			$configcache->thumb["height"]=$this->data->thumbheight;
 		}
-		if ($this->data->thumbcolor) {
+		if (($this->data->thumbcolor ?? null)) {
 			$configcache->thumb["color"]=$this->data->thumbcolor;
 		}
 		$ARConfig->cache[$this->path]=$configcache;

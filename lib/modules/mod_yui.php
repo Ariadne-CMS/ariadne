@@ -4,14 +4,14 @@
 	require_once($AR->dir->install."/lib/ar/html.php");
 
 	class pinp_yui {
-		static public function _getSection( $section ) {
+		public static function _getSection( $section ) {
 			return yui::getSection( $section );
 		}
 	}
 
 	class yui {
 
-		static public function getSectionContent($settings) {
+		public static function getSectionContent($settings) {
 			$result = '';
 
 			if(is_array($settings)) {
@@ -58,7 +58,7 @@
 		}
 
 
-		static public function getSection($section) {
+		public static function getSection($section) {
 			$invisibleSections = $_COOKIE['invisibleSections'] ?? null;
 
 			$maxheadlength = 18;
@@ -133,7 +133,7 @@
 
 
 		/* explore.sidebar.info.php */
-		static public function section_table($info) {
+		public static function section_table($info) {
 			global $ARnls;
 			$result = '';
 			if (is_array($info)) {
@@ -146,7 +146,7 @@
 			return $result;
 		}
 
-		static public function labelspan($label, $maxlabellength=16) {
+		public static function labelspan($label, $maxlabellength=16) {
 			// Reduce length of a label if they are too long.
 			if (mb_strlen($label, "utf-8") > $maxlabellength) {
 				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."..."));
@@ -158,7 +158,7 @@
 
 
 	/* dialog.templates.list.php */
-		static public function layout_sortfunc($a, $b) {
+		public static function layout_sortfunc($a, $b) {
 			if ($a == $b) {
 				 return 0;
 			}
@@ -166,7 +166,7 @@
 		}
 
 	/* explore.php */
-		static public function yui_menuitems($menuitems, $menuname, $menuid='') {
+		public static function yui_menuitems($menuitems, $menuname, $menuid='') {
 			$result = '';
 			if (is_array($menuitems)) {
 				$nodes = ar_html::nodes();
@@ -236,7 +236,7 @@
 			return $class;
 		}
 
-		static public function showTable($divId, $tableId, $columnDefs, $data) {
+		public static function showTable($divId, $tableId, $columnDefs, $data) {
 
 			if (!is_array($columnDefs)) {
 				return;
@@ -298,7 +298,7 @@
 			echo ar_html::tag('div', array('id' => $divId, 'class' => 'yui-dt-'), $table)."\n";
 		}
 
-		static public function showTableJs($divId, $tableId, $columnDefs) {
+		public static function showTableJs($divId, $tableId, $columnDefs) {
 			$jsColDefs = '';
 			$jsFields = '';
 			foreach ($columnDefs as $colDef) {
@@ -354,7 +354,7 @@
 			echo '		muze.event.attach(document.body, "viewpaneLoaded", muze.ariadne.explore.viewpane.hideRows)' . "\n";
 		}
 
-		static public function colDefs($fields) {
+		public static function colDefs($fields) {
 			global $ARnls;
 
 			// Create a default set of column definitions given a set of field keys.
@@ -379,7 +379,7 @@
 			return $columnDefs;
 		}
 
-		static public function getSvnIcon($status) {
+		public static function getSvnIcon($status) {
 			global $AR;
 			global $ARnls;
 
@@ -397,7 +397,7 @@
 			}
 		}
 
-		static public function getTypeIcon($item, $viewtype='list') {
+		public static function getTypeIcon($item, $viewtype='list') {
 
 
 			$type = $item["type"];
@@ -422,7 +422,7 @@
 			return $result;
 		}
 
-		static public function showList($data, $viewtype='list') {
+		public static function showList($data, $viewtype='list') {
 			global $ARnls;
 
 			if (is_array($data['objects']) && count($data['objects']) && $data['total'] > 0) {
@@ -440,7 +440,7 @@
 				}
 				foreach ($data['objects'] as $node) {
 					$content = self::getTypeIcon($node, $viewtype);
-					if( is_array($node['svn']) ) {
+					if( is_array($node['svn'] ?? null) ) {
 						$content[] = self::getSvnIcon($node['svn']['status']);
 					}
 
@@ -615,7 +615,7 @@
 			return $result;
 		}
 
-		static public function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
+		public static function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
 			$pagingentries = self::getPagingEntries($total, $items_per_page, $current_page);
 
 			if (!sizeof($pagingentries)) {
@@ -653,7 +653,7 @@
 
 
 		/* dialog.add.list.php */
-		static public function getTypes($arObject, $showall) {
+		public static function getTypes($arObject, $showall) {
 			$result = Array();
 			if (!$showall) {
 				$typetree = $arObject->call('typetree.ini');
@@ -683,7 +683,7 @@
 			return $result;
 		}
 
-		static public function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
+		public static function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
 			$class = '';
 			if (!$arObject->CheckSilent("add", $type)) {
 				$class .= "greyed";

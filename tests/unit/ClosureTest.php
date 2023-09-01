@@ -3,7 +3,7 @@
 class ClosureTest extends AriadneBaseTest
 {
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->initAriadne();
 	}
@@ -16,7 +16,7 @@ class ClosureTest extends AriadneBaseTest
 
 	public function testClosureCall() {
 		$result = current( ar::get(TESTBASE.'/closure/')->call('closure.call.html') );
-		$this->assertInternalType( 'array', $result );
+		$this->assertIsArray( $result );
 		$this->assertCount( 3, $result );
 		if ( is_array($result) ) {
 			$values = array_values($result);

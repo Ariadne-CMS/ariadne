@@ -179,7 +179,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$ARCurrent->arCallClassTemplate = false;
 			}
 
-			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
+			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && ($context["scope"] ?? null)!= "pinp" ) {
 				$arResult = $this;
 			} else {
 				$libtemplate = strpos($arCallFunction,":");
@@ -481,7 +481,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		$eventData = new baseObject();
 		$eventData->arCallArgs = $arCallArgs;
-		$eventData->arCallFunction	= $context['arCallFunction'];
+		$eventData->arCallFunction	= $context['arCallFunction']??null;
 		$eventData->arIsNewObject = $arIsNewObject;
 		$eventData->arProperties = $properties;
 		$eventData = ar_events::fire( 'onbeforesave', $eventData );
@@ -3113,7 +3113,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if (!$path) {
 			$path=$this->path;
 		}
-		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
+		$config=($ARConfig->cache[$path]??null) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->section;
 	}
 
