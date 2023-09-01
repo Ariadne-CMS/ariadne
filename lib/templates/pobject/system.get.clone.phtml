@@ -19,10 +19,14 @@
   ******************************************************************/
   if (($context=$this->getContext(ARCALLINGCONTEXT)) 
   		&& $context["scope"]=="pinp") {
-	if ($this->CheckSilent('read')) {
-		$arResult = clone($this);
+
+  	if ($this->CheckSilent('read')) {
+  		$arResult = clone($this);
     }
+
   } else {
-	$arResult = clone($this);
+
+  	$arResult = clone($this);
+
   }
 ?>

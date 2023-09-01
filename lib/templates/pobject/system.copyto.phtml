@@ -9,7 +9,7 @@
 			if ($this->exists($parent)) {
 				$pobject = current($this->get($parent, "system.get.phtml"));
 				if ($pobject->CheckSilent("add", $this->type)) {
-					$oldgrants = $this->data->config->grants;
+					$oldgrants = $this->data->config->grants ?? null;
 					unset($this->data->config->grants);
 					$target=$this->make_path($target);
 					if (preg_match("/^[a-z0-9_\{\}\.\:-]+$/i", basename($target))) {
@@ -18,8 +18,8 @@
 							$eventData = new baseObject();
 							$eventData->arTarget = $target;
 							$eventData->arSource = $this->path;
-							$eventData->arSearch = $search;
-							$eventData->arReplace = $replace;
+							$eventData->arSearch = $search ?? null;
+							$eventData->arReplace = $replace ?? null;
 							$eventData = ar_events::fire( 'onbeforecopy', $eventData );
 							if (!$eventData || ar_error::isError( $eventData ) ) {
 							
@@ -33,10 +33,10 @@
 
 								$this->data->config->owner = $AR->user->data->login;
 								$this->data->config->owner_name = $AR->user->data->name;
-								$properties['owner'][0]['value'] = $user->data->login;
+								$properties['owner'][0]['value'] = $AR->user->data->login;
 
 								// now save the object to get its new id.
-								if ($defaultnls && !$this->data->$defaultnls) {
+								if (isset( $defaultnls ) && !isset( $this->data->$defaultnls ) ) {
 									$this->data->nls->default=$ARConfig->nls->default;
 								}
 								$properties=$this->load_properties('%'); // copy properties from all scopes
@@ -44,7 +44,7 @@
 								if ($ARCurrent->newid=$this->exists($ARCurrent->newpath)) {
 
 									// now save templates for the new object
-									if ($this->data->config->pinp) {
+									if ( $this->data->config->pinp ?? null ) {
 										$templates=$this->store->get_filestore("templates");
 										$templates->copyNode( $this->id, $ARCurrent->newid );
 										while (list($type, $values)=each($data->config->pinp)) {
@@ -53,7 +53,7 @@
 													$template=$type.".".$function.".".$language;
 													$this->data->config->pinp[$type][$function][$language]=$ARCurrent->newid;
 
-													if ($this->data->config->templates[$type][$function][$language]) {
+													if ( $this->data->config->templates[$type][$function][$language] ?? null ) {
 														$this->data->config->templates[$type][$function][$language]=$ARCurrent->newid;
 													}
 												}
@@ -109,7 +109,7 @@
 	} else {
 		$arResult=$ARnls["accessdenied"];
 	}
-	if ($arResult) {
+	if ( isset( $arResult ) ) {
 		debug("pobject/system.copyto.phtml: arResult: $arResult;","class");
 	} else {
 		debug("pobject/system.copyto.phtml: end","class");

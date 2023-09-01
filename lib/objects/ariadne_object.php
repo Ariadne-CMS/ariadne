@@ -1649,7 +1649,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					}
 				}
 			}
-			if ($arLibraryPath) {
+			if ( $arLibraryPath ?? null ) {
 				debug("getPinpTemplate: found library '$arLibrary'. Searching for [".$arCallType."] $arCallFunction on '".$arLibraryPath."' up to '$top'");
 				$librariesSeen[$arLibraryPath] = true;
 				$inLibrary = true;
@@ -1676,7 +1676,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			} else if ($inLibrary) {
 
 				// faster matching on psection, prefix doesn't have to be a valid type
-				$prefix = substr($ARConfig->cache[$checkpath]->type,0,8);
+				$prefix = substr($ARConfig->cache[$checkpath]->type ?? "",0,8);
 
 				if ($prefix === 'psection') {
 					 // debug("BREAKING; $arTemplateId");

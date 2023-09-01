@@ -1,6 +1,6 @@
 <?php
 	$context    = $this->getContext(ARCALLINGCONTEXT);
-	if (($context["addProfileSettings"] || $this->CheckSilent("edit")) && $this->CheckConfig()) {
+	if (($context["addProfileSettings"] ?? null || $this->CheckSilent("edit")) && $this->CheckConfig()) {
 		$user = current($this->get($owner, "system.get.phtml"));
 		if (!$user || !$user->implements('puser') || $user->implements('pgroup')) {
 			$this->error = sprintf($ARnls["err:notfindusergroup"], $owner);

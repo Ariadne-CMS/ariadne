@@ -10,7 +10,7 @@
 		"pear/archive_tar": "1.4.3",
 		"pear/versioncontrol_svn": "0.5.2",
 		"ircmaxell/password-compat": "^1.0",
-		"nikic/php-parser": "~2",
+		"nikic/php-parser": "~4",
 		"firebase/php-jwt": "^3.0",
 		"paragonie/random_compat": "^2.0",
 		"php-amqplib/php-amqplib": "^2.6",

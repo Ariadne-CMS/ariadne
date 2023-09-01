@@ -49,7 +49,7 @@
 
 			if (!$user) {
 				$user = $this->authExternalUser($login, $password, $ARLoginPath);
-				$ARUserDir = $user->parent;
+				$ARUserDir = $user->parent ?? null;
 			}
 
 			if ($user) {

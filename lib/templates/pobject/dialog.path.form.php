@@ -4,7 +4,7 @@
 		if ($this->getvar('sources')) {
 			$sources = $this->getvar("sources");
 		} else {
-			   $sources = array($this->path);
+			 $sources = array($this->path);
 		}
 
 		$target = $this->getvar("target");
@@ -13,7 +13,10 @@
 			$target = $this->path;
 		}
 
-                $pathmode = $this->getvar("pathmode");
+		$pathmode = $this->getvar("pathmode");
+		if ( !isset( $jail ) ) {
+			$jail = "";
+		}
 ?>
 <script type="text/javascript">
 	var updateTimer = false;

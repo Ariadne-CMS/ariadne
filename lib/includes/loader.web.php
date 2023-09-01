@@ -252,7 +252,7 @@
 	function ldSetNls($nls) {
 	global $ARCurrent, $ARnls;
 
-		$session=$ARCurrent->session->id;
+		$session=$ARCurrent->session->id ?? null;
 		ldSetRoot($session, $nls);
 
 		if( is_object( $ARnls ) ) {
@@ -819,7 +819,7 @@
 				$ARCurrent->nls="";
 				$nls=$AR->nls->default;
 				// but we can find out if the user has any preferences
-				preg_match_all("%([a-zA-Z]{2}|\\*)[a-zA-Z-]*(?:;q=([0-9.]+))?%", $_SERVER["HTTP_ACCEPT_LANGUAGE"], $regs, PREG_SET_ORDER);
+				preg_match_all("%([a-zA-Z]{2}|\\*)[a-zA-Z-]*(?:;q=([0-9.]+))?%", $_SERVER["HTTP_ACCEPT_LANGUAGE"] ?? "", $regs, PREG_SET_ORDER);
 				$ARCurrent->acceptlang=array();
 				$otherlangs=array();
 				$otherq=false;

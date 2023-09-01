@@ -166,7 +166,7 @@
 					flush();
 				}
 
-				$ARCurrent->newpath = $copiedTo;
+				$ARCurrent->newpath = $copiedTo ?? null;
 
 				?>
 				<script type='text/javascript'>

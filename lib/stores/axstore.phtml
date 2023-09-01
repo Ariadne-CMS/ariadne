@@ -269,7 +269,12 @@ class axstore {
 	}
 
 	function find($path, $criteria, $limit=100, $offset=0) {
-		if ($this->nodes[$path]) {
+		$result =
+			[
+				"list" => []
+			]
+		;
+		if ( isset( $this->nodes[ $path ] ) ) {
 			if ( $limit == 0 ) { $limit = -1; }
 			$this->_recurse_find($this->nodes[$path], $result["list"], $criteria, $limit, $offset);
 		}

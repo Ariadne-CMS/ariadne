@@ -11,7 +11,7 @@
 			    $targetData = current($this->get($ARCurrent->newpath, "system.get.data.phtml"));
 
 				// change links in $nlsdata->page
-				if ($search && $replace) {
+				if ( ( $search ?? null ) && ( $replace ?? null ) ) {
 					reset($AR->nls->list);
 					while (list($nls, $language)=each($AR->nls->list)) {
 						if ($targetData->$nls && $targetData->$nls->page) {

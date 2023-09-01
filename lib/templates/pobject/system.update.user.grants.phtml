@@ -12,12 +12,12 @@
 		$userConfig = $this->loadUserConfig();
 		$authconfig = $userConfig['authentication'];
 
-		$realgrants=$AR->user->grants[$this->path];
+		$realgrants = $AR->user->grants[ $this->path ] ?? null;
 		$AR->user->grants[$this->path]['config']=6;
 		$AR->user->grants[$this->path]['read']=6;
 
 		foreach ($types as $type) {
-			if ($typegrants=$this->data->config->grants[$type]) {
+			if ( $typegrants = ( $this->data->config->grants[$type] ?? null ) ) {
 				foreach ($typegrants as $id=>$grants) {
 					$user_ob = null;
 					$criteria["login"]["value"]["="]=$id;
@@ -41,7 +41,7 @@
 
 						foreach ($grants as $grant=>$granttype) {
 							$args["grant"]=$grant;
-							if (is_array($value)) {
+							if ( is_array( $value ?? null ) ) {
 								foreach ($granttype as $modifier=>$value) {
 									$args["modifier"]=$modifier;
 									$args["granttype"]=$value;
@@ -57,8 +57,9 @@
 				}
 			}
 		}
-
-		$AR->user->grants[$this->path]=$realgrants;
+		if ( $realgrants !== null ) {
+			$AR->user->grants[$this->path]=$realgrants;
+		}
 
 	} else { // the grants need to be removed (no config grant on the target)
 		debug("grants need to be removed (no config grant on the target)");

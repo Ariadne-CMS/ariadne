@@ -264,7 +264,7 @@ class mysqlstore extends store{
 			}
 			$evtype = AddSlashes($vtype);
 			$query_string = "update $objects_tbl set type='$etype', vtype='$evtype' where id = $eid";
-			$result = $this->store_run_query( $query_string, $this->connect_id);
+			$result = $this->store_run_query( $query_string );
 		}
 		return $result;
 	}
@@ -995,7 +995,7 @@ class mysqlstore extends store{
 				}
 			}
 
-			if ($needunlocking) {
+			if ($needunlocking ?? null) {
 				$query_string = "unlock tables";
 				$this->store_run_query($query_string);
 			}

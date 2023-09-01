@@ -85,6 +85,9 @@
 		public static function registerDataField() {
 			/* private method */
 			global $mod_edit_data;
+			if ( !isset( $mod_edit_data[ "id" ] ) ) {
+				$mod_edit_data[ "id" ] = 0;
+			}
 			$id     = ++$mod_edit_data['id'];
 			return $id;
 		}

@@ -25,14 +25,14 @@
 			} else {
 				$arResult = true;
 				
-				if (!function_exists('testErrorHandler')) {
-					function testErrorHandler( $errno, $errstr, $errfile, $errline, $errcontext) {
+				$testErrorHandler =
+					function( $errno, $errstr, $errfile, $errline, $errcontext) {
 						global $arResult;
 						$arResult = ar::error( $errstr.' at line '.$errline, 5);
 					}
-				}
+				;
 
-				set_error_handler(testErrorHandler, E_ALL & ~(E_NOTICE | E_STRICT) );
+				set_error_handler( $testErrorHandler, E_ALL & ~(E_NOTICE | E_STRICT) );
 
 					function testImport( $compiled, $AR_this ) {
 						$template =
