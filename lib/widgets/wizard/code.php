@@ -96,7 +96,7 @@ if( !function_exists("wgWizGetAction") ) {
 		$arReverseControl[$ARnls["save"]]="save";
 		$arReverseControl[$ARnls["back"]]="back";
 		$arReverseControl[$ARnls["cancel"]]="cancel";
-		return $arReverseControl[$wgWizButtonPressed];
+		return ( $arReverseControl[$wgWizButtonPressed] ?? null );
 	}
 }
 	// code for pinp: calculate and return (preliminary) wgWizNextStep

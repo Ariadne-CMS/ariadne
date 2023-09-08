@@ -27,7 +27,9 @@
 
 *******************************************************************************/
 
-define('MAX_PATH_LENGTH', 254);
+if ( !defined( "MAX_PATH_LENGTH" ) ) {
+	define( "MAX_PATH_LENGTH", 254 );
+}
 
 // general objectstore functions
 require_once($ariadne."/stores/store.php");
