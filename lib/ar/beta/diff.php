@@ -22,10 +22,10 @@
 					foreach ($line as $content) {
 						if (is_array($content)) {
 							$options = array();
-							if ($content['class']) {
+							if ($content['class'] ?? null) {
 								$options['class'] = $content['class'];
 							}
-							if ($content['colspan']) {
+							if ($content['colspan'] ?? null) {
 								$options['colspan'] = $content['colspan'];
 							}
 

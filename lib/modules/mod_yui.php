@@ -97,7 +97,7 @@
 
 			if( $section['inline_icon'] ?? null ) {
 				$sectionhead_class .= " iconinlinesection";
-				$icontag .= '<img src="' . $section['inline_icon'] . '" class="inline_icon" alt="' . $section['inline_iconalt'] . '" title="' . $section['inline_iconalt'] . '">';
+				$icontag .= '<img src="' . $section['inline_icon'] . '" class="inline_icon" alt="' . ( $section['inline_iconalt'] ?? "" ) . '" title="' . ($section['inline_iconalt'] ?? "" ) . '">';
 			}
 
 			$togglehref = "javascript:muze.ariadne.explore.sidebar.section.toggle('" . $sectionName . "');";

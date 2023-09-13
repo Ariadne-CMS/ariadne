@@ -51,6 +51,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	KEY implements (implements)
 ) ENGINE " . $this->engine ;
 
+		$error = false;
 		while ((list($key, $query)=each($queries)) && (!$error)) {
 			if ($query["msg"]) {
 				echo $query["msg"]."\n";
@@ -80,40 +81,35 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		switch($type) {
 			case "string": 
 				if ($size>0 && $size<256) {
-					$indexstring.="AR_$name,";
 					if (!isset($default)) {
 						$default = "";
 					}
 					$result="varchar($size) default '$default' not null\n";
 				} else {
 					$result=0;
-					$this->error="Wrong format for typedefinition $name: incorrect size."; 
+					$this->error="Wrong format for typedefinition $type($size): incorrect size."; 
 				}
 				break;
 			case "number":
 				if (!isset($default)) {
 					$default = 0;
 				}
-				$indexstring.="AR_$name,";
 				$result="int default $default not null\n";
 				break;
 			case "decimal":
 				if (!isset($default)) {
 					$default = 0;
 				}
-				$indexstring.="AR_$name,";
 				$result="decimal($size) default $default not null\n";
 				break;
 			case "boolean":
 				if (!isset($default)) {
 					$default = 0;
 				}
-				$indexstring.="AR_$name,";
 				$result="bool default $default not null\n";
 				break;
 			case "text":
 				$result="mediumtext not null\n";
-				$ftindexstring.="AR_$name,";
 				break;
 		}
 		return $result;
@@ -280,7 +276,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 					break;
 				}	 
 				$create_string.= "	AR_".$name."	";
-				$create_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+				$create_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default'] ?? null );
 				$create_string.= ",";
 				if ($typedef['type'] != 'text') {
 					$indexstring .= "AR_$name,";

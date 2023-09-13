@@ -43,7 +43,7 @@ $loginForm = '
 $ARCurrent->arLoginSilent=1;
 if ($this->CheckLogin("read")) {
   if ( ( isset( $data->login ) && $AR->user->data->login==$data->login ) || $this->CheckAdmin($AR->user) ) {
-    if (!$checkedlocks) {
+    if (! ( $checkedlocks ?? null ) ) {
       ldRedirect("dialog.locks.php?arReturnPage=logoff.php?checkedlocks=true");
     }
     else {

@@ -43,7 +43,7 @@
 		/* now save our session */
 		$ARCurrent->session->save();
 
-		$cookies = (array)$_COOKIE["ARSessionCookie"];
+		$cookies = (array)( $_COOKIE["ARSessionCookie"] ?? [] );
 		$https = ( ($_SERVER['HTTPS'] ?? null) =='on');
 
 		$currentCookies = array();

@@ -6,6 +6,7 @@ include_once($ariadne."/stores/mysqlstore_install.phtml");
 class mysql_workspacesstore_install extends mysql_workspacesstore {
 
 	function upgrade() {
+		$error = false;
 		$result = true;
 		echo "upgrading mysql store for workspace support.\n";
 		$queries = Array(
@@ -62,6 +63,6 @@ class mysql_workspacesstore_install extends mysql_workspacesstore {
 		return $this->mysqlstore->create_property($property, $definition);
 	}
 	public function alter_property($property, $definition) {
-		return $this->mysqlstore->create_property($property, $definition);
+		return $this->mysqlstore->alter_property($property, $definition);
 	}
 }

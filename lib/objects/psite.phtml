@@ -59,12 +59,12 @@ class psite extends psection {  // psite class definition
 		}
 
 		if ($workspace) {
-			if (($sitenls=$workspaceurl_list["host"][$hostsubwww]) 
-				|| (($sitenls=$workspaceurl_list["host"]["www.".$hostsubwww]))) {
+			if (($sitenls=$workspaceurl_list["host"][$hostsubwww] ?? null) 
+				|| (($sitenls=$workspaceurl_list["host"]["www.".$hostsubwww] ?? null))) {
 
-				$url = $workspaceurl_list["nls"][$sitenls];
+				$url = $workspaceurl_list["nls"][$sitenls] ?? null;
 			}
-			if (!$url) {
+			if (! ( $url ?? null ) ) {
 				$url=$this->data->workspaceurl;
 			}
 		} else {

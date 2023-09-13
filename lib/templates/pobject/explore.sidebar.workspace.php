@@ -10,7 +10,7 @@
 			$imagesdir = $AR->dir->images;
 			$status = workspace::status($this->path);
 
-			if ($status['hardlinks']) {
+			if ($status['hardlinks'] ?? null) {
 				$icon = $imagesdir . "svn/ConflictIcon.png";
 				$details = "<strong>" . $ARnls['ariadne:workspace:warning'] . ": </strong>" . $ARnls['ariadne:workspace:hardlinks_found'] . "<br><br>";
 
@@ -50,7 +50,7 @@
 				$siteob = current($this->get($this->currentsite(), "system.get.phtml"));
 
 				$tasks[] = array(
-					'href' => str_replace( $siteob->data->workspaceurl, $siteob->data->url, $this->make_local_url($path, false, false) ),
+					'href' => str_replace( $siteob->data->workspaceurl ?? "", $siteob->data->url ?? "", $this->make_local_url($this->path, false, false) ),
 					'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
 					'icon' => $imagesdir . 'icons/small/viewweb.png',
 					'nlslabel' => $ARnls['ariadne:workspace:view_live']
@@ -61,7 +61,7 @@
 					'label' => $ARnls['ariadne:workspace:workspace'],
 					'inline_icon' => $icon,
 					'tasks' => $tasks,
-					'details' => $details
+					'details' => $details ?? null
 				);
 			}
 

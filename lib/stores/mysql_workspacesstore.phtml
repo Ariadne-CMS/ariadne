@@ -37,7 +37,7 @@ class mysql_workspacesstore extends mysqlstore {
 	public function __construct($path, $config) {
 		parent::__construct($path, $config);
 
-		$this->layers = (array) $config["layer"];
+		$this->layers = (array)( $config["layer"] ?? [] );
 
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_workspaces_compiler.php");
@@ -333,6 +333,7 @@ class mysql_workspacesstore extends mysqlstore {
 	 **********************************************************************************/
 
 		$this->error="";
+		$result = 0;
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -356,8 +357,8 @@ class mysql_workspacesstore extends mysqlstore {
 			} else {
 				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
 				$id = $temp["object"];
-				$objectLayer = $temp["layer"];
-				$id = $this->addObjectToLayer($temp["path"]);
+				$objectLayer = $temp["layer"] ?? 0;
+				$id = $this->addObjectToLayer( $temp["path"] ?? null );
 			}
 		} else if ($layer) {
 			$eid = (int)$id;
@@ -491,11 +492,18 @@ class mysql_workspacesstore extends mysqlstore {
 			$result["criteria"]=$criteria;
 			$epath=AddSlashes($path);
 
+			$where = "";
+			$from = "";
+			$types = "";
+
 			$nodes_tbl=$this->tbl_prefix."nodes";
 			$objects_tbl=$this->tbl_prefix."objects";
 			$types_tbl=$this->tbl_prefix."types";
 			$layer = $this->getLayer( $path );
-			while (list($property, $values)=@each($criteria)) {
+			if(!is_array($criteria)) {
+				$criteria = array();
+			}
+			while (list($property, $values)=each($criteria)) {
 				$eproperty=AddSlashes($property);
 				if ($property!="object") {
 					$from.=", ".$this->tbl_prefix."prop_$eproperty";
@@ -629,6 +637,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$edata=AddSlashes(serialize($data));
 		$etype=AddSlashes($type);
 		$epriority=(int)$priority;
+		$needunlocking = false;
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -751,14 +760,22 @@ class mysql_workspacesstore extends mysqlstore {
 	public function getNodeByObjectId( $id ) {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
+		$part = "";
 		debug("store::getPathById( $id )", "store");
 
 		$query_string_layers = "";
 		foreach ($this->layers as $path => $layer) {
-			$query_string_layers .= " OR ( path like '".AddSlashes($path)."%' and layer = ".((int)$layer)." ) ";
+			if ( $query_string_layers ) {
+				$$query_string_layers .= " OR ";
+			}
+			$query_string_layers .= " ( path like '".AddSlashes($path)."%' and layer = ".((int)$layer)." ) ";
 		}
 		
-		$query_string_node = "select path, parent, priority, object, id, layer from $nodes_tbl where object = ".((int)$id)." and (layer = 0 $query_string_layers) order by layer DESC";
+		$query_string_node_layers = $query_string_layers;
+		if ( $query_string_node_layers ) {
+			$query_string_node_layers = " OR " . $query_string_node_layers;
+		}
+		$query_string_node = "select path, parent, priority, object, id, layer from $nodes_tbl where object = ".((int)$id)." and (layer = 0 $query_string_node_layers) order by layer DESC";
 		$result = $this->store_run_query($query_string_node);
 		if (!$result) {
 			return false;
@@ -795,7 +812,7 @@ class mysql_workspacesstore extends mysqlstore {
 
 		if (is_numeric($path)) {
 			$node = $this->getNodeByObjectId( $path );
-			if ($this->error) {
+			if ($this->error || !$node) {
 				return false;
 			}
 			$path = $node['path'];

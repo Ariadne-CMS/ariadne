@@ -46,7 +46,7 @@
 		if (getenv("ARIADNE_WORKSPACE") && workspace::enabled($this->path)) {
 	?>
 	<div class="field">
-		<label for="name" class="required"><?php echo $ARnls["ariadne:workspace:url"] . ": " . $workspace; ?></label>
+		<label for="name" class="required"><?php echo $ARnls["ariadne:workspace:url"] . ": "; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<input id="name" type="text" name="<?php echo $selectednls."[workspaceurl]"; ?>"
 			value="<?php

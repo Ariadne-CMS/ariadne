@@ -4,6 +4,7 @@
 
 	$ARCurrent->nolangcheck=true;
 	function objectDiff($object1, $object2, $prefix="") {
+		$result = "";
 		foreach ($object1 as $key => $value) {
 			if (is_string($value)) {
 				if (is_array($object1)) {

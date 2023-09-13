@@ -18,6 +18,7 @@ class mysql_workspaces_compiler extends mysql_compiler {
 		$nodes=$this->tbl_prefix."nodes";
 		$objects=$this->tbl_prefix."objects";
 		$properties=$this->tbl_prefix."prop_";
+		$prop_dep = "";
 		$this->used_tables[$nodes]=$nodes;
 		$this->used_tables[$objects]=$objects;
 		if ($this->join_target_properties) {
@@ -26,13 +27,13 @@ class mysql_workspaces_compiler extends mysql_compiler {
 		}
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
-			if ($tables) {
+			if ( $tables ?? null ) {
 				$tables.=", $key";
 			} else {
 				$tables="$key";
 			}
-			if ($this->select_tables[$key]) {
-				if ($this->join_target_properties[$key]) {
+			if ( $this->select_tables[$key] ?? null ) {
+				if ( $this->join_target_properties[$key] ?? null ) {
 					$prop_dep.=" and $val.object=target.object ";
 				} else {
 					$prop_dep.=" and $val.object=$objects.id ";

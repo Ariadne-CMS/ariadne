@@ -408,7 +408,7 @@ abstract class store {
 		return serialize($value);
 	}
 
-	private function fixObjectClass($value) {
+	static function fixObjectClass($value) {
 		return str_replace('O:6:"object"', 'O:8:"stdClass"', $value);
 	}
 
