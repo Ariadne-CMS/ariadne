@@ -130,7 +130,7 @@
 		 <div class="bd">
 			  <ul class="first-of-type">
 <?php
-	if ($svn_enabled && isset($svn_info) && isset($svn_info['revision']) && $svn_info['revision']) {
+	if ($svn_enabled && isset($svn_info) && isset($svn_info['revision']) && strlen( $svn_info['revision'] ) ) {
 
 		$filename = $type.".".$function.".".$language.".pinp";
 		switch($svn_status[$filename]['wc-status']['item']) {
@@ -164,11 +164,11 @@
 				// No status
 				break;
 		}
-		$svn_img_src = $AR->dir->images . "/svn/$svn_img";
+		$svn_img_src = $AR->dir->images . "/svn/" . ( $svn_img ?? "" );
 ?>
 					<li class="yuimenubaritem">
 						<a class="yuimenubaritemlabel" href="#"><?php
-							if ($svn_img) {
+							if ( $svn_img ?? null ) {
 								?><img class="svn_icon" alt="<?php echo $svn_alt; ?>" src="<?php echo $svn_img_src; ?>">
 							<?php } ?><?php echo $ARnls["ariadne:svn"]; ?></a>
 						<div id="svn" class="yuimenu">

@@ -412,7 +412,7 @@
 			} catch(VersionControl_SVN_Exception $e) {
 				return ar::error('svn exception',1311,$e);
 			}
-			$result = $result['list'][0]['entry'];
+			$result = $result['list'][0]['entry'] ?? null;
 			return $result;
 		}
 
@@ -884,7 +884,7 @@
 				}
 			}
 			$result[] = array (
-				'revision' => $revision,
+				'revision' => $revision ?? null,
 				'rest' => join("\n",$lines)
 			);
 			return $result;

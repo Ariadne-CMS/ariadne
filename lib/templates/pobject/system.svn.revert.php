@@ -8,7 +8,7 @@
 		$language = $this->getvar("language");
 
 		$fstore	= $this->store->get_filestore_svn("templates");
-		$svn	= $fstore->connect($this->id, $username, $password);
+		$svn	= $fstore->connect($this->id, $username ?? null, $password ?? null);
 		// FIXME: error checking
 		$status = $fstore->svn_status($svn);
 

@@ -192,8 +192,8 @@
 			$privatetemplates = $data->config->privatetemplates ?? null;
 
 			if ($svn_enabled && $svn_status ) {
-				$deleted_templates = $data->config->deleted_templates;
-				$deleted_privatetemplates = $data->config->deleted_privatetemplates;
+				$deleted_templates = $data->config->deleted_templates ?? [];
+				$deleted_privatetemplates = $data->config->deleted_privatetemplates ?? [];
 
 				foreach ($svn_status as $filename=>$file_status) {
 					if ($file_status['wc-status']['item'] == "missing") {
@@ -273,7 +273,7 @@
 									case "deleted":
 										$svn_img = "DeletedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:deleted'];
-										if ($this->data->config->deleted_templates[$type][$function][$language]) {
+										if ($this->data->config->deleted_templates[$type][$function][$language] ?? null) {
 											$svn_style = "blurred";
 											$svn_style_hide = "hidden";
 										}

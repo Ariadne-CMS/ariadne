@@ -24,7 +24,7 @@
 			flush();
 			return;
 		} else {
-			$repository = rtrim($repository, "/") . "/" . $repo_subpath;
+			$repository = rtrim($repository, "/") . "/" . ( $repo_subpath ?? "" );
 
 			$updating = $this->path;
 			if( $filename ) {
