@@ -156,7 +156,7 @@
 		$error = error_get_last();
 		if (($error['type']??null) == 1) { // Fatal error
 			$context = pobject::getContext();
-			if ($context['scope'] == 'pinp') {
+			if ( ( $context['scope'] ?? null ) == 'pinp' ) {
 				pobject::pinpErrorHandler($error['type'], $error['message'], $error['file'], $error['line'], null);
 			}
 		}
