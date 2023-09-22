@@ -1,0 +1,176 @@
+<?php
+/**************************************************************************
+	mod_lock v1.0b						MySQL
+
+	table layout:
+
+	Table locks
+	+----------+---------------+------+-----+---------+-------+
+	| Field    | Type          | Null | Key | Default | Extra |
+	+----------+---------------+------+-----+---------+-------+
+	| release  | int(11)       |      | MUL | 0       |       |
+	| type     | enum('O','T') |      | MUL | O       |       |
+	| identity | varchar(23)   |      | MUL |         |       |
+	| path     | varchar(127)  |      | MUL |         |       |
+	+----------+---------------+------+-----+---------+-------+
+
+	error numbers:
+
+	1	lock()	mysql error when running lock query
+	2	lock()	path already locked by someone else
+
+**************************************************************************/
+
+
+class sqlitelock {
+
+	function __construct( $tbl_prefix = "", $store = null) {
+		debug("sqlitelock::sqlitelock($tbl_prefix)");
+		  $this->tbl_prefix=$tbl_prefix;
+		  $this->store = $store;
+		  debug("sqlitelock::sqlitelock end","all");
+	}
+
+	function get_locks($identity) {
+		debug("sqlitelock:get_locks($identity)","store");
+		$result = [];
+		
+		$query_string="select path,release, type, identity from ".$this->tbl_prefix."locks where 
+		release >=".time()." and identity='".AddSlashes($identity)."'";
+		$query=$this->store->store_run_query($query_string);
+		while ( $temp = $query->fetchArray( SQLITE3_ASSOC ) ) {
+			$result[$temp["path"]]=$temp;
+		}
+		debug("sqlitelock:get_locks end","all");
+		return $result;
+	}
+
+	function lock($identity, $path, $type="O", $time=0) {
+	/**********************************************************************
+		This function locks an object/path
+	 **********************************************************************/
+		debug("sqlitelock:lock($identity,$path,$time,$type)","store");
+		$tablelock = "write";
+		$checkonly = false;
+		$type = strtoupper( $type );
+		
+		if (!$time) {
+			$time=time()+$this->lock_duration;
+ 		}
+
+		if($time < time()) {
+			$checkonly = true;
+			$tablelock = "read";
+		}
+
+		// lock table first
+//		$query_string="lock tables ".$this->tbl_prefix."locks ".$tablelock;
+//		$this->store->store_run_query($query_string);
+
+		// check if the path is not already locked by a parent
+		$query_string="
+			select path, release, type, identity 
+			  from ".$this->tbl_prefix."locks 
+			 where ( ( path=substring('".AddSlashes($path)."',1,length(path)) 
+				       AND type='T' ) 
+				     OR ( path='".AddSlashes($path)."' )";
+
+		// if we are locking a whole tree we must also check if no
+		// child has been locked already
+		if ($type=="T") {
+			$query_string.=" OR ( path like '".AddSlashes($path)."%' ) ";
+		}
+
+		$alreadylocked=false;
+		// see if this lock is still alive
+		$query_string.=") AND release>=".time();
+		$query=$this->store->store_run_query($query_string);
+		while ($lock=$query->fetchArray( SQLITE3_ASSOC )) {
+			if ($lock["identity"]!=$identity) {
+				// this is a lock with another identity, so fail the current lock attempt
+				$alreadylocked=true;
+				$this->locklist[]=$lock;
+			}
+		}
+
+		$result=false;
+		if (!$alreadylocked) {
+			if(!$checkonly) {
+				// clear old lock entries
+				$query_string="
+					delete from ".$this->tbl_prefix."locks where path='".AddSlashes($path)."'";
+
+				$this->store->store_run_query($query_string);
+
+				$query_string="
+					insert into ".$this->tbl_prefix."locks (path, release, type, identity) values (
+					'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
+					'".AddSlashes($identity)."')";
+
+				$this->store->store_run_query($query_string);
+				if (!$this->store->error) {
+					$result=true;
+				} else {
+					$this->error=2;
+					$this->error_message="MOD_LOCK: ERROR 2: ".$this->store->error;
+				}
+			} else {
+				$result = true;
+			}
+		} else {
+			$this->error=1;
+			$this->error_message="MOD_LOCK: ERROR 1: $path already locked.";
+		}
+		$query_string="unlock tables";
+//		$this->store->store_run_query($query_string);
+
+		return ($result);
+	}
+
+	function unlock($identity,$path="") {
+
+		$query_string="delete from ".$this->tbl_prefix."locks where identity='".AddSlashes($identity)."'";
+		if ($path) {
+			$query_string.=" and path='".AddSlashes($path)."'";
+		}
+		$this->store->store_run_query($query_string);
+
+	}
+
+	function close() {
+	}
+
+	function init() {
+		$tablename = $this->tbl_prefix . "locks";
+
+		$query_string="
+CREATE TABLE $tablename (
+        release int NOT NULL,
+        type char(1) CHECK( type IN ('O','T') ) NOT NULL DEFAULT 'O',
+        identity char(32) NOT NULL,
+        path char(127) NOT NULL
+)";
+		$this->store->store_run_query($query_string);
+
+		$query_string =
+			"CREATE INDEX " . $tablename . "_release on $tablename ( release )"
+		;
+		$this->store->store_run_query($query_string);
+
+/*
+		$query_string =
+			"CREATE INDEX type on $tablename ( type )"
+		;
+		$this->store->store_run_query($query_string);
+*/
+		$query_string =
+			"CREATE INDEX " . $tablename . "_identity on $tablename ( identity )"
+		;
+		$this->store->store_run_query($query_string);
+
+		$query_string =
+			"CREATE INDEX " . $tablename . "_path on $tablename ( path )"
+		;
+		$this->store->store_run_query($query_string);
+	}
+}

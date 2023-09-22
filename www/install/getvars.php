@@ -40,6 +40,9 @@
 	if (check_postgresql()) {
 		$databases['postgresql'] = "PostgreSQL";
 	}
+	if (check_sqlite()) {
+		$databases['sqlite'] = "SQLite (EXPERIMENTAL)";
+	}
 
 	$language            = getPostVar('language');
 	$step                = getPostVar('step');

@@ -1,0 +1,1315 @@
+<?php
+/******************************************************************************
+  Mysql Store 1.0						Ariadne 2.0
+
+  Copyright (C) 1998-2000  Muze 
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+  --------------------------------------------------------------------------
+
+  This is an implementation of the store class for MySQL. The store class is
+  an interface between Ariadne objects and a storage layer. It is used by all 
+  Ariadne objects to call templates in other objects or to manipulate
+  the location and contents of objects in the Ariadne system.
+
+*******************************************************************************/
+
+if ( !defined( "MAX_PATH_LENGTH" ) ) {
+	define( "MAX_PATH_LENGTH", 254 );
+}
+
+// general objectstore functions
+require_once($ariadne."/stores/store.php");
+
+class sqlitestore extends store{
+
+	protected $dbh;
+	protected $tbl_prefix;
+	protected $database;
+	protected $cachedQueries;
+	protected $filestores;
+	protected $propertyRegister;
+
+	public $total = 0;
+
+	protected function getConnection( $database ) {
+		// get connection
+		if ( !strlen( $database ) ) {
+			die( "No sqlite database filename given." );
+		}
+		$dbh = new SQLite3( $database );
+		$dbh->busyTimeout( 4000 );
+		return $dbh;
+		return $dbh;
+	}
+
+	public function __construct( $path, $config ) {
+	/**********************************************************************************
+
+	 This is the constructor routine for the store object. It takes some configuration 
+	 information as arguments and sets up the database connection.
+
+	 $path is the root path of the running script under the document root of
+		the webserver.
+	 $config contains some database configuration values: "host", "user",
+		"password", "database" and the location of the class files for all the used
+		types.
+
+	 **********************************************************************************/
+		$this->error="";
+		$this->dbh = $this->getConnection( $config["database"] );
+
+		$this->root=$path;
+		$this->code=$config["code"];
+		$this->files=$config["files"];
+		$this->tbl_prefix=$config["prefix"];
+
+		$this->database=$config["database"];
+
+		if(isset($config['crypto']) && is_array($config['crypto'])) {
+			$crypto = $config['crypto'];
+			// hide crypto configuration from var_dump e.d.
+			$config['crypto'] = function () use ($crypto) {
+				return $crypto;
+			};
+		}
+		$this->config=$config;
+
+		/* Include module sqlite_compiler */
+		include_once($this->code."stores/modules/sqlite_compiler.php");
+		
+		/* Instantiate module locking */
+		include_once($this->code."modules/mod_lock/sqlite.phtml");
+		$this->mod_lock=new sqlitelock( $config["prefix"], $this );
+		$this->mod_lock->lock_duration=isset($config["lock_duration"]) ? $config["lock_duration"] : null;
+
+		if (isset($config['filestores']) && is_array($config['filestores'])) {
+			$this->filestores = $config['filestores'];
+		} else {
+			$this->filestores = Array('templates', 'files');
+		}
+	}
+
+	public function call($template, $args, $objects, $options = array() ) {
+	/**********************************************************************************
+	
+	 This function takes a list of objects, the function to be called in each of those
+	 objects and the arguments of that function as arguments. The list of objects is of
+	 unspecified type and may be different in other implementations of the store 
+	 interface.
+
+	 The function will retrieve and instantiate each object in the object list and call
+	 the objects call with $function and $args.
+
+	 **********************************************************************************/ 
+
+		$result = array();
+		$this->error="";
+		// if list is not set, don't do anythink
+		if( !isset( $objects[ "list" ] ) ) {
+			return $result;
+		}
+		$count = 0;
+		while ( $row = $objects["list"]->fetchArray( SQLITE3_ASSOC ) ) {
+			$multiCall = false;
+			if(!isset($row['object'])) {
+				// fetch object from db
+				$res = $this->get($row['path']);
+				if(!$res['list']) {
+					continue;
+				}
+				$row = $res['list']->fetchArray( SQLITE3_ASSOC );
+			}
+			$count++;
+
+			$object = $this->newobject( 
+				$row["path"], $row["parent"], $row["type"], 
+				$this->unserialize(stripslashes($row["object"]), $row["path"]), $row["id"], $row["lastchanged"],
+				$row["vtype"], strlen($row["object"]), $row["priority"]
+			);
+			if ($template instanceof ar_listExpression) { // optimization, prevents extra item() call
+				// insert logic to allow templates and arguments from a list expression.
+				$callInfo = $template->current();
+				$template->next();
+			} else if ( is_array( $template) ) { // array of templates given
+				$callInfo = current($template);
+				next($template);
+			} else {
+				$callInfo = array( $template );
+			}
+			if ( is_array( $callInfo ) ) {
+				foreach( $callInfo as $singleCall ) {
+					$templateArgs = $args;
+					if ( ( is_array( $singleCall ) || $singleCall instanceof ArrayAccess) && $singleCall['template'] ) {
+						$templateName = $singleCall['template'];
+						if ( is_array( $singleCall['params'] ) ) {
+							$templateArgs = array_merge( (array) $templateArgs, $singleCall['params'] );
+						}
+					} else {
+						$templateName = $singleCall;
+					}
+					if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
+						$result[$row['path']] = $object->call( $templateName, $templateArgs );
+					} else {
+						$result[] = $object->call( $templateName, $templateArgs );
+					}
+				}
+			}
+		}
+
+		if (!isset($this->total)) {
+			$this->total = 0;
+		}
+		$this->total += $count;
+		return $result;
+	}
+
+	function count($objects) {
+		return $objects["list"]->num_rows;
+	}
+
+	function info($objects, $options = []) {
+		if($objects["list"]) {
+			while ($row=$objects["list"]->fetchArray( SQLITE3_ASSOC )) {
+				unset($row["object"]);
+				if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
+					$result[$row['path']] = $row;
+				} else {
+					$result[] = $row;
+				}
+			}
+		}
+		return $result??null;
+	}
+
+	public function get($path) {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object in the store and will retrieve
+	 all the necessary data and return this in the objectlist type needed for 
+	 store->call(). If the requested path does not exist, it will retrieve the object
+	 with the longest matching path.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		$this->error="";
+		$result["method"]="get";
+		$result["path"]=$path;
+		$epath=AddSlashes($path);
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
+		$result["list"]= $this->store_run_query($query_string);
+		return $result;
+	}
+	
+	public function mogrify($id, $type, $vtype = null) {
+		$this->error="";
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+		if ( ( strlen( $type ) > 32 ) || (strlen( $vtype ) > 32 ) ) {
+			$this->error = "Type names are too long, maximum is 32 characters ( $type, $vtype )";
+		} else if ( !$type ) {
+			$this->error = "No type to mogrify to given.";
+		}
+		if (!$this->error && is_string($id)) {
+			$epath = AddSlashes($id);
+			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
+			$qresult = $this->store_run_query($query_string);
+			if (!$qresult) {
+				$this->error = "Could not fetch object id";
+			} else {
+				$temp = $qresult->fetchArray( SQLITE3_ASSOC );
+				$id = $temp["object"];
+			}
+		}
+		if (!$this->error && $id) {
+			$eid = AddSlashes($id);
+			$etype = AddSlashes($type);
+			if (!$vtype) {
+				$vtype = $type;
+			}
+			$evtype = AddSlashes($vtype);
+			$query_string = "update $objects_tbl set type='$etype', vtype='$evtype' where id = $eid";
+			$result = $this->store_run_query( $query_string );
+		}
+		return $result;
+	}
+
+	public function touch($id, $timestamp = -1) {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object (or id of an object)
+     in the store and will set the timestamp to $timestamp.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		$this->error="";
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		if ($timestamp == -1) {
+			$timestamp = time();
+		}
+
+		if (is_string($id)) {
+			$epath = AddSlashes($id);
+			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
+			$qresult = $this->store_run_query($query_string);
+			if (!$qresult) {
+				$this->error = "Could not fetch object id";
+			} else {
+				$temp = $qresult->fetchArray( SQLITE3_ASSOC );
+				$id = $temp["object"];
+			}
+		}
+
+
+		if ($id && !$this->error) {
+			$eid = AddSlashes($id);
+			$etimestamp = AddSlashes($timestamp);
+			$query_string = "update $objects_tbl set lastchanged=$etimestamp where id = $eid";
+			$qresult = $this->store_run_query($query_string);
+			$result = $this->dbh->changes();
+		}
+		return $result;
+	}
+
+	public function ls($path) {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object in the store and will retrieve
+	 all the objects and their data which have this object as their parent. It will 
+	 then return this in the objectlist type needed for store->call(). If the requested
+	 path does not exist, it will retrieve the object with the longest matching path.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		$this->error="";
+		$epath=AddSlashes($path);
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+		$result["method"]="ls";
+		$result["path"]=$path; 
+		$result["list"]= $this->store_run_query($query_string);
+		return $result;
+	}
+
+	public function parents($path, $top="/") {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object in the store. It will return 
+	 all objects with a path which is a substring of the given path. The resulsts are 
+	 ordered by path (length), shortest paths first.
+	 In effect all parents of an object in the tree are called, in order, starting at 
+	 the root.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		$this->error="";
+		$epath=AddSlashes($path);
+		$etop=str_replace('_', '\\_', AddSlashes($top));
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
+		$result["method"]="parents";
+		$result["path"]=$path;
+		$result["list"]= $this->store_run_query($query_string);
+		return $result;
+	}
+
+	public function count_find($path, $criteria, $limit=100, $offset=0) {
+		$count = 0;
+		$sqlcompiler= $this->compilerFactory();
+		$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+		if ($sqlcompiler->error) {
+			$this->error=$sqlcompiler->error;
+		} else {
+			unset($sqlcompiler);
+			if ( !is_array($query) || !isset($query["count_query"])) {
+				$this->error = "Querycompiler failed to deliver";
+			} else {
+				$qresult = $this->store_run_query($query["count_query"]);
+				if ($qresult) {
+					$result = $qresult->fetchArray( SQLITE3_ASSOC );
+					$count  = (int)$result["count"];
+				}
+			}
+		}
+		return $count;
+	}
+
+	public function find($path, $criteria, $limit=100, $offset=0) {
+	/**********************************************************************************
+
+	 This function takes as arguments a path to an object in the store and some search
+	 criteria. It will search for all matching objects under the given path. If the
+	 given path is not in this store but in a substore it will not automatically search
+	 that substore. 
+
+	 $criteria is of the form 
+
+	 $criteria ::= ({ $property_name => ({ $valuename => ({ $compare_function, $value }) }) }) 
+
+	 e.g.: $criteria["status"]["value"][">"]="'published'";
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+	 	$result = [];
+		if (!is_array($criteria) && ($criteria=trim($criteria))) {
+			$sqlcompiler= $this->compilerFactory();
+			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+			if ($sqlcompiler->error) {
+				$this->error=$sqlcompiler->error;
+			} else {
+				unset($sqlcompiler);
+				if ( !is_array($query) || !isset($query["select_query"])) {
+					$this->error = "Querycompiler failed to deliver";
+				} else {
+					$result["list"]= $this->store_run_query($query["select_query"]);
+				}
+			}
+		} else {
+			$this->error="";
+			$count=0;
+			$result["method"]="find";
+			$result["path"]=$path;
+			$result["criteria"]=$criteria;
+			$epath=AddSlashes($path);
+			$offset = (int)$offset;
+			$limit = (int)$limit;
+			$where = '';
+			$from  = '';
+
+			$nodes_tbl=$this->tbl_prefix."nodes";
+			$objects_tbl=$this->tbl_prefix."objects";
+			$types_tbl=$this->tbl_prefix."types";
+
+			if(!is_array($criteria)) {
+				$criteria = array();
+			}
+			while (list($property, $values)=each($criteria)) {
+				$eproperty=AddSlashes($property);
+				if ($property!="object") {
+					$from.=", ".$this->tbl_prefix."prop_$eproperty";
+					$where.=" and (";
+				}
+				while (list($valuename, $compare)=each($values)) {
+					while (list($function, $value)=each($compare)) {
+						switch(strtolower($function)) {
+							case '=':
+							case '==':
+								$ecompare = '=';
+							break;
+							case '!=':
+							case '<=':
+							case '>=':
+							case '<':
+							case '>':
+								$ecompare = $function;
+							break;
+							case '~=':
+							case '=~':
+							case 'like':
+								$ecompare = "like";
+							break;
+							case '!~':
+							case 'not like':
+								$ecompare = "not like";
+							break;
+						}
+						$evaluename=AddSlashes($valuename);
+						if ($value=="") { 
+							// empty strings as value generate strange results in SQL land
+							$value=0;
+						}
+						switch($property) {
+							case "object" :
+								switch($valuename) {
+									case ("type") : 
+										$where.=" and $objects_tbl.type $ecompare '".addSlashes($value)."' ";
+									 	break;
+									case ("implements") : 
+										$types=", $types_tbl";
+										$where.=" and ( $types_tbl.implements $ecompare '".addSlashes($value)."' and $objects_tbl.vtype=$types_tbl.type ) ";
+										break;
+									case ("parent") :
+										$where.=" and $nodes_tbl.parent $ecompare '".addSlashes($value)."' ";
+										break;
+									case ("lastchanged") :
+										$value = date("YmdHis", $value);
+										$where.=" and $objects_tbl.lastchanged $ecompare '".addSlashes($value)."' ";
+										break;
+								}
+								break;
+							default :
+								$where.=$this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare '".addSlashes($value)."' and "; 
+						}
+					}
+				}
+				if ($property!="object") {
+					$where.=" ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
+				}
+			}
+			if (!isset($types)) {
+				$types = '';
+			}
+
+			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
+			$where=substr($where,4);
+			if ($where) { 
+				$query_string.=" and ( ( $where ) )";
+			} 
+			$query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
+			if ($limit) {
+				$query_string.=" limit ";
+				if ($offset) {
+					$query_string.="$offset,";
+				}
+				$query_string.="$limit";
+			}
+			$result["list"]= $this->store_run_query($query_string);
+		}
+		return $result;
+	}
+
+	public function close() {
+		return parent::close();
+	}
+
+
+	public function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
+	/***************************************************************
+
+		This function takes as argument a path, type, objectdata and 
+		possibly a properties list and vtype (virtual type).
+		If there exists no object with the given path, a new object is 
+		saved with the given type, data, properties and vtype, and a
+		new path is saved pointing to it.
+		If there does exist an object with the given path, it's object
+		data is overwritten with the given data and if vtype is set the
+		current vtype is overwritten with the new one.
+
+		$path must be an absolute path (containing no '..' and starting
+			with '/')
+		$type must be a valid type
+		$data can be any string (usually a serialized object.)
+		$properties is a multidimensional hash of the following form:
+			$properties[{property_name}][][{value_name}]={value}
+			{property_name} must be a valid property name
+			{value_name} must be a valid value name for this property
+			{value} can be a number, boolean or string. If it is a string
+				it must be enclosed in single qoutes. All other single 
+				quotes in the string must be escaped. e.g:
+				"'\'t is a String'"
+		example:
+			$properties["name"][0]["value"]="'A name'";
+			$properties["name"][1]["value"]="'A second name!'";
+		if $properties["name"]=1 then all properties for property name
+			will be removed.
+
+		$vtype must be a valid type.
+	 
+		if $properties or $vtype are not set or empty ("",0 or false)
+		they will be ignored. $vtype defaults to $type.
+		Only those properties listed in $properties will be updated.
+		Any other property set will remain as it was.
+
+	***************************************************************/
+
+
+		$this->error="";
+		if ($path!="/") {
+			$parent=$this->make_path($path, "..");
+		} else {
+			$parent="..";
+		}
+		$needunlocking = false;
+		$eparent=$parent;
+		$epath=$path;
+		$efilename=basename($path);
+
+		$edata=$this->serialize($data, $path);
+		$etype=$type;
+		$epriority=(int)$priority;
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
+			if ($id=$this->exists($path)) { //update
+				$result = $path;
+				if ($vtype) { // only change/save vtype if it is explicitly set
+					$evtype=$vtype;
+					$query_string="update $objects_tbl set object=:edata, vtype=:evtype, lastchanged=strftime( '%s', 'now' ) where id=$id"; 
+					$qresult = $this->store_run_query($query_string, [ "edata" => $edata, "evtype" => $evtype ] );
+				} else {
+					$query_string="update $objects_tbl set object=:edata, lastchanged=strftime( '%s', 'now' ) where id=$id"; 
+					$qresult = $this->store_run_query($query_string, [ "edata" => $edata ] );
+				}
+				if ($qresult !== false) {
+					$this->save_properties($properties, $id, $this); 
+					if($priority !== false) {
+						$query_string="update $nodes_tbl set priority=$epriority where path=:epath";
+						$qresult = $this->store_run_query($query_string, [ "epath" => $epath ] );
+						if ($qresult === false) {
+							debug("save: update object failed!","store");
+							debug("save: ".$this->error,"store");
+							$result=0;
+						}
+					} 
+				} else {
+					debug("save: update object failed!","store");
+					debug("save: ".$this->error,"store");
+					$result=0;
+				}
+			} else { // insert new
+				if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
+					if ($subcpos = strpos($type, '.')) {
+						$vtype = substr($type, 0, $subcpos);
+					} else {
+						$vtype=$type; 
+					}
+				}
+				$evtype=$vtype;
+
+				if($priority === false){
+					// default priority == 0
+					$priority = 0;
+					$epriority=(int)$priority;
+				}
+
+				$mask = substr($path, strlen($parent));
+				if (preg_match("/^(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) { 
+					// if the last part of a path matches something like {2:id} this
+					// part will automatically create a new number, unique in this directory, and fill it in.
+					// before we proceed, we need to lock the 'nodes' and 'objects' table
+					
+					//$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
+					//$qresult = $this->store_run_query($query_string);
+					//if ($qresult !== false) {
+					//	$needunlocking = true;
+
+						$subid=$this->get_nextid($parent, $mask);
+						$path=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$path);
+						$epath=$path;
+						$efilename = basename( $epath );
+					//} else {
+					//	error("PANIC: could not obtain write lock on nodes table!");
+					//	$this->close();
+					//	exit;
+					//}
+				}
+
+				if (strlen($path)>=MAX_PATH_LENGTH) {
+					// extra check, after rewrite of filename
+					$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
+					$result=false;
+				} else {
+					if ($path == '/') {
+						$parent = '..';
+						$eparent = '..';
+					} else {
+						$query_string ="select path from $nodes_tbl where path = :eparent";
+						$qresult = $this->store_run_query( $query_string, [ "eparent" => $eparent ] );
+						if ($qresult !== false) {
+							$row = $qresult->fetchArray( SQLITE3_ASSOC );
+							if ($row['path']) {
+								$parent  = $row['path'];
+								$eparent = $parent;
+								$epath   = $eparent . $efilename . '/';
+							} else {
+								$this->error = "store:save: could not load path '$eparent'";
+								debug("save: parent path query failed", "store");
+								debug("save: ".$this->error, "store");
+								$result = 0;
+							}
+						} else {
+							debug("save: parent path query failed!","store");
+							debug("save: ".$this->error,"store");
+							$result=0;
+						}
+					}
+
+					if (!$this->error) {
+						$query_string="insert into $objects_tbl (type,object,vtype) values (:etype,:edata,:evtype)";
+						$qresult = $this->store_run_query($query_string, [ "etype" => $etype, "edata" => $edata, "evtype" => $evtype ] );
+						$id=$this->dbh->querySingle( "select last_insert_rowid() as id" );
+
+						if ($qresult !== false && $id) {
+							$query_string="insert into $nodes_tbl (path,parent,object,priority) values (:epath, :eparent, $id, :epriority)";
+							$qresult = $this->store_run_query($query_string, [ "epath" => $epath, "eparent" => $eparent, "epriority" => $epriority ] );
+							if ($qresult) {
+								if (isset($needunlocking) && $needunlocking) {
+									$query_string = "unlock tables";
+									$this->store_run_query($query_string);
+									$needunlocking = false;
+								}
+								$this->save_properties($properties, $id, $this);
+								$result=$path;
+							} else {
+								debug("save: insert node failed!","store");
+								debug("save: ".$this->error,"store");
+								$result=0;
+							}
+						} else {
+							debug("save: insert object failed!","store");
+							debug("save: ".$this->error,"store");
+							$result=0;
+						}
+					}
+
+				}
+
+				if (isset($needunlocking) && $needunlocking) {
+					$query_string = "unlock tables";
+					$this->store_run_query($query_string);
+					$needunlocking = false;
+				}
+			}
+		} else {
+			// path too long
+			$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
+			$result=false;
+		}
+		return $result;
+	}
+
+
+	protected function purge($path) {
+	/**********************************************************************
+	 
+		This function will delete the object pointed to by $path and all
+	other paths pointing to that object. It will then remove any property
+	for this object from all property tables.
+		The function returns the number of paths found and removed or 1 if
+	there was no path found (meaning that the object doesn't exist and 
+	therefor purge succeeded while doing nothing.)
+
+	 $path should always start and end with a '/'.
+
+	**********************************************************************/
+
+		$this->error="";
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$object=$this->exists($path);
+		if ($object) {
+			$query_string="delete from $nodes_tbl where object=$object";
+			$temp=$this->store_run_query($query_string);
+			if ($temp) {
+				$result=$this->dbh->changes();
+			}
+			$this->del_property($object);
+
+			$query_string="delete from $objects_tbl where id=$object";
+			$this->store_run_query($query_string);
+
+			foreach ($this->filestores as $fsName) {
+				debug("store::purge purging fstore($fsName, $object)", "store");
+				$fStore = $this->get_filestore($fsName);
+				$fStore->purge($object);
+			}
+
+		} else { // no such path, so purge already succeeded :)
+			$result=1;
+		}
+		return $result;
+	}
+
+	public function delete($path) {
+	/**********************************************************************
+
+		This function deletes the path given. If this is the last path pointing
+	to an object, the object will be purged instead.
+
+	$path should always start and end with a '/'.
+
+	**********************************************************************/
+
+		$this->error="";
+		$epath=AddSlashes($path);
+		$paths=$this->list_paths($path);
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		if (is_array($paths)) {
+			if (sizeof($paths)==1) { // only one path for this object
+				$result=$this->purge($path); // therefore purge the object.
+			} else { // only delete the given path
+				$query_string="delete from $nodes_tbl where path='$epath'";
+				$this->store_run_query($query_string);
+				if ($this->dbh->changes()) {
+					$result=1;
+				} else {
+					$result=0;
+				}
+			}
+		}
+		return $result;
+	}
+
+	public function exists($path) {
+	/**********************************************************************
+
+		This function checks the given path to see if it exists. If it does
+	it returns the id of the object to which it points. Otherwise it returns
+	null.
+
+	$path should always start and end with a '/'.
+
+	**********************************************************************/
+
+		$this->error="";
+		$epath=AddSlashes($path);
+		$object = null;
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query_string="select object from $nodes_tbl where path='$epath'";
+		$temp=$this->store_run_query($query_string);
+
+		if ($temp && ($row=$temp->fetchArray( SQLITE3_ASSOC ))) {
+			$object=intval($row["object"]);
+		}
+		return $object;
+	}
+
+
+	public function link($source, $destination) {
+	/**********************************************************************
+
+		Link adds an extra path to an already existing object. It has two
+	arguments: $source and $destination. $source is an existing path of
+	an object, $destination is the new path. $destination must not already
+	exist.
+
+	$destination should always start and end with a '/'.
+
+	**********************************************************************/
+
+		$this->error="";
+		$edestination=AddSlashes($destination);
+		$esource=AddSlashes($source); 
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+
+		$parent=$this->make_path($destination, "..");
+		$filename=substr($destination, strlen($parent));
+		$eparent = AddSlashes($parent);
+
+		$query_string = "select path from $nodes_tbl where path = '$eparent'";
+		$qresult = $this->store_run_query($query_string);
+		if ($qresult && ($row = $qresult->fetchArray( SQLITE3_ASSOC ))) {
+			$eparent = AddSlashes($row['path']);
+			$edestination = AddSlashes($eparent.$filename);
+
+
+			if ($this->exists($destination)) {
+				$this->error="$destination already exists, cannot overwrite.";
+				debug("link: ERROR: ".$this->error,"store");
+				$result=false;
+			} else if (!$this->exists($parent)) {
+				$this->error="$parent does not exist, cannot link.";
+				debug("link: ERROR: ".$this->error,"store");
+				$result=false;
+			} else { 
+				$mask = substr($destination, strlen($parent));
+				if (preg_match("/(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) {
+					$query_string="lock tables ".$this->tbl_prefix."nodes write";
+					$qresult=$this->store_run_query($query_string);
+					if ($qresult) {
+						$needunlocking = true;
+						$subid = $this->get_nextid($parent, $mask);
+						$destination=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$destination);
+						$edestination=AddSlashes($destination);
+					} else {
+						error("PANIC: could not obtain write lock on nodes table!");
+						$this->close();
+						exit;
+					}
+				}
+				$id=$this->exists($source);
+				if ($id) {
+					$query_string="insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
+					$result = $this->store_run_query($query_string);
+					if (!$result) {
+						debug("link: insert node failed!","store");
+					}
+					$result=$destination;
+				} else {
+					$result=false;
+				}
+			}
+			if ($needunlocking) {
+				$query_string = "unlock tables";
+				$this->store_run_query($query_string);
+			}
+		} else {
+			$this->error="$parent does not exist, cannot link.";
+			debug("link: ERROR: ".$this->error,"store");
+			$result=false;
+		}
+		return $result;
+	}
+
+	function store_run_query( $query_string, $params = [] ) {
+		//echo ">> " . $query_string . "\n\n";
+		$stmt =
+			$this->dbh->prepare( $query_string )
+		;
+		if ( $stmt === false ) {
+			$errorCode = $this->dbh->lastErrorCode();
+			$errorMessage = $this->dbh->lastErrorMsg();
+			$this->error = "ERROR: Sqlite: $errorCode: $errorMessage";
+			echo( "Sqlite::store_run_query: " . $this->error);// , "store" );
+			echo( "Sqlite::store_run_query: " . preg_replace( "|[\t \n]+|", "  ", $query_string ));//, "store" ); 
+			return false;
+		}
+
+		foreach ( $params as $key => $value ) {
+			$type = SQLITE3_TEXT;
+			if ( is_int( $value ) ) {
+				$type = SQLITE3_INTEGER;
+			} else if ( is_float( $value ) ) {
+				$type = SQLITE3_FLOAT;
+			}
+			$stmt->bindValue( ":" . $key, $value, $type );
+		}
+		$query = $stmt->execute();
+		if ( $query === false ) {
+			$errorCode = $this->dbh->lastErrorCode();
+			$errorMessage = $this->dbh->lastErrorMsg();
+			$this->error = "ERROR: Sqlite: $errorCode: $errorMessage";
+			echo( "Sqlite::store_run_query: " . $this->error);// , "store" );
+			echo( "Sqlite::store_run_query: " . preg_replace( "|[\t \n]+|", "  ", $query_string ));//, "store" ); 
+			return false;
+		}
+		return $query;
+	}
+
+
+	public function move($source, $destination) {
+	/**********************************************************************
+
+	$destination should always start and end with a '/'.
+
+	**********************************************************************/
+
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$this->error="";
+		$esource=AddSlashes($source); 
+		$parent=$this->make_path($destination, "..");
+		$filename=substr($destination, strlen($parent));
+		$eparent = AddSlashes($parent);
+
+		$query_string = "select path from $nodes_tbl where path = '$eparent'";
+		$qresult = $this->store_run_query($query_string);
+		if ($qresult && ($row = $qresult->fetchArray( SQLITE3_ASSOC ))) {
+			$destination = $row['path'] . $filename; // Update the destination returnvalue with the case from the database instead of what the user entered;
+
+			$eparent = AddSlashes($row['path']);
+			$edestination = AddSlashes($eparent.$filename);
+
+			if ($this->exists($destination) &&
+					! ( strtolower($destination) === strtolower($source) &&
+						$destination !== $source
+					)) {
+
+				$this->error="$destination already exists, cannot overwrite.";
+				debug("move: ERROR: ".$this->error,"store");
+				$result=false;
+			} else if (!$this->exists($parent)) {
+				$this->error="$parent does not exist, cannot move.";
+				debug("move: ERROR: ".$this->error,"store");
+				$result=false;
+			} else { 
+				$mask = substr($destination, strlen($parent));
+				if (preg_match("/(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) {
+					$query_string="lock tables ".$this->tbl_prefix."nodes write";
+					$qresult = $this->store_run_query($query_string);
+					if ($qresult){
+						$needunlocking = true;
+						$subid = $this->get_nextid($parent, $mask);
+						$destination=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$destination);
+						$edestination=AddSlashes($destination);
+					} else {
+						error("PANIC: could not obtain write lock on nodes table!");
+						$this->close();
+						exit;
+					}
+				}
+				$id=$this->exists($source);
+				if ($id) {
+					$destinationlength=strlen($destination);
+					$sourcelength=strlen($source);
+					$parentlength=strlen($parent);
+					// move the top path
+					$query_string="update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
+					$result=$this->store_run_query($query_string);
+					if ($result) {
+						// now move all the children
+						$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where parent like '$esource%'";
+						$result=$this->store_run_query($query_string);
+					}
+				} else {
+					$result=false;
+				}
+			}
+
+			if ($needunlocking ?? null) {
+				$query_string = "unlock tables";
+				$this->store_run_query($query_string);
+			}
+		}
+
+		if ($result) {
+			return $destination;
+		} else {
+			return false;
+		}
+	}
+
+
+	public function list_paths($path) {
+	/**********************************************************************
+
+		This function returns an array of all paths pointing to the same object 
+	as $path does.
+
+	**********************************************************************/
+
+		$this->error="";
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+		$result = array();
+
+		if (is_int($path)) {
+			$object = $path;
+		} else {
+			$object=$this->exists($path);
+		}
+		if ($object) {
+			$query_string="select path from $nodes_tbl where object=$object";
+			$qresult = $this->store_run_query($query_string);
+			while ($qresult && ($row=@$qresult->fetchArray( SQLITE3_ASSOC ))) {
+				$result[]=$row["path"];
+			}
+		}
+		return $result;
+	}
+
+	public function AR_implements($type, $implements) {
+	/**********************************************************************
+
+		This function returns 1 if the $type implements the type or
+	interface in $implements. Otherwise it returns 0.
+
+	**********************************************************************/
+
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query_string="select distinct type from $types_tbl where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
+		$this->error="";
+		$qresult = $this->store_run_query($query_string);
+		if ($qresult) {
+			$row=$qresult->fetchArray( SQLITE3_ASSOC );
+		}
+		if ($row) {
+			$result=1;
+		}
+		if (!isset($result)) {
+			$result = null;
+		}
+		return $result;
+	}
+	
+
+	public function format_for_fti($text) {
+	/**********************************************************************
+ 
+		This function prepares the passed string to be interpreted properly
+	by the store's full text indexing system.
+		For MySQL, all characters over 126 and the select allowed characters
+	are escaped with the underscore character; whitespace characters are
+	collapsed into a single space.
+
+	**********************************************************************/
+
+		$allowedchars="_'-";
+		$text = preg_replace_callback(
+			"%[\\x80-\\xFF$allowedchars]%s",
+			function($matches) {
+				return '_'.dechex(ord($matches[0]));
+			},
+			$text
+		);
+		$search = array("%\\s+%s");
+		$replace = array(" ");
+		return preg_replace($search, $replace, $text);
+	}
+
+
+	public function load_properties($object, $values="", $scope="") {
+		if(!isset($this->propertyRegister)) {
+			$query_string="select name from ".$this->tbl_prefix."properties";
+			$qresult = $this->store_run_query($query_string);
+			$register = array();
+			while ($qresult && ($prop=@$qresult->fetchArray( SQLITE3_ASSOC ))) {
+				$register[] = $prop['name'];
+			}
+			$this->propertyRegister = $register;
+		}
+		if ($object) {
+			foreach($this->propertyRegister as $prop) {
+				if ($value=$this->load_property($object,$prop,$values,$scope)) {
+					$result[$prop]=$value;
+				}
+			}
+		}
+		return $result;
+	}
+
+	public function load_property($object, $property, $values="", $scope="") {
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		if ($object) {
+			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
+			if (!$values) {
+				$values = array();
+			}
+			if( $scope !== '%' ) {
+				$values += array( 'scope' => $scope );
+			}
+			while (list($name, $value)=each($values)) {
+				$value = "'".addSlashes($value)."'";
+				$query_string.="AR_".AddSlashes($name)."=$value and ";
+			}
+			$query_string.="object=$object";
+			$qresult = $this->store_run_query($query_string);
+			$currProp=0;
+			while ($qresult && ($prop=@$qresult->fetchArray( SQLITE3_ASSOC ))) {
+				reset($prop);
+				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
+					if (($name!="object")&&(!is_int($name))) {
+						$result[$currProp][substr($name,3)]=$val;
+					}
+				}
+				$currProp++;
+			}
+		}
+		return $result ?? null;
+	}
+
+	public function add_property($object, $property, $values, $scope='') {
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$params = [];
+		if ($object && is_array($values) && count($values) ) {
+			$values = (array) $values + array('scope' => $scope);
+			while (list($name, $value)=each($values)) {
+				if ($value!="") {
+					if (!isset($query_names)) {
+						$query_names = '';
+					}
+					if (!isset($query_values)) {
+						$query_values = '';
+					}
+					$ename = AddSlashes( $name );
+					$query_names .="AR_$ename, ";
+					$params[ $ename ] = $value;
+					$query_values .= ":$ename, ";
+				}
+			}
+			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
+									($query_names??'')."object ) values ( ".($query_values??'')."$object )";
+			$this->store_run_query( $query_string, $params );
+			$result=$this->dbh->changes();
+		}
+		return $result;
+	}
+
+	public function del_property($object, $property="", $values="", $scope="") {
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$result = 0;
+		
+		if (intval($object)) {
+			if (!$property) { // remove all properties for $object
+				$query_string="select name from ".$this->tbl_prefix."properties";
+				$temp = $this->store_run_query($query_string);
+				while ($temp && ($row=@$temp->fetchArray( SQLITE3_ASSOC ))) {
+					$query_string="delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
+					$qresult = $this->store_run_query($query_string);
+					if($qresult) {
+						$result+=$this->dbh->changes();
+					}
+				}
+			} else {
+				$query_string="delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
+				if(!$values) {
+					$values = array();
+				}
+				$values += array( 'scope' => $scope );
+				$params = [];
+				while (list($name, $value)=each($values)) {
+				//	$value = "'".addSlashes($value)."'";
+					$ename = AddSlashes( $name );
+					$params[ $ename ] = $value;
+					$query_string.="AR_$ename = :" . $ename . "_value and ";
+				}
+				$query_string.="object=$object";
+				$qresult = $this->store_run_query( $query_string, $values );
+				if($qresult ){
+					$result=$this->dbh->changes();
+				}
+			}
+		}
+		return $result;
+	}
+
+	public function set_nextid($path, $newid) {
+	/**********************************************************************
+
+		'private' function of mysql store. 
+		(deprecated, but still available for backward compatibility).
+
+	**********************************************************************/
+		return $newid;
+	}
+
+
+	public function get_nextid($path, $mask="{5:id}") {
+	/**********************************************************************
+
+		'private' function of mysql store. This will return the next
+		'autoid' for $path.
+
+	**********************************************************************/
+
+		$path=AddSlashes($path);
+
+		$substr_s = strlen($path);
+		if (preg_match("/^(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) { 
+			$subid = 0;
+			$mask_pre = $matches[1];
+			$substr_s += strlen($mask_pre)+1;
+			if ( $matches[2] ) {
+				$substr_l = intval($matches[2]);
+				if (!$substr_l) {
+					$substr_l = 5; // default length is 5
+				}
+			} else {
+				$substr_l = false;
+			}
+			$mask_post= $matches[3];
+			$prefix_length = strlen( $path ) + strlen( $mask_pre ) + 1;
+			$query_string = "select max( cast( substring( path, $prefix_length ) as unsigned ) ) as id
+				from {$this->tbl_prefix}nodes
+				where parent = '$path'
+				and path regexp '^".$path.$mask_pre."[0-9]+".$mask_post."'";
+
+			$result = $this->store_run_query($query_string);
+			if ($result) {
+				$row = $result->fetchArray( SQLITE3_ASSOC );
+				$subid = intval( $row['id'] );
+			}
+			$subid=$subid+1;
+			if ( $substr_l !== false ) {
+				$subid = sprintf("%0".$substr_l."d", $subid);
+			}
+		}
+		return $subid;
+	}
+
+
+	public function priv_get_implements($type) {
+	/**********************************************************************
+
+		helper function for the query compiler.
+		returns an array of alle types implementing the given type.
+
+	**********************************************************************/
+		$returnValue = array();
+		/* retrieve an implements list */
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query = "select type from $types_tbl where $types_tbl.implements = $type";
+		$qresult = $this->store_run_query($query);
+
+		while ($qresult && ($iresult = $qresult->fetchArray( SQLITE3_ASSOC ))) {
+			$returnValue[] = $iresult['type'];
+		}
+
+		$qresult->free();
+
+		return $returnValue;
+	}
+
+
+} // end class store

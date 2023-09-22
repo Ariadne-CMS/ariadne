@@ -260,7 +260,7 @@ abstract class store {
 			// features depending on config values
 			case 'fulltext_boolean':
 			case 'fulltext':
-				if ($this->config[$feature]) {
+				if ($this->config[$feature] ?? false) {
 					$result = true;
 				} else {
 					$result = false;
