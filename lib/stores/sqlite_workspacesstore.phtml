@@ -1,6 +1,6 @@
 <?php
 /******************************************************************************
-  Mysql Store 1.0						Ariadne 2.0
+  sqlite Store 1.0						Ariadne 2.0
 
   Copyright (C) 1998-2000  Muze 
 
@@ -20,27 +20,29 @@
 
   --------------------------------------------------------------------------
 
-  This is an implementation of the store class for MySQL. The store class is
+  This is an implementation of the store class for sqlite. The store class is
   an interface between Ariadne objects and a storage layer. It is used by all 
   Ariadne objects to call templates in other objects or to manipulate
   the location and contents of objects in the Ariadne system.
 
 *******************************************************************************/
 
-define('MAX_PATH_LENGTH', 254);
+if ( !defined( 'MAX_PATH_LENGTH' ) ) {
+	define('MAX_PATH_LENGTH', 254);
+}
 
 // general objectstore functions
-require_once($ariadne."/stores/mysqlstore.phtml");
+require_once($ariadne."/stores/sqlitestore.phtml");
 
-class mysql_workspacesstore extends mysqlstore {
+class sqlite_workspacesstore extends sqlitestore {
 
 	public function __construct($path, $config) {
 		parent::__construct($path, $config);
 
 		$this->layers = (array)( $config["layer"] ?? [] );
 
-		/* Include module mysql_compiler */
-		include_once($this->code."stores/modules/mysql_workspaces_compiler.php");
+		/* Include module sqlite_compiler */
+		include_once($this->code."stores/modules/sqlite_workspaces_compiler.php");
 
 	}
 	
@@ -69,9 +71,9 @@ class mysql_workspacesstore extends mysqlstore {
 
 		if ($layer) {
 			$query_string = "select new.id as new_id, new.path as new_path, new.object as new_object, 
-						UNIX_TIMESTAMP(new_objects.lastchanged) as new_lastchanged, new_objects.type as new_type, new_objects.vtype as new_vtype,
+						new_objects.lastchanged as new_lastchanged, new_objects.type as new_type, new_objects.vtype as new_vtype,
 						old.id as old_id, old.path as old_path, old.object as old_object,
-						UNIX_TIMESTAMP(old_objects.lastchanged) as old_lastchanged, old_objects.type as old_type, old_objects.vtype as old_vtype,
+						old_objects.lastchanged as old_lastchanged, old_objects.type as old_type, old_objects.vtype as old_vtype,
 						old_stale.id as old_stale_id, old_stale.path as old_stale_path
 			";
 			if ($includeData) {
@@ -91,7 +93,7 @@ class mysql_workspacesstore extends mysqlstore {
 			";
 			$query_result = $this->store_run_query($query_string);
 			if ($query_result) {
-				while ( $row = $query_result->fetch_array(MYSQLI_ASSOC) ) {
+				while ( $row = $query_result->fetchArray( SQLITE3_ASSOC ) ) {
 					$record = array();
 					foreach ($row as $key => $value) {
 						if (!is_numeric($key)) {
@@ -142,11 +144,11 @@ class mysql_workspacesstore extends mysqlstore {
 		// Check if there are any hardlinks in the path - if so, this is not compatible with workspaces support;
 		$nodes_tbl = $this->tbl_prefix."nodes";
 		$epath = addslashes($path);
-		$query_string = "select distinct(parent) from $nodes_tbl nodes1 where exists ( select 1 from $nodes_tbl nodes2 where nodes1.object = nodes2.object and layer = 0 limit 1,1) and (('$epath' like concat(parent,'%')) or (parent like '$epath%'))";
+		$query_string = "select distinct(parent) from $nodes_tbl nodes1 where exists ( select 1 from $nodes_tbl nodes2 where nodes1.object = nodes2.object and layer = 0 limit 1,1) and (('$epath' like (parent || '%')) or (parent like '$epath%'))";
 
 		$query_result = $this->store_run_query($query_string);
 		if ($query_result) {
-			while ( $row = $query_result->fetch_array(MYSQLI_ASSOC) ) {
+			while ( $row = $query_result->fetchArray( SQLITE3_ASSOC ) ) {
 				if ($row['parent']) {
 					return true;
 				}
@@ -163,11 +165,11 @@ class mysql_workspacesstore extends mysqlstore {
 		if (is_array($pathList)) {
 			$statusList = $this->getLayerStatus($path);
 			foreach ($pathList as $path) {
-				$epath  = addslashes($path);
+				$epath  = $path;
 				$status = $statusList[$path];
 				if ($status) {
-					$query_string = "delete from $nodes_tbl where layer = 0 and ( path = '$epath' OR id = " . ((int)$status['new']['id']) . " )";
-					$this->store_run_query($query_string);
+					$query_string = "delete from $nodes_tbl where layer = 0 and ( path = :epath OR id = " . ((int)$status['new']['id']) . " )";
+					$this->store_run_query( $query_string, [ "epath" => $epath ] );					
 					
 					$query_string = "update $nodes_tbl set layer = 0 where layer = $layer and id = ".((int)$status['new']['id']);
 					$this->store_run_query($query_string);
@@ -176,7 +178,7 @@ class mysql_workspacesstore extends mysqlstore {
 						$query_string = "select count(object) as count from $nodes_tbl where object = ".((int)$status['old']['id']);
 						$result = $this->store_run_query($query_string);
 						if ($result) {
-							$objects = $result->fetch_array(MYSQLI_ASSOC);
+							$objects = $result->fetchArray( SQLITE3_ASSOC );
 							if ($objects['count'] == 0) {
 
 								$this->del_property($status['old']['object']);
@@ -215,7 +217,7 @@ class mysql_workspacesstore extends mysqlstore {
 						$query_string = "select count(object) as count from $nodes_tbl where object = ".((int)$status['new']['id']);
 						$result = $this->store_run_query($query_string);
 						if ($result) {
-							$objects = $result->fetch_array(MYSQLI_ASSOC);
+							$objects = $result->fetchArray( SQLITE3_ASSOC );
 							if ($objects['count'] == 0) {
 
 								$this->del_property(((int)$status['new']['object']));
@@ -259,9 +261,9 @@ class mysql_workspacesstore extends mysqlstore {
 		$layer=(int)$this->getLayer($path);
 		
 		if ($layer) {
-			$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
+			$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
 		} else {
-			$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath' and $nodes_tbl.layer = 0";
+			$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath' and $nodes_tbl.layer = 0";
 		}
 		$result["list"]= $this->store_run_query($query_string);
 		return $result;
@@ -290,7 +292,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
+				$temp = $qresult->fetchArray( SQLITE3_ASSOC );
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
 				$id = $this->addObjectToLayer($temp["path"]);
@@ -302,7 +304,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
+				$temp = $qresult->fetchArray( SQLITE3_ASSOC );
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
 				$id = $this->addObjectToLayer($temp["path"]);
@@ -355,7 +357,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
+				$temp = $qresult->fetchArray( SQLITE3_ASSOC );
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"] ?? 0;
 				$id = $this->addObjectToLayer( $temp["path"] ?? null );
@@ -367,7 +369,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 			} else {
-				$temp = $qresult->fetch_array(MYSQLI_ASSOC);
+				$temp = $qresult->fetchArray( SQLITE3_ASSOC );
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
 				$id = $this->addObjectToLayer($temp["path"]);
@@ -378,7 +380,7 @@ class mysql_workspacesstore extends mysqlstore {
 		if ($id && !$this->error) {
 			$eid = AddSlashes($id);
 			$etimestamp = AddSlashes($timestamp);
-			$query_string = "update $objects_tbl set lastchanged=FROM_UNIXTIME($etimestamp) where id = $eid";
+			$query_string = "update $objects_tbl set lastchanged=$etimestamp where id = $eid";
 			$qresult = $this->store_run_query($query_string);
 			$result = $this->dbh->affected_rows;
 		}
@@ -405,9 +407,9 @@ class mysql_workspacesstore extends mysqlstore {
 		$types_tbl=$this->tbl_prefix."types";
 		$layer=(int)$this->getLayer($epath);
 		if ($layer) {
-			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and ($nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer)) and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and ($nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer)) and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		} else {
-			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.layer = 0 and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.layer = 0 and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		}
 		$result["method"]="ls";
 		$result["path"]=$path;
@@ -437,7 +439,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$types_tbl=$this->tbl_prefix."types";
 		$layer=(int)$this->getLayer($epath);
 		
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer)) order by path";
+		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer)) order by path";
 		$result["method"]="parents";
 		$result["path"]=$path;
 		$result["list"]= $this->store_run_query($query_string);
@@ -453,7 +455,7 @@ class mysql_workspacesstore extends mysqlstore {
 		unset($sqlcompiler);
 		$qresult = $this->store_run_query($query["count_query"]);
 		if ($qresult) {
-			$result = $qresult->fetch_array(MYSQLI_ASSOC);
+			$result = $qresult->fetchArray( SQLITE3_ASSOC );
 			$count  = $result["count"];
 		}
 		return $count;
@@ -553,7 +555,7 @@ class mysql_workspacesstore extends mysqlstore {
 										$where.=" and $nodes_tbl.parent $ecompare '".addSlashes($value)."' ";
 										break;
 									case ("lastchanged") :
-										$value = date("YmdHis", $value);
+										$value = $value;
 										$where.=" and $objects_tbl.lastchanged $ecompare '".addSlashes($value)."' ";
 										break;
 								}
@@ -567,7 +569,7 @@ class mysql_workspacesstore extends mysqlstore {
 					$where.=" ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
-			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
+			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
 			if ($layer) {
 				$query_string .= " and ($nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select id from $nodes_tbl where layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
 			} else {
@@ -632,17 +634,22 @@ class mysql_workspacesstore extends mysqlstore {
 		} else {
 			$parent="..";
 		}
-		$eparent=AddSlashes($parent);
-		$epath=AddSlashes($path);
-		$edata=AddSlashes(serialize($data));
-		$etype=AddSlashes($type);
-		$epriority=(int)$priority;
 		$needunlocking = false;
+		$eparent=$parent;
+		$epath=$path;
+		$efilename=basename($path);
+
+		$edata=$this->serialize($data, $path);
+		$etype=$type;
+		$epriority=(int)$priority;
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 		$layer=(int)$this->getLayer($path);
+		$nextNodesID = "(SELECT IFNULL( MAX( id ), 0 ) + 1 FROM $nodes_tbl)";
+
+
 		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
 			$id=$this->exists($path);
 			debug("save: id before object layer check $id", "store");
@@ -651,12 +658,14 @@ class mysql_workspacesstore extends mysqlstore {
 				debug("save: id after adding object to layer $id", "store");
 				$result = $path;
 				if ($vtype) { // only change/save vtype if it is explicitly set
-					$evtype=AddSlashes($vtype);
-					$query_string="update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=NULL where id=$id"; 
+					$evtype=$vtype;
+					$query_string="update $objects_tbl set object=:edata, vtype=:evtype, lastchanged=strftime( '%s', 'now' ) where id=$id"; 
+					$qresult = $this->store_run_query($query_string, [ "edata" => $edata, "evtype" => $evtype ] );
 				} else {
-					$query_string="update $objects_tbl set object='$edata', lastchanged=NULL where id=$id"; 
+					$query_string="update $objects_tbl set object=:edata, lastchanged=strftime( '%s', 'now' ) where id=$id"; 
+					$qresult = $this->store_run_query($query_string, [ "edata" => $edata ] );
 				}
-				$qresult = $this->store_run_query($query_string);
+
 				if ($qresult !== false) {
 					$this->save_properties($properties, $id, $this); 
 					if($priority !== false) {
@@ -690,23 +699,25 @@ class mysql_workspacesstore extends mysqlstore {
 				}
 
 				$mask = substr($path, strlen($parent));
-				if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
+				if (preg_match("/^(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) { 
 					// if the last part of a path matches something like {2:id} this
 					// part will automatically create a new number, unique in this directory, and fill it in.
 					// before we proceed, we need to lock the 'nodes' and 'objects' table
-					$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
-					$qresult = $this->store_run_query($query_string);
-					if ($qresult !== false) {
-						$needunlocking = true;
+					
+					//$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
+					//$qresult = $this->store_run_query($query_string);
+					//if ($qresult !== false) {
+					//	$needunlocking = true;
 
 						$subid=$this->get_nextid($parent, $mask);
-						$path=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$path);
-						$epath=AddSlashes($path);
-					} else {
-						error("PANIC: could not obtain write lock on nodes table!");
-						$this->close();
-						exit;
-					}
+						$path=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$path);
+						$epath=$path;
+						$efilename = basename( $epath );
+					//} else {
+					//	error("PANIC: could not obtain write lock on nodes table!");
+					//	$this->close();
+					//	exit;
+					//}
 				}
 
 				if (strlen($path)>=MAX_PATH_LENGTH) {
@@ -714,18 +725,19 @@ class mysql_workspacesstore extends mysqlstore {
 					$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
 					$result=false;
 				} else {
-					$query_string="insert into $objects_tbl (layer, id,type,object,vtype) values ($layer, 0,'$etype','$edata','$evtype')";
-					$qresult = $this->store_run_query($query_string);
-					$id=$this->dbh->insert_id;
+					$query_string="insert into $objects_tbl (layer, type, object, vtype) values ($layer, :etype,:edata,:evtype)";
+					$qresult = $this->store_run_query($query_string, [ "layer" => $layer, "etype" => $etype, "edata" => $edata, "evtype" => $evtype ] );
+
+					$id=$this->dbh->querySingle( "select last_insert_rowid() as id" );
 					if ($qresult !== false && $id) {
 						if ($layer) {
 							$query_string = "delete from $nodes_tbl where path = '$epath' and layer = $layer";
 							$this->store_run_query($query_string);
 						}
-						$query_string="insert into $nodes_tbl (layer, path, parent, object, priority) values ($layer, '$epath','$eparent',$id,$epriority)";
-						$qresult = $this->store_run_query($query_string);
+						$query_string="insert into $nodes_tbl (layer,id,path,parent,object,priority) values (:layer, $nextNodesID, :epath, :eparent, $id, :epriority)";
+						$qresult = $this->store_run_query($query_string, [ "layer" => $layer, "epath" => $epath, "eparent" => $eparent, "epriority" => $epriority ] );
 						if ($qresult) {
-							if ($needunlocking) {
+							if (isset($needunlocking) && $needunlocking) {
 								$query_string = "unlock tables";
 								$this->store_run_query($query_string);
 								$needunlocking = false;
@@ -743,7 +755,7 @@ class mysql_workspacesstore extends mysqlstore {
 						$result=0;
 					}
 				}
-				if ($needunlocking) {
+				if (isset($needunlocking) && $needunlocking) {
 					$query_string = "unlock tables";
 					$this->store_run_query($query_string);
 					$needunlocking = false;
@@ -781,12 +793,8 @@ class mysql_workspacesstore extends mysqlstore {
 			return false;
 		}
 
-		$numRows = $result->num_rows;
-		if (!$numRows) {
-			return false;
-		}
 
-		$node = $result->fetch_array(MYSQLI_ASSOC);
+		$node = $result->fetchArray( SQLITE3_ASSOC );
 		if (!$node['layer']) {
 			if ( $query_string_layers ) {
 				$part = "and ($query_string_layers)";
@@ -799,7 +807,7 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$result) {
 				return false;
 			}
-			$layeredNode = $result->fetch_array(MYSQLI_ASSOC);
+			$layeredNode = $result->fetchArray( SQLITE3_ASSOC );
 			if ($layeredNode) {
 				return $layeredNode;
 			}
@@ -807,7 +815,7 @@ class mysql_workspacesstore extends mysqlstore {
 		return $node;
 	}
 
-	public function addObjectToLayer($path, $layer = null) {
+	public function addObjectToLayer( $path, $layer = null ) {
 		$this->error="";
 
 		if (is_numeric($path)) {
@@ -822,9 +830,10 @@ class mysql_workspacesstore extends mysqlstore {
 			return false;		
 		}
 		
-		$epath=AddSlashes($path);
-		$nodes_tbl=$this->tbl_prefix."nodes";
-		$objects_tbl=$this->tbl_prefix."objects";
+		$epath = $path;
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$nextNodesID = "(SELECT IFNULL( MAX( id ), 0 ) + 1 FROM $nodes_tbl)";
 		if (!isset($layer)) {
 			$layer=(int)$this->getLayer($path);
 		} else {
@@ -832,71 +841,60 @@ class mysql_workspacesstore extends mysqlstore {
 		}
 		debug("store::addObjectToLayer($path, $layer)", "store");
 
-		$query_string_node = "select id, path, parent, object, priority from $nodes_tbl where path = '$epath' and layer = 0";
-		$result = $this->store_run_query($query_string_node);
-		if (!$result) {
-			return false;
-		}
-		$node = $result->fetch_array(MYSQLI_ASSOC);
-		if (!$layer) {
+		$query_string_node = "select id, path, parent, object, priority from $nodes_tbl where path = :epath and layer = 0";
+		$node = $this->store_run_query($query_string_node, [ "epath" => $epath ] )->fetchArray( SQLITE3_ASSOC );
+		if ( !$layer ) {
 			return $node['object'];
 		}
 
-		$query_string_new_node = "select id, path, parent, object, priority from $nodes_tbl where path = '$epath' and layer = $layer";
-		$result = $this->store_run_query($query_string_new_node);
-		if (!$result) {
-			return false;
-		}
-		$newNode = $result->fetch_array(MYSQLI_ASSOC);
+		$query_string_new_node = "select id, path, parent, object, priority from $nodes_tbl where path = :epath and layer = :layer";
+		$newNode = $this->store_run_query($query_string_new_node, [ "epath" => $epath, "layer" => $layer ] )->fetchArray( SQLITE3_ASSOC );
 
 		
 		if (!$node && $newNode) { // check if newNode has been moved 
-			$query_string_node = "select id, path, parent, object, priority from $nodes_tbl where id = ".$newNode['id']." and layer = 0";
-			$result = $this->store_run_query($query_string_node);
-			if (!$result) {
-				return false;
-			}
-			$node = $result->fetch_array(MYSQLI_ASSOC);
-			if (!$node['id']) {
+			$query_string_node = "select id, path, parent, object, priority from $nodes_tbl where id = :newNodeID and layer = 0";
+			$node = $this->store_run_query($query_string_node, [ "newNodeID" => $newNode[ "id" ] ] )->fetchArray( SQLITE3_ASSOC );
+			if ( !$node['id'] ) {
 				return $newNode['object'];
 			}
 		}
 
-		$query_string_object = "select id, type, vtype, object, lastchanged from $objects_tbl where id = ".AddSlashes($node['object']);
-		$result = $this->store_run_query($query_string_object);
-		if (!$result) {
+		$query_string_object = "select id, type, vtype, object, lastchanged from $objects_tbl where id = :id ";
+		$object = $this->store_run_query( $query_string_object, [ "id" => $node['object'] ] )->fetchArray( SQLITE3_ASSOC );
+		if (!$object) {
 			return false;
 		}
 
-		$object = $result->fetch_array(MYSQLI_ASSOC);
-		if (!$newNode['object'] || $newNode['object'] == $object['id']) {
-			$insert_object_string = "insert into $objects_tbl (layer, type, vtype, object, lastchanged)
-				values ($layer, '".AddSlashes($object['type'])."',
-					'".AddSlashes($object['vtype'])."', '".AddSlashes($object['object'])."',
-					'".AddSlashes($object['lastchanged'])."'
-				)
-			";
-			$result = $this->store_run_query($insert_object_string);
+		if ( !( $newNode['object'] ?? null ) || ( $newNode['object'] == $object['id'] ) ) {
+			$insert_object_string =
+				"insert into $objects_tbl (layer, type, vtype, object, lastchanged) values ($layer, :type, :vtype, :object, :lastchanged )"
+			;
+			$result = $this->store_run_query( $insert_object_string, $object );
 			if (!$result) {
 				return false;
 			}
-			$id = $this->dbh->insert_id;
+			$id = $this->dbh->querySingle( "select last_insert_rowid() as id" );
 		} else {
 			$id = $newNode['object'];
 		}
 
-		if (!$newNode['id'] || $newNode['object'] == $object['id']) {
-			if (!$newNode['id']) {
-				$node_query_string = "insert into store_nodes (layer, id, path, parent, priority, object)
-					values($layer, ".AddSlashes($node['id']).", '$epath',
-					'".AddSlashes($node['parent'])."', '".AddSlashes($node['priority'])."',
-					$id)
-				";
+		if ( !( $newNode['id'] ?? null ) || $newNode['object'] == $object['id'] ) {
+			if ( ! ( $newNode['id'] ?? null ) ) {
+				$node_query_string =
+					"insert into store_nodes (layer, id, path, parent, priority, object) values($layer, :id, :epath, :parent, :priority, $id )"
+				;
+				$result =
+					$this->store_run_query( $node_query_string,
+						[
+							"id" => $node[ "id" ], "epath" => $epath, "parent" => $node[ "parent" ], "priority" => $node[ "priority"]
+						]
+					)
+				;
 			} else {
 				$node_query_string = "update store_nodes set object = $id where id = ".$newNode['id']." and layer = $layer";
+				$result = $this->store_run_query($node_query_string );
 			}
 			
-			$result = $this->store_run_query($node_query_string);
 			if (!$result) {
 				return false;
 			}
@@ -949,7 +947,7 @@ class mysql_workspacesstore extends mysqlstore {
 				$query_string = "select count(object) as count from $nodes_tbl where object = $object";
 				$result = $this->store_run_query($query_string);
 				if ($result) {
-					$objects = $result->fetch_array(MYSQLI_ASSOC);
+					$objects = $result->fetchArray( SQLITE3_ASSOC );
 					if ($objects['count'] == 0) {
 
 						$this->del_property($object);
@@ -969,7 +967,7 @@ class mysql_workspacesstore extends mysqlstore {
 				$query_string="select id from $nodes_tbl where path = '$epath' and layer = 0";
 				$result = $this->store_run_query($query_string);
 				if ($result) {
-					$tmp = $result->fetch_array(MYSQLI_ASSOC);
+					$tmp = $result->fetchArray( SQLITE3_ASSOC );
 					$nodeId = $tmp['id'];
 					if ($nodeId) {
 						$query_string="replace into $nodes_tbl (path, parent, object, id, layer) values ('$epath', '$eparent', 0, $nodeId, $layer)";
@@ -1031,7 +1029,7 @@ class mysql_workspacesstore extends mysqlstore {
 		}
 		$temp=$this->store_run_query($query_string);
 
-		if ($temp && ($row=$temp->fetch_array(MYSQLI_ASSOC))) {
+		if ($temp && ($row=$temp->fetchArray( SQLITE3_ASSOC ))) {
 			$object=intval($row["object"]);
 		}
 		return $object;
@@ -1057,16 +1055,16 @@ class mysql_workspacesstore extends mysqlstore {
 		$layer=(int)$this->getLayer($destination);
 		
 		$this->error="";
-		$esource=AddSlashes($source); 
+		$esource=$source; 
 		$parent=$this->make_path($destination, "..");
 		$filename=substr($destination, strlen($parent));
-		$eparent = AddSlashes($parent);
+		$eparent = $parent;
 
 		$query_string = "select path from $nodes_tbl where path = '$eparent'";
 		$qresult = $this->store_run_query($query_string);
-		if ($qresult && ($row = $qresult->fetch_array(MYSQLI_ASSOC))){
-			$eparent = AddSlashes($row['path']);
-			$edestination = AddSlashes($eparent.$filename);
+		if ($qresult && ($row = $qresult->fetchArray( SQLITE3_ASSOC ))){
+			$eparent = $row['path'];
+			$edestination = $eparent.$filename;
 
 			if (($destId = $this->exists($destination)) &&
 					! ( strtolower($destination) === strtolower($source) &&
@@ -1100,26 +1098,38 @@ class mysql_workspacesstore extends mysqlstore {
 				if ($id) {
 					if ($layer) {
 						$temp_table_sql = "create temporary table ".$nodes_tbl."_temp like $nodes_tbl";
+						$temp_table_sql =
+							"
+								create temporary table " . $nodes_tbl . "_temp (
+									id int(11) NOT NULL,
+									layer int(11) NOT NULL DEFAULT 0,
+									path char(255) DEFAULT '' NOT NULL,
+									parent char(255) DEFAULT '' NOT NULL,
+									object int(11) DEFAULT 0 NOT NULL,
+									priority int(11) DEFAULT 0 NOT NULL
+								)
+							"
+						;
 						$tmpTblResult   = $this->store_run_query($temp_table_sql);
 						if ($tmpTblResult) {
 							$destinationlength=strlen($destination);
 							$sourcelength=strlen($source);
 							$parentlength=strlen($parent);
 							// move the top path
-							$query_string="insert into ".$nodes_tbl."_temp (path, parent, layer, priority, object, id) select '$edestination', '$eparent', $layer, priority, object, id from $nodes_tbl where path='$esource' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
-							$result=$this->store_run_query($query_string);
+							$query_string="insert into ".$nodes_tbl."_temp (path, parent, layer, priority, object, id) select :edestination, :eparent, $layer, priority, object, id from $nodes_tbl where path=:esource and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
+							$result=$this->store_run_query($query_string, [ "edestination" => $edestination, "eparent" => $eparent, "esource" => $esource ] );
 							if ($result) {
 								// now move all the children
-								$query_string="insert into ".$nodes_tbl."_temp (path, parent, layer, priority, object, id) select CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)), $layer, priority, object, id from $nodes_tbl where parent like '$esource%' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
-								$result=$this->store_run_query($query_string);
+								$query_string="insert into ".$nodes_tbl."_temp (path, parent, layer, priority, object, id) select (:edestination || SUBSTRING(path, $sourcelength+1)), (:edestination || SUBSTRING(parent, $sourcelength+1)), $layer, priority, object, id from $nodes_tbl where parent like ( :esource || '%' ) and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
+								$result=$this->store_run_query($query_string, [ "edestination" => $edestination, "esource" => $esource ] );
 								if ($result) {
-									$query_string = "delete from $nodes_tbl where layer = $layer and path like '$esource%'";
-									$result = $this->store_run_query($query_string);
+									$query_string = "delete from $nodes_tbl where layer = $layer and path like ( :esource || '%' )";
+									$result = $this->store_run_query( $query_string, [ "esource" => $esource ] );
 									if ($result) {
 										if (isset($destId)) {
 											//remove tombstone from this layer
-											$query_string = "delete from $nodes_tbl where layer = $layer and path = '$edestination'";
-											$this->store_run_query($query_string);
+											$query_string = "delete from $nodes_tbl where layer = $layer and path = :edestination";
+											$this->store_run_query( $query_string, [ "edestination" => $edestination ] );
 										}
 										// copy moved nodes into our current layer
 										$query_string = "insert into $nodes_tbl select * from ".$nodes_tbl."_temp";
@@ -1139,7 +1149,7 @@ class mysql_workspacesstore extends mysqlstore {
 						$result=$this->store_run_query($query_string);
 						if ($result) {
 							// now move all the children
-							$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where parent like '$esource%' and layer = 0";
+							$query_string="update $nodes_tbl set path=('$edestination' || SUBSTRING(path, $sourcelength+1)), parent=('$edestination' || SUBSTRING(parent, $sourcelength+1)) where parent like '$esource%' and layer = 0";
 							$result=$this->store_run_query($query_string);
 						}
 					}
@@ -1176,7 +1186,7 @@ class mysql_workspacesstore extends mysqlstore {
 	public function get_nextid($path, $mask="{5:id}") {
 	/**********************************************************************
 
-		'private' function of mysql store. This will return the next
+		'private' function of sqlite store. This will return the next
 		'autoid' for $path.
 
 	**********************************************************************/
@@ -1209,7 +1219,7 @@ class mysql_workspacesstore extends mysqlstore {
 			}
 			$result = $this->store_run_query($query_string);
 			if ($result) {
-				$row = $result->fetch_array(MYSQLI_ASSOC);
+				$row = $result->fetchArray( SQLITE3_ASSOC );
 				$subid  = (int)$row["id"];
 			}
 			$subid=$subid+1;

@@ -33,6 +33,8 @@ CREATE TABLE ".$this->tbl_prefix."objects (
 	vtype varchar(32) DEFAULT '' NOT NULL,
 	lastchanged TIMESTAMP,
 	PRIMARY KEY (id),
+	KEY type (type),
+	KEY vtype (vtype),
 	KEY lastchanged (lastchanged)
 ) ENGINE " . $this->engine ;
 		$queries[2]["msg"]="creating properties table.";

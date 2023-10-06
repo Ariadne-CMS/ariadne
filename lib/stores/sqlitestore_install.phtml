@@ -72,6 +72,28 @@ CREATE TABLE " . $tablename . " (
 		$queries[] =
 			[
 				"msg" =>
+					"creating index 'type' on objects table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_type on $tablename (type)"
+			]
+		;
+
+
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'vtype' on objects table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_vtype on $tablename (vtype)"
+			]
+		;
+
+
+		$queries[] =
+			[
+				"msg" =>
 					"creating index 'lastchanged' on objects table"
 				,
 				"query_string" =>

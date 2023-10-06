@@ -473,7 +473,7 @@ class sqlitestore extends store{
 										$where.=" and $nodes_tbl.parent $ecompare '".addSlashes($value)."' ";
 										break;
 									case ("lastchanged") :
-										$value = date("YmdHis", $value);
+										$value = $value;
 										$where.=" and $objects_tbl.lastchanged $ecompare '".addSlashes($value)."' ";
 										break;
 								}
@@ -909,8 +909,9 @@ class sqlitestore extends store{
 			$errorCode = $this->dbh->lastErrorCode();
 			$errorMessage = $this->dbh->lastErrorMsg();
 			$this->error = "ERROR: Sqlite: $errorCode: $errorMessage";
-			echo( "Sqlite::store_run_query: " . $this->error);// , "store" );
-			echo( "Sqlite::store_run_query: " . preg_replace( "|[\t \n]+|", "  ", $query_string ));//, "store" ); 
+			error_log( "Sqlite::store_run_query: " . $this->error);// , "store" );
+			error_log( "Sqlite::store_run_query: " . preg_replace( "|[\t \n]+|", "  ", $query_string ));//, "store" ); 
+			error_log( "Sqlite::store_run_query: " . print_r( $params, true ) );
 			return false;
 		}
 
@@ -928,8 +929,9 @@ class sqlitestore extends store{
 			$errorCode = $this->dbh->lastErrorCode();
 			$errorMessage = $this->dbh->lastErrorMsg();
 			$this->error = "ERROR: Sqlite: $errorCode: $errorMessage";
-			echo( "Sqlite::store_run_query: " . $this->error);// , "store" );
-			echo( "Sqlite::store_run_query: " . preg_replace( "|[\t \n]+|", "  ", $query_string ));//, "store" ); 
+			error_log( "Sqlite::store_run_query: " . $this->error);// , "store" );
+			error_log( "Sqlite::store_run_query: " . preg_replace( "|[\t \n]+|", "  ", $query_string ));//, "store" ); 
+			error_log( "Sqlite::store_run_query: " . print_r( $params, true ) );
 			return false;
 		}
 		return $query;
