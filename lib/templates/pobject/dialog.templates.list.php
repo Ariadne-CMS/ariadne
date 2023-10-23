@@ -317,7 +317,7 @@
 							}
 						}
 
-						$icon_src = $ARCurrent->arTypeIcons[$type]["small"] ? $ARCurrent->arTypeIcons[$type]["small"] : $this->call("system.get.icon.php", array("type" => $type, "size" => "small"));
+						$icon_src = ( $ARCurrent->arTypeIcons[$type]["small"] ?? null ) ? $ARCurrent->arTypeIcons[$type]["small"] : $this->call("system.get.icon.php", array("type" => $type, "size" => "small"));
 						$icon_alt = $type;
 						?><tr valign="middle">
 							<td class="svn">

@@ -135,7 +135,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 					$nlsarray = $ARCurrent->{$varName};
 				}
 				$ARCurrent->arResult = $arResult;
-				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$nlsarray);
+				$this->languages[$nls] = array_merge((array)($this->languages[$nls] ?? null), (array)$nlsarray);
 			}
 		}
 		return $this;

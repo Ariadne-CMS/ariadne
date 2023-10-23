@@ -360,7 +360,7 @@ class htmlcleaner
 					do {
 						$closed = array_pop($delete_stack);
 					} while ($closed["tag"] && $closed["tag"] != $part->nodeName);
-					if ($closed["delete"]) {
+					if ($closed["delete"] ?? null) {
 						unset($part);
 					}
 				}
@@ -380,7 +380,7 @@ class htmlcleaner
 			}
 
 
-			if ($part && is_array($rewrite_rules)) {
+			if (($part ?? null) && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
 					if (preg_match('/'.$tag_rule.'/is', $part->nodeName)) {
 						if (is_array($attrib_rules)) {
@@ -434,7 +434,7 @@ class htmlcleaner
 					}
 				}
 			}
-			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false) {
+			if (($part ?? null) && strstr($part->nodeValue,'<?xml:namespace')===false) {
 				$return .= $part->toString();
 			}
 		}

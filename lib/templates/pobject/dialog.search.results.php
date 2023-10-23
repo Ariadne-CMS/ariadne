@@ -93,7 +93,7 @@
 <?php
 			$this->putvar("oddeven", "odd");
 			$this->putvar("first", "true");
-			if( !$this->find($arPath, $query, "dialog.search.results.show.php", "", 0, 0) ){
+			if( !$this->find($arPath ?? null, $query, "dialog.search.results.show.php", "", 0, 0) ){
 				if( $this->error) {
 					echo "<tr><td colspan=5>";
 					error($this->error);

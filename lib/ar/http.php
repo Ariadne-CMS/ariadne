@@ -57,16 +57,16 @@
 
 			switch($method) {
 				case 'GET' :
-					$result = isset($name) ? $_GET[$name] : $_GET;
+					$result = isset($name) ? ( $_GET[$name] ?? null ) : $_GET;
 				break;
 				case 'POST' :
-					$result = isset($name) ? $_POST[$name] : $_POST;
+					$result = isset($name) ? ( $_POST[$name] ?? null ) : $_POST;
 				break;
 				case 'COOKIE' :
-					$result = isset($name) ? $_COOKIE[$name] : $_COOKIE;
+					$result = isset($name) ? ( $_COOKIE[$name] ?? null ) : $_COOKIE;
 				break;
 				case 'SERVER' :
-					$result = isset($name) ? $_SERVER[$name] : $_SERVER;
+					$result = isset($name) ? ( $_SERVER[$name] ?? null ) : $_SERVER;
 				break;
 				default :
 					$result = !isset($name) ? $_REQUEST :

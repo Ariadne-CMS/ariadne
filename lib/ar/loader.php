@@ -93,7 +93,7 @@
 		public static function id() {
 			global $ARCurrent;
 
-			if ($ARCurrent->session) {
+			if ($ARCurrent->session ?? null) {
 				return $ARCurrent->session->id;
 			} else {
 				return 0;
@@ -103,7 +103,7 @@
 		public static function getvar( $name ) {
 			global $ARCurrent;
 
-			if ($ARCurrent->session) {
+			if ($ARCurrent->session ?? null) {
 				return $ARCurrent->session->get($name);
 			} else {
 				return false;
@@ -113,7 +113,7 @@
 		public static function putvar( $name, $value ) {
 			global $ARCurrent;
 
-			if ($ARCurrent->session) {
+			if ($ARCurrent->session ?? null) {
 				return $ARCurrent->session->put($name, $value);
 			} else {
 				return false;

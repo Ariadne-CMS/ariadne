@@ -1181,13 +1181,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if ($this->CheckAdmin($AR->user)) {
 			$result=1;
 		} else if ($grants=$AR->user->grants[$path]??null) {
-			$result=$grants[$grant];
+			$result=$grants[$grant] ?? null;
 		} else {
 			$grants=$this->GetValidGrants();
 			$result=$grants[$grant]??null;
 		}
 		if ($modifier && is_array($result)) {
-			$result=$result[$modifier];
+			$result=$result[$modifier] ?? null;
 		}
 		return $result;
 	}
@@ -1293,7 +1293,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			}
 			unset($ARCurrent->arResult);
 			if (isset($arConfig['library']) && is_array($arConfig['library'])) {
-				if (!$ARConfig->libraries[$this->path]) {
+				if (! ( $ARConfig->libraries[$this->path] ?? null ) ) {
 					$ARConfig->libraries[$this->path] = array();
 				}
 				foreach ($arConfig['library'] as $libName => $libPath) {
@@ -1866,10 +1866,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 								return false;
 							}
 						} else {
-							$this->nlsdata=$this->data->$nls;
+							$this->nlsdata=$this->data->$nls ?? null;
 						}
 					} else {
-						$this->nlsdata=$this->data->$reqnls;
+						$this->nlsdata=$this->data->$reqnls ?? null;
 					}
 				}
 				$ARCurrent->nolangcheck=1;
@@ -3008,7 +3008,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function _getsessionvar($varname) {
 	global $ARCurrent;
 
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			return $ARCurrent->session->get($varname);
 		} else {
 			return false;
@@ -3017,7 +3017,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 	public function _setsessiontimeout($timeout = 0) {
 	global $ARCurrent;
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			return $ARCurrent->session->setTimeout($timeout);
 		} else {
 			return false;
@@ -3027,7 +3027,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function _killsession() {
 	global $ARCurrent;
 
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			$ARCurrent->session->kill();
 			unset($ARCurrent->session);
 		}
@@ -3035,7 +3035,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 	public function _sessionid() {
 	global $ARCurrent;
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			return $ARCurrent->session->id;
 		} else {
 			return 0;

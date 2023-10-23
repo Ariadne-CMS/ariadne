@@ -104,7 +104,7 @@ class URL {
 			$page = preg_replace_callback(
 				"%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%",
 				function ($matches) use ($me, $site) {
-					return $me->make_url($site, $matches[1]);
+					return $me->make_url($site, $matches[1] ?? null);
 				},
 				$page
 			);
@@ -112,7 +112,7 @@ class URL {
 			$page = preg_replace_callback(
 				"%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%",
 				function ($matches) use ($me,$site) {
-					return $me->make_url($site, $matches[1]);
+					return $me->make_url($site, $matches[1] ?? null);
 				},
 				$page
 			);
@@ -126,7 +126,7 @@ class URL {
 		$page = preg_replace_callback(
 			"%\\{arCurrentPage(?:/([^}]+))?\\}%",
 			function($matches) use ($me) {
-				return $me->make_local_url('', $matches[1]);
+				return $me->make_local_url('', $matches[1] ?? null);
 			},
 			$page
 		);
@@ -157,8 +157,8 @@ class URL {
 		$regExp = '|\{arCall:(.*?)\}|i';
 
 		while (preg_match($regExp, $page, $matches)) {
-			if( !$settings ) {
-				if( !$ARCurrent->arEditorSettings) {
+			if( !($settings ?? null) ) {
+				if( !($ARCurrent->arEditorSettings ?? null) ) {
 					$settings = $me->call("editor.ini");
 				} else {
 					$settings = $ARCurrent->arEditorSettings;
