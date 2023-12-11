@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
     /******************************************************************
      loader.php                                            Muze Ariadne
@@ -32,36 +33,41 @@
 
     ******************************************************************/
 
-	require_once("./ariadne.inc");
+	$ariadne = "../lib";
+	$ARLoader = "itf";
 	require_once($ariadne."/bootstrap.php");
 	require_once( AriadneBasePath . "/modules/mod_itf/default.php" );
 
-	$ITF = new mod_ITF();
-	$ITF->record();
+	$ITF = new mod_ITF( [ "project" => 1 ] );
+	$ITF->Init();
+	$ITF->InitWS();
 
-
-	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
-		include_once($store_config['code']."modules/mod_workspace.php");
-		$layer = workspace::getLayer($workspace);
-		if (!$layer) {
-			$layer = 1;
-		}
-
-		if ($wspaths = getenv("ARIADNE_WORKSPACE_PATHS")) {
-			$wspaths = explode(";", $wspaths);
-			foreach ($wspaths as $wspath) {
-				if ($wspath != '') {
-					$store_config['layer'][$wspath] = $layer;
+	if ( $argc < 2 ) {
+		die( "./itf.loader.php [record]\n" );
+	}
+	$recordID = (int)$argv[ 1 ];
+	$record = $ITF->getRecord( $recordID );
+	$params = unserialize( $record[ "params" ] );
+	foreach ( $params as $field => $data ) {
+		switch ( $field ) {
+			case '_ENV':
+				foreach ( $data as $key => $value ) {
+					putenv( $key . "=" . $value );
 				}
-			}
-		} else {
-			$store_config['layer'] = array('/' => $layer );
+				${$field} = $data;
+			break;
+			default:
+				${$field} = $data;
+			break;
 		}
 	}
 
 
+	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
+		include_once($store_config['code']."modules/mod_workspace.php");
+		$store_config['layer'] = array( '/' => 1 );
+	}
 
-	ldCheckAllowedMethods($_SERVER['REQUEST_METHOD']);
 
 	if (!isset($AR_PATH_INFO)) {
 		$path_info = $_SERVER['PATH_INFO'];
@@ -98,6 +104,8 @@
 		}
 		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise.
 
-		ldProcessCacheControl();
+
+//		ldProcessCacheControl();
 		ldProcessRequest($AR_PATH_INFO);
 	}
+?>

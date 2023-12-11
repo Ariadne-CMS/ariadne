@@ -1,0 +1,223 @@
+#!/usr/bin/env php
+<?php
+
+	$ARLoader = 'cmd';
+	$currentDir = getcwd();
+	$ariadne = dirname($currentDir).'/lib/';
+
+	if (!@include_once($ariadne."/bootstrap.php")) {
+		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		$ariadne = dirname(getcwd()).'/lib/';
+
+		if(!include_once($ariadne."/bootstrap.php")){
+			echo "could not find Ariadne";
+			exit(1);
+		}
+
+		chdir($currentDir);
+	}
+
+	require_once( $ariadne . "modules/mod_itf/default.php" );
+
+
+	$inst_store = $store_config["dbms"] . "store";
+	$store = new $inst_store( AriadneBasePath, $store_config );
+
+
+	$ITF = new mod_ITF();
+	$ITF->Init();
+
+	switch ( $argv[ 1 ] ?? null ) {
+		case 'create':
+			$name = $argv[ 2 ] ?? null;
+			$description = $argv[ 3 ] ?? "";
+			if ( !$name ) {
+				die( "please supply a name and optionally a description\n" );
+			}
+			$query_string =
+				"insert into project ( name, description ) values ( :name, :description )"
+			;
+			$ITF->DBQuery( $query_string, [ "name" => $name, "description" => $description ] );
+			$id = $ITF->dbh->querySingle( "select last_insert_rowid() as id" );
+
+			$query_string =
+				"select * from project where id = :id"
+			;
+			$query = $ITF->DBQuery( $query_string, [ "id" => $id ] );
+			while ( $row = $query->fetchArray( SQLITE3_ASSOC ) ) {
+				echo json_encode( $row, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . "\n";
+			}
+
+		break;
+		case 'list':
+			$id = (int)($argv[ 2 ] ?? 0);
+			if ( !$id ) {
+				die( "Please enter a project id\n" );
+			}
+			$query_string =
+				"select id, project, timestamp, url from record where project = :id"
+			;
+			$query = $ITF->DBQuery( $query_string, [ "id" => $id ] );
+			$c = 0;
+			while ( $row = $query->fetchArray( SQLITE3_ASSOC ) ) {
+				$c++;
+				echo json_encode( $row, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . "\n";
+			}
+			if ( $c === 0 ) {
+				echo "No records found for project with id '$id'\n";
+			}
+
+		break;
+		case 'delete':
+			$id = (int)($argv[ 2 ] ?? 0);
+			if ( !$id ) {
+				die( "Please enter a project id to delete\n" );
+			}
+			$query_string =
+				"select name from project where id = :id"
+			;
+			$result = $ITF->DBQuery( $query_string, [ "id" => $id ] )->fetchArray( SQLITE3_ASSOC );
+			if ( !is_array( $result ) || !count( $result ) ) {
+				die( "No project with id '$id' to delete.\n" );
+			}
+			$query_string =
+				"delete from record where project = :id"
+			;
+			$ITF->DBQuery( $query_string, [ "id" => $id ] );
+			$query_string =
+				"delete from commits where id in ( select commits.id from record, commits where record.id = commits.record and record.project = :id )"
+			;
+			$ITF->DBQuery( $query_string, [ "id" => $id ] );
+			$query_string =
+				"delete from project where id = :id"
+			;
+			$ITF->DBQuery( $query_string, [ "id" => $id ] );
+			echo "Project '" . $result[ "name" ] . "' deleted\n";
+		break;
+		case 'replay':
+			$id = (int)($argv[ 2 ] ?? 0);
+			if ( !$id ) {
+				die( "Please enter a project id\n" );
+			}
+			$query_string =
+				"select record.id as recordID, commits.id as commitID from record left join commits on record.id = commits.record where record.project = :id"
+			;
+			$query = $ITF->DBQuery( $query_string, [ "id" => $id ] );
+			$c = 0;
+			while ( $row = $query->fetchArray( SQLITE3_ASSOC ) ) {
+				$c++;
+				echo $row[ "recordID" ] . ": ";
+
+				$cc = 0;
+				$fp = popen( $ariadne . "modules/mod_itf/loader.php " . $row[ "recordID" ] . " 1>/dev/null" . $row[ "recordID" ], 'r' );
+				while ( !feof( $fp ) ) {
+					$data = fread( $fp, 4096 );
+					echo $data;
+					if ( strlen( $data ) > 0 ) {
+						$cc++;
+					}
+				}
+				pclose( $fp );
+				if ( $cc > 0 ) {
+					echo "\n";
+				}
+
+				if ( $row[ "commitID" ] ) {
+					$currentDiff = $ITF->getDiff( $id );
+					$recordedDiff = $ITF->loadDiff( $row[ "commitID" ] );
+					if ( $currentDiff !== $recordedDiff ) {
+						fputs( STDERR, "recorded:\n$recordedDiff\n\n" );
+						fputs( STDERR, "current:\n$currentDiff\n\n" );
+						fputs( STDERR, "error in diff @record $id\n" );
+					} else {
+						echo "diff ok\n";
+					}
+					$pathList = array_keys( $store->getLayerStatus( "/" ) );
+					$store->commitLayer( "/", $pathList );
+
+				} else {
+					echo "nop\n";
+				}
+			}
+			if ( $c === 0 ) {
+				echo "No records found for project with id '$id'\n";
+			}		
+		break;
+		case 'projects':
+			$query_string =
+				"select * from project order by id desc"
+			;
+			$query = $ITF->DBQuery( $query_string );
+			while ( $row = $query->fetchArray( SQLITE3_ASSOC ) ) {
+				echo json_encode( $row, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . "\n";
+			}
+		break;
+		case 'diff':
+			$id = (int)( $argv[ 2 ] ?? 0 );
+			if ( !$id ) {
+				die( "Please enter a project id\n" );
+			}
+			$ITF->printDiff( $id );
+		break;
+		case 'commit':
+			$id = (int)( $argv[ 2 ] ?? 0 );
+			if ( !$id ) {
+				die( "Please enter a project id\n" );
+			}
+			$ITF->commitDiff( $id );
+		break;
+		case 'start':
+			$id = (int)($argv[ 2 ] ?? 0);
+			if ( !$id ) {
+				die( "Please enter a project id\n" );
+			}
+
+			$query_string =
+				"update project set is_recording = 1 where id = :id"
+			;
+			$ITF->DBQuery( $query_string, [ "id" => $id ] );
+
+			$query_string =
+				"select * from project where id = :id"
+			;
+			$query = $ITF->DBQuery( $query_string, [ "id" => $id ] );
+			$c = 0;
+			while ( $row = $query->fetchArray( SQLITE3_ASSOC ) ) {
+				$c++;
+				echo json_encode( $row, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . "\n";
+			}
+			if ( $c === 0 ) {
+				echo "No project with id '$id' found to start\n";
+			} else {
+				$query_string =
+					"update project set is_recording = 0 where id != :id"
+				;
+				$ITF->DBQuery( $query_string, [ "id" => $id ] );				
+			}
+		break;
+		case 'stop':
+			$id = (int)($argv[ 2 ] ?? 0);
+			if ( !$id ) {
+				die( "Please enter a project id\n" );
+			}
+			$query_string =
+				"update project set is_recording = 0 where id = :id"
+			;
+			$ITF->DBQuery( $query_string, [ "id" => $id ] );
+
+			$query_string =
+				"select * from project where id = :id"
+			;
+			$query = $ITF->DBQuery( $query_string, [ "id" => $id ] );
+			$c = 0;
+			while ( $row = $query->fetchArray( SQLITE3_ASSOC ) ) {
+				$c++;
+				echo json_encode( $row, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . "\n";
+			}
+			if ( $c === 0 ) {
+				echo "No project with id '$id' found to stop\n";
+			}
+		break;
+	}
+
+?>

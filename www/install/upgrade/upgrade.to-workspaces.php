@@ -37,7 +37,7 @@
 	require_once("../../ariadne.inc");
 	require_once($ariadne."/bootstrap.php");
 
-	$store_config["dbms"] = "mysql_workspaces";
+	$store_config["dbms"] = $store_config["dbms"] . "_workspaces";
 	require_once($ariadne."/stores/".$store_config["dbms"]."store_install.phtml");
 
 
@@ -45,11 +45,11 @@
 	$inst_store = $store_config["dbms"]."store_install";
 	$store=new $inst_store($root,$store_config);
 
-	$session_config["dbms"] = "mysql_workspaces";
+	$session_config["dbms"] = $session_config["dbms"] . "_workspaces";
 	$inst_store = $session_config["dbms"]."store_install";
 	$sessionstore=new $inst_store(".",$session_config);
 
-	$cache_config["dbms"] = "mysql_workspaces";
+	$cache_config["dbms"] = $cache_config["dbms"] . "_workspaces";
 	$inst_store = $cache_config["dbms"]."store_install";
 	$cachestore=new $inst_store(".",$cache_config);
 
