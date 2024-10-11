@@ -47,6 +47,7 @@ define("PT_ARRAY_OP",               210);
 define("PT_CLASS_OPERATOR",         209);
 define("PT_OBJECT_OPERATOR",        208);
 define("PT_ASSIGN_OP",              207);
+define("PT_FOREACH",                206);
 
 define("YY_STATE_HTML",               1);
 define("YY_STATE_PINP",               2);
@@ -62,6 +63,7 @@ class scanner {
 		$this->YYLANG_CONSTRUCTS = Array(
 			"new" => PT_NEW,
 			"function" => PT_FUNCTION,
+			"foreach" => PT_FOREACH,
 			"global" => PT_GLOBAL,
 			"return" => PT_RETURN,
 			"__file__" => PT_FILENAME,
@@ -369,6 +371,33 @@ class scanner {
 							if ($yych === '>') {
 								$token	= PT_ARRAY_OP;
 								$yych	= $YYBUFFER[++$YYCURSOR];
+							} else if ( $yych === '=' ) {
+								$token = PT_UNPARSED; // to make sure that this one does not get recognized as an assign op
+								$yych	= $YYBUFFER[++$YYCURSOR];
+								if ( $yych === '=' ) {
+									$token = PT_UNPARSED; // to make sure that this one does not get recognized as an assign op
+									$yych	= $YYBUFFER[++$YYCURSOR];
+								}
+							}
+							while ($YYCLASSES["NOISE"][$yych] ?? null) {
+								if ($yych == "\n") {
+									$this->YYLINE++;
+								}
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
+							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+							return $token;
+						break;
+						case '!':
+							$yych	= $YYBUFFER[++$YYCURSOR];
+							$token	= PT_ASSIGN_OP;
+							if ( $yych === '=' ) {
+								$token = PT_UNPARSED; // to make sure that this one does not get recognized as an assign op
+								$yych	= $YYBUFFER[++$YYCURSOR];
+								if ( $yych === '=' ) {
+									$token = PT_UNPARSED; // to make sure that this one does not get recognized as an assign op
+									$yych	= $YYBUFFER[++$YYCURSOR];
+								}
 							}
 							while ($YYCLASSES["NOISE"][$yych] ?? null) {
 								if ($yych == "\n") {
@@ -380,6 +409,33 @@ class scanner {
 							return $token;
 						break;
 
+						case '+':
+						case '*':
+						case '|':
+							$token  = PT_UNPARSED;
+							$result = $yych;
+							$yych	= $YYBUFFER[++$YYCURSOR];
+							switch ( true ) {
+								case ( $result === '+' && $result === $yych ):
+								case ( in_array( $yych, [ "=" ] ) ):
+									$yych	= $YYBUFFER[++$YYCURSOR];
+									$token = PT_ASSIGN_OP;
+								break;
+							}
+							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+							return $token;
+						break;
+
+						case '>':
+							$token  = PT_UNPARSED;
+							$yych	= $YYBUFFER[++$YYCURSOR];
+							if ( $yych === '=' ) {
+								$token = PT_UNPARSED; // to make sure that this one does not get recognized as an assign op
+								$yych	= $YYBUFFER[++$YYCURSOR];
+							}
+							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+							return $token;
+						break;
 
 						case '<':
 							$yych = $YYBUFFER[++$YYCURSOR];
@@ -444,6 +500,10 @@ class scanner {
 									} else {
 										$result = "<<";
 									}
+								break;
+								case '=':
+									$yych	= $YYBUFFER[++$YYCURSOR];
+									$result = "<=";
 								break;
 								default:
 									$result = "<";
@@ -555,6 +615,16 @@ class scanner {
 							}
 							
 						break;
+						case '.':
+							$token = PT_UNPARSED;
+							$yych=$YYBUFFER[++$YYCURSOR];
+							if ( in_array( $yych, [ "=" ] ) ) {
+								$yych	= $YYBUFFER[++$YYCURSOR];
+								$token = PT_ASSIGN_OP;
+							}
+							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+							return $token;
+						break;
 						case '`':
 							$result = $yych;
 							++$YYCURSOR;
@@ -599,6 +669,10 @@ class scanner {
 								$yych = $YYBUFFER[++$YYCURSOR];
 							} else {
 								$token = PT_UNPARSED;
+								if ( in_array( $yych, [ "-", "=" ] ) ) {
+									$yych	= $YYBUFFER[++$YYCURSOR];
+									$token = PT_ASSIGN_OP;
+								}
 							}
 							while ($YYCLASSES["NOISE"][$yych]??null) {
 								if ($yych == "\n") {
@@ -902,8 +976,9 @@ class pinp {
 		return $result;
 	}
 
-	function parse_func_call_args() {
+	function parse_func_call_args( $in_special = "" ) {
 		$result = '';
+		$i = 0;
 		do {
 			// T_PAR_OPEN or T_COMMA 
 			$this->next_token();
@@ -913,9 +988,23 @@ class pinp {
 				// also accept an empty argument
 				continue;
 			}
-			$result .= $this->parse_statement();
+			$parsed = $this->parse_statement();
+			switch ( true ) {
+				case ($in_special === "ar::untaint" && in_array( $i, [ 0 ] ) ):
+				case ($in_special === "unset"):
+				case ($in_special === "isset"):
+					// only fix the first param (everything on the outersides)
+					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
+				break;
+				case ($in_special === "list"):
+					$parsed = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
+				break;
+			}
 
+			$result .= $parsed;
+			$i++;
 		} while (!$this->error && ($this->token_ahead == PT_COMMA));
+
 		return $result;
 	}
 
@@ -973,6 +1062,7 @@ class pinp {
 				$this->next_token();
 				$index = $this->var_prefix.$this->token_value;
 			}
+
 			$array_index = $this->parse_array_operator($inDQString);
 			if ($this->error) {
 				return false;
@@ -997,7 +1087,7 @@ class pinp {
 			} else if ($this->token_ahead == PT_OBJECT_OPERATOR) {
 				$result = "$var_prefix"."{".$index."}".$array_index."$noise";
 			} else {
-				$result = "$var_prefix"."{'".$index."'}".$array_index."$noise";
+				$result = "$var_prefix"."{".$index."}".$array_index."$noise";
 			}
 		} else {
 			$this->error = "Unexpected '".$this->token_ahead_value."' following '".$this->token_value."' at line: ".$this->scanner->YYLINE;
@@ -1047,6 +1137,7 @@ class pinp {
 		$result = '';
 		while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
 			$this->next_token();
+			$result = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $result );
 			$result .= $this->token_value.$this->parse_var_index("", "_", $inDQString);
 			if ($this->token == PT_PAR_CLOSE) {
 				break;
@@ -1062,6 +1153,7 @@ class pinp {
 		if ($this->error) {
 			return false;
 		}
+		$result = "($result ?? null)!!!!";
 		return $result;
 	}
 
@@ -1132,11 +1224,29 @@ class pinp {
 				if ($this->token == PT_PAR_CLOSE) {
 					$parseReturnValues = true;
 				} else if ($this->token_ahead == PT_OBJECT_OPERATOR) {
+//echo "HIER3\n";
+//echo "BEFORE: |$result|\n";
+					$result = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!][ \r\n\t]*\$/", "\\1", $result );
+//echo "AFTER: |$result|\n";
 					$result .= $this->parse_object_operator($inDQString);
+					$result = "($result ?? null)!!!!";
 				}
 				if ($this->token == PT_PAR_CLOSE) {
 					$parseReturnValues = true;
 				}
+			break;
+
+			case PT_BRACKET_OPEN:
+				$result = $this->parse_func_call_args();
+				if ($this->error) {
+					return false;
+				}
+				if ($this->token_ahead !== PT_BRACKET_CLOSE) {
+					$this->error = "Expecting ']' at line " . $this->scanner->YYLINE;
+					return false;
+				}
+				$this->next_token();
+				$result .= $this->token_value;
 			break;
 
 			case PT_IDENT:
@@ -1152,6 +1262,7 @@ class pinp {
 					} else {
 						$this->next_token();
 						$result .= "_".$this->token_value;
+						$iname .= "::" . chop(strtolower($this->token_value));
 					}
 					$identSet = true;
 				}
@@ -1164,7 +1275,8 @@ class pinp {
 							$result = $this->token_value;
 						}
 					}
-					$result .= $this->parse_func_call_args();
+
+					$result .= $this->parse_func_call_args( $iname );
 					if ($this->error) {
 						return false;
 					}
@@ -1176,7 +1288,9 @@ class pinp {
 					$this->next_token();
 
 					$identSet = true;
-					$parseReturnValues = true;
+					if ( $iname !== "foreach" ) {
+						$parseReturnValues = true;
+					}
 				}
 				if (!$identSet) {
 					$result = $this->token_value;
@@ -1239,6 +1353,7 @@ class pinp {
 
 
 	function parse_multipart_string() {
+		$hereDoc = null;
 		$this->scanner->YYSTATE = YY_STATE_DQ;
 		if ($this->token_ahead == PT_HEREDOC) {
 			$this->next_token();
@@ -1283,7 +1398,7 @@ class pinp {
 					if (!($hereDoc??null)) {
 						$result .= '".('.$stmt.')."';
 					} else {
-						$result .= '${"hereDocResult".substr($hereDocResult = ('.$stmt.'), 0, 0)}';
+						$result .= '{${"hereDocResult".substr($hereDocResult = ('.$stmt.'), 0, 0)}}';
 					}
 					$result .= substr($this->token_ahead_value, 1);
 					$this->scanner->YYSTATE = YY_STATE_DQ;
@@ -1301,7 +1416,7 @@ class pinp {
 						if (!($hereDoc??null)) {
 							$result .= '".('.$varResWithoutNoise.')."';
 						} else {
-							$result .= '${"hereDocResult".substr($hereDocResult = ('.$varResWithoutNoise.'), 0, 0)}';
+							$result .= '{${"hereDocResult".substr($hereDocResult = ('.$varResWithoutNoise.'), 0, 0)}}';
 						}
 						$result .= substr($varRes, strlen($varResWithoutNoise));
 						$this->push_back_token();
@@ -1322,7 +1437,7 @@ class pinp {
 					if (!($hereDoc??null)) {
 						$result .= '".('.$stmt.')."';
 					} else {
-						$result .= '${"hereDocResult".substr($hereDocResult = ('.$stmt.'), 0, 0)}';
+						$result .= '{${"hereDocResult".substr($hereDocResult = ('.$stmt.'), 0, 0)}}';
 					}
 					$result .= substr($this->token_ahead_value, 1);
 					$this->scanner->YYSTATE = YY_STATE_DQ;
@@ -1379,9 +1494,30 @@ class pinp {
 						$result .= $expression;
 					}
 				break;
+
 				case PT_USE:
 				case PT_AS:
 					$this->error = "Aliasing/Importing is not supported yet. Error at line: ".$this->scanner->YYLINE;
+				break;
+				case PT_FOREACH:
+					$parsed = $this->token_ahead_value;
+					$this->next_token();
+					$parsed .= $this->parse_func_call_args();
+					$matches = [];
+					preg_match( "/[ )\\]!]+as[ ([]+/i", $parsed, $matches, PREG_OFFSET_CAPTURE );
+					$offset = $matches[ 0 ][ 1 ] + strlen( $matches[ 0 ][ 0 ] );
+					$p1 = substr( $parsed, 0, $offset - 1 );
+					$p2 = substr( $parsed, $offset - 1 );
+
+					$p2 = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $p2 );
+					$result = $result . $p1 . $p2;
+					if ( $this->token_ahead != PT_PAR_CLOSE ) {
+						$this->error = "Expected ')' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;
+						return false;
+					}
+					$result .= $this->token_ahead_value;
+					$this->next_token();
+					return $result;
 				break;
 				case PT_FUNCTION:
 					$result .= $this->token_ahead_value;
@@ -1446,6 +1582,7 @@ class pinp {
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 					$result .= $this->parse_catch_statement();
+					return $result;
 				break;
 				case PT_STRING:
 					$result .= $this->token_ahead_value;
@@ -1455,11 +1592,17 @@ class pinp {
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 				break;
-				case PT_HEREDOC:
 				case PT_DQ_STRING:
 					$result .= $this->parse_multipart_string();
 				break;
+				case PT_HEREDOC:
+					$result .= $this->parse_multipart_string();
+					// FIXME: does not support 7.3+ style heredoc as of yet
+					return $result;
+				break;
+
 				case PT_OBJECT_OPERATOR:
+					$result = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $result );
 					$result .= "->";
 					$this->next_token();
 				break;
@@ -1467,10 +1610,21 @@ class pinp {
 				case PT_TRY:
 
 				case PT_NUMBER:
-				case PT_ASSIGN_OP:
 				case PT_UNPARSED:
 					$result .= $this->token_ahead_value;
 					$this->next_token();
+				break;
+				case PT_ASSIGN_OP:
+					$this->next_token();
+					if ( in_array( trim( $this->token_value ), [ "++", "--" ] ) && ( $this->token_ahead === PT_VAR_REFERENCE ) ) {
+						$result .= $this->token_value;
+						$rightpart = $this->parse_expression();
+						$rightpart = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $rightpart );
+						$result .= $rightpart;						
+					} else {
+						$result = preg_replace( "/\\(((.+?|[\n]+)+)[ ][?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $result );
+ 						$result .= $this->token_value;
+					}
 				break;
 				case PT_END_STMT:
 					$result .= $this->token_ahead_value;
@@ -1602,10 +1756,12 @@ class pinp {
 				$this->error = "Unexpected '".$this->token_ahead_value."' at line ".$this->scanner->YYLINE; //no closing pinp tag found";
 			}
 		}
-
+		$this->new_template = preg_replace( "/[!][!][!][!]/", "", $this->new_template );
 		if (!$this->error) {
 			$this->syntax_test();
 		}
+//		echo "\n\n".$this->new_template;
+//exit;
 		return $this->new_template;
 	}
 
@@ -1614,12 +1770,30 @@ class pinp {
 			$template = $this->new_template;
 		}
 		$this->error = null;
+		$pipes = [];
+		$proc = proc_open( "/usr/bin/php -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
+		if ( !is_resource( $proc ) ) {
+			die( "Could not open php!\n" );
+		}
+		fwrite( $pipes[ 0 ], $template );
+		fclose( $pipes[ 0 ] );
+		$stdout = stream_get_contents( $pipes[ 1 ] );
+		$stderr = stream_get_contents( $pipes[ 2 ] );
+		fclose( $pipes[ 1 ] );
+		fclose( $pipes[ 2 ] );
+		$retVal = proc_close( $proc );
+		if ( $retVal > 0 ) {
+			$this->error = $stderr;
+		}
+
+/*
 		$parser = (new PhpParser\ParserFactory)->create(PhpParser\ParserFactory::ONLY_PHP5);
 		try {
 			$parser->parse($template);
 		} catch(PhpParser\Error $e) {
 			$this->error = $e->getMessage();
 		}
+*/
 	}
 
 }
