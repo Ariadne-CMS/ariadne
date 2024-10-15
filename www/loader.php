@@ -36,8 +36,8 @@
 	require_once($ariadne."/bootstrap.php");
 	require_once( AriadneBasePath . "/modules/mod_itf/default.php" );
 
-	$ITF = new mod_ITF();
-	$ITF->record();
+//	$ITF = new mod_ITF();
+//	$ITF->record();
 
 
 	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
