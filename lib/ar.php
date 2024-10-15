@@ -305,10 +305,11 @@
 
 		public function __construct( $message = '', $code = 0, $previous = null ) {
 			if ( $previous && !($previous instanceof \Exception) ) {
-				$previous = new ar_error( $previous );
+				$previous = new ar_error( (string) $previous );
 			}
 			parent::__construct( (string) $message, (int) $code, $previous );
 			$this->code = $code;
+			$this->previous = $previous;
 		}
 
 		public function __call($name, $arguments) {
@@ -396,8 +397,8 @@
 			return ar::call($template, $params);
 		}
 
-		public static function _callSuper() {
-			return ar::callSuper();
+		public static function _callSuper($params = null) {
+			return ar::callSuper($params);
 		}
 
 		public static function _taint(&$value) {
