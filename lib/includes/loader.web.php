@@ -40,6 +40,7 @@
 
 	include_once($store_config['code']."includes/loader.web.auth.php");
 	include_once($store_config['code']."objects/pobject.phtml");
+	$errorOccured = false;
 
 	function ldCheckAllowedMethods($method = null) {
 		global $AR;
@@ -59,7 +60,7 @@
 	}
 
 	function error($text) {
-		global $ERRMODE;
+		global $ERRMODE, $errorOccured;
 		switch ($ERRMODE) {
 			case "html" :
 				echo "<b><font color='red'>Error: $text</font></b><BR>\n";
@@ -75,6 +76,7 @@
 				echo "// <b><font color='red'>Error: $text</font></b><BR>\n<!--\nalert('Error: $text');\n// -->\n";
 				break;
 		}
+		$errorOccured = $text;
 	}
 
 	function ldRegisterFile($field = "file", &$error) {
@@ -306,8 +308,10 @@
 	}
 
 	function ldSetCache($file, $time, $image, $headers) {
-	global $store;
-
+	global $store, $errorOccured;
+		if ( $errorOccured ) {
+			return;
+		}
 		debug("ldSetCache($file, $time, [image], [headers])","object");
 		if ($time==-2) {
 			$time=0;
