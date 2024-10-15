@@ -3515,6 +3515,18 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 	}
 
+	public function _implode( $arg1, $arg2 = null ) {
+		if ( $arg2 !== null ) {
+			if ( !is_array( $arg2 ) ) {
+				$temp = $arg1;
+				$arg1 = $arg2;
+				$arg2 = $temp;
+			}
+			return implode( $arg1, $arg2 );
+		}
+		return implode( $arg1 );
+	}
+
 	public function __call($name,$arguments) {
 		if ( $name[0] == '_' ) {
 			$fname = substr($name, 1);
