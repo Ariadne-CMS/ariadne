@@ -39,7 +39,18 @@
 			flush();
 
 			$result = $fstore->svn_update($svn, $filename, $revision);
-			if ($result) {
+			if ($result === false || ar_error::isError($result)) {
+				echo "Update failed.\n";
+				echo $result."\n";
+				if ($result->previous) {
+					echo $result->previous."\n";
+				}
+				if (count($errs = $fstore->svnstack->getErrors())) {
+					foreach ($errs as $err) {
+						echo $err['message']."\n";
+					}
+				}
+			} else if ($result) {
 				$revisionentry = array_pop($result);
 				$updated_templates = array();
 				$deleted_templates = array();
@@ -105,14 +116,6 @@
 					)
 				);
 
-			}
-			if ($result === false || ar_error::isError($result)) {
-				echo "Update failed.\n";
-				if (count($errs = $fstore->svnstack->getErrors())) {
-					foreach ($errs as $err) {
-						echo $err['message']."\n";
-					}
-				}
 			}
 		}
 	}

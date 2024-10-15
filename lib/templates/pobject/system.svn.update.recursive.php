@@ -42,7 +42,12 @@
 
 			// Create the dirs, restore them if needed.
 			$dirlist = $fstore->svn_list($svn, $revision);
-			if ($dirlist) {
+			if (ar_error::isError($dirlist)) {
+				echo "ERROR: $dirlist\n";
+				if ($dirlist->previous) {
+					echo $dirlist->previous."\n";
+				}
+			} else if ($dirlist) {
 				$arCallArgs['dirlist'] = $dirlist;
 				$arCallArgs['svn'] = $svn;
 				$arCallArgs['fstore'] = $fstore;

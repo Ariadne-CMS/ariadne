@@ -54,6 +54,11 @@
 					$result = $fstore->svn_checkout($svn, $repository, $revision);
 				}
 
+				if (ar_error::isError($result)) {
+					echo "ERROR: ".$result."\n"; flush();
+					flush();
+				}
+
 				if ($result) {
 					$last = array_pop($result);
 					$templates = array();

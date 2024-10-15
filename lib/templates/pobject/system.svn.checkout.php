@@ -51,8 +51,17 @@
 				// Checkout the templates.
 					$result = $fstore->svn_checkout($svn, $repository, $revision);
 				}
-				if ($result && !ar_error::isError($result)) {
-					$last = array_pop($result);
+
+				if ($result && ar_error::isError($result)) {
+					echo "ERROR: $result\n";
+					if ($result->previous) {
+						echo $result->previous;
+					}
+					return;
+				}
+				$last = array_pop($result);
+
+				if ($result) {
 					$templates = array();
 					foreach ($result as $item) {
 						$templates[] = $item['name'];
