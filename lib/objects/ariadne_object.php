@@ -46,6 +46,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$this->store=$store;
 		$this->path=$path;
 		$this->data=$data;
+		if ( !$this->data ) {
+			$this->data = new baseObject();
+		}
 		if ( !isset($this->data->config) ) {
 			$this->data->config = new baseObject();
 		}
@@ -1551,7 +1554,8 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
-		global $AR;
+	global $AR;
+		$originalArType = $arType;
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = array_pad(explode('.',$arType,2),2,'');
 			$local = ($path === $this->path);
@@ -3307,6 +3311,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 	public function _getuser() {
 	global $AR;
+		if ( !isset( $AR->pinp_user ) ) {
+			$AR->pinp_user = null;
+		}
 		if ($AR->pinp_user && $AR->pinp_user->data->login == $AR->user->data->login) {
 			$user = $AR->pinp_user;
 		} else {
@@ -3535,7 +3542,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		$nocache = true;
 		$context = pobject::getContext();
-		if ($context["arLibraryPath"]) { //  != null) {
+		if ( isset($context['arCallFunction']) && is_callable($context['arCallFunction'])) {
+			$context['arCallFunction'] = 'Closure';
+		}
+		if ($context["arLibraryPath"]??null) { //  != null) {
 			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n".$errstr."\n";
 		} else {
 			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n".$errstr."\n";
