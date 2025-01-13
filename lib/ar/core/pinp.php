@@ -110,7 +110,7 @@ class ar_core_pinpSandbox extends arBase {
 				case 'array_filter':
 				case 'array_reduce':
 				case 'preg_replace_callback':
-					if ( $this->isSafeCallable($args[1])) {
+					if ( $this->isSafeCallable($args[1] ?? null)) {
 						return call_user_func_array( $function, $args );
 					}
 				break;
@@ -122,7 +122,7 @@ class ar_core_pinpSandbox extends arBase {
 				case 'array_udiff':
 				case 'array_udiff_assoc':
 					$l = count($args);
-					if ( $this->isSafeCallable($args[$l-1]) ) {
+					if ( $this->isSafeCallable($args[$l-1] ?? null) ) {
 						return call_user_func_array( $function, $args );
 					}
 				break;
@@ -130,7 +130,7 @@ class ar_core_pinpSandbox extends arBase {
 				case 'array_udiff_uassoc':
 				case 'array_uintersect_uassoc':
 					$l = count($args);
-					if ( $this->isSafeCallable($args[$l-1]) && $this->isSafeCallable( $args[$l-2] ) ) {
+					if ( $this->isSafeCallable($args[$l-1] ?? null) && $this->isSafeCallable( $args[$l-2] ?? null ) ) {
 						return call_user_func_array( $function, $args );
 					}
 				break;
