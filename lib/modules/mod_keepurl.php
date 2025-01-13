@@ -23,7 +23,7 @@
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$path = $me->make_path($path);
-			if (@count($ARCurrent->shortcut_redirect)) {
+			if (@count($ARCurrent->shortcut_redirect ?? [])) {
 				$redir = reset($ARCurrent->shortcut_redirect);
 				if ($redir["keepurl"]) { // && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
 					$path = $redir["src"];

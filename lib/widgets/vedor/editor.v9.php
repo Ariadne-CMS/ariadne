@@ -32,7 +32,7 @@
 	// js.html file
 	$oldnls=$this->nls;
 	$this->setnls($language);
-	$options=$this->call("editor.ini", $arCallArgs);
+	$options=$this->call("editor.ini", ($arCallArgs ?? null));
 	$vdBrowseRoot = $options['browse']['root'];
 	if (!$vdBrowseRoot) {
 		$vdBrowseRoot = $options['vdBrowseRoot']; // for backwards compat.
@@ -109,14 +109,14 @@
 	var objectPath='<?php echo $this->path; ?>';
 	var sitePath='<?php echo $this->currentsite(); ?>';
 	var objectURL='<?php echo $this->make_local_url(); ?>';
-	var logoffURL='<?php echo $this->make_local_url('', $nls); ?>';
+	var logoffURL='<?php echo $this->make_local_url('', ($nls ?? null)); ?>';
 	var objectURL_nls='<?php echo $this->make_local_url('',$language); ?>';
 	var ariadneRoot='<?php global $AR; echo $AR->dir->www; ?>';
 	var wgSaveTmpl='<?php echo $wgHTMLEditSaveTemplate; ?>';
 	var wgParentURL='<?php echo $this->make_local_url($this->parent); ?>';
 	var wgManageTmpl='<?php echo $wgHTMLEditManageTemplate; ?>';
 	var vdCurrentSite='<?php echo $this->make_local_url($this->currentsite(), $language); ?>';
-	var vdCurrentSiteNLS='<?php echo $this->make_local_url($this->currentsite(), $nls); ?>';
+	var vdCurrentSiteNLS='<?php echo $this->make_local_url($this->currentsite(), ($nls ?? null)); ?>';
 	var vdCurrentPath=objectPath;
 	var vdBrowseRoot='<?php echo $vdBrowseRoot; ?>';
 	var vdSelection = null;

@@ -127,9 +127,9 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 				$me->popContext();
 
 				$nlsarray = array();
-				if( is_array($ARCurrent->arResult) ) {
+				if( is_array($ARCurrent->arResult ?? null ) ) {
 					$nlsarray = $ARCurrent->arResult;
-				} elseif( is_array($me->{$varName}) ) {
+				} elseif( is_array($me->{$varName} ?? null ) ) {
 					$nlsarray = $me->{$varName};
 				} elseif( isset($ARCurrent->{$varName}) && is_array($ARCurrent->{$varName}) ) {
 					$nlsarray = $ARCurrent->{$varName};
