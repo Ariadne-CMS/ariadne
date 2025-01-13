@@ -45,7 +45,7 @@ abstract class sql_compiler {
 				$node["value"] = stripslashes($value);
 				return $node;
 			break;
-			case $this->_SCAN_NUM_START[$yych]:
+			case ($this->_SCAN_NUM_START[$yych] ?? false):
 				$value = $yych;
 				$yych = $YYBUFFER[++$YYCURSOR]??null;
 				while (isset($this->_SCAN_NUM[$yych])) {
@@ -81,6 +81,8 @@ abstract class sql_compiler {
 		$reg_id='^[[:space:]]*(([a-z_][a-z0-9_]*)(:[a-z]+)?([.][a-z_][a-z0-9_]*)?([.][a-z_][a-z0-9_]*)?)';
 		$reg_id.='[[:space:]]*';
 
+		$record_id = null;
+		
 		$YYCURSOR = 0;
 		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 			$YYCURSOR++;
@@ -160,7 +162,7 @@ abstract class sql_compiler {
 			} else
 			if ($table === "my") {
 				$node["id"] = "custom";
-				if ($match_3) {
+				if ($match_3 ?? null) {
 					$node["nls"] = $field;
 					$field = $match_3;
 				}
