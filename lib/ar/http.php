@@ -213,7 +213,7 @@
 			if (is_array($headers)) {
 				$headers = join("\r\n", $headers);
 			}
-			$this->options['header'] = $this->options['headers'].$headers;
+			$this->options['header'] = ($this->options['headers'] ?? '').$headers;
 			return $this;
 		}
 	}
