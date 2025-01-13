@@ -2,7 +2,7 @@
 	require_once($this->store->get_config('code').'modules/mod_pinp.phtml');
 
 	class util {
-		function getFileFromFTP($url, $fileName) {
+		static function getFileFromFTP($url, $fileName) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			require_once($me->store->get_config("code")."modules/mod_mimemagic.php");
@@ -24,7 +24,7 @@
 			return $result;
 		}
 
-		function path_unescape($path) {
+		static function path_unescape($path) {
 			$result = "";
 			if ($path) {
 				debug("path_unescape: escaped path: $path");
@@ -55,7 +55,7 @@
 		}
 
 
-		function path_escape($path) {
+		static function path_escape($path) {
 			// This function will return an escaped path. All the characters not supported by Ariadne will be encoded.
 			// See also path_escape_callback
 
@@ -80,7 +80,7 @@
 					$path
 				);
 			}
-			debug("path_escaspe:files escaped path: $result");
+			debug("path_escape:files escaped path: $result");
 			return $result;
 		}
 	}
