@@ -127,7 +127,7 @@
 			return false;
 		}
 
-		if ($login != $this->data->login) {
+		if ($login != ($this->data->login ?? null)) {
 			if (strlen($login)>128) {
 				$this->error = ar::error( $ARnls["err:logintoolong"], 1206);
 				return false;
