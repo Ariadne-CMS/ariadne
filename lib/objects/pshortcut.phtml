@@ -41,7 +41,7 @@ class pshortcut extends pobject { // pshortcut class definition
 	global $ARConfig;
 		parent::getConfigData();
 		$configcache = $ARConfig->cache[$this->path];
-		$configcache->target = $this->data->path;
+		$configcache->target = ($this->data->path ?? null);
 		$ARConfig->cache[$this->path] = $configcache;
 	}
 
