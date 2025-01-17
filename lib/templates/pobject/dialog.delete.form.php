@@ -66,7 +66,7 @@
 			$icons = $ARCurrent->arTypeIcons;
 			$names = $ARCurrent->arTypeNames;
 
-			$icon = $ARCurrent->arTypeIcons[$targetob->type]['medium'] ? $ARCurrent->arTypeIcons[$targetob->type]['medium'] : $targetob->call("system.get.icon.php", array('size' => 'medium'));
+			$icon = ($ARCurrent->arTypeIcons[$targetob->type]['medium']??null) ? $ARCurrent->arTypeIcons[$targetob->type]['medium'] : $targetob->call("system.get.icon.php", array('size' => 'medium'));
 
 			$iconalt = $targetob->type;
 			if ( $targetob->implements("pshortcut") ) {

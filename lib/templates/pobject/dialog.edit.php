@@ -54,7 +54,7 @@
 		$wgWizFlow = $this->call("user.wizard.edit.html", array("wgWizFlow" => $wgWizFlow));
 
 		$this->call("typetree.ini");
-		$name=$ARCurrent->arTypeNames[$this->type];
+		$name=$ARCurrent->arTypeNames[$this->type] ?? $this->type;
 
 		// spawn wizard
 		$wgWizHeaderIcon = $this->call("system.get.icon.php");
