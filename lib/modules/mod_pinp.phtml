@@ -993,6 +993,10 @@ class pinp {
 				case ($in_special === "ar::untaint" && in_array( $i, [ 0 ] ) ):
 				case ($in_special === "unset"):
 				case ($in_special === "isset"):
+				case ($in_special === "array_pop"):
+				case ($in_special === "array_push"):
+				case ($in_special === "array_shift"):
+				case ($in_special === "array_unshift"):
 					// only fix the first param (everything on the outersides)
 					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
 				break;
@@ -1347,6 +1351,13 @@ class pinp {
 						$i++;
 					}
 				}
+				if ( $i > 0 ) {
+				//	echo "hier:\n";
+				//	echo $result . "\n";
+				//	echo "----\n";
+					$result = "($result ?? null)!!!!";
+				}
+
 		}
 		return $result;
 	}
@@ -1758,7 +1769,7 @@ class pinp {
 		}
 		$this->new_template = preg_replace( "/[!][!][!][!]/", "", $this->new_template );
 		if (!$this->error) {
-			$this->syntax_test();
+			$this->syntax_test( $this->new_template );
 		}
 //		echo "\n\n".$this->new_template;
 //exit;
@@ -1786,6 +1797,8 @@ class pinp {
 			$this->error = $stderr;
 		}
 
+//echo "tested($template)\n";
+//echo "retval: ($retVal) $stdout\n";
 /*
 		$parser = (new PhpParser\ParserFactory)->create(PhpParser\ParserFactory::ONLY_PHP5);
 		try {
