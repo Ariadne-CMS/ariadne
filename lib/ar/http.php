@@ -185,7 +185,7 @@
 				$this->statusCode = $statusLine[1];
 			}
 
-			$this->requestHeaders = $options['header'];
+			$this->requestHeaders = $options['header'] ?? null;
 			return $result;
 		}
 

@@ -8,11 +8,11 @@
 
 
 		public function __construct( $config = array() ) {
-			if (!$config['cmd']) {
+			if (!isset($config['cmd'])) {
 				$config['cmd'] = '/usr/bin/xvfb-run -a /usr/local/bin/wkhtmltopdf --disable-local-file-access ';
 			}
 
-			if (!$config['temp']) {
+			if (!isset($config['temp'])) {
 				$context = pobject::getContext();
 				$me = $context["arCurrentObject"];
 				$config['temp'] = $me->store->get_config( "files" ) . "temp/";

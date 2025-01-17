@@ -1001,6 +1001,7 @@ class pinp {
 					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
 				break;
 				case ($in_special === "list"):
+				case ($in_special === "preg_match"):
 					$parsed = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
 				break;
 			}
