@@ -635,7 +635,7 @@
 				$result .= ">";
 				$result .= "<a";
 
-				if ($entry['onclick']) {
+				if ($entry['onclick'] ?? null) {
 					$result .= ' onclick="' . $entry['onclick'] . '"';
 				}
 				$result .= self::getPagingLink( ( $entry['href'] ?? "" ) );
