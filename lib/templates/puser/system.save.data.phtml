@@ -185,12 +185,12 @@
 							(direct feedback & the possibility to override 
 						*/
 						$this->data->language=$pdata->data->language;
-						$this->data->languagelist=$pdata->data->languagelist;
-						$this->data->interface=$pdata->data->interface;
-						$this->data->editor=$pdata->data->editor;
-						$this->data->template_editor=$pdata->data->template_editor;
-						if(!$customgrants) {
-							$groups=$pdata->data->groups;
+						$this->data->languagelist=$pdata->data->languagelist ?? null;
+						$this->data->interface=$pdata->data->interface ?? null;
+						$this->data->editor=$pdata->data->editor ?? null;
+						$this->data->template_editor=$pdata->data->template_editor ?? null;
+						if(!($customgrants??null)) {
+							$groups=$pdata->data->groups ?? null;
 						}
 					} else {
 						$this->error = ar::error( sprintf($ARnls["err:nopermissionread"], $pdata->path), 1209);
@@ -231,7 +231,7 @@
 			$arResult = $newpath;
 			if (!$this->error) {
 				/* warning: do not save this object again, since system.set.user.phtml updates the object also.. */
-				$oldgroups = $this->data->groups;
+				$oldgroups = $this->data->groups??null;
 
 
 				if (is_array($oldgroups)) {
@@ -261,7 +261,7 @@
 				if (is_array($groups)) {
 					reset($groups);
 					while (list($key, $val)=each($groups)) {
-						if (!$oldgroups[$key]) {
+						if (!($oldgroups[$key]??null)) {
 							$this->get($key, "system.set.user.phtml", array(
 										"action" => "add",
 										"path" => $this->path));
