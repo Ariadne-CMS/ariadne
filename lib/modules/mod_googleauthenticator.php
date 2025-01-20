@@ -204,7 +204,7 @@ class GoogleAuthenticator {
 }
 
 class pinp_GoogleAuthenticator extends GoogleAuthenticator {
-  function _init($passCodeLength = 6, $secretLength = 10) {
+  public static function _init($passCodeLength = 6, $secretLength = 10) {
     return new GoogleAuthenticator($passCodeLength, $secretLength);
   }
 }

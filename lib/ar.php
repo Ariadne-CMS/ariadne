@@ -453,7 +453,7 @@
 
 		public static function makePath( $cwd, $path ) { //FIXME: move this method to a better place
 			$result = '/';
-			if ( $path[0] === '/' ) {
+			if ( $path && ($path[0] === '/' ) ) {
 				$path = substr( $path, 1);
 			} else {
 				$path = substr( $cwd, 1 ) . '/' . $path;
@@ -500,7 +500,7 @@
 					}
 				}
 			} else {
-				$path = self::makePath( '/', $options['path'] );
+				$path = self::makePath( '/', $options['path'] ?? '' );
 			}
 			return $path;
 		}
