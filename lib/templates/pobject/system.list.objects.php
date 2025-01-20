@@ -111,7 +111,7 @@
 		}
 
 		$arResult = array(
-			'objects' => $objects,
+			'objects' => $objects ?? [],
 			'total' => $total
 		);
 	}

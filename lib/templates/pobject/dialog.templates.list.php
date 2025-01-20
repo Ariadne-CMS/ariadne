@@ -305,7 +305,7 @@
 							}
 							$flagbuttons .= "\">" . $flag . $flag_svn . "</a> ";
 
-							if( is_array( $grepresults) && is_array($grepresults[$filename_short]) ) {
+							if( is_array( $grepresults) && is_array(($grepresults[$filename_short] ?? null)) ) {
 								foreach( $grepresults[$filename_short] as $r ) {
 									list( $ln, $tx ) = explode(":", $r, 2);
 									if (count($templatelist) > 1) {
