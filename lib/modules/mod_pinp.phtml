@@ -1004,6 +1004,10 @@ class pinp {
 				case ($in_special === "preg_match"):
 					$parsed = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
 				break;
+				case ($in_special === "array_values"):
+					// use blank array instead of null
+					$parsed = preg_replace( "/null[)][!][!][!][!]/", "[])!!!!", $parsed );
+				break;
 			}
 
 			$result .= $parsed;
