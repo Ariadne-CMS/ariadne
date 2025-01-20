@@ -276,8 +276,8 @@
 
 				if ($arIsNewObject) {
 					/* check for static skeleton in the profile, if available copy it */
-					$skeletonpath=$this->data->profile.'static/';
-					if ($this->data->profile && $this->exists($skeletonpath)) {
+					$skeletonpath=($this->data->profile?'').'static/';
+					if (($this->data->profile??null) && $this->exists($skeletonpath)) {
 						$this->find($skeletonpath,"object.path!='".$skeletonpath."'",'system.copy.multiple.phtml',
 							array('source'=>$skeletonpath, 
 								'target'=>$newpath));
