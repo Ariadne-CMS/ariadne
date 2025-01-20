@@ -1290,7 +1290,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
 			//debug("pobject::getConfig() loaded config.ini @ ".$this->path);
 			// debug("getConfig:checkconfig einde");
-			$arConfig = $ARCurrent->arResult;
+			$arConfig = $ARCurrent->arResult ?? null;
 			if (!isset($arConfig)) {
 				$arConfig = $ARCurrent->arConfig;
 			}
