@@ -34,7 +34,7 @@
 
 *******************************************************************************/
 
-
+#[\AllowDynamicProperties]
 abstract class store {
 
 	public $error;

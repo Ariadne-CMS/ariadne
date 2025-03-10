@@ -109,7 +109,7 @@
 			echo "Commit failed.<br>\n";
 			if (count($errs = $fstore->svnstack->getErrors())) {
 				foreach ($errs as $err) {
-					echo htmlspecialchars($err['message'], ENT_QUOTES, 'UTF-8')."<br>\n";
+					echo htmlspecialchars($err['message']??'', ENT_QUOTES, 'UTF-8')."<br>\n";
 				}
 			}
 		} elseif( ( $result ?? null ) && ( $pinp ?? null ) && !( $single ?? null ) ) {

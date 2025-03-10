@@ -57,8 +57,8 @@
 					$crumbs = $oldcrumbs;
 				}
 			}
-			$crumbs = htmlspecialchars( $crumbs . "/ " . $targetob->nlsdata->name );
-			$oldcrumbs = htmlspecialchars( $oldcrumbs . "/ " . $targetob->nlsdata->name );
+			$crumbs = htmlspecialchars( $crumbs??'' . "/ " . $targetob->nlsdata->name??'' );
+			$oldcrumbs = htmlspecialchars( $oldcrumbs??'' . "/ " . $targetob->nlsdata->name??'' );
 
 			if( !isset($ARCurrent->arTypeTree) ) {
 				$targetob->call('typetree.ini');
@@ -87,10 +87,10 @@
                         } else {
                             echo '<div>';
                         }
-                        echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
+                        echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt??'') . '" title="' . htmlspecialchars($iconalt??'') . '" class="typeicon">';
 
 			if ( $overlay_icon ?? null) {
-				echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
+				echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
 			}
 			echo '<div class="name">' . $targetob->nlsdata->name . ' ';
 			echo '( <span class="crumbs" title="' . $oldcrumbs . '">' . $crumbs . '</span> )';

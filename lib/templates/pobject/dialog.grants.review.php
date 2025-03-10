@@ -9,7 +9,7 @@
 	echo "<tr><th>".$ARnls["path"]."</th><th>User/group</th><th>".$ARnls["grants"]."</th></tr>";
 	foreach( $data as $gpath => $gusers ) {
 		foreach( $gusers as $upath => $value ) {
-			echo "<tr><td>".htmlspecialchars($gpath)."</td><td>".htmlspecialchars($upath)."</td>";
+			echo "<tr><td>".htmlspecialchars($gpath??'')."</td><td>".htmlspecialchars($upath??'')."</td>";
 			if (is_array($value['grants']['array'])) {
 				echo "<td>".htmlentities(grantsArrayToString($value["grants"]["array"]), ENT_QUOTES, 'UTF-8')."</td>";
 			} else {

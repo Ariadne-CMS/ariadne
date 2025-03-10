@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 abstract class sql_compiler {
 	protected $skipDefaultOrderBy;
 	protected $store;

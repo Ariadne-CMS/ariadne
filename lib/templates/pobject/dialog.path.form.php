@@ -121,8 +121,8 @@
 				}
 			}
 
-			$crumbs = htmlspecialchars( $crumbs . "/ " . $sourceob->nlsdata->name );
-			$oldcrumbs = htmlspecialchars( $oldcrumbs . "/ " . $sourceob->nlsdata->name );
+			$crumbs = htmlspecialchars( $crumbs??'' . "/ " . $sourceob->nlsdata->name??'' );
+			$oldcrumbs = htmlspecialchars( $oldcrumbs??'' . "/ " . $sourceob->nlsdata->name??'' );
 
 			if( !isset($ARCurrent->arTypeTree) ) {
 				$sourceob->call('typetree.ini');
@@ -158,9 +158,9 @@
 			} else {
 			    echo '<div class="browse">';
 			}
-			echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
+			echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt??'') . '" title="' . htmlspecialchars($iconalt??'') . '" class="typeicon">';
 			if ( $overlay_icon ?? null ) {
-			echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
+			echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
 			}
 			echo '<div class="name">' . $sourceob->nlsdata->name . ' ';
 			echo '( <span class="crumbs" title="' . $oldcrumbs . '">' . $crumbs . '</span> )';

@@ -63,9 +63,9 @@
             } else {
                 echo '<div>';
             }
-            echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
+            echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt??'') . '" title="' . htmlspecialchars($iconalt??'') . '" class="typeicon">';
             if ( $overlay_icon ?? null ) {
-                echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
+                echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
             }
             echo '<div class="name">' . $sourceob->nlsdata->name . ' ';
             echo "( " . $ARCurrent->arTypeNames[$sourceob->type] . " / " . $sourceob->type . " )";

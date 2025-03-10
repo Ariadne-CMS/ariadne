@@ -69,7 +69,7 @@
 				$direction = null;
 			}
 			if ($orderqueries[$order]) {
-				$directionpart = (strtolower($direction) == 'desc' ? " DESC" : " ASC");
+				$directionpart = (strtolower($direction??'') == 'desc' ? " DESC" : " ASC");
 				$querypart = implode($directionpart . ", ", (array)$orderqueries[$order]);
 				$query .= " order by " . $querypart . $directionpart;
 			}

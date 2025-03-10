@@ -8,6 +8,7 @@
 	ar_pinp::allow('ar');
 	ar_pinp::allow('ar_error');
 
+	#[\AllowDynamicProperties]
 	class ar implements arKeyValueStoreInterface {
 		protected static $instances = [];
 		protected static $ar;
@@ -140,7 +141,7 @@
 			if ( $value instanceof arTainted ) {
 				$value = filter_var($value->value, $filter, $flags);
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( 'self', 'untaintArrayItem'), array(
+				array_walk_recursive( $value, self::untaintArrayItem(...), array(
 					'filter' => $filter,
 					'flags' => $flags
 				) );
@@ -238,6 +239,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class arBase {
 
 		public function __call($name, $arguments) {
@@ -299,8 +301,9 @@
 
 	}
 
-
 	class ar_error extends ar_exceptionDefault {
+		public $code, $previous;
+
 		protected static $throwExceptions = false;
 
 		public function __construct( $message = '', $code = 0, $previous = null ) {

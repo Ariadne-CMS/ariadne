@@ -17,7 +17,7 @@
 			$info['width'] = $imagedata[0];
 			$info['height'] = $imagedata[1];
 
-			$details = "<img src='" . $this->make_ariadne_url() . "view.thumb.html' alt='" . htmlspecialchars($this->nlsdata->name) . "'>";
+			$details = "<img src='" . $this->make_ariadne_url() . "view.thumb.html' alt='" . htmlspecialchars($this->nlsdata->name??'') . "'>";
 
 			$section = array(
 				'id' => 'details',

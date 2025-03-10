@@ -249,7 +249,7 @@
 
 	function ldDecodeCookie($cookie) {
 		global $AR;
-		$data = json_decode($cookie,true);
+		$data = json_decode($cookie??'',true);
 		if(is_null($data)){
 			if(isset($AR->sessionCryptoKey) && function_exists('mcrypt_encrypt') ) {
 				$key = base64_decode($AR->sessionCryptoKey);

@@ -58,7 +58,7 @@
 	}
 </script>
 
-	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($arReturnPage); ?>">
+	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($arReturnPage??''); ?>">
 	<div id="resultSet" class="yui-dt">
 		<table id="resultsTable">
 		<thead>

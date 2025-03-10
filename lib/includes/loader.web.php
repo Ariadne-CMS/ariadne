@@ -79,8 +79,11 @@
 		$errorOccured = $text;
 	}
 
-	function ldRegisterFile($field = "file", &$error) {
-	global $ARnls, $store;
+	function ldRegisterFile($field, &$error) {
+		global $ARnls, $store;
+		if (!isset($field)) {
+			$field = "file";
+		}
 
 		require_once($store->get_config("code")."modules/mod_mimemagic.php");
 		$result = Array();

@@ -54,6 +54,7 @@ define("YY_STATE_PINP",               2);
 define("YY_STATE_EXT_COMPILE",        3);
 define("YY_STATE_DQ",                 4);
 
+#[\AllowDynamicProperties]
 class scanner {
 
 	function __construct() {
@@ -775,6 +776,7 @@ class scanner {
 	}
 }
 
+#[\AllowDynamicProperties]
 class pinp {
 	function __construct($allowed_functions, $var_prefix, $function_prefix="") {
 		$var_prefix="\$".$var_prefix;
@@ -1797,7 +1799,7 @@ class pinp {
 		}
 		$this->error = null;
 		$pipes = [];
-		$proc = proc_open( "/usr/bin/php -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
+		$proc = proc_open( "/usr/local/bin/php -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
 		if ( !is_resource( $proc ) ) {
 			die( "Could not open php!\n" );
 		}

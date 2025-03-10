@@ -1,4 +1,5 @@
 <?php
+#[\AllowDynamicProperties]
 class ar_core_pinpSandbox extends arBase {
 	public $this;
 	public $data;
@@ -17,6 +18,7 @@ class ar_core_pinpSandbox extends arBase {
 	public $reqnls;
 	public $arIsNewObject;
 	public $ARnls;
+	public $arConfig;
 
 	public function __construct($scope) {
 		$properties = array(

@@ -30,7 +30,7 @@
 		foreach ( $itemlist as $item ) {
 			echo '<a class="item '.$item['class'].'" href="'.$item['href'].'" title="'.$item['type'].'">';
 			echo '<img class="icon" src="'.$item['icon'].'" alt="'.$item['type'].'" title="'.$item['type'].'">';
-			echo '<span class="name">'.htmlspecialchars($item['name']).'</span>';
+			echo '<span class="name">'.htmlspecialchars($item['name']??'').'</span>';
 			echo '</a>';
 		}
 		echo '</div>';

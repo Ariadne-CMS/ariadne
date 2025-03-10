@@ -24,7 +24,7 @@
 		}
 			
 ?>
-	<img id="preview_image" align="<?php echo htmlspecialchars($align); ?>" alt="<?php echo htmlspecialchars($alttext); ?>" title="<?php echo htmlspecialchars($alttext); ?>" src="<?php echo htmlspecialchars($src); ?>" <?php echo $class; ?>>
+	<img id="preview_image" align="<?php echo htmlspecialchars($align??''); ?>" alt="<?php echo htmlspecialchars($alttext??''); ?>" title="<?php echo htmlspecialchars($alttext??''); ?>" src="<?php echo htmlspecialchars($src??''); ?>" <?php echo $class; ?>>
 <?php
 	}
 ?>

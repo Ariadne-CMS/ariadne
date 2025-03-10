@@ -68,7 +68,7 @@
 		<label for="mimetype"><?php echo $ARnls["ariadne:mimetype"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<input id="mimetype" type="text" name="<?php echo $selectednls."[mimetype]"; ?>"
-			value="<?php echo htmlspecialchars($mimetype); ?>" class="inputline">
+			value="<?php echo htmlspecialchars($mimetype??''); ?>" class="inputline">
 	</div>
 </fieldset>
 

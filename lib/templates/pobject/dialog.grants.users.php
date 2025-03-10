@@ -219,7 +219,7 @@
 ?>
 <div class="items">
 	<h2><?php echo $ARnls['ariadne:grants:users_with_grants']; echo yui::labelspan($selectedpath, 20); ?></h2>
-	<input type="hidden" name="selecteduser" value="<?php echo htmlspecialchars($selecteduser); ?>">
+	<input type="hidden" name="selecteduser" value="<?php echo htmlspecialchars($selecteduser??''); ?>">
 	<?php if ($error) { ?>
 		<div class="error"><?php echo $error; ?></div>
 	<?php } ?>
@@ -275,7 +275,7 @@
 				<label class="block" for="selectuser_<?php echo $user_id; ?>">
 					<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], 'size' => 'medium'));?>" alt="<?php echo $info['type']; ?>">
 					<span class="name"><?php echo $info['name']; ?></span><br>
-					<span class="grants_string"><?php echo htmlspecialchars($info['grants']['grantsstring']); ?></span>
+					<span class="grants_string"><?php echo htmlspecialchars($info['grants']['grantsstring']??''); ?></span>
 				</label>
 				<input type="submit" name="selecteduser" class="hidden" value="<?php echo $path; ?>" id="selectuser_<?php echo $user_id; ?>">
 			</div>
@@ -286,7 +286,7 @@
 					<div class="grants_textmode">
 						<h2>Advanced grants</h2>
 						<textarea class="grantstext" name="data[<?php echo $selectedpath;?>][<?php echo $path; ?>][grants][grantsstring]" rows=4 cols=30><?php
-							echo htmlspecialchars( $info['grants']['grantsstring'] );
+							echo htmlspecialchars( $info['grants']['grantsstring']??'' );
 						?></textarea>
 					</div>
 				<?php	} else {	?>

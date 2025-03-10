@@ -46,20 +46,20 @@
 			$iconalt = $this->vtype;
 		}
 ?>
-<img src="<?php echo $icon; ?>" alt="<?php echo htmlspecialchars($iconalt); ?>" title="<?php echo htmlspecialchars($iconalt); ?>" class="icon">
+<img src="<?php echo $icon; ?>" alt="<?php echo htmlspecialchars($iconalt??''); ?>" title="<?php echo htmlspecialchars($iconalt??''); ?>" class="icon">
 <?php
 	if( isset($overlay_icon) && $overlay_icon ) {
 ?>
-<img src="<?php echo $overlay_icon; ?>" alt="<?php echo htmlspecialchars($overlay_alt); ?>" title="<?php echo htmlspecialchars($overlay_alt); ?>" class="overlay_icon">
+<img src="<?php echo $overlay_icon; ?>" alt="<?php echo htmlspecialchars($overlay_alt??''); ?>" title="<?php echo htmlspecialchars($overlay_alt??''); ?>" class="overlay_icon">
 <?php
 	}
 ?>
-<div class="sectionhead yuimenubar iconsection"><?php echo htmlspecialchars($name); ?></div>
+<div class="sectionhead yuimenubar iconsection"><?php echo htmlspecialchars($name??''); ?></div>
 <div id="browseheaderbody" class="sectionbody">
 	<div id="browseheaderleft">
 		<ul>
-				<li><?php echo $ARnls["ariadne:created"]." ".htmlspecialchars($date).", ".strtolower($ARnls["ariadne:currentowner"])." ".htmlspecialchars($owner); ?></li>
-				<li><?php echo $ARnls["ariadne:lastmodified"]." ".htmlspecialchars($modified)." ".strtolower($ARnls["ariadne:by"])." ".htmlspecialchars($mod_user); ?></li>
+				<li><?php echo $ARnls["ariadne:created"]." ".htmlspecialchars($date??'').", ".strtolower($ARnls["ariadne:currentowner"])." ".htmlspecialchars($owner??''); ?></li>
+				<li><?php echo $ARnls["ariadne:lastmodified"]." ".htmlspecialchars($modified??'')." ".strtolower($ARnls["ariadne:by"])." ".htmlspecialchars($mod_user??''); ?></li>
 		</ul>
 	</div>
 	<div id="browseheaderright">
@@ -73,9 +73,9 @@
 				$class = "unselected";
 			}
 			if( isset($this->data->{$key}->name) ) {
-				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
+				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value??'')."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value??'')."\"></a> ";
 			} else {
-				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/faded/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
+				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value??'')."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/faded/".$key.".gif\" alt=\"".htmlspecialchars($value??'')."\"></a> ";
 			}
 		}
 	}

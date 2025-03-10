@@ -7,7 +7,7 @@ function diff_header_line($vars) {
 }
 
 function check_plain($text) {
-	return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+	return htmlspecialchars($text??'', ENT_QUOTES, 'UTF-8');
 }
 
 /**

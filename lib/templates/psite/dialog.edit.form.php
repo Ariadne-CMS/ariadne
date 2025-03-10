@@ -55,7 +55,7 @@
 							$url = $this->getdata("workspaceurl", "none");
 						}
 					}
-					echo htmlspecialchars( $workspaceurl, ENT_QUOTES, 'UTF-8');
+					echo htmlspecialchars( $workspaceurl??'', ENT_QUOTES, 'UTF-8');
 				?>" class="inputline">
 	</div>
 	<?php

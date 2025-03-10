@@ -71,10 +71,10 @@
 			$icon = $section['icon'] ?? null;
 
 			if (mb_strlen($sectionDisplayName, "utf-8") > $maxheadlength) {
-				$origName = htmlspecialchars($sectionDisplayName);
-				$sectionDisplayName = "<span title=\"$origName\">".htmlspecialchars(mb_substr($sectionDisplayName, 0, $maxheadlength-3, "utf-8")."...")."</span>";
+				$origName = htmlspecialchars($sectionDisplayName??'');
+				$sectionDisplayName = "<span title=\"$origName\">".htmlspecialchars(mb_substr($sectionDisplayName??'', 0, $maxheadlength-3, "utf-8")."...")."</span>";
 			} else {
-				$sectionDisplayName = htmlspecialchars($sectionDisplayName);
+				$sectionDisplayName = htmlspecialchars($sectionDisplayName??'');
 			}
 			$icontag = "";
 			if ($icon) {
@@ -84,7 +84,7 @@
 				}
 			}
 
-			if (strstr(strtolower($invisibleSections), $sectionName . ";")) {
+			if (strstr(strtolower($invisibleSections??''), $sectionName . ";")) {
 				$section_class = " collapsed";
 			} else {
 				$section_class = " expanded";
@@ -149,9 +149,9 @@
 		public static function labelspan($label, $maxlabellength=16) {
 			// Reduce length of a label if they are too long.
 			if (mb_strlen($label, "utf-8") > $maxlabellength) {
-				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."..."));
+				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label??'', 0, $maxlabellength-3,"utf-8")."..."));
 			} else {
-				$label = htmlspecialchars($label);
+				$label = htmlspecialchars($label??'');
 			}
 			return $label;
 		}
@@ -254,7 +254,7 @@
 				$headcols[] = ar_html::tag('th', array('class' => $class ),
 						ar_html::tag('div', array('class' => 'yui-dt-header'),
 							ar_html::tag('span', array('class' => 'yui-dt-label'),
-								 ar_html::tag('a', array('class' => 'yui-dt-sortable'), htmlspecialchars($columnDefs[$num]['label']) )
+								 ar_html::tag('a', array('class' => 'yui-dt-sortable'), htmlspecialchars($columnDefs[$num]['label']??'') )
 							)
 						)
 					);
@@ -450,24 +450,24 @@
 					}
 					$content[]= ar_html::tag('span', array('class' => 'explore_name'), self::labelspan($node['name'], $maxlen ));
 					$nodes[] = ar_html::tag( 'li', array('class' => $item_class, 'data-path' => $node['path']), 
-						ar_html::tag( 'a', array('class' => 'explore_link', 'href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;", 'title' => $node['name']), $content) );
+						ar_html::tag( 'a', array('class' => 'explore_link', 'href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']??'') . "'); return false;", 'title' => $node['name']), $content) );
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {
 
 				if ($data['total'] > 1000) {
-					$content = htmlspecialchars($ARnls['ariadne:too_many_objects_found'] . " (" . $data['total'] . ")");
+					$content = htmlspecialchars($ARnls['ariadne:too_many_objects_found']??'' . " (" . $data['total'] . ")");
 					$selectoptions = array(
 						"sanity-off" => $ARnls['ariadne:select:showall']
 					);
 
 					foreach ($selectoptions as $key => $value) {
-						$content .= '<br><a href="#" onclick="muze.ariadne.explore.viewpane.setfilter(\'' . htmlspecialchars($key) . '\'); return false;">' . htmlspecialchars($value) . '</a>';
+						$content .= '<br><a href="#" onclick="muze.ariadne.explore.viewpane.setfilter(\'' . htmlspecialchars($key??'') . '\'); return false;">' . htmlspecialchars($value??'') . '</a>';
 					}
 
 					$result = ar_html::tag('div', array('class'=>'noobjects'), $content);
 				} else {
-					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:no_objects_found']) );
+					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:no_objects_found']??'') );
 				}
 			}
 			echo $result."\n";
@@ -603,13 +603,13 @@
 
 		private static function getPagingImage($image, $label) {
 			if (!$image) {
-				return htmlspecialchars($label);
+				return htmlspecialchars($label??'');
 			}
 
 			$result = '<img src="'. $image . '"';
 			if ($label) {
-				$result .= ' alt="' . htmlspecialchars($label) . '"';
-				$result .= ' title="' . htmlspecialchars($label) . '"';
+				$result .= ' alt="' . htmlspecialchars($label??'') . '"';
+				$result .= ' title="' . htmlspecialchars($label??'') . '"';
 			}
 			$result .= '>';
 			return $result;

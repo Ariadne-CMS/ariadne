@@ -979,7 +979,7 @@
 			if ( $rows ) {
 				$attributes['rows'] = $rows;
 			}
-			return ar_html::el('textarea', htmlspecialchars($value, ENT_QUOTES, 'UTF-8' ), $attributes);
+			return ar_html::el('textarea', htmlspecialchars($value??'', ENT_QUOTES, 'UTF-8' ), $attributes);
 		}
 	}
 

@@ -4,6 +4,7 @@
 
 	// declare default object,
 	if (!class_exists('baseObject',false)) {
+		#[\AllowDynamicProperties]
 		class baseObject { }           // do not change
 	}
 

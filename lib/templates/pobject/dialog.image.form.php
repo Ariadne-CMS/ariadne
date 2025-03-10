@@ -49,12 +49,12 @@
 		<div class="field">
 			<input type="hidden" name="type" value="internal">
 			<label for="target" class="required"><?php echo $ARnls["path"]; ?></label>
-			<input onchange="loadPreview();" type="text" id="target" name="target" value="<?php echo htmlspecialchars($arpath); ?>" class="inputline wgWizAutoFocus">
+			<input onchange="loadPreview();" type="text" id="target" name="target" value="<?php echo htmlspecialchars($arpath??''); ?>" class="inputline wgWizAutoFocus">
 			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url($wgBrowsePath); ?>" + "dialog.browse.php", "browse", "height=480,width=920"); return false;'>
 		</div>
 		<div class="field">
 			<label for="alttext"><?php echo $ARnls["ariadne:editor:image_alttext"]; ?></label>
-			<input onchange="loadPreview();" type="text" id="alttext" name="alttext" value="<?php echo htmlspecialchars($alttext); ?>" class="inputline">
+			<input onchange="loadPreview();" type="text" id="alttext" name="alttext" value="<?php echo htmlspecialchars($alttext??''); ?>" class="inputline">
 		</div>
 		<div class="field">
 			<label for="style"><?php echo $ARnls["ariadne:editor:style"]; ?></label>

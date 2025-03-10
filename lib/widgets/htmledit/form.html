@@ -33,14 +33,14 @@
 	$wgButtonState = "disabled";
   }
 
-    echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
+    echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent??'')."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
-       "_button\" value=\"".htmlspecialchars($wgHTMLEditValue)."\" class=\"$wgHTMLEditClass\"".
+       "_button\" value=\"".htmlspecialchars($wgHTMLEditValue??'')."\" class=\"$wgHTMLEditClass\"".
        ($wgButtonState??'') . " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','" . ($wgHTMLEditFile??'') . "','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
        str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', this.form['$wgHTMLEditContentName'], ".$wgHTMLEditSave2Form.");\">"; 
 /*
   } else {
-    echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
+    echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent??'')."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
        "_button\" value=\"Open Editor\"".
        " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".

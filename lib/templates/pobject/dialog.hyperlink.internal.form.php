@@ -42,12 +42,12 @@
 		<div class="field">
 			<input type="hidden" name="artype" value="internal">
 			<label for="arpath" class="required"><?php echo $ARnls["path"]; ?></label>
-			<input type="text" id="arpath" name="arpath" value="<?php echo htmlspecialchars($arpath); ?>" class="inputline wgWizAutoFocus">
+			<input type="text" id="arpath" name="arpath" value="<?php echo htmlspecialchars($arpath??''); ?>" class="inputline wgWizAutoFocus">
 			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick="return hyperlinkBrowse(document.getElementById('arpath').value);">
 		</div>
 		<div class="field">
 			<label for="aranchor"><?php echo $ARnls["ariadne:editor:anchor"]; ?></label>
-			<input type="text" id="aranchor" name="aranchor" value="<?php echo htmlspecialchars($aranchor); ?>" class="inputline">
+			<input type="text" id="aranchor" name="aranchor" value="<?php echo htmlspecialchars($aranchor??''); ?>" class="inputline">
 		</div>
 		<div class="field">
 			<label for="arlanguage"><?php echo $ARnls["ariadne:editor:language"]; ?></label>

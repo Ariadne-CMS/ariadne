@@ -8,7 +8,9 @@ define("AX_WITHOUT_TEMPLATES", 4);
 define("AX_WITHOUT_FILES", 8);
 define("AX_VERSION", 4);
 
+#[\AllowDynamicProperties]
 class axstore {
+	public $database, $writable, $temp, $files, $code, $tar, $tempdir, $ofile, $error, $filestores;
 
 	var $nodes;
 	var $objects;

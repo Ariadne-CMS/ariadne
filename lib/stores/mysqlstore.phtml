@@ -60,12 +60,6 @@ class mysqlstore extends store{
 			self::$connections[$host][$user][$db] = $dbh;
 		}
 
-		if (!$dbh->ping()) {
-			$dbh->close();
-			unset(self::$connections[$host][$user][$db]);
-			$dbh = $this->getConnection($host,$user,$password,$database);
-			self::$connections[$host][$user][$db] = $dbh;
-		}
 		return $dbh;
 	}
 

@@ -1,4 +1,5 @@
 <?php
+	#[\AllowDynamicProperties]
 	class mod_auth_default {
 
 		function __construct($config=Array()) {

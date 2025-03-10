@@ -1,4 +1,5 @@
 <?php
+	#[\AllowDynamicProperties]
 	class cache {
 		public function __construct($cache_config) {
 			debug("cache([array])","store");

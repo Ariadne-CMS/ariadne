@@ -108,7 +108,7 @@
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<input type='text' class='editable' id='".$prefix.$id."' $vedorVars title='$title' value=\"";
-				echo htmlspecialchars($var);
+				echo htmlspecialchars($var??'');
 				echo "\" $extra>";
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
@@ -125,7 +125,7 @@
 				$vedorVars = edit::getVedorVars($me, $name);
 
 				echo "<input name='$name' type='$type' class='editable' id='".$prefix.$id."' $vedorVars title='$title' value=\"";
-				echo htmlspecialchars($var);
+				echo htmlspecialchars($var??'');
 				echo "\" $extra>";			
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
@@ -177,7 +177,7 @@
 				$prefix = edit::getEditPrefix();
 				$vedorVars = edit::getVedorVars($me, $name);
 
-				echo "<input name='$name' type='radio' class='editable' id='".$prefix.$id."' $vedorVars title='$title' value=\"".htmlspecialchars($value)."\" $extra $checked>";
+				echo "<input name='$name' type='radio' class='editable' id='".$prefix.$id."' $vedorVars title='$title' value=\"".htmlspecialchars($value??'')."\" $extra $checked>";
 			} else if( !edit::isEmpty($var)) {
 				echo $var;
 			}

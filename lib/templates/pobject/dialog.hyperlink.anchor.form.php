@@ -9,7 +9,7 @@
 		<div class="field">
 			<input type="hidden" name="artype" value="anchor">
 			<label for="name"><?php echo $ARnls["name"]; ?></label>
-			<input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" class="inputline">
+			<input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name??''); ?>" class="inputline">
 		</div>
 </fieldset>
 <?php

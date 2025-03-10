@@ -35,6 +35,7 @@
 
 debug("pobject: Load","object");
 
+#[\AllowDynamicProperties]
 abstract class ariadne_object extends baseObject { // ariadne_object class definition
 
 	public $store;
@@ -2433,7 +2434,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	public function showdata($varname, $nls="none", $emptyResult=false) {
-		echo htmlspecialchars($this->getdata($varname, $nls, $emptyResult), ENT_QUOTES, 'UTF-8');
+		echo htmlspecialchars($this->getdata($varname, $nls, $emptyResult)??'', ENT_QUOTES, 'UTF-8');
 	}
 
 	public function setnls($nls) {
@@ -3431,7 +3432,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		preg_match("/^\s*(.)/", $pattern, $regs);
 		$delim = $regs[1];
-		if (@eregi("\\${delim}[^$delim]*\\${delim}.*e.*".'$', $pattern)) {
+		if (@eregi("\\{$delim}[^$delim]*\\{$delim}.*e.*".'$', $pattern)) {
 			$pinp = new pinp($AR->PINP_Functions, 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
 		} else {

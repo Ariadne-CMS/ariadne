@@ -382,7 +382,7 @@ class htmlcleaner
 
 			if (($part ?? null) && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
-					if (preg_match('/'.$tag_rule.'/is', $part->nodeName)) {
+					if (preg_match('/'.$tag_rule.'/is', $part->nodeName??'')) {
 						if (is_array($attrib_rules)) {
 							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
 								foreach ($part->attributes as $attrib_key=>$attrib_val) {
@@ -434,7 +434,7 @@ class htmlcleaner
 					}
 				}
 			}
-			if (($part ?? null) && strstr($part->nodeValue,'<?xml:namespace')===false) {
+			if (($part ?? null) && strstr($part->nodeValue??'','<?xml:namespace')===false) {
 				$return .= $part->toString();
 			}
 		}

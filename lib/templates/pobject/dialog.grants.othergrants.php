@@ -56,7 +56,7 @@
 ?>
 	<div class="other_grants"><h2><?php echo $ARnls['ariadne:grants:other_grants']; echo $userName; ?></h2>
 		<?php 	foreach ($grants as $path => $info) { ?>
-				<div class="item" title="<?php echo htmlspecialchars($info['name']);?>">
+				<div class="item" title="<?php echo htmlspecialchars($info['name']??'');?>">
 					<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], 'size' => 'medium')); ?>" alt="<?php echo $info['type'];?>">
 					<div class="info">
 						<span class="path"><?php echo yui::labelspan($path, 30); ?></span><br>

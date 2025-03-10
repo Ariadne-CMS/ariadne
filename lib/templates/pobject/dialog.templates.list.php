@@ -143,7 +143,7 @@
 	if ($AR->Grep->path) {
 ?>
 	<div class="searchdiv">
-		<input class="text" type="text" id="search" name="search" value="<?php echo htmlspecialchars($search); ?>">
+		<input class="text" type="text" id="search" name="search" value="<?php echo htmlspecialchars($search??''); ?>">
 		<input type="submit" id="searchbutton" class="wgWizControl" name="wgWizControl" onclick="document.wgWizForm.wgWizAction.value='grep'" value="<?php echo $ARnls["search"]; ?>">
 	</div>
 <?php
@@ -312,7 +312,7 @@
 										$grep_results .= $flag . "&nbsp;";
 									}
 									$grep_results .= "<a href=\"".$this->make_ariadne_url().$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
-									"&amp;lineOffset=".rawurlencode($ln)."&amp;language=".rawurlencode($language)."\">".htmlspecialchars($r)."</a><br>";
+									"&amp;lineOffset=".rawurlencode($ln)."&amp;language=".rawurlencode($language)."\">".htmlspecialchars($r??'')."</a><br>";
 								}
 							}
 						}
@@ -372,8 +372,8 @@
 							<td>
 								<div style="display:none;"><?php print $mtime; ?></div>
 								<div class="<?php echo $svn_style_hide;?>">
-									<?php echo strftime("%H:%M", $mtime); ?>&nbsp;&nbsp;
-									<?php echo strftime("%d %b %Y", $mtime); ?>&nbsp;
+									<?php echo DateTimeImmutable::createFromFormat('U', $mtime)->format('H:i'); ?>&nbsp;&nbsp;
+									<?php echo DateTimeImmutable::createFromFormat('U', $mtime)->format('d M Y'); ?>&nbsp;
 								</div>
 							</td>
 							<td>

@@ -95,10 +95,10 @@
 			} else if ( $value instanceof ar_listExpression ) {
 				$content = self::value( $value->item( $current ) );
 			} else {
-				if ( preg_match( '/^\s*<!\[CDATA\[/', $value ) ) {
+				if ( preg_match( '/^\s*<!\[CDATA\[/', $value??'' ) ) {
 					$content = $value;
 				} else {
-					$content = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
+					$content = htmlspecialchars( $value??'', ENT_QUOTES, 'UTF-8' );
 				}
 			}
 			return $content;
@@ -406,7 +406,8 @@
 			parent::__construct($nodes);
 		}
 
-		public function offsetSet($offset, $value) {
+		public function offsetSet($offset, $value): void
+		{
 			if (!$value instanceof ar_xmlNodeInterface) {
 				$value = new ar_xmlNode( $value );
 			}
@@ -808,7 +809,7 @@
 			return $el;
 		}
 
-		function insertBefore( $el, ar_xmlNodeInterface $referenceEl = null ) {
+		function insertBefore( $el, ?ar_xmlNodeInterface $referenceEl ) {
 			$this->_removeChildNodes( $el );
 			if ( !isset($referenceEl) ) {
 				return $this->_appendChild( $el );

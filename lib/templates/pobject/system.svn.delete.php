@@ -22,7 +22,7 @@
 					}
 				}
 			} else {
-				echo(htmlspecialchars($result));
+				echo(htmlspecialchars($result??''));
 			}
 			flush();
 		}

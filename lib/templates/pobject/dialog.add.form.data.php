@@ -92,7 +92,7 @@
 		}
 
 		foreach ( $usedLanguages as $extraLanguage ) {
-			echo '<input type="hidden" name="arLanguages[]" value="' . htmlspecialchars($extraLanguage) . '">';
+			echo '<input type="hidden" name="arLanguages[]" value="' . htmlspecialchars($extraLanguage??'') . '">';
 			if ( $extraLanguage != $arLanguage ) {
 				echo '<fieldset class="editdata">';
 				echo '<legend>' . $ARnls['data'] . ' : ' . $ARConfig->nls->list[$extraLanguage] .'</legend>';
