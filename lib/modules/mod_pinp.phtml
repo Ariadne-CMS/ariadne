@@ -1008,6 +1008,16 @@ class pinp {
 					// use blank array instead of null
 					$parsed = preg_replace( "/null[)][!][!][!][!]/", "[])!!!!", $parsed );
 				break;
+				case ($in_special === "krsort"):
+				case ($in_special === "ksort"):
+				case ($in_special === "asort"):
+				case ($in_special === "arsort"):
+					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
+					$parsed = preg_replace( "/null[)][!][!][!][!]/", "[])!!!!", $parsed );
+				break;
+				case ($in_special === "usort"):
+                                        $parsed = preg_replace( "/[?][?][ ]null[)][!][!][!][!]/", ")!!!!", $parsed );
+				break;
 			}
 
 			$result .= $parsed;
