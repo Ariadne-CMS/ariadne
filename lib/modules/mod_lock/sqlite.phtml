@@ -23,6 +23,9 @@
 
 
 class sqlitelock {
+	public $tbl_prefix;
+	public $dbh;
+	public $lock_duration;
 
 	function __construct( $tbl_prefix = "", $store = null) {
 		debug("sqlitelock::sqlitelock($tbl_prefix)");

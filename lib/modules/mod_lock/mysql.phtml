@@ -23,6 +23,9 @@
 
 
 class mysqllock {
+	public $tbl_prefix;
+	public $dbh;
+	public $lock_duration;
 
 	function __construct($tbl_prefix="", $dbh=null) {
 		debug("mysqllock::mysqllock($tbl_prefix)");
