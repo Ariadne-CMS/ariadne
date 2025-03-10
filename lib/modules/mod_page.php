@@ -64,7 +64,7 @@ class page {
 	}
 
 	public static function getBody($page) {
-		if (stripos($page, "</body") !== false) {
+		if (stripos($page??'', "</body") !== false) {
 			$page = preg_replace('|</BODY.*$|is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
@@ -74,7 +74,7 @@ class page {
 				return '<!-- Error: Backtrack limit was exhausted (531) -->';
 			}
 		}
-		if (stripos($page, "<body") !== false) {
+		if (stripos($page??'', "<body") !== false) {
 			$page = preg_replace('/^.*<BODY[^>]*>/is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){

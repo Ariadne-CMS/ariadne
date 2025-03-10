@@ -106,7 +106,7 @@ class URL {
 				function ($matches) use ($me, $site) {
 					return $me->make_url($site, $matches[1] ?? null);
 				},
-				$page
+				$page??''
 			);
 
 			$page = preg_replace_callback(
@@ -114,7 +114,7 @@ class URL {
 				function ($matches) use ($me,$site) {
 					return $me->make_url($site, $matches[1] ?? null);
 				},
-				$page
+				$page??''
 			);
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%";

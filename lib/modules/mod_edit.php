@@ -397,8 +397,8 @@
         }
 
 		public static function isEmpty($var) {
-			if (strpos($var, 'vd:source')===false) {
-				return trim(preg_replace('/&nbsp;/',' ',strip_tags($var, '<script><input><img><object><embed><iframe>')))=='';
+			if (strpos($var??'', 'vd:source')===false) {
+				return trim(preg_replace('/&nbsp;/',' ',strip_tags($var??'', '<script><input><img><object><embed><iframe>')))=='';
 			} else {
 				return false;
 			}
