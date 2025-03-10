@@ -104,7 +104,7 @@
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
 		$viewmode = $this->getvar("viewmode");
 		if( !$viewmode || !$viewmodes[$viewmode] ) {
-			$viewmode = $_COOKIE['viewmode'];
+			$viewmode = $_COOKIE['viewmode']??null;
 			if( !$viewmode || !$viewmodes[$viewmode] ) {
 				$viewmode = 'list';
 			}

@@ -13,7 +13,7 @@
 		$arReturnPath=$this->path;
 	}
 	if (!$arReturnTemplate) {
-		$arReturnTemplate=$function;
+		$arReturnTemplate=$function??'';
 		if (ldGetServerVar("QUERY_STRING")) {
 			$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
 		}
