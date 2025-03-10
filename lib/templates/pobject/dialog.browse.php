@@ -104,7 +104,7 @@
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
 		$viewmode = $this->getvar("viewmode");
 		if( !$viewmode || !$viewmodes[$viewmode] ) {
-			$viewmode = ldGetUserCookie("viewmode");
+			$viewmode = $_COOKIE['viewmode'];
 			if( !$viewmode || !$viewmodes[$viewmode] ) {
 				$viewmode = 'list';
 			}
@@ -112,12 +112,12 @@
 
 		$ordering = array("name" => 1, "filename" => 1, "ctime" => 1, "mtime" => 1, "modified" => 1, "priority" => 1, "path" => 1); // List of allowed ordering options;
 		$directions = array("asc" => 1, "desc" => 1);
-		$order = strtolower($this->getvar('order'));
+		$order = strtolower($this->getvar('order')??'');
 		if (!$order || !$ordering[$order]) {
 			$order = 'name';
 		}
 
-		$direction = strtolower($this->getvar('direction'));
+		$direction = strtolower($this->getvar('direction')??'');
 		if (!$direction || !$directions[$direction]) {
 			$direction = 'asc';
 		}
