@@ -702,7 +702,7 @@ EOF;
 							}
 
 							if ( isset($this->items[$newparent]) ) {
-								$parentNode = current( $this->items[$newparent]->getElementsByTagName( $this->options['listTag'] ) );
+								$parentNode = $this->items[$newparent]->getElementsByTagName( $this->options['listTag'] )->getIterator()->current();
 								if (!$parentNode || !isset($parentNode)) {
 									$parentNode = $this->items[$newparent]->appendChild( ar_html::el( $this->options['listTag'] ) );
 								}
