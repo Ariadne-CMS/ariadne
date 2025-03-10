@@ -648,8 +648,8 @@ EOF;
 					}
 					$item['node']->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 				} else if ( ( strpos( $current, $item['path'] ) === 0 ) ||
-					 ( strpos( $current, $item['url'] ) === 0 ) ||
-					 ( $link && strpos( $current, $link->attributes['href'] ?? null ) === 0 ) ) {
+					 ( strpos( $current, $item['url']??'' ) === 0 ) ||
+					 ( $link && strpos( $current, $link->attributes['href'] ?? '' ) === 0 ) ) {
 					$item['node']->setAttribute('class', array( 'menuParent' => 'menuParent' ) );
 				}
 
