@@ -23,13 +23,13 @@
 						</colgroup>
 						<tr class="odd"><td>
 							<label for="admin_pass"><?php echo $ARnls['install:admin_pass']; ?></label>
-							<input class="text" id="admin_pass" type="password" name="admin_pass" value="<?php echo htmlspecialchars($admin_pass); ?>">
+							<input class="text" id="admin_pass" type="password" name="admin_pass" value="<?php echo htmlspecialchars($admin_pass??''); ?>">
 						</td><td>
 							<?php echo $ARnls['install:admin_pass_help']; ?>
 						</td></tr>
 						<tr class="even"><td>
 							<label for="admin_pass_repeat"><?php echo $ARnls['install:admin_pass_repeat']; ?></label>
-							<input class="text" id="admin_pass_repeat" type="password" name="admin_pass_repeat" value="<?php echo htmlspecialchars($admin_pass_repeat); ?>">
+							<input class="text" id="admin_pass_repeat" type="password" name="admin_pass_repeat" value="<?php echo htmlspecialchars($admin_pass_repeat??''); ?>">
 						</td><td>
 							<?php echo $ARnls['install:admin_pass_repeat_help']; ?>
 						</td></tr>

@@ -429,6 +429,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_html_formInput {
 
 		protected $form;
@@ -501,7 +502,7 @@
 			}
 			$attributes = array('class' => $class);
 
-			if ( trim($help) ) {
+			if ( trim($help??'') ) {
 				$help = ar_html::el('div', $help, array('class' => 'helpContent'));
 				return ar_html::el('div', $help, $attributes);
 			} else {

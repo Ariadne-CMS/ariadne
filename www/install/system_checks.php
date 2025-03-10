@@ -389,7 +389,7 @@
 		$port = null;
 		$host = $conf->host;
 		if ( strpos($conf->host,':') !== false) {
-			list($host,$port) = explode($conf->host, ':',2);
+			list($host,$port) = explode(':', $conf->host??'' ,2);
 		}
 
 		if( $conf->host == ''){
@@ -565,10 +565,10 @@
 	}
 
 	function find_in_path($needle,array $extrapath=array()) {
-		$paths = explode(PATH_SEPARATOR,getServerVar('PATH'));
+		$paths = explode(PATH_SEPARATOR,getServerVar('PATH')??'');
 		$paths = array_merge($paths,$extrapath);
 
-		$exts = explode(PATH_SEPARATOR, getServerVar('PATHEXT'));
+		$exts = explode(PATH_SEPARATOR, getServerVar('PATHEXT')??'');
 
 		foreach($paths as $path){
 			$file = $path . DIRECTORY_SEPARATOR . $needle;

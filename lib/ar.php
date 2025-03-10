@@ -214,6 +214,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class arTainted {
 		public $value = null;
 
@@ -227,6 +228,7 @@
 	}
 
 
+	#[\AllowDynamicProperties]
 	class arObject {
 		public function __construct( $vars = '' ) {
 			if ( is_array($vars) ) {
@@ -256,6 +258,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class arWrapper {
 
 		protected $wrapped = null;
@@ -301,6 +304,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_error extends ar_exceptionDefault {
 		public $code, $previous;
 
@@ -452,6 +456,7 @@
 		public static function getLoader( $options = array() );
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_ariadneContext implements ar_contextInterface {
 
 		public static function makePath( $cwd, $path ) { //FIXME: move this method to a better place
