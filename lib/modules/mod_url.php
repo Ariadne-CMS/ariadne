@@ -79,7 +79,7 @@ class URL {
 			//$repl[] = "{arSession}";
 		}
 
-		return preg_replace($find, $repl, $page);
+		return preg_replace($find, $repl, $page??'');
 	}
 
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
