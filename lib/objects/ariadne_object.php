@@ -595,7 +595,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if ($this->data->nls->list[$this->nls] ?? null) {
 			$mynlsdata=$this->data->{$this->nls};
 		} else if ($this->data->nls->default ?? null) {
-			$mynlsdata=$this->data->{$this->data->nls->default};
+			$mynlsdata=$this->data->{$this->data->nls->default} ?? $this->data;
 		} else {
 			$mynlsdata=$this->data;
 		}
