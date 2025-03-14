@@ -49,14 +49,17 @@
 		debug("Error: $text");
 	}
 
-	function ldRegisterFile($field = "file", &$error) {
+	function ldRegisterFile($field, &$error) {
 	global $ARnls, $store, $ldCmd_files;
+		if (!isset($field)) {
+			$field = "file";
+		}
 		debug("ldRegisterFile([$field], [error])");
 
 		require_once($store->get_config("code")."modules/mod_mimemagic.php");
 
 		$result = Array();
-		$file_data = $ldCmd_files[$field];
+		$file_data = $ldCmd_files[$field]??null;
 		if ($file_data) {
 				$file_temp = tempnam($store->get_config("files")."temp", "upload");
 				$fp = fopen($file_temp, "wb+");
@@ -76,7 +79,7 @@
 					debug(" http_post_vars (".serialize($result).")");
 				}
 		}
-		debug("ldRegisterFile[end] ($result)");
+		debug("ldRegisterFile[end] (" . serialize($result) . ")");
 		return $result;
 	}
 
