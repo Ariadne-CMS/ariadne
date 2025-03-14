@@ -12,8 +12,9 @@
 	$userConfig = $this->loadUserConfig();
 	$authconfig = $userConfig['authentication'];
 
-	define('ARGRANTBYTYPE', 8);
-
+	if (!defined('ARGRANTBYTYPE')) {
+		define('ARGRANTBYTYPE', 8);
+	}
 	$selectedpath = $this->getdata("selectedpath");
 	$selecteduser = $this->getdata("selecteduser");
 	$moregrants = $this->getdata("moregrants");
@@ -167,24 +168,25 @@
 		$data[$selectedpath][$selecteduser]['grants']['bytype'][$moregrants][$typename] = ARGRANTGLOBAL;
 	}
 
-	function arrayMergeCorrect($left, $right) {
-		if (is_null($right)) {
-			return $left;
-		}
-		if (is_array($right)) {
-			foreach ($right as $key => $value) {
-				if (!is_numeric($key)) {
-					$left[$key] = isset($left[$key]) ? arrayMergeCorrect($left[$key], $value) : $value;
-				} else {
-					$left[] = arrayMergeCorrect($left[$key], $value);
-				}
+	if (!function_exists("arrayMergeCorrect")) {
+		function arrayMergeCorrect($left, $right) {
+			if (is_null($right)) {
+				return $left;
 			}
-			return $left;
-		} else {
-			return $right;
+			if (is_array($right)) {
+				foreach ($right as $key => $value) {
+					if (!is_numeric($key)) {
+						$left[$key] = isset($left[$key]) ? arrayMergeCorrect($left[$key], $value) : $value;
+					} else {
+						$left[] = arrayMergeCorrect($left[$key], $value);
+					}
+				}
+				return $left;
+			} else {
+				return $right;
+			}
 		}
 	}
-
 
 	$typetree = $this->call('typetree.ini');
 	$typenames = $this->getvar("arTypeNames");

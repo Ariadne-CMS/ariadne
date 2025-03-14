@@ -25,7 +25,6 @@
 		dest=document.wgWizForm.fieldname.options;
 		<?php
 			$custom=$this->getdata("custom","none");
-			@parse_str($custom);
 			if (is_array($custom)) {
 				foreach( $custom as $cdnls => $cdvalues ) {
 					echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']=new Array();\n";
@@ -49,7 +48,7 @@
 				$configcache=$ARConfig->cache[$this->path];
 			}
 
-			if (is_array($configcache->custom)) {
+			if (is_array($configcache->custom??null)) {
 				foreach($configcache->custom as $name => $customvalue) {
 					if (!$customvalue["grant"] || ($this->CheckSilent($customvalue["grant"]))) {
 						if (($customvalue["type"]==$this->type) ||

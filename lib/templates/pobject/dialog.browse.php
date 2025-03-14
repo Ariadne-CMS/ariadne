@@ -219,23 +219,23 @@
 
 <script type="text/javascript">
 	// Pass the settings for the tree to javascript.
-	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo AddCSlashes( $loader, ARESCAPE ); ?>';
+	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo AddCSlashes( ($loader??''), ARESCAPE ); ?>';
 
 	muze.ariadne.explore.tree.baseNodes	= [{
-			"path" : "<?php echo AddCSlashes( $path, ARESCAPE ); ?>",
-			"name" : "<?php echo AddCSlashes( $name, ARESCAPE ); ?>",
-			"icon" : "<?php echo AddCSlashes( $icon, ARESCAPE ); ?>"
+			"path" : "<?php echo AddCSlashes( ($path??''), ARESCAPE ); ?>",
+			"name" : "<?php echo AddCSlashes( ($name??''), ARESCAPE ); ?>",
+			"icon" : "<?php echo AddCSlashes( ($icon??''), ARESCAPE ); ?>"
 	}];
 
-	muze.ariadne.registry.set('root', '<?php echo AddCSlashes( $root, ARESCAPE ); ?>');
-	muze.ariadne.registry.set('jail', '<?php echo AddCSlashes( $jail, ARESCAPE ); ?>');
-	muze.ariadne.registry.set('ARRoot', '<?php echo AddCSlashes( $AR->root, ARESCAPE ); ?>');
-	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( $this->store->get_config('root'), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('root', '<?php echo AddCSlashes( ($root??''), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('jail', '<?php echo AddCSlashes( ($jail??''), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('ARRoot', '<?php echo AddCSlashes( ($AR->root??''), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( ($this->store->get_config('root')??''), ARESCAPE ); ?>');
 
 	// setting session ID for unique naming of windows within one ariadne session.
-	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( $ARCurrent->session->id, ARESCAPE ); ?>");
+	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( ($ARCurrent->session->id??''), ARESCAPE ); ?>");
 
-	muze.ariadne.registry.set("path", "<?php echo AddCSlashes( $browsepath, ARESCAPE ); ?>");
+	muze.ariadne.registry.set("path", "<?php echo AddCSlashes( ($browsepath??''), ARESCAPE ); ?>");
 <?php
 	if( $AR->user->data->windowprefs["edit_object_layout"] ) {
 		echo "\tmuze.ariadne.registry.set('window_new_layout', 1);\n";

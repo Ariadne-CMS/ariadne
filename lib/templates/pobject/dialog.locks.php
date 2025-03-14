@@ -17,7 +17,11 @@
 		$locks = $this->store->mod_lock->get_locks( $AR->user->data->login );
 		if (!count($locks)) {
 			// no locks, lets return where we came from
-			ldRedirect($arReturnPage);
+			if (isset($arReturnPage)) {
+				ldRedirect($arReturnPage);
+			} else {
+				exit();
+			}
 		}
 
 

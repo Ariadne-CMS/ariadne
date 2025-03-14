@@ -13,18 +13,18 @@
 				$src = $this->make_local_url($path);
 			}
 		}
-		if (!$src) {
+		if (!isset($src)) {
 			$src = $this->make_local_url("/system/photo/nothumb/");
 		}
 
-		if ($arEditorSettings['image']['styles'][$imgstyle]) {
+		if (isset($imgstyle) && $arEditorSettings['image']['styles'][$imgstyle]) {
 			$class = 'class="' . $arEditorSettings['image']['styles'][$imgstyle]['class'] . '"';
 			$template = $arEditorSettings['image']['styles'][$imgstyle]['template'];
 			$src = $src . $template;
 		}
 			
 ?>
-	<img id="preview_image" align="<?php echo htmlspecialchars($align??''); ?>" alt="<?php echo htmlspecialchars($alttext??''); ?>" title="<?php echo htmlspecialchars($alttext??''); ?>" src="<?php echo htmlspecialchars($src??''); ?>" <?php echo $class; ?>>
+	<img id="preview_image" align="<?php echo htmlspecialchars($align??''); ?>" alt="<?php echo htmlspecialchars($alttext??''); ?>" title="<?php echo htmlspecialchars($alttext??''); ?>" src="<?php echo htmlspecialchars($src??''); ?>" <?php echo $class??''; ?>>
 <?php
 	}
 ?>

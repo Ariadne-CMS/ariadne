@@ -97,7 +97,7 @@ class URL {
 		}
 		$site = $me->currentsite($me->path, true);
 		$root = $me->store->get_config("root");
-		if (substr($root, -3) == "/$me->nls") {
+		if (substr($root??'', -3) == "/$me->nls") {
 			$root = substr($root, 0, -3);
 		}
 		if ($site && $site !== '/') {

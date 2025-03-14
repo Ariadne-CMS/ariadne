@@ -2,7 +2,7 @@
 	$ARCurrent->nolangcheck=true;
 	$proceed = false;
 
-	if ($path == $this->path) {
+	if (isset($path) && ($path == $this->path)) {
 		if ((($this->arIsNewObject &&
 				($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 				$parentobj->CheckLogin("add", $this->type)) ||
@@ -12,15 +12,16 @@
 			$proceed = true;
 		}
 	} else {
-		if ($this->exists($path)) {
+		if (isset($path) && $this->exists($path)) {
 			$target_object = current($this->get($path, "system.get.phtml"));
 			if ($target_object->CheckLogin("edit", $target_object->type) && $this->CheckConfig()) {
 				$proceed = true;
 			}
 		} else {
 			$target_object = current($this->get(
-								$this->store->make_path($path, ".."),
-								"system.get.phtml"));
+				$this->store->make_path($this->path, ".."),
+				"system.get.phtml"
+			));
 			if ($this->CheckConfig()) {
 				$proceed = true;
 			}
@@ -33,7 +34,7 @@
 			$wgHTMLEditTemplate="edit.object.html.page.phtml";
 			include($this->store->get_config("code")."widgets/htmledit/toolbar.php");
 		} else {
-			if ($file) {
+			if (isset($file)) {
 				$file.="/";
 			}
 			$yui_base = $AR->dir->www . "js/yui/";
@@ -84,12 +85,12 @@
 
 <script type="text/javascript">
 	// Initialization variables and calls;
-	var root 	= "<?php echo addslashes($root); ?>";
-	var path 	= "<?php echo addslashes($path); ?>";
-	var file 	= "<?php echo addslashes($file); ?>";
-	var name 	= "<?php echo addslashes($name); ?>";
-	var language 	= "<?php echo addslashes($language); ?>";
-	var type 	= "<?php echo addslashes($language); ?>";
+	var root 	= "<?php echo addslashes($root??''); ?>";
+	var path 	= "<?php echo addslashes($path??''); ?>";
+	var file 	= "<?php echo addslashes($file??''); ?>";
+	var name 	= "<?php echo addslashes($name??''); ?>";
+	var language 	= "<?php echo addslashes($language??''); ?>";
+	var type 	= "<?php echo addslashes($type??''); ?>";
 	var value 	= "<?php echo addslashes($content??''); ?>";
 
 	var myEditor;
@@ -503,9 +504,9 @@
 </style>
 </head>
 <body class="yui-skin-sam">
-	<form id="editform" name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>" onSubmit="return checksubmit();">
+	<form id="editform" name="editform" method="post" action="<?php echo ($root??'').($path??'').($file??'')."edit.".($name??'').".save.phtml"; ?>" onSubmit="return checksubmit();">
 		<div id="container">
-			<input name="ContentLanguage" type="hidden" value="<?php echo $language; ?>">
+			<input name="ContentLanguage" type="hidden" value="<?php echo $language??''; ?>">
 			<textarea name="htmltext" id="htmltext" cols="75" rows="24"></textarea>
 		</div>
 	</form>

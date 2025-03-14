@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckSilent("edit") && $this->CheckConfig()) {
-		$cacheSettings = $this->data->config->cacheSettings;
+		$cacheSettings = $this->data->config->cacheSettings??null;
 		if (isset($cacheSettings['serverCache'])) {
 			$cacheconfig = $cacheSettings['serverCache'];
 		} else {

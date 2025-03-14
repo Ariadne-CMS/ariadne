@@ -3,6 +3,9 @@
 	include_once("dialog.grants.logic.php");
 
 	$data = $this->getdata('data');
+	if (!$data) {
+		$data = [];
+	}
 	echo "<p>The grants specified below will be set. If you are satisfied with the changes, please press 'Apply' once more to set the grants.</p>";
 
 	echo "<table width=\"100%\">";

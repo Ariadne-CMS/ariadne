@@ -14,7 +14,7 @@
 		$arnofollow  = ($this->getvar('rel') == "nofollow");
 
 		$matches = array();
-		if (preg_match('|(.*)#([^#]*)$|', $url, $matches)) {
+		if (preg_match('|(.*)#([^#]*)$|', $url??'', $matches)) {
 			if (!$aranchor) {
 				$aranchor = $matches[2];
 			}
@@ -27,12 +27,12 @@
 	}
 
 	function hyperlinkBrowse( path ) {
-		var objectURL = "<?php echo $this->make_ariadne_url($wgBrowsePath); ?>";
+		var objectURL = "<?php echo $this->make_ariadne_url($wgBrowsePath??''); ?>";
 		var linkURL = muze.load( objectURL + 'dialog.makeLocalURL.ajax?path=' + escape(path), true, false );
 		if (!linkURL) {
 			linkURL = objectURL;
 		}
-		window.open( linkURL + "dialog.browse.php?pathmode=siterelative&root=<?php echo urlencode($root); ?>", "browse", "height=480,width=750");
+		window.open( linkURL + "dialog.browse.php?pathmode=siterelative&root=<?php echo urlencode($root??''); ?>", "browse", "height=480,width=750");
 		return false;
 	}
 

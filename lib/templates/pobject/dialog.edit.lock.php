@@ -16,7 +16,8 @@
 		</th>
 	</tr>
 	<?php
-		if ($locklist=$this->store->mod_lock->locklist) {
+		$locklist = $this->store->mod_lock->locklist ?? null;
+		if ($locklist) {
 			while ((list($key, $lock)=each($locklist))) {
 				echo "<tr><td>".$lock["path"]."</td>";
 				echo "<td>".$lock["identity"]."</td>";
