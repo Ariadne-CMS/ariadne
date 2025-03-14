@@ -21,6 +21,7 @@
 		}
 		$repeat_on=$this->getdata("repeat_on", "none");
 		if ( !$repeat_on ) {
+			$repeat_on = [];
 			$weekday = date('w', $this->getdata('date'));
 			$repeat_on[$weekday] = true;
 		}

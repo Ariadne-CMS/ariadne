@@ -79,7 +79,7 @@
 	<?php
 
 		$disabled = $this->getvar('disabled') ?? ($this->data->config->disabled ?? null);
-		if (!in_array($this->data->login, array("admin", "public")) && $this->CheckSilent('config')) {
+		if (!in_array($this->data->login??null, array("admin", "public")) && $this->CheckSilent('config')) {
 			if ($disabled) {
 				$checked = "checked ";
 			} else {
