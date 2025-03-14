@@ -6,12 +6,12 @@
 			foreach ($scaffoldOb->data->config->pinp as $ttype => $tdata ) {
 				foreach ( $tdata as $tfunction => $tlanguages ) {
 					foreach( $tlanguages as $tlanguage => $tid ) {
-						if ( $scaffoldOb->data->config->privatetemplates[$ttype][$tfunction]) {
+						if ( $scaffoldOb->data->config->privatetemplates[$ttype][$tfunction]??null) {
 							$private = true;
 						} else {
 							$private = false;
 						}
-						if ( $scaffoldOb->data->config->templates[$ttype][$tfunction][$tlanguage] ) {
+						if ( $scaffoldOb->data->config->templates[$ttype][$tfunction][$tlanguage]??null) {
 							$default = true;
 						} else {
 							$default = false;

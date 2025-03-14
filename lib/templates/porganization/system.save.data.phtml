@@ -45,10 +45,12 @@
 			$this->data->url=$this->getdata("url","none");
 
 			$emails = $this->getdata("emails", "none");
+			if (!$emails) {
+				$emails = [];
+			}
 			$rawemails = $emails;
 			if (!is_array($emails)) {
 				$emails=explode(",",$emails);
-
 			}
 
 			$emails = array_values(array_filter($emails));

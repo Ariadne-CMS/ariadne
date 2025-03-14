@@ -180,10 +180,10 @@
 					$this->data->enddate = $this->data->startdate;
 				}
 
-				if (!$this->data->published) {
+				if (!isset($this->data->published)) {
 					$this->data->published=time();
 				}
-				if (!$this->data->author) {
+				if (!isset($this->data->author)) {
 					$this->data->author=$AR->user->data->name;
 					$this->data->author_path=$AR->user->path;
 				}
