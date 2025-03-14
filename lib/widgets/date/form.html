@@ -13,7 +13,7 @@
     // $wgDateTitle="Select Date";
   }
   if ( !( $wgDateFormat ?? null ) ) {
-    $wgDateFormat="%m-%d-%Y";
+    $wgDateFormat="Y-m-d";
   }
   if ( !( $wgDateSize ?? null ) ) {
     $wgDateSize=10;
@@ -21,7 +21,7 @@
 ?>
 <input type="hidden" name="<?php echo $wgDateName; ?>" id="<?php echo $wgDateName; ?>" value="<?php echo $wgDate; ?>">
 <input type="text" name="formatted<?php echo $wgDateName; ?>" id="formatted<?php echo $wgDateName; ?>" value="<?php 
-  echo strftime($wgDateFormat, $wgDate); 
+  echo DateTimeImmutable::createFromFormat('U', $wgDate)->format($wgDateFormat);
 ?>" size="<?php echo $wgDateSize; ?>" class="editable_border"<?php
   if ($wgDateTitle ?? null) {
     echo " onFocus=\"this.blur();\">\n<input type=\"button\" name=\"wgDateButton\" value=\"$wgDateTitle\"".
