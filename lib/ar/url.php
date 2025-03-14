@@ -10,7 +10,7 @@
 
 		public function __construct( $url ) {
 			$query = new \arc\url\PHPQuery();
-			$this->url = new \arc\url\Url($url, $query);
+			$this->url = new \arc\url\Url($url??'', $query);
 			$this->query = new ar_urlQuery($query);
 		}
 
