@@ -773,7 +773,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$url2 = array();
 		}
 
-		$prepurl1 = preg_replace('|^[a-z:]*//|i', '', $url1);
+		$prepurl1 = preg_replace('|^[a-z:]*//|i', '', $url1??'');
 
 		foreach($url2 as $url) {
 			if (

@@ -430,7 +430,7 @@ class pldapconnection extends pconnector { // psearch class definition
 		return $result;
 	}
 
-	function ls($path, $function="list.html", $args="") {
+	function ls($path='', $function='list.html', $args='') {
 		$path=$this->store->make_path($this->path, $path);
 		if( (substr($path, 0, strlen($this->path))==$this->path)) {
 			return $this->ldap_find("", $function, $args);
@@ -469,7 +469,7 @@ class pldapconnection extends pconnector { // psearch class definition
 		return pdir::find($path, $criteria, $function, $args, $limit, $offset);
 	}
 
-	function count_find($path, $criteria) {
+	function count_find($path = '', $query = '') {
 		$path=$this->store->make_path($this->path, $path);
 		if( (substr($path, 0, strlen($this->path))==$this->path)) {
 			return $this->ldap_count_find($criteria);
