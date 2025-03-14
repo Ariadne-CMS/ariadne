@@ -133,18 +133,22 @@
 			$this->query->import( $values );
 		}
 
-		public function offsetExists($name){
+		public function offsetExists($name): bool
+		{
 			return isset($this->query->{$name});
 		}
 
-		public function &offsetGet($name) {
+		public function &offsetGet($name): mixed
+		{
 			return $this->query->{$name};
 		}
 
-		public function offsetSet($name, $value) {
+		public function offsetSet($name, $value): void
+		{
 			$this->query->{$name} = $value;
 		}
-		public function offsetUnset($name) {
+		public function offsetUnset($name): void
+		{
 			unset($this->query->{$name});
 		}
 
