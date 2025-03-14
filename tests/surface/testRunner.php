@@ -33,19 +33,25 @@
 		global $store;
 		$targetOb = current($store->call("system.get.phtml", '', $store->get($targetPath)));
 		ob_start();
-		$targetOb->call($templateName, $args);
+		$callResult = $targetOb->call($templateName, $args);
 		$result = ob_get_contents();
 		ob_end_clean();
+		if ($targetOb->error) {
+			throw $targetOb->error;
+		}
 		return $result;
 	}
 
 	$foundFailures = false;
-	$targetPath = "/";
+
+	if (!isset($targetPath)) {
+		$targetPath = "/";
+	}
 	foreach ($tests as $templateName => $argVariants) {
 		foreach ($argVariants as $args) {
 			$testFailed = false;
 			$result = runTemplate($targetPath, $templateName, $args);
-			if (preg_match_all("/(Deprecated|Fatal|Warning).*/", $result, $matches)) {
+			if (preg_match_all("/(Deprecated|Fatal|Warning):.*/", $result, $matches)) {
 				if (!$foundFailures) {
 					echo "FAILED" . PHP_EOL;
 				}
