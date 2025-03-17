@@ -173,7 +173,7 @@ class URL {
 					$template = basename($rest);
 				}
 				$path = $me->make_path( substr($rest, 0, -(strlen($template))) );
-				if (is_array($settings['arCall'][$template])) {
+				if (is_array($settings['arCall'][$template]??null)) {
 					$cpaths = $settings['arCall'][$template]['paths'];
 					if (is_array($cpaths)) {
 						$mayCall = false;

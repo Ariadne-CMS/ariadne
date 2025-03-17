@@ -97,7 +97,7 @@
 		}
 		if( $debugisoff != "" && $DB["level"] > 0) {
 			debug("Debugging OFF ".$debugisoff,$DB["level"],$DB["stream"]);
-			if( $DB["fp"] ) {
+			if( $DB["fp"]??null ) {
 				@fclose($DB["fp"]);
 			}
 			$DB["level"]=$DB["off"];

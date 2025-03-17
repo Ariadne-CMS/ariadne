@@ -1030,7 +1030,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 									if ($gval && !is_array($gval)) {
 										$grants[$gkey] = $gval;
 									} else
-									if ($gval && !$grants[$gkey]) {
+									if ($gval && !($grants[$gkey]??null)) {
 										$grants[$gkey] = $gval;
 									}
 								}
@@ -3111,7 +3111,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				}
 			}
 		}
-		return $config->site;
+		if ($config) {
+			return $config->site;
+		}
 	}
 
 	public function parentsite($site) {
@@ -3530,6 +3532,37 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			return implode( $arg1, $arg2 );
 		}
 		return implode( $arg1 );
+	}
+
+	public function _strftime($format, $date) {
+		// Define a mapping of strftime format characters to DateTime format characters
+		$formatMapping = [
+			'%a' => 'D',	// Abbreviated weekday name (Sun)
+			'%A' => 'l',	// Full weekday name (Sunday)
+			'%b' => 'M',	// Abbreviated month name (Jan)
+			'%B' => 'F',	// Full month name (January)
+			'%c' => 'r',	// Preferred date and time representation (e.g., Mon Dec 25 14:30:00 2023)
+			'%d' => 'd',	// Day of the month (01-31)
+			'%H' => 'H',	// Hour in 24-hour format (00-23)
+			'%I' => 'h',	// Hour in 12-hour format (01-12)
+			'%j' => 'z',	// Day of the year (001-366)
+			'%m' => 'm',	// Month number (01-12)
+			'%M' => 'i',	// Minutes (00-59)
+			'%p' => 'A',	// AM or PM
+			'%S' => 's',	// Seconds (00-59)
+			'%U' => 'W',	// Week number of the year (00-52), Sunday as the first day of the week
+			'%w' => 'w',	// Day of the week (0-6, Sunday=0)
+			'%x' => 'd/m/y',// Preferred date representation without time (e.g., 12/25/2023)
+			'%X' => 'H:i:s',// Preferred time representation without date (e.g., 14:30:00)
+			'%y' => 'y',	// Two-digit year (00-99)
+			'%Y' => 'Y',	// Four-digit year (e.g., 2023)
+			'%z' => 'O',	// Timezone offset (+02:00)
+			'%Z' => 'T',	// Timezone abbreviation (e.g., UTC)
+		];
+
+		// Replace all strftime format characters with DateTime format characters
+		$dateTimeFormat = strtr($format, $formatMapping);
+		return DateTimeImmutable::createFromFormat('U', $date)->format($dateTimeFormat);
 	}
 
 	public function __call($name,$arguments) {
