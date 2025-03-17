@@ -13,7 +13,7 @@
 		$template_path=$template_dir.$function.".".$language;
 
 		if (preg_match("/^[a-z0-9\._-]+$/i",$function)) {
-			if (isset($this->data->config->pinp[$type][$function][$language])) {
+			if ($this->data->config->pinp[$type][$function][$language]??null) {
 				unset($this->data->config->pinp[$type][$function][$language]);
 				if (count($this->data->config->pinp[$type][$function])==0) {
 					unset($this->data->config->pinp[$type][$function]);
@@ -21,12 +21,12 @@
 						unset($this->data->config->pinp[$type]);
 					}
 				}
-				if (isset($this->data->config->templates[$type][$function][$language])) {
+				if ($this->data->config->templates[$type][$function][$language]??null) {
 					// Store the old template information in deleted_templates for SVN to use.
 					if ($AR->SVN->enabled) {
 						is_array($this->data->config->deleted_templates) ? false : $this->data->config->deleted_templates = array();
-						is_array($this->data->config->deleted_templates[$type]) ? false : $this->data->config->deleted_templates[$type] = array();
-						is_array($this->data->config->deleted_templates[$type][$function]) ? false : $this->data->config->deleted_templates[$type][$function] = array();
+						is_array($this->data->config->deleted_templates[$type]??null) ? false : $this->data->config->deleted_templates[$type] = array();
+						is_array($this->data->config->deleted_templates[$type][$function]??null) ? false : $this->data->config->deleted_templates[$type][$function] = array();
 						$this->data->config->deleted_templates[$type][$function][$language] = $this->data->config->templates[$type][$function][$language];
 					}
 
@@ -38,7 +38,7 @@
 						}
 					}
 				}
-				if (isset($this->data->config->privatetemplates[$type][$function])) {
+				if ($this->data->config->privatetemplates[$type][$function]??null) {
 					// Store the old template information in deleted_privatetemplates for SVN to use.
 					if ($AR->SVN->enabled) {
 						is_array($this->data->config->deleted_privatetemplates) ? false : $this->data->config->deleted_privatetemplates = array();
