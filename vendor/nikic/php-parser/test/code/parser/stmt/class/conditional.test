@@ -17,8 +17,12 @@ array(
         )
         stmts: array(
             0: Stmt_Class(
-                type: 0
-                name: A
+                attrGroups: array(
+                )
+                flags: 0
+                name: Identifier(
+                    name: A
+                )
                 extends: null
                 implements: array(
                 )

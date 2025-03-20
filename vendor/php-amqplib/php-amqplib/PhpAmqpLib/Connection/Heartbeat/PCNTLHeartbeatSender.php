@@ -1,4 +1,5 @@
 <?php
+
 namespace PhpAmqpLib\Connection\Heartbeat;
 
 use PhpAmqpLib\Connection\AbstractConnection;
@@ -75,12 +76,17 @@ final class PCNTLHeartbeatSender
     private function registerListener($interval)
     {
         pcntl_signal(SIGALRM, function () use ($interval) {
-            if (!$this->connection || $this->connection->isWriting()) {
+            if (!$this->connection) {
                 return;
             }
 
             if (!$this->connection->isConnected()) {
                 $this->unregister();
+                return;
+            }
+
+            if ($this->connection->isWriting()) {
+                pcntl_alarm($interval);
                 return;
             }
 

@@ -1,23 +1,24 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PhpParser;
 
-class CommentTest extends \PHPUnit_Framework_TestCase
+class CommentTest extends \PHPUnit\Framework\TestCase
 {
-    public function testGetSet() {
-        $comment = new Comment('/* Some comment */', 1, 10);
+    public function testGetters() {
+        $comment = new Comment('/* Some comment */',
+            1, 10, 2, 1, 27, 2);
 
         $this->assertSame('/* Some comment */', $comment->getText());
         $this->assertSame('/* Some comment */', (string) $comment);
         $this->assertSame(1, $comment->getLine());
         $this->assertSame(10, $comment->getFilePos());
-
-        $comment->setText('/* Some other comment */');
-        $comment->setLine(10);
-
-        $this->assertSame('/* Some other comment */', $comment->getText());
-        $this->assertSame('/* Some other comment */', (string) $comment);
-        $this->assertSame(10, $comment->getLine());
+        $this->assertSame(2, $comment->getTokenPos());
+        $this->assertSame(1, $comment->getStartLine());
+        $this->assertSame(10, $comment->getStartFilePos());
+        $this->assertSame(2, $comment->getStartTokenPos());
+        $this->assertSame(1, $comment->getEndLine());
+        $this->assertSame(27, $comment->getEndFilePos());
+        $this->assertSame(2, $comment->getEndTokenPos());
     }
 
     /**
@@ -29,10 +30,10 @@ class CommentTest extends \PHPUnit_Framework_TestCase
     }
 
     public function provideTestReformatting() {
-        return array(
-            array('// Some text' . "\n", '// Some text'),
-            array('/* Some text */', '/* Some text */'),
-            array(
+        return [
+            ['// Some text' . "\n", '// Some text'],
+            ['/* Some text */', '/* Some text */'],
+            [
                 '/**
      * Some text.
      * Some more text.
@@ -41,8 +42,8 @@ class CommentTest extends \PHPUnit_Framework_TestCase
  * Some text.
  * Some more text.
  */'
-            ),
-            array(
+            ],
+            [
                 '/*
         Some text.
         Some more text.
@@ -51,30 +52,30 @@ class CommentTest extends \PHPUnit_Framework_TestCase
     Some text.
     Some more text.
 */'
-            ),
-            array(
+            ],
+            [
                 '/* Some text.
        More text.
        Even more text. */',
                 '/* Some text.
    More text.
    Even more text. */'
-            ),
-            array(
+            ],
+            [
                 '/* Some text.
        More text.
          Indented text. */',
                 '/* Some text.
    More text.
      Indented text. */',
-            ),
+            ],
             // invalid comment -> no reformatting
-            array(
+            [
                 'hallo
     world',
                 'hallo
     world',
-            ),
-        );
+            ],
+        ];
     }
 }

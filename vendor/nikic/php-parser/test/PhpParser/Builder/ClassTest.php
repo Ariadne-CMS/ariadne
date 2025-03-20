@@ -1,13 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PhpParser\Builder;
 
 use PhpParser\Comment;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 
-class ClassTest extends \PHPUnit_Framework_TestCase
+class ClassTest extends \PHPUnit\Framework\TestCase
 {
     protected function createClassBuilder($class) {
         return new Class_($class);
@@ -22,15 +27,15 @@ class ClassTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\Class_('SomeLogger', array(
+            new Stmt\Class_('SomeLogger', [
                 'extends' => new Name('BaseLogger'),
-                'implements' => array(
+                'implements' => [
                     new Name('Namespaced\Logger'),
                     new Name('SomeInterface'),
                     new Name\FullyQualified('Fully\Qualified'),
                     new Name\Relative('NamespaceRelative'),
-                ),
-            )),
+                ],
+            ]),
             $node
         );
     }
@@ -42,9 +47,9 @@ class ClassTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\Class_('Test', array(
-                'type' => Stmt\Class_::MODIFIER_ABSTRACT
-            )),
+            new Stmt\Class_('Test', [
+                'flags' => Stmt\Class_::MODIFIER_ABSTRACT
+            ]),
             $node
         );
     }
@@ -56,9 +61,23 @@ class ClassTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\Class_('Test', array(
-                'type' => Stmt\Class_::MODIFIER_FINAL
-            )),
+            new Stmt\Class_('Test', [
+                'flags' => Stmt\Class_::MODIFIER_FINAL
+            ]),
+            $node
+        );
+    }
+
+    public function testReadonly() {
+        $node = $this->createClassBuilder('Test')
+            ->makeReadonly()
+            ->getNode()
+        ;
+
+        $this->assertEquals(
+            new Stmt\Class_('Test', [
+                'flags' => Stmt\Class_::MODIFIER_READONLY
+            ]),
             $node
         );
     }
@@ -67,24 +86,24 @@ class ClassTest extends \PHPUnit_Framework_TestCase
         $method = new Stmt\ClassMethod('testMethod');
         $property = new Stmt\Property(
             Stmt\Class_::MODIFIER_PUBLIC,
-            array(new Stmt\PropertyProperty('testProperty'))
+            [new Stmt\PropertyProperty('testProperty')]
         );
-        $const = new Stmt\ClassConst(array(
+        $const = new Stmt\ClassConst([
             new Node\Const_('TEST_CONST', new Node\Scalar\String_('ABC'))
-        ));
-        $use = new Stmt\TraitUse(array(new Name('SomeTrait')));
+        ]);
+        $use = new Stmt\TraitUse([new Name('SomeTrait')]);
 
         $node = $this->createClassBuilder('Test')
             ->addStmt($method)
             ->addStmt($property)
-            ->addStmts(array($const, $use))
+            ->addStmts([$const, $use])
             ->getNode()
         ;
 
         $this->assertEquals(
-            new Stmt\Class_('Test', array(
-                'stmts' => array($use, $const, $property, $method)
-            )),
+            new Stmt\Class_('Test', [
+                'stmts' => [$use, $const, $property, $method]
+            ]),
             $node
         );
     }
@@ -100,11 +119,11 @@ DOC;
             ->getNode();
 
         $this->assertEquals(
-            new Stmt\Class_('Test', array(), array(
-                'comments' => array(
+            new Stmt\Class_('Test', [], [
+                'comments' => [
                     new Comment\Doc($docComment)
-                )
-            )),
+                ]
+            ]),
             $class
         );
 
@@ -113,49 +132,62 @@ DOC;
             ->getNode();
 
         $this->assertEquals(
-            new Stmt\Class_('Test', array(), array(
-                'comments' => array(
+            new Stmt\Class_('Test', [], [
+                'comments' => [
                     new Comment\Doc($docComment)
-                )
-            )),
+                ]
+            ]),
             $class
         );
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Unexpected node of type "Stmt_Echo"
-     */
+    public function testAddAttribute() {
+        $attribute = new Attribute(
+            new Name('Attr'),
+            [new Arg(new LNumber(1), false, false, [], new Identifier('name'))]
+        );
+        $attributeGroup = new AttributeGroup([$attribute]);
+
+        $class = $this->createClassBuilder('ATTR_GROUP')
+            ->addAttribute($attributeGroup)
+            ->getNode();
+
+        $this->assertEquals(
+            new Stmt\Class_('ATTR_GROUP', [
+                'attrGroups' => [
+                    $attributeGroup,
+                ]
+            ], []),
+            $class
+        );
+    }
+
     public function testInvalidStmtError() {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Unexpected node of type "Stmt_Echo"');
         $this->createClassBuilder('Test')
-            ->addStmt(new Stmt\Echo_(array()))
+            ->addStmt(new Stmt\Echo_([]))
         ;
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Doc comment must be a string or an instance of PhpParser\Comment\Doc
-     */
     public function testInvalidDocComment() {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Doc comment must be a string or an instance of PhpParser\Comment\Doc');
         $this->createClassBuilder('Test')
             ->setDocComment(new Comment('Test'));
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Name cannot be empty
-     */
     public function testEmptyName() {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Name cannot be empty');
         $this->createClassBuilder('Test')
             ->extend('');
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Name must be a string or an instance of PhpParser\Node\Name
-     */
     public function testInvalidName() {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Name must be a string or an instance of Node\Name');
         $this->createClassBuilder('Test')
-            ->extend(array('Foo'));
+            ->extend(['Foo']);
     }
 }

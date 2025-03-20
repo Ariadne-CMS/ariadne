@@ -2,108 +2,121 @@ Uniform variable syntax in PHP 7 (misc)
 -----
 <?php
 
-A::A[0];
-A::A[0][1][2];
 "string"->length();
+"foo$bar"[0];
+"foo$bar"->length();
 (clone $obj)->b[0](1);
 [0, 1][0] = 1;
 -----
 !!php7
 array(
-    0: Expr_ArrayDimFetch(
-        var: Expr_ClassConstFetch(
-            class: Name(
-                parts: array(
-                    0: A
-                )
+    0: Stmt_Expression(
+        expr: Expr_MethodCall(
+            var: Scalar_String(
+                value: string
             )
-            name: A
-        )
-        dim: Scalar_LNumber(
-            value: 0
+            name: Identifier(
+                name: length
+            )
+            args: array(
+            )
         )
     )
-    1: Expr_ArrayDimFetch(
-        var: Expr_ArrayDimFetch(
-            var: Expr_ArrayDimFetch(
-                var: Expr_ClassConstFetch(
-                    class: Name(
-                        parts: array(
-                            0: A
+    1: Stmt_Expression(
+        expr: Expr_ArrayDimFetch(
+            var: Scalar_Encapsed(
+                parts: array(
+                    0: Scalar_EncapsedStringPart(
+                        value: foo
+                    )
+                    1: Expr_Variable(
+                        name: bar
+                    )
+                )
+            )
+            dim: Scalar_LNumber(
+                value: 0
+            )
+        )
+    )
+    2: Stmt_Expression(
+        expr: Expr_MethodCall(
+            var: Scalar_Encapsed(
+                parts: array(
+                    0: Scalar_EncapsedStringPart(
+                        value: foo
+                    )
+                    1: Expr_Variable(
+                        name: bar
+                    )
+                )
+            )
+            name: Identifier(
+                name: length
+            )
+            args: array(
+            )
+        )
+    )
+    3: Stmt_Expression(
+        expr: Expr_FuncCall(
+            name: Expr_ArrayDimFetch(
+                var: Expr_PropertyFetch(
+                    var: Expr_Clone(
+                        expr: Expr_Variable(
+                            name: obj
                         )
                     )
-                    name: A
+                    name: Identifier(
+                        name: b
+                    )
                 )
                 dim: Scalar_LNumber(
                     value: 0
                 )
             )
-            dim: Scalar_LNumber(
+            args: array(
+                0: Arg(
+                    name: null
+                    value: Scalar_LNumber(
+                        value: 1
+                    )
+                    byRef: false
+                    unpack: false
+                )
+            )
+        )
+    )
+    4: Stmt_Expression(
+        expr: Expr_Assign(
+            var: Expr_ArrayDimFetch(
+                var: Expr_Array(
+                    items: array(
+                        0: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 0
+                            )
+                            byRef: false
+                            unpack: false
+                        )
+                        1: Expr_ArrayItem(
+                            key: null
+                            value: Scalar_LNumber(
+                                value: 1
+                            )
+                            byRef: false
+                            unpack: false
+                        )
+                    )
+                )
+                dim: Scalar_LNumber(
+                    value: 0
+                )
+            )
+            expr: Scalar_LNumber(
                 value: 1
             )
-        )
-        dim: Scalar_LNumber(
-            value: 2
-        )
-    )
-    2: Expr_MethodCall(
-        var: Scalar_String(
-            value: string
-        )
-        name: length
-        args: array(
-        )
-    )
-    3: Expr_FuncCall(
-        name: Expr_ArrayDimFetch(
-            var: Expr_PropertyFetch(
-                var: Expr_Clone(
-                    expr: Expr_Variable(
-                        name: obj
-                    )
-                )
-                name: b
-            )
-            dim: Scalar_LNumber(
-                value: 0
-            )
-        )
-        args: array(
-            0: Arg(
-                value: Scalar_LNumber(
-                    value: 1
-                )
-                byRef: false
-                unpack: false
-            )
-        )
-    )
-    4: Expr_Assign(
-        var: Expr_ArrayDimFetch(
-            var: Expr_Array(
-                items: array(
-                    0: Expr_ArrayItem(
-                        key: null
-                        value: Scalar_LNumber(
-                            value: 0
-                        )
-                        byRef: false
-                    )
-                    1: Expr_ArrayItem(
-                        key: null
-                        value: Scalar_LNumber(
-                            value: 1
-                        )
-                        byRef: false
-                    )
-                )
-            )
-            dim: Scalar_LNumber(
-                value: 0
-            )
-        )
-        expr: Scalar_LNumber(
-            value: 1
         )
     )
 )

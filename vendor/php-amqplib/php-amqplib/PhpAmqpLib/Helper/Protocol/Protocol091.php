@@ -17,8 +17,13 @@ class Protocol091
      * @param string $locales
      * @return array
      */
-    public function connectionStart($version_major = 0, $version_minor = 9, $server_properties, $mechanisms = 'PLAIN', $locales = 'en_US')
-    {
+    public function connectionStart(
+        $version_major = 0,
+        $version_minor = 9,
+        $server_properties,
+        $mechanisms = 'PLAIN',
+        $locales = 'en_US'
+    ) {
         $writer = new AMQPWriter();
         $writer->write_octet($version_major);
         $writer->write_octet($version_minor);
@@ -246,8 +251,14 @@ class Protocol091
      * @param bool $read
      * @return array
      */
-    public function accessRequest($realm = '/data', $exclusive = false, $passive = true, $active = true, $write = true, $read = true)
-    {
+    public function accessRequest(
+        $realm = '/data',
+        $exclusive = false,
+        $passive = true,
+        $active = true,
+        $write = true,
+        $read = true
+    ) {
         $writer = new AMQPWriter();
         $writer->write_shortstr($realm);
         $writer->write_bits(array($exclusive, $passive, $active, $write, $read));
@@ -274,11 +285,20 @@ class Protocol091
      * @param bool $auto_delete
      * @param bool $internal
      * @param bool $nowait
-     * @param array $arguments
+     * @param \PhpAmqpLib\Wire\AMQPTable|array $arguments
      * @return array
      */
-    public function exchangeDeclare($ticket = 0, $exchange, $type = 'direct', $passive = false, $durable = false, $auto_delete = false, $internal = false, $nowait = false, $arguments = array())
-    {
+    public function exchangeDeclare(
+        $ticket = 0,
+        $exchange,
+        $type = 'direct',
+        $passive = false,
+        $durable = false,
+        $auto_delete = false,
+        $internal = false,
+        $nowait = false,
+        $arguments = array()
+    ) {
         $writer = new AMQPWriter();
         $writer->write_short($ticket);
         $writer->write_shortstr($exchange);
@@ -330,11 +350,17 @@ class Protocol091
      * @param string $source
      * @param string $routing_key
      * @param bool $nowait
-     * @param array $arguments
+     * @param \PhpAmqpLib\Wire\AMQPTable|array $arguments
      * @return array
      */
-    public function exchangeBind($ticket = 0, $destination, $source, $routing_key = '', $nowait = false, $arguments = array())
-    {
+    public function exchangeBind(
+        $ticket = 0,
+        $destination,
+        $source,
+        $routing_key = '',
+        $nowait = false,
+        $arguments = array()
+    ) {
         $writer = new AMQPWriter();
         $writer->write_short($ticket);
         $writer->write_shortstr($destination);
@@ -361,11 +387,17 @@ class Protocol091
      * @param string $source
      * @param string $routing_key
      * @param bool $nowait
-     * @param array $arguments
+     * @param \PhpAmqpLib\Wire\AMQPTable|array $arguments
      * @return array
      */
-    public function exchangeUnbind($ticket = 0, $destination, $source, $routing_key = '', $nowait = false, $arguments = array())
-    {
+    public function exchangeUnbind(
+        $ticket = 0,
+        $destination,
+        $source,
+        $routing_key = '',
+        $nowait = false,
+        $arguments = array()
+    ) {
         $writer = new AMQPWriter();
         $writer->write_short($ticket);
         $writer->write_shortstr($destination);
@@ -394,11 +426,19 @@ class Protocol091
      * @param bool $exclusive
      * @param bool $auto_delete
      * @param bool $nowait
-     * @param array $arguments
+     * @param \PhpAmqpLib\Wire\AMQPTable|array $arguments
      * @return array
      */
-    public function queueDeclare($ticket = 0, $queue = '', $passive = false, $durable = false, $exclusive = false, $auto_delete = false, $nowait = false, $arguments = array())
-    {
+    public function queueDeclare(
+        $ticket = 0,
+        $queue = '',
+        $passive = false,
+        $durable = false,
+        $exclusive = false,
+        $auto_delete = false,
+        $nowait = false,
+        $arguments = array()
+    ) {
         $writer = new AMQPWriter();
         $writer->write_short($ticket);
         $writer->write_shortstr($queue);
@@ -426,11 +466,17 @@ class Protocol091
      * @param string $exchange
      * @param string $routing_key
      * @param bool $nowait
-     * @param array $arguments
+     * @param \PhpAmqpLib\Wire\AMQPTable|array $arguments
      * @return array
      */
-    public function queueBind($ticket = 0, $queue = '', $exchange, $routing_key = '', $nowait = false, $arguments = array())
-    {
+    public function queueBind(
+        $ticket = 0,
+        $queue = '',
+        $exchange,
+        $routing_key = '',
+        $nowait = false,
+        $arguments = array()
+    ) {
         $writer = new AMQPWriter();
         $writer->write_short($ticket);
         $writer->write_shortstr($queue);
@@ -510,7 +556,7 @@ class Protocol091
      * @param string $queue
      * @param string $exchange
      * @param string $routing_key
-     * @param array $arguments
+     * @param \PhpAmqpLib\Wire\AMQPTable|array $arguments
      * @return array
      */
     public function queueUnbind($ticket = 0, $queue = '', $exchange, $routing_key = '', $arguments = array())
@@ -567,11 +613,19 @@ class Protocol091
      * @param bool $no_ack
      * @param bool $exclusive
      * @param bool $nowait
-     * @param array $arguments
+     * @param \PhpAmqpLib\Wire\AMQPTable|array $arguments
      * @return array
      */
-    public function basicConsume($ticket = 0, $queue = '', $consumer_tag = '', $no_local = false, $no_ack = false, $exclusive = false, $nowait = false, $arguments = array())
-    {
+    public function basicConsume(
+        $ticket = 0,
+        $queue = '',
+        $consumer_tag = '',
+        $no_local = false,
+        $no_ack = false,
+        $exclusive = false,
+        $nowait = false,
+        $arguments = array()
+    ) {
         $writer = new AMQPWriter();
         $writer->write_short($ticket);
         $writer->write_shortstr($queue);
@@ -624,8 +678,13 @@ class Protocol091
      * @param bool $immediate
      * @return array
      */
-    public function basicPublish($ticket = 0, $exchange = '', $routing_key = '', $mandatory = false, $immediate = false)
-    {
+    public function basicPublish(
+        $ticket = 0,
+        $exchange = '',
+        $routing_key = '',
+        $mandatory = false,
+        $immediate = false
+    ) {
         $writer = new AMQPWriter();
         $writer->write_short($ticket);
         $writer->write_shortstr($exchange);

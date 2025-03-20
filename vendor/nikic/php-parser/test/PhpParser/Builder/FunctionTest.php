@@ -1,14 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PhpParser\Builder;
 
 use PhpParser\Comment;
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\Print_;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt;
 
-class FunctionTest extends \PHPUnit_Framework_TestCase
+class FunctionTest extends \PHPUnit\Framework\TestCase
 {
     public function createFunctionBuilder($name) {
         return new Function_($name);
@@ -21,28 +28,28 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\Function_('test', array(
+            new Stmt\Function_('test', [
                 'byRef' => true
-            )),
+            ]),
             $node
         );
     }
 
     public function testParams() {
-        $param1 = new Node\Param('test1');
-        $param2 = new Node\Param('test2');
-        $param3 = new Node\Param('test3');
+        $param1 = new Node\Param(new Variable('test1'));
+        $param2 = new Node\Param(new Variable('test2'));
+        $param3 = new Node\Param(new Variable('test3'));
 
         $node = $this->createFunctionBuilder('test')
             ->addParam($param1)
-            ->addParams(array($param2, $param3))
+            ->addParams([$param2, $param3])
             ->getNode()
         ;
 
         $this->assertEquals(
-            new Stmt\Function_('test', array(
-                'params' => array($param1, $param2, $param3)
-            )),
+            new Stmt\Function_('test', [
+                'params' => [$param1, $param2, $param3]
+            ]),
             $node
         );
     }
@@ -54,14 +61,18 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
 
         $node = $this->createFunctionBuilder('test')
             ->addStmt($stmt1)
-            ->addStmts(array($stmt2, $stmt3))
+            ->addStmts([$stmt2, $stmt3])
             ->getNode()
         ;
 
         $this->assertEquals(
-            new Stmt\Function_('test', array(
-                'stmts' => array($stmt1, $stmt2, $stmt3)
-            )),
+            new Stmt\Function_('test', [
+                'stmts' => [
+                    new Stmt\Expression($stmt1),
+                    new Stmt\Expression($stmt2),
+                    new Stmt\Expression($stmt3),
+                ]
+            ]),
             $node
         );
     }
@@ -71,28 +82,55 @@ class FunctionTest extends \PHPUnit_Framework_TestCase
             ->setDocComment('/** Test */')
             ->getNode();
 
-        $this->assertEquals(new Stmt\Function_('test', array(), array(
-            'comments' => array(new Comment\Doc('/** Test */'))
-        )), $node);
+        $this->assertEquals(new Stmt\Function_('test', [], [
+            'comments' => [new Comment\Doc('/** Test */')]
+        ]), $node);
+    }
+
+    public function testAddAttribute() {
+        $attribute = new Attribute(
+            new Name('Attr'),
+            [new Arg(new LNumber(1), false, false, [], new Identifier('name'))]
+        );
+        $attributeGroup = new AttributeGroup([$attribute]);
+
+        $node = $this->createFunctionBuilder('attrGroup')
+            ->addAttribute($attributeGroup)
+            ->getNode();
+
+        $this->assertEquals(new Stmt\Function_('attrGroup', [
+            'attrGroups' => [$attributeGroup],
+        ], []), $node);
     }
 
     public function testReturnType() {
         $node = $this->createFunctionBuilder('test')
-            ->setReturnType('bool')
+            ->setReturnType('void')
             ->getNode();
 
-        $this->assertEquals(new Stmt\Function_('test', array(
-            'returnType' => 'bool'
-        ), array()), $node);
+        $this->assertEquals(new Stmt\Function_('test', [
+            'returnType' => 'void'
+        ], []), $node);
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Expected parameter node, got "Name"
-     */
+    public function testInvalidNullableVoidType() {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('void type cannot be nullable');
+        $this->createFunctionBuilder('test')->setReturnType('?void');
+    }
+
     public function testInvalidParamError() {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Expected parameter node, got "Name"');
         $this->createFunctionBuilder('test')
             ->addParam(new Node\Name('foo'))
         ;
+    }
+
+    public function testAddNonStmt() {
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Expected statement or expression node');
+        $this->createFunctionBuilder('test')
+            ->addStmt(new Node\Name('Test'));
     }
 }

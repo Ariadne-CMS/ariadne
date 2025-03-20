@@ -17,8 +17,12 @@ array(
         )
         stmts: array(
             0: Stmt_Function(
+                attrGroups: array(
+                )
                 byRef: false
-                name: A
+                name: Identifier(
+                    name: A
+                )
                 params: array(
                 )
                 returnType: null

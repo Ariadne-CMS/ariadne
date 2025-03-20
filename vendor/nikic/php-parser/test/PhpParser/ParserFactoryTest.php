@@ -1,10 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PhpParser;
 
 /* This test is very weak, because PHPUnit's assertEquals assertion is way too slow dealing with the
  * large objects involved here. So we just do some basic instanceof tests instead. */
-class ParserFactoryTest extends \PHPUnit_Framework_TestCase {
+
+use PhpParser\Node\Stmt\Echo_;
+
+class ParserFactoryTest extends \PHPUnit\Framework\TestCase
+{
     /** @dataProvider provideTestCreate */
     public function testCreate($kind, $lexer, $expected) {
         $this->assertInstanceOf($expected, (new ParserFactory)->create($kind, $lexer));
@@ -15,20 +19,42 @@ class ParserFactoryTest extends \PHPUnit_Framework_TestCase {
         return [
             [
                 ParserFactory::PREFER_PHP7, $lexer,
-                'PhpParser\Parser\Multiple'
+                Parser\Multiple::class
             ],
             [
                 ParserFactory::PREFER_PHP5, null,
-                'PhpParser\Parser\Multiple'
+                Parser\Multiple::class
             ],
             [
                 ParserFactory::ONLY_PHP7, null,
-                'PhpParser\Parser\Php7'
+                Parser\Php7::class
             ],
             [
                 ParserFactory::ONLY_PHP5, $lexer,
-                'PhpParser\Parser\Php5'
+                Parser\Php5::class
             ]
+        ];
+    }
+
+    /** @dataProvider provideTestLexerAttributes */
+    public function testLexerAttributes(Parser $parser) {
+        $stmts = $parser->parse("<?php /* Bar */ echo 'Foo';");
+        $stmt = $stmts[0];
+        $this->assertInstanceOf(Echo_::class, $stmt);
+        $this->assertCount(1, $stmt->getComments());
+        $this->assertSame(1, $stmt->getStartLine());
+        $this->assertSame(1, $stmt->getEndLine());
+        $this->assertSame(3, $stmt->getStartTokenPos());
+        $this->assertSame(6, $stmt->getEndTokenPos());
+        $this->assertSame(16, $stmt->getStartFilePos());
+        $this->assertSame(26, $stmt->getEndFilePos());
+    }
+
+    public function provideTestLexerAttributes() {
+        $factory = new ParserFactory();
+        return [
+            [$factory->createForHostVersion()],
+            [$factory->createForNewestSupportedVersion()],
         ];
     }
 }
