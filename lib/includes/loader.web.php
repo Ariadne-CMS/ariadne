@@ -307,7 +307,7 @@
 	}
 
 	function ldGetCookieSession() {
-		return $_COOKIE['ARCurrentSession'];
+		return $_COOKIE['ARCurrentSession'] ?? null;
 	}
 
 	function ldSetCache($file, $time, $image, $headers) {
