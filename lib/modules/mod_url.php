@@ -28,25 +28,26 @@ class URL {
 		if ($site && $site !== '/') {
 			$siteURL = $me->make_url($site, "");
 			$rootURL = $me->make_url("/", "");
+			if ($page) {
+				/* use the rootURL to rebuild the site URL */
+				$page = preg_replace_callback(
+					"%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%",
+					function ($matches) {
+						return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
+					},
+					$page);
 
-			/* use the rootURL to rebuild the site URL */
-			$page = preg_replace_callback(
-				"%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%",
-				function ($matches) {
-					return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
-				},
-				$page);
-
-			/*
-				a site has been configured so we can directly place
-				the nls_match2 after the siteURL
-			*/
-			$page = preg_replace_callback(
-				"%\\Q$siteURL\\E".$nls_match2."%",
-				function ($matches) {
-					return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
-				},
-				$page);
+				/*
+					a site has been configured so we can directly place
+					the nls_match2 after the siteURL
+				*/
+				$page = preg_replace_callback(
+					"%\\Q$siteURL\\E".$nls_match2."%",
+					function ($matches) {
+						return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
+					},
+					$page);
+			}
 		}
 
 		// change hardcoded links and images to use a placeholder for the root
