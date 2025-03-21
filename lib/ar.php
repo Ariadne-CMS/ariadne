@@ -442,7 +442,7 @@
 		}
 
 		public static function _construct($className, $args) {
-			return pinp_ar::construct($className, $args);
+			return ar_pinp::construct($className, $args);
 		}
 	}
 
