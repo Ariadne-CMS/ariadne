@@ -48,7 +48,7 @@
 
 		public static function construct($className, $args) {
 			if (self::isAllowed($className)) {
-				return new $className(...$args);
+				return new arWrapper( new $className(...$args) );
 			}
 		}
 
