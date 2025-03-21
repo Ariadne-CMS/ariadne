@@ -440,6 +440,10 @@
 		public static function _acquire( $varname, $options = array() ) {
 			return ar::acquire( $varname, $options );
 		}
+
+		public static function new($className, $args) {
+			return pinp_ar::new($className, $args);
+		}
 	}
 
 	function ar($name=null) {
