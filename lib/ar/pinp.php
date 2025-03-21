@@ -46,7 +46,7 @@
 			return false;
 		}
 
-		public static function new($className, $args) {
+		public static function construct($className, $args) {
 			if (self::isAllowed($className)) {
 				return new $className(...$args);
 			}

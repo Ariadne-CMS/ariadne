@@ -441,8 +441,8 @@
 			return ar::acquire( $varname, $options );
 		}
 
-		public static function new($className, $args) {
-			return pinp_ar::new($className, $args);
+		public static function _construct($className, $args) {
+			return pinp_ar::construct($className, $args);
 		}
 	}
 
