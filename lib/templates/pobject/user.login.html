@@ -12,7 +12,7 @@
 		$arReturnPath=$this->path;
 	}
 	if (!isset($arReturnTemplate) || !$arReturnTemplate) {
-		$arReturnTemplate=$function;
+		$arReturnTemplate=$function??null;
 		if (ldGetServerVar("QUERY_STRING")) {
 			$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
 		}
