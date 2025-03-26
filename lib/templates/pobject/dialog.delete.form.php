@@ -72,7 +72,7 @@
 			if ( $targetob->implements("pshortcut") ) {
 				$overlay_icon = $icon;
 				$overlay_alt = $targetob->type;
-				if ( $ARCurrent->arTypeIcons[$targetob->vtype]['medium'] ) {
+				if ( $ARCurrent->arTypeIcons[$targetob->vtype]['medium'] ?? null ) {
 					$icon = $ARCurrent->arTypeIcons[$targetob->vtype]['medium'];
 				} else {
 					$icon = current($targetob->get($targetob->data->path, "system.get.icon.php", array('size' => 'medium')));

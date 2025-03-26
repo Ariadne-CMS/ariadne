@@ -24,7 +24,7 @@
 				if ($this->data->config->templates[$type][$function][$language]??null) {
 					// Store the old template information in deleted_templates for SVN to use.
 					if ($AR->SVN->enabled) {
-						is_array($this->data->config->deleted_templates) ? false : $this->data->config->deleted_templates = array();
+						is_array($this->data->config->deleted_templates??null) ? false : $this->data->config->deleted_templates = array();
 						is_array($this->data->config->deleted_templates[$type]??null) ? false : $this->data->config->deleted_templates[$type] = array();
 						is_array($this->data->config->deleted_templates[$type][$function]??null) ? false : $this->data->config->deleted_templates[$type][$function] = array();
 						$this->data->config->deleted_templates[$type][$function][$language] = $this->data->config->templates[$type][$function][$language];
@@ -41,17 +41,14 @@
 				if ($this->data->config->privatetemplates[$type][$function]??null) {
 					// Store the old template information in deleted_privatetemplates for SVN to use.
 					if ($AR->SVN->enabled) {
-						is_array($this->data->config->deleted_privatetemplates) ? false : $this->data->config->deleted_privatetemplates = array();
-						is_array($this->data->config->deleted_privatetemplates[$type]) ? false : $this->data->config->deleted_privatetemplates[$type] = array();
+						is_array($this->data->config->deleted_privatetemplates??null) ? false : $this->data->config->deleted_privatetemplates = array();
+						is_array($this->data->config->deleted_privatetemplates[$type]??null) ? false : $this->data->config->deleted_privatetemplates[$type] = array();
 						$this->data->config->deleted_privatetemplates[$type][$function] = $this->data->config->privatetemplates[$type][$function];
 					}
 
-					unset($this->data->config->privatetemplates[$type][$function][$language]);
-					if (count($this->data->config->privatetemplates[$type][$function])==0) {
-						unset($this->data->config->privatetemplates[$type][$function]);
-						if (count($this->data->config->privatetemplates[$type])==0) {
-							unset($this->data->config->privatetemplates[$type]);
-						}
+					unset($this->data->config->privatetemplates[$type][$function]);
+					if (count($this->data->config->privatetemplates[$type])==0) {
+						unset($this->data->config->privatetemplates[$type]);
 					}
 				}
 				$template=$type.".".$function.".".$language;

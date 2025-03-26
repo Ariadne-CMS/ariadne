@@ -394,7 +394,7 @@
 										break;
 									}
 								}
-								if( ! is_null($user) ) {
+								if( !is_null($user??null) ) {
 									display("	$newpath\n");
 									$result=current($user->get($newpath, "system.import.grants.phtml", 
 															array(
