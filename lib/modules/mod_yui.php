@@ -657,7 +657,7 @@
 			$result = Array();
 			if (!$showall) {
 				$typetree = $arObject->call('typetree.ini');
-				$thistypetree = $typetree[$arObject->type];
+				$thistypetree = $typetree[$arObject->type]??null;
 
 				if (is_array($thistypetree)) {
 					foreach( $thistypetree as $type => $name ) {
