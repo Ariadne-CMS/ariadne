@@ -1054,7 +1054,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 									if ($gval && !is_array($gval)) {
 										$grants[$gkey] = $gval;
 									} else
-									if ($gval && !$grants[$gkey]) {
+									if ($gval && !($grants[$gkey]??null)) {
 										$grants[$gkey] = $gval;
 									}
 								}
@@ -3578,7 +3578,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				return $this->AR_implements($arguments[0]);
 			break;
 			default:
-				trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $name), E_USER_ERROR);
+				throw new Exception(sprintf('Call to undefined function: %s::%s().', get_class($this), $name));
 				return false;
 			break;
 		}
