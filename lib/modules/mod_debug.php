@@ -122,7 +122,7 @@
 			$timestamping = date("H:i:s");
 			/* handle indentation */
 			if( $indent=="OUT" ) {
-				$DB_INDENT = substr($DB_INDENT,0,-2);
+				$DB_INDENT = substr($DB_INDENT??"  ",0,-2);
 			}
 			if( $indent=="IN" ) {
 				$DB_INDENT.="  ";
