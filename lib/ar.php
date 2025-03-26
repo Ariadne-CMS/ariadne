@@ -130,14 +130,14 @@
 			if ( is_numeric($value) ) {
 				return $value;
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( 'self', 'taint' ) );
+				array_walk_recursive( $value, self::taint(...) );
 			} else if ( is_string($value) && $value ) { // empty strings don't need tainting
 				$value = new arTainted($value);
 			}
 			return $value;
 		}
 
-		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
+		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = []) {
 			if ( $value instanceof arTainted ) {
 				$value = filter_var($value->value, $filter, $flags);
 			} else if ( is_array($value) ) {
@@ -274,7 +274,20 @@
 					$name = substr($name, 1);
 				}
 			}
+
+                        foreach ($arguments as $key => $value) {
+                                if ($value instanceOf arWrapper) {
+                                        $arguments[$key] = $value->__unwrap();
+                                }
+                        }
+
 			if (ar_pinp::isAllowed($this, $name)) {
+				try {
+					return $this->__wrap( call_user_func_array( array( $this->wrapped, $name), $arguments) );
+				} catch( Exception $e ) {
+					return ar::error( $e->getMessage(), $e->getCode() );
+				}
+			} else if (ar_pinp::isAllowed('\\' . get_class($this->wrapped))) {
 				try {
 					return $this->__wrap( call_user_func_array( array( $this->wrapped, $name), $arguments) );
 				} catch( Exception $e ) {
@@ -302,6 +315,12 @@
 			$this->wrapped->$name = $value;
 		}
 
+		public function __unwrap() {
+			return $this->wrapped;
+		}
+		public function __toString() {
+			return $this->wrapped->__toString();
+		}
 	}
 
 	#[\AllowDynamicProperties]
@@ -412,7 +431,7 @@
 			ar::taint($value);
 		}
 
-		public static function _untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
+		public static function _untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = []) {
 			ar::untaint($value, $filter, $flags);
 		}
 
@@ -441,8 +460,16 @@
 			return ar::acquire( $varname, $options );
 		}
 
-		public static function _construct($className, $args) {
+		public static function _construct($className, $args = array() ) {
 			return ar_pinp::construct($className, $args);
+		}
+
+		public static function _callStatic($className, $method, $args = array() ) {
+			return ar_pinp::callStatic($className, $method, $args);
+		}
+
+		public static function _unwrap(arWrapper $wrapped) {
+			return $wrapped->__unwrap();
 		}
 	}
 

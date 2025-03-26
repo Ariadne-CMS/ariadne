@@ -46,9 +46,27 @@
 			return false;
 		}
 
-		public static function construct($className, $args) {
+		public static function construct($className, $args = array() ) {
 			if (self::isAllowed($className)) {
+				foreach ($args as $key => $value) {
+					if ($value instanceOf arWrapper) {
+						$args[$key] = $value->__unwrap();
+					}
+				}
+
+				// return new $className(...$args);
 				return new arWrapper( new $className(...$args) );
+			}
+		}
+
+		public static function callStatic($className, $method, $args = array() ) {
+			if (self::isAllowed($className)) {
+				foreach ($args as $key => $value) {
+					if ($value instanceOf arWrapper) {
+						$args[$key] = $value->__unwrap();
+					}
+				}
+				return new arWrapper( call_user_func(array($className, $method), ...$args) );
 			}
 		}
 
