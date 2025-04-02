@@ -30,7 +30,7 @@
   if ($now["year"]!=$date["year"]) {
     echo DateTimeImmutable::createFromFormat('U', $this->lastchanged)->format(' m/Y');
   } else if ($this->lastchanged<(time()-86400)) {
-    echo DateTimeImmutable::createFromFormat('U', $mtime)->format(' d/m');
+    echo DateTimeImmutable::createFromFormat('U', $this->lastchanged)->format(' d/m');
   } else {
     echo DateTimeImmutable::createFromFormat('U', $this->lastchanged)->format(' H:i');
   }
