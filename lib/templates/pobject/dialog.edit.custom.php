@@ -57,9 +57,9 @@
 								)
 							) {
 							if ($customvalue["nls"]=="true") {
-								$showdata=$custom[$selectednls][$name];
+								$showdata=$custom[$selectednls][$name]??'';
 							} else {
-								$showdata=$custom['none'][$name];
+								$showdata=$custom['none'][$name]??'';
 							}
 							echo "		dest[dest.length]=new Option('".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($name, ARESCAPE)."');\n";
 							echo "		CustomList[CustomList.length]=new custom_node(\n";
