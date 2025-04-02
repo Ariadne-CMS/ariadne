@@ -1142,7 +1142,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 
 		if ( 	( !isset($grants[$grant]) || !$grants[$grant]
-					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
+					|| ( $modifier && is_array($grants[$grant]??null) && !($grants[$grant][$modifier]??null) )
 				) && !$isadmin ) {
 			// do login
 			$arLoginMessage = $ARnls["accessdenied"];
