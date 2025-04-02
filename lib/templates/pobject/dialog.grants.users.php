@@ -170,6 +170,9 @@
 
 	if (!function_exists("arrayMergeCorrect")) {
 		function arrayMergeCorrect($left, $right) {
+			if ($left == '') {
+				$left = [];
+			}
 			if (is_null($right)) {
 				return $left;
 			}
