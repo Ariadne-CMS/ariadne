@@ -23,7 +23,10 @@
 			// FIXME: support interfaces?
 			if (!is_string($class)) {
 				$class = get_class($class);
-			}			
+			}
+			if (!isset(self::$allowed[$class])) {
+				return false;
+			}
 			if ($method===null && self::$allowed[$class]) { // only accept original class here
 				return true;
 			}
@@ -56,6 +59,8 @@
 
 				// return new $className(...$args);
 				return new arWrapper( new $className(...$args) );
+			} else {
+				throw new Exception("$className is not allowed");
 			}
 		}
 
@@ -67,6 +72,8 @@
 					}
 				}
 				return new arWrapper( call_user_func(array($className, $method), ...$args) );
+			} else {
+				throw new Exception("$className::$method is not allowed");
 			}
 		}
 
