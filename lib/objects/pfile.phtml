@@ -69,6 +69,14 @@ class pfile extends pobject { // pfile class definition
 		return $ret;
 	}
 
+	function GetFileStream($file='file', $nls='') {
+		$this->pushContext( Array( "arCurrentObject" => $this));
+		$nls = $this->getNlsForFile($file,$nls);
+		$ret = ar_store_files::get($file, $nls);
+		$this->popcontext();
+		return $ret;
+	}
+
 	function ExistsFile($file='file', $nls='') {
 		$this->pushContext( Array( "arCurrentObject" => $this));
 		$nls = $this->getNlsForFile($file,$nls);
