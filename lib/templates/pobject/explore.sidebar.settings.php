@@ -59,7 +59,16 @@
 				'nlslabel' => $ARnls['grants']
 			);
 			if(isset($this->data->config->grants) && $this->data->config->grants) {
-				$task['class'] = 'sethere';
+				$hasGrants = false;
+				foreach ($this->data->config->grants as $value) {
+					if (sizeof($value)) {
+						$hasGrants = true;
+						break;
+					}
+				}
+				if ($hasGrants) {
+					$task['class'] = 'sethere';
+				}
 			}
 			$settings[] = $task;
 			if( !isset($shortcutSidebar) || !$shortcutSidebar ) {
