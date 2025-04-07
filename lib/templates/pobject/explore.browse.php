@@ -52,7 +52,7 @@
 	$orderqueries['filename'] = $orderqueries['path'];
 
 	$order = $this->getvar('order');
-	if (!$order || !$orderqueries[$order]) {
+	if (!$order || !($orderqueries[$order]??null)) {
 		$orderQuery = "name.$nls.value $direction, name.none.value $direction";
 	} else {
 		$orderQuery = [];
