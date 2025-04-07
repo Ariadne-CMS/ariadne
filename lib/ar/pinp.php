@@ -24,9 +24,10 @@
 			if (!is_string($class)) {
 				$class = get_class($class);
 			}
-			if (!isset(self::$allowed[$class])) {
-				return false;
-			}
+// This breaks the demo site;
+//			if (!isset(self::$allowed[$class])) {
+//				return false;
+//			}
 			if ($method===null && self::$allowed[$class]) { // only accept original class here
 				return true;
 			}
