@@ -37,6 +37,7 @@
 
 	define('LD_ERR_ACCESS', -1);
 	define('LD_ERR_SESSION', -2);
+	define('LD_ERR_EXPIRED', -3);
 
 	include_once($store_config['code']."includes/loader.web.auth.php");
 	include_once($store_config['code']."objects/pobject.phtml");
