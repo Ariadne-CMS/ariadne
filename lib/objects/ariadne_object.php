@@ -361,20 +361,21 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		returns properties for custom data
 	*/
 	private function saveCustomData($configcache, $properties) {
-		$customData = $this->getdata("custom", "none");
-		if (isset($customData) && is_string($customData)) {
-			parse_str($customData, $custom);
-			$custom = $custom['custom'];
-			if (isset($custom) && is_array($custom)) {
-				foreach($custom as $nls=>$entries){
-					if (isset($entries) && is_array($entries)) {
-						foreach ( $entries as $customkey => $customval ){
-							$this->data->custom[$nls][$customkey] = $customval;
-						}
+		$custom = $this->getdata("custom", "none");
+		if (isset($custom) && is_string($custom)) {
+			parse_str($custom, $customData);
+			$custom = $customData['custom'];
+		}
+		if (isset($custom) && is_array($custom)) {
+			foreach($custom as $nls=>$entries){
+				if (isset($entries) && is_array($entries)) {
+					foreach ( $entries as $customkey => $customval ){
+						$this->data->custom[$nls][$customkey] = $customval;
 					}
 				}
 			}
 		}
+
 		// the above works because either $custom comes from the form entry, and parse_str returns an
 		// array with the name $custom, or $custom comes from the object and is an array and as such
 		// parse_str fails miserably thus keeping the array $custom intact.
