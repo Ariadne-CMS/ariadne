@@ -58,7 +58,7 @@
                             echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
                         }
                     echo '<div class="name">' . $targetob->nlsdata->name . ' ';
-                    echo "( " . $ARCurrent->arTypeNames[$targetob->type] . " / " . $targetob->type . " )";
+                    echo "( " . ($ARCurrent->arTypeNames[$targetob->type]??'') . " / " . $targetob->type . " )";
                     echo '</div>';
                     echo '<div class="path">' . $target . '</div>';
                     echo '</div>';
