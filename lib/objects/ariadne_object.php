@@ -361,8 +361,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		returns properties for custom data
 	*/
 	private function saveCustomData($configcache, $properties) {
-		$custom = $this->getdata("custom", "none");
-		// @parse_str($custom);
+		$customData = $this->getdata("custom", "none");
+		parse_str($customData, $custom);
+		$custom = $custom['custom'];
 		if (isset($custom) && is_array($custom)) {
 			foreach($custom as $nls=>$entries){
 				if (isset($entries) && is_array($entries)) {
