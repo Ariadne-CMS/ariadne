@@ -66,7 +66,6 @@ require_once 'System.php';
  * @version   @version@
  * @link      http://pear.php.net/package/VersionControl_SVN
  */
-#[\AllowDynamicProperties]
 abstract class VersionControl_SVN_Command
 {
     /**

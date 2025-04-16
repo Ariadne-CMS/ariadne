@@ -1,6 +1,6 @@
 {
 	"require": {
-		"php": ">=8.4",
+		"php": ">=8.0",
 		"mrclay/jsmin-php": "~2.3",
 		"arc/arc": "~2.0",
 		"mishal/iless": "~1",
@@ -14,19 +14,9 @@
 		"firebase/php-jwt": "^3.0",
 		"paragonie/random_compat": "^2.0",
 		"php-amqplib/php-amqplib": "^2.6",
-		"phpseclib/mcrypt_compat": "^2.0",
-		"pdsinterop/solid-auth": "v0.11.0",
-		"phpmailer/phpmailer": "^6.9",
-		"muze-nl/flysystem-ariadne" : "dev-main",
-		"pdsinterop/solid-crud": "^0.7.3"
+		"phpseclib/mcrypt_compat": "^2.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^9.2"
-	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/muze-nl/flysystem-ariadne.git"
-		}
-	]
+	}
 }

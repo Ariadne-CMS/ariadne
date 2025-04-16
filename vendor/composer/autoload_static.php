@@ -8,27 +8,9 @@ class ComposerStaticInitc7aa906634e623e2b3d24decba872560
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
-        '07d7f1a47144818725fd8d91a907ac57' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/create_uploaded_file.php',
-        'da94ac5d3ca7d2dbab84ce561ce72bfd' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_headers_from_sapi.php',
-        '3d97c8dcdfba8cb85d3b34f116bb248b' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_method_from_sapi.php',
-        'e6f3bc6883e449ab367280b34158c05b' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_protocol_version_from_sapi.php',
-        'd59fbae42019aedf227094ac49a46f50' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_uri_from_sapi.php',
-        'de95e0ac670b27c84ef8c5ac41fc1b34' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/normalize_server.php',
-        'b6c2870932b0250c10334a86dcb33c7f' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/normalize_uploaded_files.php',
-        'd02cf21124526632320d6f20b1bbf905' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/parse_cookie_header.php',
-        'd919fc9d5ad52cfb7f322f7fe36458ab' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/create_uploaded_file.legacy.php',
-        'e397f74f8af3b1e56166a6e99f216ee7' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_headers_from_sapi.legacy.php',
-        'd154b49fab8e4da34fb553a2d644918c' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_method_from_sapi.legacy.php',
-        '9d3db23ca418094bcf0b641a0c9559ed' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_protocol_version_from_sapi.legacy.php',
-        'b0b88a3b89caae681462c58ff19a7059' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/marshal_uri_from_sapi.legacy.php',
-        'cc8e14526dc240491e17a838cb78508c' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/normalize_server.legacy.php',
-        '786bf90caabc9e09b6ad4cc5ca8f0e30' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/normalize_uploaded_files.legacy.php',
-        '751a5a3f463e4be759be31748b61737c' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/parse_cookie_header.legacy.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
-        '7e82aa3684a796efa8fce93cf1511cba' => __DIR__ . '/..' . '/mjrider/flysystem-factory/src/functions.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
-        'b0bac3158f517fe77ac16e677d1e6c5d' => __DIR__ . '/..' . '/pdsinterop/solid-auth/src/Exceptions.inc.php',
         'aa75ea0761a2f40c1f3b32ad314f86c4' => __DIR__ . '/..' . '/phpseclib/mcrypt_compat/lib/mcrypt.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
     );
@@ -36,127 +18,45 @@ class ComposerStaticInitc7aa906634e623e2b3d24decba872560
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
-            'pietercolpaert\\hardf\\' => 21,
             'phpseclib3\\' => 11,
         ),
         'a' => 
         array (
             'arc\\' => 4,
         ),
-        'W' => 
-        array (
-            'WebSocket\\' => 10,
-        ),
         'P' => 
         array (
-            'Psr\\Log\\' => 8,
-            'Psr\\Http\\Message\\' => 17,
-            'Psr\\Clock\\' => 10,
-            'Psr\\Cache\\' => 10,
-            'Phrity\\Util\\' => 12,
-            'Phrity\\Net\\' => 11,
             'PhpParser\\' => 10,
             'PhpAmqpLib\\' => 11,
-            'Pdsinterop\\Solid\\SolidNotifications\\' => 36,
-            'Pdsinterop\\Solid\\Resources\\' => 27,
-            'Pdsinterop\\Solid\\Auth\\' => 22,
-            'Pdsinterop\\Rdf\\' => 15,
             'ParagonIE\\ConstantTime\\' => 23,
-            'PHPMailer\\PHPMailer\\' => 20,
-        ),
-        'M' => 
-        array (
-            'MuzeNl\\Flysystem\\Adapter\\' => 25,
-            'ML\\JsonLD\\' => 10,
-            'MJRider\\FlysystemFactory\\' => 25,
-        ),
-        'L' => 
-        array (
-            'League\\Uri\\' => 11,
-            'League\\OAuth2\\Server\\' => 21,
-            'League\\MimeTypeDetection\\' => 25,
-            'League\\Flysystem\\Cached\\' => 24,
-            'League\\Flysystem\\' => 17,
-            'League\\Event\\' => 13,
-            'Lcobucci\\JWT\\' => 13,
-            'Lcobucci\\Clock\\' => 15,
-            'Laminas\\Diactoros\\' => 18,
-        ),
-        'J' => 
-        array (
-            'Jose\\Component\\Core\\' => 20,
         ),
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
-            'FG\\' => 3,
-        ),
-        'E' => 
-        array (
-            'EasyRdf\\' => 8,
         ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
-            'Defuse\\Crypto\\' => 14,
             'DeepCopy\\' => 9,
-        ),
-        'B' => 
-        array (
-            'Brick\\Math\\' => 11,
-            'Base64Url\\' => 10,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'pietercolpaert\\hardf\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/pietercolpaert/hardf/src',
-        ),
         'phpseclib3\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
         ),
         'arc\\' => 
         array (
-            0 => __DIR__ . '/..' . '/arc/prototype/src',
-            1 => __DIR__ . '/..' . '/arc/html/src',
-            2 => __DIR__ . '/..' . '/arc/grants/src',
-            3 => __DIR__ . '/..' . '/arc/events/src',
-            4 => __DIR__ . '/..' . '/arc/config/src',
-            5 => __DIR__ . '/..' . '/arc/cache/src',
-            6 => __DIR__ . '/..' . '/arc/xml/src',
-            7 => __DIR__ . '/..' . '/arc/web/src',
+            0 => __DIR__ . '/..' . '/arc/web/src',
+            1 => __DIR__ . '/..' . '/arc/prototype/src',
+            2 => __DIR__ . '/..' . '/arc/html/src',
+            3 => __DIR__ . '/..' . '/arc/grants/src',
+            4 => __DIR__ . '/..' . '/arc/events/src',
+            5 => __DIR__ . '/..' . '/arc/config/src',
+            6 => __DIR__ . '/..' . '/arc/cache/src',
+            7 => __DIR__ . '/..' . '/arc/xml/src',
             8 => __DIR__ . '/..' . '/arc/base/src',
-        ),
-        'WebSocket\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/textalk/websocket/lib',
-        ),
-        'Psr\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/log/src',
-        ),
-        'Psr\\Http\\Message\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
-        ),
-        'Psr\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/clock/src',
-        ),
-        'Psr\\Cache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/cache/src',
-        ),
-        'Phrity\\Util\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phrity/util-errorhandler/src',
-        ),
-        'Phrity\\Net\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phrity/net-uri/src',
         ),
         'PhpParser\\' => 
         array (
@@ -166,114 +66,21 @@ class ComposerStaticInitc7aa906634e623e2b3d24decba872560
         array (
             0 => __DIR__ . '/..' . '/php-amqplib/php-amqplib/PhpAmqpLib',
         ),
-        'Pdsinterop\\Solid\\SolidNotifications\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/pdsinterop/solid-crud/src',
-        ),
-        'Pdsinterop\\Solid\\Resources\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/pdsinterop/solid-crud/src',
-        ),
-        'Pdsinterop\\Solid\\Auth\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/pdsinterop/solid-auth/src',
-        ),
-        'Pdsinterop\\Rdf\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/pdsinterop/flysystem-rdf/src',
-        ),
         'ParagonIE\\ConstantTime\\' => 
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
-        ),
-        'PHPMailer\\PHPMailer\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
-        ),
-        'MuzeNl\\Flysystem\\Adapter\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/muze-nl/flysystem-ariadne/src',
-        ),
-        'ML\\JsonLD\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/ml/json-ld',
-        ),
-        'MJRider\\FlysystemFactory\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/mjrider/flysystem-factory/src',
-        ),
-        'League\\Uri\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/uri',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces',
-        ),
-        'League\\OAuth2\\Server\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/oauth2-server/src',
-        ),
-        'League\\MimeTypeDetection\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
-        ),
-        'League\\Flysystem\\Cached\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/flysystem-cached-adapter/src',
-        ),
-        'League\\Flysystem\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/flysystem/src',
-        ),
-        'League\\Event\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/event/src',
-        ),
-        'Lcobucci\\JWT\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
-        ),
-        'Lcobucci\\Clock\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/lcobucci/clock/src',
-        ),
-        'Laminas\\Diactoros\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-diactoros/src',
-        ),
-        'Jose\\Component\\Core\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/web-token/jwt-core',
         ),
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
-        'FG\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/fgrosse/phpasn1/lib',
-        ),
-        'EasyRdf\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/easyrdf/easyrdf/lib',
-        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
-        'Defuse\\Crypto\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
-        ),
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
-        ),
-        'Brick\\Math\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/brick/math/src',
-        ),
-        'Base64Url\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/spomky-labs/base64url/src',
         ),
     );
 
@@ -290,13 +97,6 @@ class ComposerStaticInitc7aa906634e623e2b3d24decba872560
             'Parsedown' => 
             array (
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
-            ),
-        ),
-        'M' => 
-        array (
-            'ML\\IRI' => 
-            array (
-                0 => __DIR__ . '/..' . '/ml/iri',
             ),
         ),
         'J' => 
