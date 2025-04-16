@@ -1,5 +1,8 @@
 FROM php:8.4-apache
 LABEL maintainer="yvo@muze.nl"
-RUN docker-php-ext-install mysqli exif bcmath mbstring xml
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install exif
+RUN docker-php-ext-install bcmath
 RUN apt-get update
 RUN apt-get install -y git subversion tidy imagemagick poppler-utils
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
