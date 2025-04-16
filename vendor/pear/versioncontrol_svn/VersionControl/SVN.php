@@ -106,6 +106,7 @@ define('VERSIONCONTROL_SVN_FETCHMODE_ARRAY', 6);
  * @version   @version@
  * @link      http://pear.php.net/package/VersionControl_SVN
  */
+#[\AllowDynamicProperties]
 class VersionControl_SVN
 {
     /**

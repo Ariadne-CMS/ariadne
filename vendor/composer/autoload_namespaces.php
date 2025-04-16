@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'VersionControl_SVN' => array($vendorDir . '/pear/versioncontrol_svn'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
+    'ML\\IRI' => array($vendorDir . '/ml/iri'),
     'JSMin\\' => array($vendorDir . '/mrclay/jsmin-php/src'),
     'ILess' => array($vendorDir . '/mishal/iless/lib'),
     'Console' => array($vendorDir . '/pear/console_getopt'),

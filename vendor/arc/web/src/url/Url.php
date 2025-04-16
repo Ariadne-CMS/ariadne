@@ -41,7 +41,7 @@ class Url
         $componentList = [
             'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment'
         ];
-        $this->importUrlComponents( parse_url( $url ), $componentList );
+        $this->importUrlComponents( parse_url( $url??'' ), $componentList );
         if ( isset( $queryObject ) ) {
             $this->query = $queryObject->import( $this->query );
         }
