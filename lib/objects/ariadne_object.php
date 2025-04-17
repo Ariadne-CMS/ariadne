@@ -759,7 +759,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$url = $requestedHost . $AR->root . $rootoptions . $path;
 			}
 		}
-		if ($AR->https) {
+		if ($AR->https ?? null) {
 			$url = preg_replace('/^http:/', 'https:', $url);
 		}
 
