@@ -13,35 +13,28 @@
             "role": "Original Maintainer"
         },
         {
+            "name": "John Kelly",
+            "email": "johnmkelly86@gmail.com",
+            "role": "Maintainer"
+        },
+        {
             "name": "Raúl Araya",
             "email": "nubeiro@gmail.com",
-            "role": "Maintainer"
-        },
-        {
-            "name": "Luke Bakken",
-            "email": "luke@bakken.io",
-            "role": "Maintainer"
-        },
-        {
-            "name": "Ramūnas Dronga",
-            "email": "github@ramuno.lt",
             "role": "Maintainer"
         }
     ],
     "require": {
-        "php": ">=5.6.3,<8.0",
-        "ext-sockets": "*",
-        "ext-mbstring": "*",
-        "phpseclib/phpseclib": "^2.0|^3.0"
+        "php": ">=5.4.0",
+        "ext-bcmath": "*"
     },
     "require-dev": {
-        "ext-curl": "*",
-        "phpunit/phpunit": "^5.7|^6.5|^7.0",
-        "squizlabs/php_codesniffer": "^3.5",
-        "nategood/httpful": "^0.2.20"
+        "phpunit/phpunit": "^4.8",
+        "scrutinizer/ocular": "^1.1",
+        "squizlabs/php_codesniffer": "^2.5",
+        "phpdocumentor/phpdocumentor": "^2.9"
     },
-    "conflict": {
-        "php": "7.4.0 - 7.4.1"
+    "suggest": {
+        "ext-sockets": "Use AMQPSocketConnection"
     },
     "autoload": {
         "psr-4": {
@@ -57,7 +50,7 @@
     "license": "LGPL-2.1-or-later",
     "extra": {
         "branch-alias": {
-            "dev-master": "2.12-dev"
+            "dev-master": "2.8-dev"
         }
     }
 }

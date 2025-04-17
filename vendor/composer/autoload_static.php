@@ -4,12 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc7aa906634e623e2b3d24decba872560
+class ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
-        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
         'aa75ea0761a2f40c1f3b32ad314f86c4' => __DIR__ . '/..' . '/phpseclib/mcrypt_compat/lib/mcrypt.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
@@ -48,15 +48,15 @@ class ComposerStaticInitc7aa906634e623e2b3d24decba872560
         ),
         'arc\\' => 
         array (
-            0 => __DIR__ . '/..' . '/arc/web/src',
-            1 => __DIR__ . '/..' . '/arc/prototype/src',
-            2 => __DIR__ . '/..' . '/arc/html/src',
-            3 => __DIR__ . '/..' . '/arc/grants/src',
-            4 => __DIR__ . '/..' . '/arc/events/src',
-            5 => __DIR__ . '/..' . '/arc/config/src',
-            6 => __DIR__ . '/..' . '/arc/cache/src',
-            7 => __DIR__ . '/..' . '/arc/xml/src',
-            8 => __DIR__ . '/..' . '/arc/base/src',
+            0 => __DIR__ . '/..' . '/arc/base/src',
+            1 => __DIR__ . '/..' . '/arc/xml/src',
+            2 => __DIR__ . '/..' . '/arc/web/src',
+            3 => __DIR__ . '/..' . '/arc/prototype/src',
+            4 => __DIR__ . '/..' . '/arc/html/src',
+            5 => __DIR__ . '/..' . '/arc/grants/src',
+            6 => __DIR__ . '/..' . '/arc/events/src',
+            7 => __DIR__ . '/..' . '/arc/config/src',
+            8 => __DIR__ . '/..' . '/arc/cache/src',
         ),
         'PhpParser\\' => 
         array (
@@ -778,10 +778,10 @@ class ComposerStaticInitc7aa906634e623e2b3d24decba872560
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitc7aa906634e623e2b3d24decba872560::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$classMap;
 
         }, null, ClassLoader::class);
     }

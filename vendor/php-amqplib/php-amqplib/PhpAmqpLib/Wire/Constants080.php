@@ -4,10 +4,12 @@
 
 namespace PhpAmqpLib\Wire;
 
-final class Constants080 extends Constants
+class Constants080
 {
-    const VERSION = '8.0';
-    const AMQP_HEADER = "AMQP\x01\x01\x08\x00";
+    /**
+     * @var string
+     */
+    public static $AMQP_PROTOCOL_HEADER = "AMQP\x01\x01\x08\x00";
 
     /**
      * @var array

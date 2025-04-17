@@ -7,7 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'phpseclib3\\' => array($vendorDir . '/phpseclib/phpseclib/phpseclib'),
-    'arc\\' => array($vendorDir . '/arc/web/src', $vendorDir . '/arc/prototype/src', $vendorDir . '/arc/html/src', $vendorDir . '/arc/grants/src', $vendorDir . '/arc/events/src', $vendorDir . '/arc/config/src', $vendorDir . '/arc/cache/src', $vendorDir . '/arc/xml/src', $vendorDir . '/arc/base/src'),
+    'arc\\' => array($vendorDir . '/arc/base/src', $vendorDir . '/arc/xml/src', $vendorDir . '/arc/web/src', $vendorDir . '/arc/prototype/src', $vendorDir . '/arc/html/src', $vendorDir . '/arc/grants/src', $vendorDir . '/arc/events/src', $vendorDir . '/arc/config/src', $vendorDir . '/arc/cache/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'PhpAmqpLib\\' => array($vendorDir . '/php-amqplib/php-amqplib/PhpAmqpLib'),
     'ParagonIE\\ConstantTime\\' => array($vendorDir . '/paragonie/constant_time_encoding/src'),

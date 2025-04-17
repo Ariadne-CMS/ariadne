@@ -1,5 +1,4 @@
 <?php
-
 namespace PhpAmqpLib\Connection;
 
 class AMQPLazyConnection extends AMQPStreamConnection

@@ -46,6 +46,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-arc/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-arc/tree/master"
+            },
             "install-path": "../arc/arc"
         },
         {
@@ -93,6 +97,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-base/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-base/tree/master"
+            },
             "install-path": "../arc/base"
         },
         {
@@ -141,6 +149,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-cache/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-cache/tree/master"
+            },
             "install-path": "../arc/cache"
         },
         {
@@ -189,6 +201,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-config/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-config/tree/master"
+            },
             "install-path": "../arc/config"
         },
         {
@@ -237,6 +253,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-events/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-events/tree/master"
+            },
             "install-path": "../arc/events"
         },
         {
@@ -285,6 +305,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-grants/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-grants/tree/master"
+            },
             "install-path": "../arc/grants"
         },
         {
@@ -388,6 +412,10 @@
                 "components",
                 "prototype"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-prototype/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-prototype/tree/0.9.9"
+            },
             "install-path": "../arc/prototype"
         },
         {
@@ -436,6 +464,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-web/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-web/tree/master"
+            },
             "install-path": "../arc/web"
         },
         {
@@ -484,6 +516,10 @@
                 "component",
                 "components"
             ],
+            "support": {
+                "issues": "https://github.com/Ariadne-CMS/arc-xml/issues",
+                "source": "https://github.com/Ariadne-CMS/arc-xml/tree/master"
+            },
             "install-path": "../arc/xml"
         },
         {
@@ -516,7 +552,7 @@
             },
             "time": "2022-12-30T00:23:10+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
@@ -656,6 +692,10 @@
             ],
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
+            "support": {
+                "issues": "https://github.com/firebase/php-jwt/issues",
+                "source": "https://github.com/firebase/php-jwt/tree/v3.0.0"
+            },
             "install-path": "../firebase/php-jwt"
         },
         {
@@ -695,6 +735,11 @@
             ],
             "description": "Traditional FirePHPCore library for sending PHP variables to the browser.",
             "homepage": "https://github.com/firephp/firephp-core",
+            "support": {
+                "forum": "http://groups.google.com/group/firephp-dev",
+                "issues": "https://github.com/firephp/firephp-core/issues",
+                "source": "https://github.com/firephp/firephp-core"
+            },
             "install-path": "../firephp/firephp-core"
         },
         {
@@ -740,6 +785,10 @@
                 "hashing",
                 "password"
             ],
+            "support": {
+                "issues": "https://github.com/ircmaxell/password_compat/issues",
+                "source": "https://github.com/ircmaxell/password_compat/tree/v1.0"
+            },
             "install-path": "../ircmaxell/password-compat"
         },
         {
@@ -784,6 +833,10 @@
             ],
             "description": "lessphp is a compiler for LESS written in PHP.",
             "homepage": "http://leafo.net/lessphp/",
+            "support": {
+                "issues": "https://github.com/leafo/lessphp/issues",
+                "source": "https://github.com/leafo/lessphp/tree/master"
+            },
             "install-path": "../leafo/lessphp"
         },
         {
@@ -838,6 +891,10 @@
                 "php",
                 "processor"
             ],
+            "support": {
+                "issues": "https://github.com/mishal/iless/issues",
+                "source": "https://github.com/mishal/iless/tree/master"
+            },
             "install-path": "../mishal/iless"
         },
         {
@@ -930,7 +987,7 @@
             },
             "time": "2025-02-12T12:17:51+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "src/DeepCopy/deep_copy.php"
@@ -996,7 +1053,7 @@
                     "dev-master": "4.9-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "PhpParser\\": "lib/PhpParser"
@@ -1046,7 +1103,7 @@
             },
             "time": "2024-05-08T12:36:18+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "ParagonIE\\ConstantTime\\": "src/"
@@ -1216,6 +1273,10 @@
                 "archive",
                 "tar"
             ],
+            "support": {
+                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Archive_Tar",
+                "source": "https://github.com/pear/Archive_Tar"
+            },
             "install-path": "../pear/archive_tar"
         },
         {
@@ -1297,7 +1358,7 @@
             },
             "time": "2024-11-24T22:27:58+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -1436,6 +1497,10 @@
                 }
             ],
             "description": "More info available on: http://pear.php.net/package/VersionControl_SVN",
+            "support": {
+                "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=VersionControl_SVN",
+                "source": "https://github.com/pear/VersionControl_SVN"
+            },
             "install-path": "../pear/versioncontrol_svn"
         },
         {
@@ -1468,7 +1533,7 @@
                     "dev-master": "2.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -1528,7 +1593,7 @@
             },
             "time": "2022-02-21T01:04:05+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -1564,45 +1629,43 @@
         },
         {
             "name": "php-amqplib/php-amqplib",
-            "version": "v2.12.3",
-            "version_normalized": "2.12.3.0",
+            "version": "v2.8.0",
+            "version_normalized": "2.8.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "f746eb44df6d8f838173729867dd1d20b0265faa"
+                "reference": "7df8553bd8b347cf6e919dd4a21e75f371547aa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/f746eb44df6d8f838173729867dd1d20b0265faa",
-                "reference": "f746eb44df6d8f838173729867dd1d20b0265faa",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/7df8553bd8b347cf6e919dd4a21e75f371547aa0",
+                "reference": "7df8553bd8b347cf6e919dd4a21e75f371547aa0",
                 "shasum": ""
             },
             "require": {
-                "ext-mbstring": "*",
-                "ext-sockets": "*",
-                "php": ">=5.6.3,<8.0",
-                "phpseclib/phpseclib": "^2.0|^3.0"
-            },
-            "conflict": {
-                "php": "7.4.0 - 7.4.1"
+                "ext-bcmath": "*",
+                "php": ">=5.4.0"
             },
             "replace": {
                 "videlalvaro/php-amqplib": "self.version"
             },
             "require-dev": {
-                "ext-curl": "*",
-                "nategood/httpful": "^0.2.20",
-                "phpunit/phpunit": "^5.7|^6.5|^7.0",
-                "squizlabs/php_codesniffer": "^3.5"
+                "phpdocumentor/phpdocumentor": "^2.9",
+                "phpunit/phpunit": "^4.8",
+                "scrutinizer/ocular": "^1.1",
+                "squizlabs/php_codesniffer": "^2.5"
             },
-            "time": "2021-03-01T12:21:31+00:00",
+            "suggest": {
+                "ext-sockets": "Use AMQPSocketConnection"
+            },
+            "time": "2018-10-23T18:48:24+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.12-dev"
+                    "dev-master": "2.8-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "PhpAmqpLib\\": "PhpAmqpLib/"
@@ -1618,18 +1681,13 @@
                     "role": "Original Maintainer"
                 },
                 {
+                    "name": "John Kelly",
+                    "email": "johnmkelly86@gmail.com",
+                    "role": "Maintainer"
+                },
+                {
                     "name": "Raúl Araya",
                     "email": "nubeiro@gmail.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Luke Bakken",
-                    "email": "luke@bakken.io",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Ramūnas Dronga",
-                    "email": "github@ramuno.lt",
                     "role": "Maintainer"
                 }
             ],
@@ -1642,7 +1700,7 @@
             ],
             "support": {
                 "issues": "https://github.com/php-amqplib/php-amqplib/issues",
-                "source": "https://github.com/php-amqplib/php-amqplib/tree/v2.12.3"
+                "source": "https://github.com/php-amqplib/php-amqplib/tree/master"
             },
             "install-path": "../php-amqplib/php-amqplib"
         },
@@ -1676,7 +1734,7 @@
             },
             "time": "2024-02-26T14:52:18+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "lib/mcrypt.php"
@@ -1749,7 +1807,7 @@
             },
             "time": "2024-12-14T21:12:59+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "phpseclib/bootstrap.php"
@@ -1874,7 +1932,7 @@
                     "dev-main": "9.2.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -1939,7 +1997,7 @@
                     "dev-master": "3.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2006,7 +2064,7 @@
                     "dev-master": "3.1-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2068,7 +2126,7 @@
                     "dev-master": "2.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2130,7 +2188,7 @@
                     "dev-master": "5.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2222,7 +2280,7 @@
                     "dev-master": "9.6-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "src/Framework/Assert/Functions.php"
@@ -2298,7 +2356,7 @@
                     "dev-master": "1.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2357,7 +2415,7 @@
                     "dev-master": "1.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2416,7 +2474,7 @@
                     "dev-master": "2.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2476,7 +2534,7 @@
                     "dev-master": "4.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2552,7 +2610,7 @@
                     "dev-master": "2.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2612,7 +2670,7 @@
                     "dev-master": "4.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2683,7 +2741,7 @@
                     "dev-master": "5.1-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2748,7 +2806,7 @@
                     "dev-master": "4.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2832,7 +2890,7 @@
                     "dev-master": "5.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2894,7 +2952,7 @@
                     "dev-master": "1.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2955,7 +3013,7 @@
                     "dev-master": "4.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -3013,7 +3071,7 @@
                     "dev-master": "2.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -3071,7 +3129,7 @@
                     "dev-master": "4.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -3137,7 +3195,7 @@
                     "dev-main": "3.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -3194,7 +3252,7 @@
                     "dev-master": "3.2-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -3250,7 +3308,7 @@
                     "dev-master": "3.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -3304,7 +3362,7 @@
             },
             "time": "2024-03-03T12:36:25+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
