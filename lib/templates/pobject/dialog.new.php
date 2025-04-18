@@ -18,7 +18,7 @@
 		$hascustomdata=false;
 
 		$configcache=$ARConfig->cache[$this->path]; // use parent path
-		if ($configcache->custom) {
+		if ($configcache->custom??null) {
 			foreach( $configcache->custom as $key => $definition ) {
 				if (($definition["type"]==$arNewType) || // use new type
 					($definition["inherit"] && ($wgWizCallObject->AR_implements($definition["type"])))) { // check new object

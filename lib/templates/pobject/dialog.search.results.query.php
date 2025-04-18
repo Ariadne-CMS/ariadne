@@ -8,7 +8,7 @@
 		}
 
 		$query = "";
-		if( $context == 1 || !($query = $this->getvar("query"))) {
+		if( ($context??null) == 1 || !($query = $this->getvar("query"))) {
 			$searchname = $this->getvar("searchname");
 			if( $searchname ) {
 				$query .= "name.value ~= '%".AddSlashes($searchname)."%'";

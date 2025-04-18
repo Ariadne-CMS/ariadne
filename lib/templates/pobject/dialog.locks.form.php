@@ -1,5 +1,5 @@
 <?php
-	$locks=$this->store->mod_lock->get_locks($this->data->login);
+	$locks=$this->store->mod_lock->get_locks($this->data->login??null);
 	$arReturnPage = $this->getdata('arReturnPage');
 
 	require_once($this->store->get_config("code")."modules/mod_yui.php");
