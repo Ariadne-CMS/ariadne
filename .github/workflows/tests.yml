@@ -47,8 +47,9 @@ jobs:
           args: --ignore-platform-reqs
       - name: Setup MySQL
         run: |
-          echo "[mysqld]\n   character_set_client=latin1\n   character_set_connection=latin1\n   character_set_results=latin1\n   collation_connection=latin1_swedish_ci\n" | sudo tee '/etc/my.cnf';
-          mysql --help | grep cnf
+          echo "[mysqld]|||character_set_client=latin1|||character_set_connection=latin1|||character_set_results=latin1|||collation_connection=latin1_swedish_ci" | sudo tee '/etc/my.cnf';
+          sudo sed -i "s/|||/\n/" /etc/my.cnf
+          cat /etc/my.cnf
           sudo systemctl start mysql.service
           mysqladmin --password=root --user=root create ariadne
 #      - name: Run syntax test
