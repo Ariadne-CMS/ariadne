@@ -1811,7 +1811,7 @@ class pinp {
 		fclose( $pipes[ 2 ] );
 		$retVal = proc_close( $proc );
 		if ( $retVal > 0 ) {
-			$this->error = $stderr;
+			$this->error = $stderr ? $stderr : "Error in syntax text";
 		}
 
 //echo "tested($template)\n";
