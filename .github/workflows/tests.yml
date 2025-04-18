@@ -52,6 +52,7 @@ jobs:
           cat /etc/my.cnf
           sudo systemctl start mysql.service --character_set_server=latin1
           # sudo mysqld --character_set_server=latin1 &
+          echo "set global character_set_server = latin1" | mysql --user=root --password=root mysql;
           mysqladmin --password=root --user=root create ariadne
           mysqladmin --password=root --user=root variables
 #      - name: Run syntax test
