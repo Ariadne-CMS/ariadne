@@ -539,7 +539,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$this->data->muser=$AR->user->data->login;
 		if( !isset( $this->data->config->owner ) || !$this->data->config->owner ) {
 			if( !isset( $this->data->config->owner_name ) || !$this->data->config->owner_name ) {
-				$this->data->config->owner_name=$AR->user->data->name;
+				$this->data->config->owner_name=$AR->user->data->name??'';
 			}
 			$this->data->config->owner=$AR->user->data->login;
 			$properties["owner"][0]["value"]=$this->data->config->owner;
