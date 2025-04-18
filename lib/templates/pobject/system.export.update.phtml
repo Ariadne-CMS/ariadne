@@ -11,7 +11,7 @@
 	Returns true on success , false on an error.
   ******************************************************************/
   if ($this->CheckLogin("edit")) {
-	if ($ARCurrent->options["without_grants"]) {
+	if ($ARCurrent->options["without_grants"]??null) {
 		$keep_grants	= $this->data->config->grants;
 		$keep_usergrants = $this->data->config->usergrants;
 	}
@@ -22,7 +22,7 @@
 		unset($newObject->data->config->grants);
 		unset($newObject->data->config->usergrants);
 	}
-	if (is_array($ARCurrent->options["nls"])) {
+	if (is_array($ARCurrent->options["nls"]??null)) {
 		reset($ARCurrent->options["nls"]);
 		while (list($nls) = each($ARCurrent->options["nls"])) {
 			if ($newObject->data->nls->list[$nls]) {
@@ -33,10 +33,10 @@
 	} else {
 		$this->data=$newObject->data;
 	}
-	$this->data->config->usergrants=$keep_usergrants;
-	$this->data->config->grants=$keep_grants;
-	$this->data->config->templates=$keep_templates;
-	$this->data->config->pinp=$keep_pinp;
+	$this->data->config->usergrants=$keep_usergrants??null;
+	$this->data->config->grants=$keep_grants??null;
+	$this->data->config->templates=$keep_templates??null;
+	$this->data->config->pinp=$keep_pinp??null;
 	$this->priority=$newObject->priority;
 
 	$this->call( 'system.import.translations.phtml' );
