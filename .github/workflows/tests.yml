@@ -57,7 +57,6 @@ jobs:
           echo "set global collation_database = latin1_swedish_ci" | mysql --user=root --password=root mysql;
           echo "set global collation_connection = latin1_swedish_ci" | mysql --user=root --password=root mysql;
           mysqladmin --password=root --user=root create ariadne
-          mysqladmin --password=root --user=root variables
 #      - name: Run syntax test
 #        continue-on-error: true
 #        run: |
@@ -73,3 +72,4 @@ jobs:
           export URL=http://localhost/
           export TMPDIR=/tmp/
           bash test-demosite.sh
+          cat /tmp/demosite.txt
