@@ -460,6 +460,8 @@
 				$vars = mysqli_fetch_row($result);
 				if ($vars && $vars[1] && ($vars[1] == "latin1_swedish_ci")) {
 					return true;
+				} else {
+					var_dump($vars);
 				}
 			}
 		}
@@ -475,6 +477,8 @@
 				$vars = mysqli_fetch_row($result);
 				if ($vars && $vars[1] && ($vars[1] == "latin1")) {
 					return true;
+				} else {
+					var_dump($vars);
 				}
 			}
 		}
