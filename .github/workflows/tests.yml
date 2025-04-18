@@ -47,7 +47,7 @@ jobs:
           args: --ignore-platform-reqs
       - name: Setup MySQL
         run: |
-          echo "[mysqld]|||character_set_client=latin1|||character_set_connection=latin1|||character_set_results=latin1|||collation_connection=latin1_swedish_ci|||[client]|||character_set_client=latin1|||character_set_connection=latin1|||character_set_results=latin1|||collation_connection=latin1_swedish_ci|||" | sudo tee '/etc/my.cnf';
+          echo "[mysqld]|||character_set_server=latin1|||character_set_connection=latin1|||character_set_results=latin1|||collation_server=latin1_swedish_ci|||" | sudo tee '/etc/my.cnf';
           sudo sed -i "s/|||/\n/g" /etc/my.cnf
           cat /etc/my.cnf
           sudo systemctl start mysql.service
