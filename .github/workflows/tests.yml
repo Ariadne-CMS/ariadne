@@ -43,6 +43,8 @@ jobs:
           rm -rf ${{ github.workspace }}/vendor/
       - name: Install dependencies
         uses: php-actions/composer@master
+        with:
+          args: --ignore-platform-reqs
       - name: Setup MySQL
         run: |
           sudo systemctl start mysql.service
