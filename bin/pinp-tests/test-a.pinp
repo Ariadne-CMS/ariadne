@@ -1,0 +1,5 @@
+<pinp>
+	foreach ( $abcd as $a ) {
+		xdoe();
+	}
+</pinp>
