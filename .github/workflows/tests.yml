@@ -62,9 +62,14 @@ jobs:
 #        continue-on-error: true
 #        run: |
 #          bash ./tests/syntax.sh '${{ github.workspace }}'
-      - name: Run tests
+      - name: Install Ariadne
         run: |
           rm '${{ github.workspace }}/www/install/.htaccess'
           curl --data "language=en&step=step6&database=mysql&database_host=localhost&database_user=root&database_pass=root&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
           sudo cat /var/log/apache2/error.log
-#          bash ./tests/run.sh '${{ github.workspace }}' 'http://localhost/' 'ariadne' 'mysql'
+      - name: Test demo site
+        run: |
+          cd ${{ github.workspace }}/tests/curl/
+          export URL=http://localhost/
+          export TMPDIR=/tmp/
+          bash test-demosite.sh
