@@ -1157,12 +1157,15 @@ class pinp {
 
 
 	function parse_variable_reference($inDQString = false) {
+		$skipNullDefaulter = ( trim( $this->token_value ) === '&' );
 		$this->next_token(); // eat $ sign;
 		$result = $this->var_prefix.$this->parse_var_index("", "_", $inDQString);
 		if ($this->error) {
 			return false;
 		}
-		$result = "($result ?? null)!!!!";
+		if ( !$skipNullDefaulter ) {
+			$result = "($result ?? null)!!!!";
+		}
 		return $result;
 	}
 
