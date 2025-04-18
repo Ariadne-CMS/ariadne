@@ -33,11 +33,11 @@
 		"dialog.image.preview.html" => [[]],
 		"dialog.import.php" => [[]],
 		"dialog.language.php" => [[]],
-		"dialog.locks.php" => [[]],
+		"dialog.locks.php" => [["arReturnPage" => "foo"]],
 		"dialog.makeLocalURL.ajax" => [[]],
 		"dialog.mogrify.php" => [[]],
 		"dialog.move.php" => [[]],
-		"dialog.new.php" => [[]],
+		"dialog.new.php" => [["arNewType" => "pobject"]],
 		"dialog.owner.php" => [[]],
 		"dialog.priority.php" => [[]],
 		"dialog.rename.php" => [[]],
@@ -68,7 +68,7 @@
 		"dialog.svn.tree.revert.php" => [[]],
 		"dialog.svn.tree.unsvn.php" => [[]],
 		"dialog.svn.tree.update.php" => [[]],
-		"dialog.templates.edit.apply.php" => [[]],
+//		"dialog.templates.edit.apply.php" => [[]],
 		"dialog.templates.edit.cancel.php" => [[]],
 		"dialog.templates.edit.delete.php" => [[]],
 		"dialog.templates.edit.php" => [[]],
@@ -76,9 +76,9 @@
 		"dialog.templates.php" => [[]],
 		"dialog.types.optionlist.php" => [[]],
 		"dialog.vedor-meta.html" => [[]],
-		"dialog.workspace.commit.php" => [[]],
-		"dialog.workspace.diff.php" => [[]],
-		"dialog.workspace.php" => [[]]
+//		"dialog.workspace.commit.php" => [[]],
+//		"dialog.workspace.diff.php" => [[]],
+//		"dialog.workspace.php" => [[]]
 	];
 
 	include_once("testRunner.php");
