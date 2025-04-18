@@ -71,6 +71,7 @@
 	$store->close();
 
 	if ($foundFailures) {
+		echo "Found failures!" . PHP_EOL;
 		exit(1);
 	} else {
 		echo "OK" . PHP_EOL;
