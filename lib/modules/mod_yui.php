@@ -148,7 +148,7 @@
 
 		public static function labelspan($label, $maxlabellength=16) {
 			// Reduce length of a label if they are too long.
-			if (mb_strlen($label, "utf-8") > $maxlabellength) {
+			if (mb_strlen($label ?? '', "utf-8") > $maxlabellength) {
 				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label??'', 0, $maxlabellength-3,"utf-8")."..."));
 			} else {
 				$label = htmlspecialchars($label??'');
