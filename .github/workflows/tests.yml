@@ -50,7 +50,8 @@ jobs:
           echo "[mysqld]|||character_set_server=latin1|||character_set_connection=latin1|||character_set_results=latin1|||collation_server=latin1_swedish_ci|||" | sudo tee '/etc/my.cnf';
           sudo sed -i "s/|||/\n/g" /etc/my.cnf
           cat /etc/my.cnf
-          sudo systemctl start mysql.service
+          #sudo systemctl start mysql.service --character_set_server=latin1
+          mysqld --character_set_server=latin1 &
           mysqladmin --password=root --user=root create ariadne
           mysqladmin --password=root --user=root variables
 #      - name: Run syntax test
