@@ -34,32 +34,6 @@
 
 	require_once("./ariadne.inc");
 	require_once($ariadne."/bootstrap.php");
-	require_once( AriadneBasePath . "/modules/mod_itf/default.php" );
-
-//	$ITF = new mod_ITF();
-//	$ITF->record();
-
-
-	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
-		include_once($store_config['code']."modules/mod_workspace.php");
-		$layer = workspace::getLayer($workspace);
-		if (!$layer) {
-			$layer = 1;
-		}
-
-		if ($wspaths = getenv("ARIADNE_WORKSPACE_PATHS")) {
-			$wspaths = explode(";", $wspaths);
-			foreach ($wspaths as $wspath) {
-				if ($wspath != '') {
-					$store_config['layer'][$wspath] = $layer;
-				}
-			}
-		} else {
-			$store_config['layer'] = array('/' => $layer );
-		}
-	}
-
-
 
 	ldCheckAllowedMethods($_SERVER['REQUEST_METHOD']);
 
