@@ -52,6 +52,7 @@ jobs:
           cat /etc/my.cnf
           sudo systemctl start mysql.service
           mysqladmin --password=root --user=root create ariadne
+          mysqladmin variables
 #      - name: Run syntax test
 #        continue-on-error: true
 #        run: |
