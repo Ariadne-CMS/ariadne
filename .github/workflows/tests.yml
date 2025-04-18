@@ -38,6 +38,11 @@ jobs:
           sudo apt install lynx subversion
           svnadmin create '${{ github.workspace }}/files/temp/testsvn'
           svnadmin load '${{ github.workspace }}/files/temp/testsvn' < '${{ github.workspace }}/tests/svnrepo.log'
+      - name: Cleanup vendor
+        run: |
+          rm -rf ${{ github.workspace }}/vendor/
+      - name: Install dependencies
+        uses: php-actions/composer@master
       - name: Setup MySQL
         run: |
           sudo systemctl start mysql.service
