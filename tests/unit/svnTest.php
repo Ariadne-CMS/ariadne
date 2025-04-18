@@ -7,6 +7,13 @@ class svnTest extends AriadneBaseTest
 
 	public function setUp(): void
 	{
+		if( !getenv('svnrepo') ) {
+			$this->marktestskipped(
+				'Skipping SVN test, no svn repo configured'
+			);
+			return;
+		}
+
 		$this->initAriadne();
 	}
 
