@@ -2,7 +2,7 @@
 	$colDefs = ar::getvar('columns');
 
 	$defaults = array(
-		"name"        => $this->nlsdata->name,
+		"name"        => $this->nlsdata->name ?? null,
 		"filename"    => basename($this->path),
 		"path"        => $this->path,
 		"parent"      => $this->parent,

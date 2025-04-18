@@ -22,17 +22,17 @@
 		$userConfig = $this->loadUserConfig();
 		$authconfig = $userConfig['authentication'];
 
-		$mod_user = $this->data->muser;
+		$mod_user = $this->data->muser ?? null;
 
 		foreach ($authconfig['userdirs'] as $userdir) {
-			$muser = current($this->find($userdir, "login.value='".AddCSlashes($this->data->muser, ARESCAPE)."'", "system.get.phtml"));
+			$muser = current($this->find($userdir, "login.value='".AddCSlashes(($this->data->muser??''), ARESCAPE)."'", "system.get.phtml"));
 			if ($muser) {
 				$mod_user = $muser->nlsdata->name;
 				break;
 			}
 		}
 
-		$name = $this->nlsdata->name;
+		$name = $this->nlsdata->name ?? null;
 
 		if (!isset($ARCurrent->arTypeTree)) {
 			$this->call("typetree.ini");
