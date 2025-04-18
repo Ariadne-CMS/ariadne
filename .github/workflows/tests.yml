@@ -21,7 +21,7 @@ jobs:
 
       - name: Configure Apache2
         run: |
-          php -r "var_dump(is_readable('${{ github.workspace }}/lib'));"
+          php -r "var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));"
           sudo a2dismod mpm_event
           sudo a2enmod mpm_prefork php8.4 rewrite
           sudo sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
