@@ -1,5 +1,5 @@
 ---
-name: Run Travis CI/CD build in GitHub Actions
+name: CI/CD build in GitHub Actions
 
 on: [ push ]
 
@@ -12,13 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, xml, curl, zip, gd, imagick, mysqli, pdo_mysql, pdo_pgsql
           coverage: xdebug
-
       - name: Configure Apache2
         run: |
           sudo sed -i "s/www-data/runner/" /etc/apache2/envvars
@@ -71,4 +69,3 @@ jobs:
           export URL=http://localhost/
           export TMPDIR=/tmp/
           bash test-demosite.sh
-          
