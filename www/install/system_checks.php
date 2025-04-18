@@ -114,7 +114,9 @@
 	function check_ariadne_path() {
 		include("../ariadne.inc");
         echo $ariadne;
-		if (is_readable($ariadne . "/templates/pobject/")) {
+        $is_readable = is_readable($ariadne . "/templates/pobject/");
+        var_dump($is_readable);
+        if ($is_readable) {
 			return true;
 		}
 		return false;
