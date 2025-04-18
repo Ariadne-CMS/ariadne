@@ -15,8 +15,8 @@
 		$keep_grants	= $this->data->config->grants;
 		$keep_usergrants = $this->data->config->usergrants;
 	}
-	$keep_templates = $this->data->config->templates;
-	$keep_pinp		= $this->data->config->pinp;
+	$keep_templates = $this->data->config->templates??null;
+	$keep_pinp		= $this->data->config->pinp??null;
 
 	if ($ARCurrent->AXAction == "import") {
 		unset($newObject->data->config->grants);
@@ -41,7 +41,7 @@
 
 	$this->call( 'system.import.translations.phtml' );
 
-	$this->save( $this->properties );
+	$this->save( $this->properties ?? null);
 
   } else {
 	$arResult=false;

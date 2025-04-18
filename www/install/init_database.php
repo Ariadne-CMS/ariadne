@@ -152,7 +152,7 @@
 		$store->add_type("punittest", "pdir");
 		$store->add_type("punittest", "punittest");
 
-		if ($error) {
+		if ($error??null) {
 			error($error);
 		}
 
