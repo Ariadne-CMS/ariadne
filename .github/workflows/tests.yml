@@ -27,6 +27,7 @@ jobs:
           sudo ls -lA '${{ github.workspace }}/lib'
           sudo rm -rf /var/www/html
           sudo cp -r '${{ github.workspace }}/www/' '/var/www/html'
+          sudo chown -R www-data:www-data '/var/www/html' '${{ github.workspace }}'
           echo '<?php $ariadne="${{ github.workspace }}/lib"; ?>' | sudo tee '/var/www/html/ariadne.inc'
           sudo systemctl start apache2
           sudo systemctl status apache2.service
