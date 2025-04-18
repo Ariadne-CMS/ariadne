@@ -47,6 +47,7 @@ jobs:
           args: --ignore-platform-reqs
       - name: Setup MySQL
         run: |
+          mysql --help | grep cnf
           sudo systemctl start mysql.service
           mysqladmin --password=root --user=root create ariadne
 #      - name: Run syntax test
