@@ -1089,7 +1089,7 @@
 				$browserCachecacheSetting = 0; // Default = inherit;
 
 				// FIXME: The defaults for with session ID are now to not cache;
-				if(is_array($ARCurrent->cacheCallChainSettings) ) {
+				if(is_array($ARCurrent->cacheCallChainSettings ?? null) ) {
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
 						$browserCachePrivate = $browserCachePrivate || ($pathCacheSetting['browserCachePrivate'] ?? false); // If anyone says 'private', make it so.
 						$browserCacheNoStore = $browserCacheNoStore || ($pathCacheSetting['browserCacheNoStore'] ?? false); // If anyone says 'no-store', make it so.
@@ -1128,7 +1128,7 @@
 						"browserCacheMustRevalidate" => $browserCacheMustRevalidate,
 						"browserCacheNoTransform" => $browserCacheNoTransform,
 						"browserCacheProxyRevalidate" => $browserCacheProxyRevalidate,
-						"browserCacheMaxAge" => $browserCacheMaxAge,
+						"browserCacheMaxAge" => $browserCacheMaxAge ?? null,
 						"browserCacheSMaxAge" => $browserCacheSMaxAge
 					)
 				);
@@ -1184,7 +1184,7 @@
 
 				$cacheSetting = 0; // Default = inherit;
 				$serverCachePrivate = 0; // do not allow caching of  sessions
-				if( is_array($ARCurrent->cacheCallChainSettings)) {
+				if( is_array($ARCurrent->cacheCallChainSettings ?? null)) {
 					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
 						// FIXME: also 'resolve' $serverCachePrivate
 						$serverCache = $pathCacheSetting['serverCache'] ?? 0;
