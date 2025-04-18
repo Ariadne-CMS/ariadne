@@ -108,7 +108,7 @@ class StoreTest extends AriadneBaseTest
 
 		$dbobj = $store->get($path);
 		$row2 = current($store->call('system.get.phtml','',$dbobj));
-		$this->assertNotEquals('2', $row2->data->test??null);
+		$this->assertEquals('2', $row2->data->test??null);
 	}
 
 	public function testDelete() {
