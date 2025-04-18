@@ -33,6 +33,7 @@ jobs:
       - name: Setup SVN
         run: |
           php -r "echo exec('whoami'); var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));"
+          sudo -u www-data php -r "echo exec('whoami'); var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));"
           echo "<?php echo exec('whoami'); var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));" | sudo tee '/var/www/html/test.php'
           curl http://localhost/test.php
           sudo apt install lynx subversion
