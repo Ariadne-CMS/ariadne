@@ -4,6 +4,7 @@
 	ar_pinp::allow('ar_listExpression', array('pattern', 'item', 'define', 'getStringIterator', 'setToStringCallback') );
 	ar_pinp::allow('ar_listExpression_Pattern', array('define') );
 
+	#[\AllowDynamicProperties]
 	class ar_listExpression_Pattern extends arBase {
 		public $patterns = array();
 		public $definitions = array( '.' => false );
@@ -22,6 +23,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_listExpression extends arBase implements Iterator, Countable, ArrayAccess {
 
 		private $rootlist  = null;
@@ -163,7 +165,8 @@
 			return $iterator;
 		}
 
-		public function offsetExists($offset) {
+		public function offsetExists(mixed $offset): bool
+		{
 			if (isset( $this->rootlist) ) {
 				return (exists($this->rootlist[$offset]));
 			} else {
@@ -171,7 +174,8 @@
 			}
 		}
 
-		public function offsetGet($offset) {
+		public function offsetGet(mixed $offset): mixed
+		{
 			if ( isset($this->rootlist) ) {
 				$position = array_search( $offset, array_keys($this->rootlist) );
 			} else if ($offset<$this->length) {
@@ -183,35 +187,43 @@
 				return null;
 			}
 		}
-		public function offsetSet($offset, $value) {
-			return false;
+		public function offsetSet(mixed $offset, mixed $value): void
+		{
+			return;
 		}
 
-		public function offsetUnset($offset) {
-			return false;
+		public function offsetUnset(mixed $offset):void
+		{
+			return;
 		}
 
-		public function current() {
+		public function current(): mixed
+		{
 			return $this->item($this->current);
 		}
 
-		public function key() {
+		public function key(): mixed
+		{
 			return $this->current;
 		}
 
-		public function next() {
+		public function next(): void
+		{
 			++$this->current;
 		}
 
-		public function rewind() {
+		public function rewind(): void
+		{
 			$this->current = 0;
 		}
 
-		public function valid() {
+		public function valid(): bool
+		{
 			return $this->offsetExists($this->current);
 		}
 
-		public function count() {
+		public function count(): int
+		{
 			return (isset($this->rootlist) ? count($this->rootlist): $this->length);
 		}
 
@@ -235,6 +247,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_listExpressionScanner {
 		private $YYBUFFER;
 		private $YYLINE;
@@ -382,6 +395,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_listExpressionParser {
 		private $scanner;
 
@@ -556,6 +570,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	abstract class ar_listExpressionNode {
 		public $modifiers;
 		public $req;
@@ -579,6 +594,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_listExpressionNodeOr extends ar_listExpressionNode {
 
 		public function __construct($data) {
@@ -617,6 +633,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_listExpressionNodeAnd extends ar_listExpressionNode {
 
 		public function __construct($data) {
@@ -705,8 +722,8 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_listExpressionNodeIdent extends ar_listExpressionNode {
-
 		public function __construct($data) {
 			$this->value = $data['value'];
 			$this->req   = true;
@@ -724,6 +741,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_listExpressionNodeRepeat extends ar_listExpressionNode {
 
 		public function __construct($data) {
