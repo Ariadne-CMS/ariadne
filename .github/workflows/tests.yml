@@ -51,14 +51,11 @@ jobs:
           sudo sed -i "s/|||/\n/g" /etc/my.cnf
           cat /etc/my.cnf
           sudo systemctl start mysql.service
-          # sudo mysqld --character_set_server=latin1 &
           echo "set global character_set_server = latin1" | mysql --user=root --password=root mysql;
-          echo "set global character_set_client = latin1" | mysql --user=root --password=root mysql;
-          echo "set global character_set_results = latin1" | mysql --user=root --password=root mysql;
           echo "set global character_set_database = latin1" | mysql --user=root --password=root mysql;
-          # echo "set global character_set_connection = latin1" | mysql --user=root --password=root mysql;
+          echo "set global character_set_connection = latin1" | mysql --user=root --password=root mysql;
           echo "set global collation_database = latin1_swedish_ci" | mysql --user=root --password=root mysql;
-          # echo "set global collation_connection = latin1_swedish_ci" | mysql --user=root --password=root mysql;
+          echo "set global collation_connection = latin1_swedish_ci" | mysql --user=root --password=root mysql;
           mysqladmin --password=root --user=root create ariadne
           mysqladmin --password=root --user=root variables
 #      - name: Run syntax test
