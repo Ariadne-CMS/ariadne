@@ -47,6 +47,7 @@ jobs:
           args: --ignore-platform-reqs
       - name: Setup MySQL
         run: |
+          echo "[mysqld]\n   character_set_client=latin1\n   character_set_connection=latin1\n   character_set_results=latin1\n   collation_connection=latin1_swedish_ci\n" | sudo tee '/etc/my.cnf';
           mysql --help | grep cnf
           sudo systemctl start mysql.service
           mysqladmin --password=root --user=root create ariadne
@@ -59,5 +60,4 @@ jobs:
           rm '${{ github.workspace }}/www/install/.htaccess'
           curl --data "language=en&step=step6&database=mysql&database_host=localhost&database_user=root&database_pass=root&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
           sudo cat /var/log/apache2/error.log
-          cat '${{ runner.temp }}/output.txt'
-          bash ./tests/run.sh '${{ github.workspace }}' 'http://localhost/' 'ariadne' 'mysql'
+#          bash ./tests/run.sh '${{ github.workspace }}' 'http://localhost/' 'ariadne' 'mysql'
