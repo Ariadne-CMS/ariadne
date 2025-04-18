@@ -47,11 +47,11 @@ jobs:
         run: |
           sudo systemctl start mysql.service
           echo "set global character_set_server = latin1" | mysql --user=root --password=root mysql;
-          echo "set global character_set_database = latin1" | mysql --user=root --password=root mysql;
-          echo "set global character_set_connection = latin1" | mysql --user=root --password=root mysql;
-          echo "set global collation_database = latin1_swedish_ci" | mysql --user=root --password=root mysql;
-          echo "set global collation_connection = latin1_swedish_ci" | mysql --user=root --password=root mysql;
-          echo "set global character_set_results = latin1" | mysql --user=root --password=root mysql;
+          # echo "set global character_set_database = latin1" | mysql --user=root --password=root mysql;
+          # echo "set global character_set_connection = latin1" | mysql --user=root --password=root mysql;
+          # echo "set global collation_database = latin1_swedish_ci" | mysql --user=root --password=root mysql;
+          # echo "set global collation_connection = latin1_swedish_ci" | mysql --user=root --password=root mysql;
+          # echo "set global character_set_results = latin1" | mysql --user=root --password=root mysql;
           echo "set global collation_server = latin1_swedish_ci" | mysql --user=root --password=root mysql;
           mysqladmin --password=root --user=root create ariadne
 #      - name: Run syntax test
