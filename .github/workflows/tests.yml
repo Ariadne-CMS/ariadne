@@ -35,7 +35,7 @@ jobs:
           php -r "echo exec('whoami'); var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));"
           echo "<?php echo exec('whoami'); var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));" | sudo tee '/var/www/html/test.php'
           curl http://localhost/test.php
-          sudo apt install lynx subversion imagemagick tidy mariadb
+          sudo apt install lynx subversion imagemagick tidy
           svnadmin create '${{ github.workspace }}/files/temp/testsvn'
           svnadmin load '${{ github.workspace }}/files/temp/testsvn' < '${{ github.workspace }}/tests/svnrepo.log'
       - name: Cleanup vendor
