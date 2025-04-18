@@ -35,7 +35,7 @@
 			if ( !$files ) {
 				$files = array();
 			}
-			$files = array_map( array('self','parseName'), $files );
+			$files = array_map( self::parseName(...), $files );
 			if ( isset($nls) ) {
 				$files = array_filter( $files, function($f) use($nls) {
 					return ( $f['nls'] == $nls );
