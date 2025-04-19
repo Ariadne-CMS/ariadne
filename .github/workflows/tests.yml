@@ -16,7 +16,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: ariadne
+          MYSQL_DATABASE: testdb
         ports:
           - 3306:3306
         options: >-
@@ -43,16 +43,15 @@ jobs:
       - name: Create test database with latin1_swedish_ci
         run: |
           mysql -h127.0.0.1 -uroot -proot -e \
-          "CREATE DATABASE latin1db CHARACTER SET latin1 COLLATE latin1_swedish_ci;"
+          "CREATE DATABASE ariadne CHARACTER SET latin1 COLLATE latin1_swedish_ci;"
 
       - name: Show database collation
         run: |
           mysql -h127.0.0.1 -uroot -proot -e \
           "SELECT schema_name, default_character_set_name, default_collation_name \
            FROM information_schema.schemata \
-           WHERE schema_name = 'latin1db';"
+           WHERE schema_name = 'ariadne';"
 
-      - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
