@@ -95,13 +95,8 @@ jobs:
           rm '${{ github.workspace }}/www/install/.htaccess'
           curl --no-progress-meter --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=ariadne&database_pass=secret&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
 
-      - name: List projects in Ariadne
-        run: |
-          curl --no-progress-meter --location "http://localhost/loader.php/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/demo/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/demo/demo/system.list.folders.json.php"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/demo/system/layout/default/dialog.templates.php?ARLogin=admin&ARPassword=test"
+
+
       - name: Test login page
         run: |
           cd ${{ github.workspace }}/tests/curl/
@@ -115,6 +110,10 @@ jobs:
           export URL=http://localhost/
           export TMPDIR=/tmp/
           bash test-explore.sh
+
+      - name: DLoader demo site
+        run: |
+          curl --no-progress-meter http://localhost/dloader.php/projects/demo/demo/
 
       - name: Test demo site
         run: |
