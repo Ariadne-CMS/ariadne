@@ -24,8 +24,16 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+          --volume=${{ github.workspace }}/.github/mysql/conf.d:/etc/mysql/conf.d
 
     steps:
+      - name: Create MySQL config
+        run: |
+          mkdir -p .github/mysql/conf.d
+          echo "[mysqld]" > .github/mysql/conf.d/custom.cnf
+          echo "character-set-server=latin1" >> .github/mysql/conf.d/custom.cnf
+          echo "collation-server=latin1_swedish_ci" >> .github/mysql/conf.d/custom.cnf
+
       - name: Checkout repo
         uses: actions/checkout@v3
 
