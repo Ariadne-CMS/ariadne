@@ -117,7 +117,7 @@ jobs:
 
       - name: List files/templates
         run: |
-          tree '$${{ github.workspace }}/files/templates/'
+          tree '${{ github.workspace }}/files/templates/'
 
       - name: Test demo site
         run: |
