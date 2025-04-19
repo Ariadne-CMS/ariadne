@@ -48,6 +48,11 @@ jobs:
             sleep 2
           done
 
+      - name: Set SQL Mode
+        run: |
+          mysql -h127.0.0.1 -uroot -proot -e \
+          "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ENGINE_SUBSTITUTION',''));"
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
