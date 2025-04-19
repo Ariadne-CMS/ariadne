@@ -13,10 +13,14 @@ jobs:
 
     services:
       mysql:
-        image: mysql:8.0
+        image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
+          TZ: "Europe/Amsterdam"
+          MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+          MYSQL_ROOT_PASSWORD: "root"
+          MYSQL_USER: "ariadne"
+          MYSQL_PASSWORD: "secret"
+          MYSQL_DATABASE: "ariadne"
         ports:
           - 3306:3306
         options: >-
@@ -24,16 +28,8 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-          --volume=${{ github.workspace }}/.github/mysql/conf.d:/etc/mysql/conf.d
 
     steps:
-      - name: Create MySQL config
-        run: |
-          mkdir -p .github/mysql/conf.d
-          echo "[mysqld]" > .github/mysql/conf.d/custom.cnf
-          echo "character-set-server=latin1" >> .github/mysql/conf.d/custom.cnf
-          echo "collation-server=latin1_swedish_ci" >> .github/mysql/conf.d/custom.cnf
-
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -47,18 +43,6 @@ jobs:
             echo "Waiting for MySQL..."
             sleep 2
           done
-
-      - name: Create test database with latin1_swedish_ci
-        run: |
-          mysql -h127.0.0.1 -uroot -proot -e \
-          "CREATE DATABASE ariadne CHARACTER SET latin1 COLLATE latin1_swedish_ci;"
-
-      - name: Show database collation
-        run: |
-          mysql -h127.0.0.1 -uroot -proot -e \
-          "SELECT schema_name, default_character_set_name, default_collation_name \
-           FROM information_schema.schemata \
-           WHERE schema_name = 'ariadne';"
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -98,7 +82,7 @@ jobs:
       - name: Install Ariadne
         run: |
           rm '${{ github.workspace }}/www/install/.htaccess'
-          curl --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=root&database_pass=root&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
+          curl --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=ariadne&database_pass=secret&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
           sudo cat /var/log/apache2/error.log
       - name: Test demo site
         run: |
