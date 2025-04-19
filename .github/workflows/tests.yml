@@ -1,5 +1,5 @@
 ---
-name: Run Travis CI/CD build in GitHub Actions
+name: CI/CD build in GitHub Actions
 
 on: [ push ]
 
@@ -8,10 +8,45 @@ defaults:
     shell: bash
 
 jobs:
-  example_job:
+  install-and-test:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          TZ: "Europe/Amsterdam"
+          MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+          MYSQL_ROOT_PASSWORD: "root"
+          MYSQL_USER: "ariadne"
+          MYSQL_PASSWORD: "secret"
+          MYSQL_DATABASE: "ariadne"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Install packages
+        run: |
+          sudo apt install lynx subversion imagemagick tidy
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h127.0.0.1 -uroot -proot --silent; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -21,34 +56,44 @@ jobs:
 
       - name: Configure Apache2
         run: |
+          sudo sed -i "s/www-data/runner/" /etc/apache2/envvars
           sudo a2dismod mpm_event
           sudo a2enmod mpm_prefork php8.4 rewrite
           sudo sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
-          sudo ls -lA '${{ github.workspace }}/lib'
           sudo rm -rf /var/www/html
           sudo cp -r '${{ github.workspace }}/www/' '/var/www/html'
           echo '<?php $ariadne="${{ github.workspace }}/lib"; ?>' | sudo tee '/var/www/html/ariadne.inc'
           sudo systemctl start apache2
           sudo systemctl status apache2.service
+
       - name: Setup SVN
         run: |
-          sudo apt install lynx subversion
           svnadmin create '${{ github.workspace }}/files/temp/testsvn'
           svnadmin load '${{ github.workspace }}/files/temp/testsvn' < '${{ github.workspace }}/tests/svnrepo.log'
-      - name: Setup MySQL
+
+      - name: Cleanup vendor
         run: |
-          sudo systemctl start mysql.service
-          mysqladmin --password=root --user=root create ariadne
+          rm -rf ${{ github.workspace }}/vendor/
+
+      - name: Install composer dependencies
+        uses: php-actions/composer@master
+        with:
+          args: --ignore-platform-reqs
+
 #      - name: Run syntax test
 #        continue-on-error: true
 #        run: |
 #          bash ./tests/syntax.sh '${{ github.workspace }}'
-      - name: Run tests
+
+      - name: Install Ariadne
         run: |
           rm '${{ github.workspace }}/www/install/.htaccess'
-          sudo chown -R www-data:www-data '/var/www/html' '${{ github.workspace }}'
-          ls -la '${{ github.workspace }}/lib/templates/pobject/'
-          curl --output '${{ runner.temp }}/output.txt' --verbose --data "language=en&step=step6&database=mysql&database_host=localhost&database_user=root&database_pass=root&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
+          curl --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=ariadne&database_pass=secret&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
           sudo cat /var/log/apache2/error.log
-          cat '${{ runner.temp }}/output.txt'
-          bash ./tests/run.sh '${{ github.workspace }}' 'http://localhost/' 'ariadne' 'mysql'
+
+      - name: Test demo site
+        run: |
+          cd ${{ github.workspace }}/tests/curl/
+          export URL=http://localhost/
+          export TMPDIR=/tmp/
+          bash test-demosite.sh
