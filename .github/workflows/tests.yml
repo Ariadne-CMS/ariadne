@@ -97,10 +97,10 @@ jobs:
 
       - name: List projects in Ariadne
         run: |
-          curl --no-progress-meter http://localhost/loader.php/system.list.folders.json.php
-          curl --no-progress-meter http://localhost/loader.php/projects/system.list.folders.json.php
-          curl --no-progress-meter http://localhost/loader.php/projects/demo/system.list.folders.json.php
-          curl --no-progress-meter http://localhost/loader.php/projects/demo/demo/system.list.folders.json.php
+          curl --no-progress-meter "http://localhost/loader.php/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
+          curl --no-progress-meter "http://localhost/loader.php/projects/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
+          curl --no-progress-meter "http://localhost/loader.php/projects/demo/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
+          curl --no-progress-meter "http://localhost/loader.php/projects/demo/demo/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
 
       - name: Test login page
         run: |
