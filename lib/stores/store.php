@@ -414,7 +414,6 @@ abstract class store {
 
 	protected function unserialize($value, $path) {
 		if ($value[0] === "O" && $value[1] === ":") {
-			error_log($value);
 			unserialize(self::fixObjectClass($value));
 		} else if ($this->config['crypto'] instanceof \Closure) {
 			$crypto = $this->config['crypto']();
