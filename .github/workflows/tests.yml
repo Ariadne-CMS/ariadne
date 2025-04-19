@@ -51,7 +51,7 @@ jobs:
       - name: Set SQL Mode
         run: |
           mysql -h127.0.0.1 -uroot -proot -e \
-          "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ENGINE_SUBSTITUTION',''));"
+          "SET GLOBAL sql_mode = 'NO_ENGINE_SUBSTITUTION';"
 
       - uses: shivammathur/setup-php@v2
         with:
