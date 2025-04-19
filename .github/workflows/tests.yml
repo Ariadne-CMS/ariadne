@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Install packages
         run: |
-          sudo apt install lynx subversion imagemagick tidy tree
+          sudo apt install lynx subversion imagemagick tidy tree poppler-utils
 
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -108,6 +108,11 @@ jobs:
         run: |
          cd '${{ github.workspace }}'
          ./vendor/bin/phpunit
+
+      - name: Run surface tests
+        run: |
+         cd '${{ github.workspace }}/tests/surface/'
+         bash run.sh
 
       - name: Test login page
         run: |
