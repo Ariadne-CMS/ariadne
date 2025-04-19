@@ -10,6 +10,48 @@ defaults:
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ariadne
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h127.0.0.1 -uroot -proot --silent; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      - name: Create test database with latin1_swedish_ci
+        run: |
+          mysql -h127.0.0.1 -uroot -proot -e \
+          "CREATE DATABASE latin1db CHARACTER SET latin1 COLLATE latin1_swedish_ci;"
+
+      - name: Show database collation
+        run: |
+          mysql -h127.0.0.1 -uroot -proot -e \
+          "SELECT schema_name, default_character_set_name, default_collation_name \
+           FROM information_schema.schemata \
+           WHERE schema_name = 'latin1db';"
+
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
@@ -43,17 +85,6 @@ jobs:
         uses: php-actions/composer@master
         with:
           args: --ignore-platform-reqs
-      - name: Setup MySQL
-        run: |
-          sudo systemctl start mysql.service
-          echo "set global character_set_server = latin1" | mysql --user=root --password=root mysql;
-          echo "set global character_set_database = latin1" | mysql --user=root --password=root mysql;
-          echo "set global character_set_connection = latin1" | mysql --user=root --password=root mysql;
-          echo "set global collation_database = latin1_swedish_ci" | mysql --user=root --password=root mysql;
-          echo "set global collation_connection = latin1_swedish_ci" | mysql --user=root --password=root mysql;
-          echo "set global character_set_results = latin1" | mysql --user=root --password=root mysql;
-          echo "set global collation_server = latin1_swedish_ci" | mysql --user=root --password=root mysql;
-          mysqladmin --password=root --user=root create ariadne
 #      - name: Run syntax test
 #        continue-on-error: true
 #        run: |
