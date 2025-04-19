@@ -52,7 +52,6 @@ jobs:
            FROM information_schema.schemata \
            WHERE schema_name = 'latin1db';"
 
-    steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
