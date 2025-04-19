@@ -30,10 +30,6 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Install packages
-        run: |
-          sudo apt install lynx subversion imagemagick tidy
-
       - name: Checkout repo
         uses: actions/checkout@v3
 
@@ -48,17 +44,11 @@ jobs:
             sleep 2
           done
 
-      - name: Set SQL Mode
-        run: |
-          mysql -h127.0.0.1 -uroot -proot -e \
-          "SET GLOBAL sql_mode = 'NO_ENGINE_SUBSTITUTION';"
-
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, xml, curl, zip, gd, imagick, mysqli, pdo_mysql, pdo_pgsql
           coverage: xdebug
-
       - name: Configure Apache2
         run: |
           sudo sed -i "s/www-data/runner/" /etc/apache2/envvars
@@ -70,59 +60,33 @@ jobs:
           echo '<?php $ariadne="${{ github.workspace }}/lib"; ?>' | sudo tee '/var/www/html/ariadne.inc'
           sudo systemctl start apache2
           sudo systemctl status apache2.service
-
       - name: Setup SVN
         run: |
+          php -r "echo exec('whoami'); var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));"
+          echo "<?php echo exec('whoami'); var_dump(is_readable('${{ github.workspace }}/lib/templates/pobject/'));" | sudo tee '/var/www/html/test.php'
+          curl http://localhost/test.php
+          sudo apt install lynx subversion imagemagick tidy
           svnadmin create '${{ github.workspace }}/files/temp/testsvn'
           svnadmin load '${{ github.workspace }}/files/temp/testsvn' < '${{ github.workspace }}/tests/svnrepo.log'
-
       - name: Cleanup vendor
         run: |
           rm -rf ${{ github.workspace }}/vendor/
-
-      - name: Install composer dependencies
+      - name: Install dependencies
         uses: php-actions/composer@master
         with:
           args: --ignore-platform-reqs
-
 #      - name: Run syntax test
 #        continue-on-error: true
 #        run: |
 #          bash ./tests/syntax.sh '${{ github.workspace }}'
-
       - name: Install Ariadne
         run: |
           rm '${{ github.workspace }}/www/install/.htaccess'
-          curl --no-progress-meter --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=ariadne&database_pass=secret&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
-
-      - name: List projects in Ariadne
-        run: |
-          curl --no-progress-meter --location "http://localhost/loader.php/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/demo/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/demo/demo/system.list.folders.json.php"
-          curl --no-progress-meter --location "http://localhost/loader.php/projects/demo/system/layout/default/dialog.templates.php?ARLogin=admin&ARPassword=test"
-      - name: Test login page
-        run: |
-          cd ${{ github.workspace }}/tests/curl/
-          export URL=http://localhost/
-          export TMPDIR=/tmp/
-          bash test-login.sh
-
-      - name: Test explore
-        run: |
-          cd ${{ github.workspace }}/tests/curl/
-          export URL=http://localhost/
-          export TMPDIR=/tmp/
-          bash test-explore.sh
-
+          curl --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=ariadne&database_pass=secret&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
+          sudo cat /var/log/apache2/error.log
       - name: Test demo site
         run: |
           cd ${{ github.workspace }}/tests/curl/
           export URL=http://localhost/
           export TMPDIR=/tmp/
           bash test-demosite.sh
-
-      - name: Cat error log
-        run: |
-          sudo cat /var/log/apache2/error.log
