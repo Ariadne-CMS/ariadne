@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Install packages
         run: |
-          sudo apt install lynx subversion imagemagick tidy
+          sudo apt install lynx subversion imagemagick tidy tree
 
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -114,6 +114,10 @@ jobs:
       - name: DLoader demo site
         run: |
           curl --no-progress-meter http://localhost/dloader.php/projects/demo/demo/
+
+      - name: List files/templates
+        run: |
+          tree '$${{ github.workspace }}/files/templates/'
 
       - name: Test demo site
         run: |
