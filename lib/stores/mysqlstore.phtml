@@ -411,8 +411,6 @@ class mysqlstore extends store{
 				if ( !is_array($query) || !isset($query["select_query"])) {
 					$this->error = "Querycompiler failed to deliver";
 				} else {
-error_log($query["select_query"]);
-
 					$result["list"]= $this->store_run_query($query["select_query"]);
 				}
 			}
