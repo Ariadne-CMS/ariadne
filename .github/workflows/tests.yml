@@ -115,6 +115,11 @@ jobs:
         run: |
           curl --no-progress-meter http://localhost/dloader.php/projects/demo/demo/
 
+      - name: Run recompile templates
+        run: |
+          cd ${{ github.workspace }}/bin
+          php recompile-templates.php
+
       - name: List files/templates
         run: |
           tree '${{ github.workspace }}/files/templates/'
