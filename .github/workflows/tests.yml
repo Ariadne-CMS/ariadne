@@ -101,7 +101,7 @@ jobs:
           curl --no-progress-meter "http://localhost/loader.php/projects/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
           curl --no-progress-meter "http://localhost/loader.php/projects/demo/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
           curl --no-progress-meter "http://localhost/loader.php/projects/demo/demo/system.list.folders.json.php?ARLogin=admin&ARPassword=test"
-
+          curl --no-progress-meter "http://localhost:8080/loader.php/-pmqf-/projects/demo/system/layout/default/dialog.templates.php?ARLogin=admin&ARPassword=test"
       - name: Test login page
         run: |
           cd ${{ github.workspace }}/tests/curl/
