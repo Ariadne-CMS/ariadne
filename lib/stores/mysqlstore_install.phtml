@@ -269,7 +269,6 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		$result=1;
 		$this->error="";
 		$ftindexstring="";
-		$indexstring="";
 		if (preg_match("/^[a-z][a-z0-9_-]*$/i",$property) && strlen($property)<=16) {
 			$create_string="create table ".$this->tbl_prefix."prop_".AddSlashes($property)." (\n";
 			foreach ($definition['fields'] as $name => $typedef) {
@@ -291,10 +290,10 @@ CREATE TABLE ".$this->tbl_prefix."types (
 				// now add the 'object' field.
 				$create_string.="object int not null,\n";
 				// now add the correct indexes.
-				if (($indexes??null)=="none") {
+				if ($indexes=="none") {
 					$indexstring="";
 				} else {
-					if (is_array($definition['indexes']??null)) {
+					if ($definition['indexes'] && is_array($definition['indexes'])) {
 						$indexstring="";
 						foreach ($definition['indexes'] as $key => $values) {
 							$indexstring.="index id".$key."(";
