@@ -89,6 +89,7 @@ jobs:
         run: |
           bash ./tests/syntax.sh '${{ github.workspace }}'
 
+
       - name: Install Ariadne
         run: |
           rm '${{ github.workspace }}/www/install/.htaccess'
@@ -102,6 +103,11 @@ jobs:
       - name: List files/templates
         run: |
           tree '${{ github.workspace }}/files/templates/'
+
+      - name: Run phpunit tests
+        run: |
+         cd '${{ github.workspace }}'
+         ./vendor/bin/phpunit
 
       - name: Test login page
         run: |
