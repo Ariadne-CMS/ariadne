@@ -29,13 +29,16 @@ if [ $DEMOSITE_ERRORS -gt 0 ]; then
 fi
 if [ $DEMOSITE_TAGLINE -lt 1 ]; then
 	echo "Demosite does not contain tagline";
+	cat ${TMPDIR}/demosite.txt
 	exit 1;
 fi
 if [ $DEMOSITE_END_HTML -lt 1 ]; then
 	echo "Demosite does not contain closing html tag";
+	cat ${TMPDIR}/demosite.txt
 	exit 1;
 fi
 if [ $DEMOSITE_MENU_CURRENT -lt 1 ]; then
 	echo "Demosite does not contain 'menuCurrent'";
+	cat ${TMPDIR}/demosite.txt
 	exit 1;
 fi

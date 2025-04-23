@@ -1,8 +1,6 @@
 Ariadne: more than a cms.
 ========================= 
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Ariadne-CMS/ariadne/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Ariadne-CMS/ariadne/?branch=master)
-[![Travis](https://travis-ci.org/Ariadne-CMS/ariadne.svg)](https://travis-ci.org/Ariadne-CMS/ariadne/)
 [![License](https://img.shields.io/badge/License-GPL2-brightgreen.svg)](https://github.com/Ariadne-CMS/ariadne/blob/master/LICENSE)
 
 What is Ariadne?

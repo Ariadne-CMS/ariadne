@@ -47,7 +47,7 @@ class pfile extends pobject { // pfile class definition
 		}
 		$ret = ar_store_files::exists($file, $nls);
 		if (!$ret) {
-			$nls = $ARConfig->nls->default; //$this->data->nls->default;
+			$nls = $this->data->nls->default ?? $ARConfig->nls->default;
 			$ret = ar_store_files::exists($file, $nls);
 			if (!$ret) {
 				$nls = null;
