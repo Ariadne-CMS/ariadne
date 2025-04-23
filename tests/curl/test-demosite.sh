@@ -22,23 +22,20 @@ if [ $DEMOSITE_WARNINGS -gt 0 ]; then
 	exit 1;
 fi
 
-if [ $DEMOSITE_ERRORS -gt 0 ]; then
+if [ $DEMOSITE_NOTICE -gt 0 ]; then
 	echo "Demosite reported notices.";
 	grep -i notice ${TMPDIR}/demosite.txt
 	exit 1;
 fi
 if [ $DEMOSITE_TAGLINE -lt 1 ]; then
 	echo "Demosite does not contain tagline";
-	cat ${TMPDIR}/demosite.txt
 	exit 1;
 fi
 if [ $DEMOSITE_END_HTML -lt 1 ]; then
 	echo "Demosite does not contain closing html tag";
-	cat ${TMPDIR}/demosite.txt
 	exit 1;
 fi
 if [ $DEMOSITE_MENU_CURRENT -lt 1 ]; then
 	echo "Demosite does not contain 'menuCurrent'";
-	cat ${TMPDIR}/demosite.txt
 	exit 1;
 fi

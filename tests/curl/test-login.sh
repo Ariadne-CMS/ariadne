@@ -21,7 +21,7 @@ if [ $LOGIN_WARNINGS -gt 0 ]; then
 	exit 1;
 fi
 
-if [ $LOGIN_ERRORS -gt 0 ]; then
+if [ $LOGIN_NOTICE -gt 0 ]; then
 	echo "Login screen reported notices.";
 	grep -i notice ${TMPDIR}/ariadne.login.txt
 	exit 1;

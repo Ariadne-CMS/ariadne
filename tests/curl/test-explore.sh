@@ -20,7 +20,7 @@ if [ $EXPLORE_WARNINGS -gt 0 ]; then
 	exit 1;
 fi
 
-if [ $EXPLORE_ERRORS -gt 0 ]; then
+if [ $EXPLORE_NOTICE -gt 0 ]; then
 	echo "Explore reported notices.";
 	grep -i notice ${TMPDIR}/ariadne.explore.txt
 	exit 1;
