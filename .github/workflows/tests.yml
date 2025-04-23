@@ -32,6 +32,7 @@ jobs:
     steps:
       - name: Install packages
         run: |
+          sudo apt update
           sudo apt install lynx subversion imagemagick tidy tree poppler-utils
 
       - name: Checkout repo
@@ -89,7 +90,9 @@ jobs:
         run: |
           bash ./tests/syntax.sh '${{ github.workspace }}'
 
-
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+      
       - name: Install Ariadne
         run: |
           rm '${{ github.workspace }}/www/install/.htaccess'
