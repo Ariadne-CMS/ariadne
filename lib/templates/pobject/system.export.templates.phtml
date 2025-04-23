@@ -62,6 +62,9 @@ if (! ( $templates && is_array($templates) && !empty($templates) ) && !($ARCurre
 								$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
 								$compiled = $pinp->compile(strtr($tdata,"\r",""));
 								if ($pinp->error) {
+
+echo "[[system.export.templates]] Not writing compiled template\n";
+var_dump($pinp->error);
 									$this->newObject->error = $pinp->error;
 								} else {
 
