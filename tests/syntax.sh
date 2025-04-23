@@ -1,10 +1,6 @@
 #!/bin/bash
 
-if [ "${TRAVIS}" = "true" ] ; then
-	BUILDROOT="${TRAVIS_BUILD_DIR}"
-else
-	BUILDROOT="${1}"
-fi
+BUILDROOT="${1}"
 
 TMPDIR=`mktemp -d `
 
