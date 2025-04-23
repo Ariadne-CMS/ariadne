@@ -90,8 +90,13 @@
 		public static function is_callback($callback) {
 			// lambda functions do begin with a null character
 			// maybe there is a better check, but this will do it for now
-			$result =  ($callback[0] === "\000" && substr($callback, 1, strlen('lambda_')) == 'lambda_');
-			return $result;
+			if ($callback[0] === "\000" && substr($callback, 1, strlen('lambda_')) == 'lambda_') {
+				return true;
+			}
+			if ($callback[0] === "_" && $callback[1] === "_" && $callback[2] === "_" && substr($callback, 3, strlen('lambda_')) == 'lambda_') {
+				return true;
+			}
+			return false;
 		}
 
 
