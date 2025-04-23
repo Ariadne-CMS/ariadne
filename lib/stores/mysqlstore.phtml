@@ -57,6 +57,7 @@ class mysqlstore extends store{
 			if ($dbh->connect_errno) {
 				die("Error [".$dbh->connect_errno."]" . $dbh->connect_error);
 			}
+			$dbh->query("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'"); // prevent having ONLY_FULL_GROUP_BY
 			self::$connections[$host][$user][$db] = $dbh;
 		}
 
