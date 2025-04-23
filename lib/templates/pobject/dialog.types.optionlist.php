@@ -9,8 +9,9 @@
 	*/
 	$this->call('typetree.ini');
 	asort($ARCurrent->arTypeNames);
+	$haveselected = false;
 	foreach ($ARCurrent->arTypeNames as $typeValue => $typeName) {
-		if ($selected == $typeValue) {
+		if (($selected??null) == $typeValue) {
 			$selected_option = " selected";
 			$haveselected = true;
 		} else {
@@ -18,7 +19,7 @@
 		}
 		echo "<option value=\"$typeValue\"$selected_option>$typeName</option>\n";
 	}
-	if (!$haveselected && $selected) {
+	if (!$haveselected && ($selected??null)) {
 		// The template is not in the typetree anymore. This makes it available in the list.
 		echo "<option value=\"$selected\" selected>$selected</option>\n";
 	}

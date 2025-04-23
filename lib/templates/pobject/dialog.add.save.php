@@ -24,7 +24,7 @@
 		$wgWizCallObject->arIsNewObject = true;
 
 		$wgWizFlow = $wgWizCallObject->call("user.wizard.new.html", array( "wgWizFlow" => array() ) );
-		if ($wgWizFlow[0]['save']) {
+		if ($wgWizFlow[0]['save'] ?? null) {
 			$wgWizCallObject->call($wgWizFlow[0]['save']);
 		}
 

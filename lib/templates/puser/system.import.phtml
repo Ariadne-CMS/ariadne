@@ -28,7 +28,7 @@
 				$this->error = $this->store->error;
 
 				if ($ARCurrent->AXAction == "import") {
-					if (is_array($this->data->groups)) {
+					if (is_array($this->data->groups??null)) {
 						reset($this->data->groups);
 						while (list($key, $val)=each($this->data->groups)) {
 							if ($this->exists($key)) {

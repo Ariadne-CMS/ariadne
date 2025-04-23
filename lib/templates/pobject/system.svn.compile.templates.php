@@ -20,10 +20,10 @@
 				$meta['ar:language'] = $fstore->svn_propget($svn, "ar:language", $filename);
 				$meta['ar:private']  = $fstore->svn_propget($svn, "ar:private", $filename);
 
-				if($meta['default'] == '1') {
+				if(($meta['default']??null) == '1') {
 					$meta['default'] = 1;
 				}
-				if($meta['private'] == '1') {
+				if(($meta['private']??null) == '1') {
 					$meta['private'] = 1;
 				}
 

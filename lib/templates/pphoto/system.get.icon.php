@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin('read')) {
-		if (!$type) {
+		if (!isset($type)) {
 			$type = $this->type;
 		}
 		if (!$ARCurrent->arTypeIcons[$this->type]) {
@@ -11,7 +11,7 @@
 			// get typetree to get the correct icon
 			$this->call('typetree.ini');
 		}
-		if (!$size || $size == "large") {
+		if ( !($size ?? null) || $size == "large") {
 			$size = "default";
 		}
 

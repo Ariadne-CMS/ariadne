@@ -37,8 +37,8 @@
 				$objectType = null;
 			}
 			self::$event = new ar_eventsEvent( $eventName, $eventData, $objectType, $path, $me );
-			if ( self::walkListeners( self::$listeners['capture'][$eventName], $path, $objectType, true ) ) {
-				self::walkListeners( self::$listeners['listen'][$eventName], $path, $objectType, false );
+			if ( self::walkListeners( self::$listeners['capture'][$eventName]??null, $path, $objectType, true ) ) {
+				self::walkListeners( self::$listeners['listen'][$eventName]??null, $path, $objectType, false );
 			}
 
 			if ( self::$event->preventDefault ) {
@@ -76,7 +76,7 @@
 
 			do {
 				$currentPath = current( $pathlist );
-				if ( is_array( $listeners[$currentPath] ) ) {
+				if ( is_array( $listeners[$currentPath]??null ) ) {
 					foreach ( $listeners[$currentPath] as $listener ) {
 						if ( !isset($listener['type']) ||
 							 ( $listener['type'] == $strObjectType ) ||

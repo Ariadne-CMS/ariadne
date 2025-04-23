@@ -25,7 +25,7 @@
 
 		debug("ldSetCredentials($login)","object");
 
-		if (!$ARCurrent->session) {
+		if (!($ARCurrent->session ?? null)) {
 			ldStartSession();
 		} else {
 			/* use the same sessionid if the user didn't login before */
@@ -43,8 +43,8 @@
 		/* now save our session */
 		$ARCurrent->session->save();
 
-		$cookies = (array)$_COOKIE["ARSessionCookie"];
-		$https = ($_SERVER['HTTPS']=='on');
+		$cookies = (array)( $_COOKIE["ARSessionCookie"] ?? [] );
+		$https = ( ($_SERVER['HTTPS'] ?? null) =='on');
 
 		$currentCookies = array();
 
@@ -117,9 +117,9 @@
 		if ( $eventData ) {
 
 			$arCallArgs = $eventData->arCallArgs;
-			$arCallArgs["arLoginMessage"] = $eventData->message;
+			$arCallArgs["arLoginMessage"] = $eventData->message ?? "";
 
-			if (!$ARCurrent->arLoginSilent) {
+			if ( ! ( $ARCurrent->arLoginSilent ?? null ) ) {
 				$ARCurrent->arLoginSilent = true;
 				$store->call("user.session.timeout.html",
 					$arCallArgs,
@@ -155,9 +155,9 @@
 		if ( $eventData ) {
 
 			$arCallArgs = $eventData->arCallArgs;
-			$arCallArgs["arLoginMessage"] = $eventData->message;
+			$arCallArgs["arLoginMessage"] = $eventData->message ?? null;
 
-			if (!$ARCurrent->arLoginSilent) {
+			if (!($ARCurrent->arLoginSilent ?? null)) {
 				$ARCurrent->arLoginSilent = true;
 				$store->call("user.login.html",
 					$arCallArgs,
@@ -212,7 +212,7 @@
 
 	function ldGetCredentials() {
 		debug("ldGetCredentials()","object");
-		$ARSessionCookie = $_COOKIE["ARSessionCookie"];
+		$ARSessionCookie = $_COOKIE["ARSessionCookie"] ?? null;
 		return $ARSessionCookie;
 	}
 
@@ -221,9 +221,9 @@
 		debug("ldCheckCredentials($login)","object");
 		$result=false;
 		$cookie=ldGetCredentials();
-		$data = ldDecodeCookie($cookie[$ARCurrent->session->id]);
-		if ($login === $data['login']
-			&& ($saved=$data['check'])) {
+		$data = ldDecodeCookie($cookie[$ARCurrent->session->id] ?? null);
+		if ($login === ($data['login'] ?? null)
+			&& ($saved=($data['check'] ?? null))) {
 			$check=ldGenerateSessionKeyCheck();
 			if ($check === $saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
 				$result=true;
@@ -231,9 +231,9 @@
 				debug("login check failed","all");
 			}
 		} else {
-			$ARSessionKeyCheck = $_GET['ARSessionKeyCheck'];
+			$ARSessionKeyCheck = $_GET['ARSessionKeyCheck'] ?? null;
 			if (!$ARSessionKeyCheck) {
-				$ARSessionKeyCheck = $_POST['ARSessionKeyCheck'];
+				$ARSessionKeyCheck = $_POST['ARSessionKeyCheck'] ?? null;
 			}
 			if ($ARSessionKeyCheck) {
 				debug("ldCheckCredentials: trying ARSessionKeyCheck ($ARSessionKeyCheck)");
@@ -249,7 +249,7 @@
 
 	function ldDecodeCookie($cookie) {
 		global $AR;
-		$data = json_decode($cookie,true);
+		$data = json_decode($cookie??'',true);
 		if(is_null($data)){
 			if(isset($AR->sessionCryptoKey) && function_exists('mcrypt_encrypt') ) {
 				$key = base64_decode($AR->sessionCryptoKey);

@@ -35,16 +35,21 @@
 
 debug("pobject: Load","object");
 
+#[\AllowDynamicProperties]
 abstract class ariadne_object extends baseObject { // ariadne_object class definition
 
 	public $store;
 	public $path;
 	public $data;
-
+	public $arIsNewObject;
+	
 	public function init($store, $path, $data) {
 		$this->store=$store;
 		$this->path=$path;
 		$this->data=$data;
+		if ( !$this->data ) {
+			$this->data = new baseObject();
+		}
 		if ( !isset($this->data->config) ) {
 			$this->data->config = new baseObject();
 		}
@@ -107,6 +112,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 		// now find the initial nls selection (CheckConfig is needed for per
 		// tree selected defaults)
+
 		if (isset($ARCurrent->nls) && $ARCurrent->nls) {
 			$this->reqnls=$ARCurrent->nls;
 		} else if (isset($ARConfig->cache[$this->path]) && $ARConfig->cache[$this->path]->nls->default) {
@@ -121,10 +127,14 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		} else {
 			// the requested language is not available, use default of the
 			// current object instead.
-			$this->nls=$this->data->nls->default;
+			$this->nls=$this->data->nls->default ?? null;
 			$nls=&$this->nls;
 		}
 		if ($nls && isset($this->data->$nls)) {
+			$this->data->$nls->name = $this->data->$nls->name ?? null;
+			$this->data->$nls->page = $this->data->$nls->page ?? null;
+			$this->data->$nls->summary = $this->data->$nls->summary ?? null;
+			
 			// now set the data and nlsdata pointers
 			$this->nlsdata=$this->data->$nls;
 			$nlsdata=&$this->nlsdata;
@@ -173,7 +183,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$ARCurrent->arCallClassTemplate = false;
 			}
 
-			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
+			if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && ($context["scope"] ?? null)!= "pinp" ) {
 				$arResult = $this;
 			} else {
 				$libtemplate = strpos($arCallFunction,":");
@@ -292,7 +302,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$result = $this->store->call($function, $args, $objects);
 		} else {
 			$this->error = ar::error( ''.$this->store->error, 1110, $this->store->error );
-			$result = false;
+			$result = [];
 		}
 		return $result;
 	}
@@ -352,7 +362,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	*/
 	private function saveCustomData($configcache, $properties) {
 		$custom = $this->getdata("custom", "none");
-		@parse_str($custom);
+		if (isset($custom) && is_string($custom)) {
+			parse_str($custom, $customData);
+			$custom = $customData['custom'];
+		}
 		if (isset($custom) && is_array($custom)) {
 			foreach($custom as $nls=>$entries){
 				if (isset($entries) && is_array($entries)) {
@@ -362,6 +375,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				}
 			}
 		}
+
 		// the above works because either $custom comes from the form entry, and parse_str returns an
 		// array with the name $custom, or $custom comes from the object and is an array and as such
 		// parse_str fails miserably thus keeping the array $custom intact.
@@ -370,12 +384,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			foreach($this->data->custom as $nls => $cdata) {
 				foreach($cdata as $name => $value){
 					// one index, this order (name, value, nls) ?
-					if ($configcache->custom[$name]['containsHTML']) {
+					if ($configcache->custom[$name]['containsHTML']??null) {
 						$this->_load('mod_url.php');
 						$value = URL::RAWtoAR($value, $nls);
 						$this->data->custom[$nls][$name] = $value;
 					}
-					if ($configcache->custom[$name]['property']) {
+					if ($configcache->custom[$name]['property']??null) {
 						if (isset($value) && is_array($value)) {
 							foreach($value as $valkey => $valvalue ) {
 								$properties["custom"][] = [
@@ -413,7 +427,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$arIsNewObject = false;
 		$result = false;
 		$this->error = '';
-		if ($this->arIsNewObject) { // save a new object
+		if ($this->arIsNewObject??null) { // save a new object
 			debug("pobject: save: new object","all");
 			$this->path = $this->make_path();
 			$arNewParent=$this->make_path("..");
@@ -422,7 +436,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 				if (!$this->exists($this->path)) { //arNewFilename)) {
 					if ($this->exists($arNewParent)) {
-						if (!$config = $this->data->config) {
+						if ( ! ( $config = ( $this->data->config ?? null ) ) ) {
 							$config=new baseObject();
 						}
 					} else {
@@ -475,7 +489,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		$eventData = new baseObject();
 		$eventData->arCallArgs = $arCallArgs;
-		$eventData->arCallFunction	= $context['arCallFunction'];
+		$eventData->arCallFunction	= $context['arCallFunction']??null;
 		$eventData->arIsNewObject = $arIsNewObject;
 		$eventData->arProperties = $properties;
 		$eventData = ar_events::fire( 'onbeforesave', $eventData );
@@ -515,14 +529,17 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$this->data = $wf_object->data;
 		$this->data->config = $config;
 		$this->data->mtime=time();
+		if (!isset($this->data->ctime)) {
+			$this->data->ctime=time();
+		}
 		if($arIsNewObject) {
 			$this->data->ctime=$this->data->mtime;
 		}
 
 		$this->data->muser=$AR->user->data->login;
-		if( !$this->data->config->owner ) {
-			if( !$this->data->config->owner_name) {
-				$this->data->config->owner_name=$AR->user->data->name;
+		if( !isset( $this->data->config->owner ) || !$this->data->config->owner ) {
+			if( !isset( $this->data->config->owner_name ) || !$this->data->config->owner_name ) {
+				$this->data->config->owner_name=$AR->user->data->name??'';
 			}
 			$this->data->config->owner=$AR->user->data->login;
 			$properties["owner"][0]["value"]=$this->data->config->owner;
@@ -579,10 +596,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$this->unlock();
 		}
 
-		if ($this->data->nls->list[$this->nls]) {
+		if ($this->data->nls->list[$this->nls] ?? null) {
 			$mynlsdata=$this->data->{$this->nls};
-		} else if ($this->data->nls->default) {
-			$mynlsdata=$this->data->{$this->data->nls->default};
+		} else if ($this->data->nls->default ?? null) {
+			$mynlsdata=$this->data->{$this->data->nls->default} ?? $this->data;
 		} else {
 			$mynlsdata=$this->data;
 		}
@@ -673,7 +690,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$path=$this->make_path($path);
 
 		// now run CheckConfig and get the parentsite of the path found
-		if (!$temp_config=$ARConfig->cache[$path]) {
+		if (!$temp_config=($ARConfig->cache[$path] ?? null)) {
 			$temp_path = $path;
 			while (!($temp_site = $this->currentsite($temp_path)) && $temp_path!='/') {
 				$temp_path = $this->make_path($temp_path.'../');
@@ -683,14 +700,14 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		if ( !isset($keephost) && (
 			(!$nls && $this->compare_hosts($AR->host, $temp_config->root["value"])) ||
-			($nls && ($this->compare_hosts($AR->host, $temp_config->root['list']['nls'][$nls])))
+			($nls && ($this->compare_hosts($AR->host, ($temp_config->root['list']['nls'][$nls]??null))))
 		)) {
 			$keephost = false;
 		}
 
 		if (!$keephost) {
 			if ($nls) {
-				$url=$temp_config->root["list"]["nls"][$nls];
+				$url=$temp_config->root["list"]["nls"][$nls]??null;
 				if (isset($url) && is_array($url)) {
 					$url = current( $url );
 				}
@@ -701,12 +718,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					$url .= $rootoptions_nonls;
 				}
 			}
-			if (!$url) {
+			if (!($url ?? null)) {
 				$checkNLS = $nls;
 				if (!$checkNLS) {
 					$checkNLS = $this->nls;
 				}
-				$urlList = $temp_config->root['list']['nls'][$checkNLS];
+				$urlList = $temp_config->root['list']['nls'][$checkNLS] ?? null;
 				if (isset($urlList) && is_array($urlList)) {
 					$url = reset($urlList) . $rootoptions;
 				} else {
@@ -729,7 +746,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			if (!$checkNLS) {
 				$checkNLS = $this->nls;
 			}
-			$urlCheck = $temp_config->root['list']['nls'][$checkNLS];
+			$urlCheck = $temp_config->root['list']['nls'][$checkNLS] ?? null;
 			if (!is_array($urlCheck)) {
 				$urlCheck = $temp_config->root["value"];
 			}
@@ -739,9 +756,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$url .= substr($path, strlen($temp_config->root["path"])-1);
 			} else {
 				//$url=$AR->host.$AR->root.$rootoptions.$path;
-				$url = $protocol . $requestedHost . $AR->root . $rootoptions . $path;
+				$url = $requestedHost . $AR->root . $rootoptions . $path;
 			}
 		}
+		if ($AR->https ?? null) {
+			$url = preg_replace('/^http:/', 'https:', $url);
+		}
+
 		return self::sanitizeUrl($url);
 	}
 
@@ -756,7 +777,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$url2 = array();
 		}
 
-		$prepurl1 = preg_replace('|^[a-z:]*//|i', '', $url1);
+		$prepurl1 = preg_replace('|^[a-z:]*//|i', '', $url1??'');
 
 		foreach($url2 as $url) {
 			if (
@@ -775,7 +796,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$path = $this->make_path($path);
 		$checkpath = $path;
 
-		$redirects = $ARCurrent->shortcut_redirect;
+		$redirects = $ARCurrent->shortcut_redirect ?? null;
 		if (isset($redirects) && is_array($redirects)) {
 			$newpath = $checkpath;
 			$c_redirects = count($redirects);
@@ -786,20 +807,21 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			}
 
 			if ($c_redirects_done == $c_redirects) {
-				$checkpath = $redir['src'];
+				$checkpath = $redir['src']??null;
 			}
 		}
 
 		do {
-			if (!$config=$ARConfig->cache[$checkpath]) {
-				$config=($ARConfig->cache[$checkpath]) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
+			if (!($config=$ARConfig->cache[$checkpath]??null)) {
+				$config=($ARConfig->cache[$checkpath]??null) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
 			}
 			if ($config) {
 				$checkNLS = $nls;
 				if (!$checkNLS) {
 					$checkNLS = $this->nls;
 				}
-				$urlCheck = $config->root['list']['nls'][$checkNLS];
+				
+				$urlCheck = isset($config->root['list']['nls'][$checkNLS]) ? $config->root['list']['nls'][$checkNLS] : false;
 				if (!is_array($urlCheck)) {
 					$urlCheck = $config->root["value"];
 				}
@@ -816,7 +838,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$site='/';
 		}
 		$site_url=$this->make_url($site, $nls, $session, $https, true);
-		if ($newpath) { // $newpath is the destination of a shortcut redirection, with keepurl on
+		if ($newpath ?? null) { // $newpath is the destination of a shortcut redirection, with keepurl on
 			$rest=substr($newpath, strlen($site));
 		} else {
 			$rest=substr($path, strlen($site));
@@ -957,11 +979,11 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			if (!$path) {
 				$path=$this->path;
 			}
-			if (!$AR->user->grants[$path]) {
+			if (!($AR->user->grants[$path] ?? null)) {
 				$grants=array();
 				$userpath=$AR->user->FindGrants($path, $grants);
 				// if not already done, find all groups of which the user is a member
-				if (!is_array($AR->user->externalgroupmemberships) || count($AR->user->externalgroupmemberships)==0) {
+				if (!isset($AR->user->externalgroupmemberships) || !is_array($AR->user->externalgroupmemberships) || count($AR->user->externalgroupmemberships)==0) {
 					$criteria["members"]["login"]["="]=$AR->user->data->login;
 				} else {
 					// Use the group memberships of external databases (e.g. LDAP)
@@ -970,7 +992,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 						$criteria.=" or login.value='".AddSlashes($group)."'";
 					}
 				}
-				if (!$AR->user->groups) {
+				if (!($AR->user->groups ?? null)) {
 					$groups=$this->find("/system/groups/",$criteria, "system.get.phtml");
 					if (isset($groups) && is_array($groups)) {
 						foreach($groups as $group ){
@@ -981,12 +1003,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					}
 					if (isset($AR->user->data->config->groups) && is_array($AR->user->data->config->groups)) {
 						foreach ($AR->user->data->config->groups as $groupPath => $groupId) {
-							if (!$AR->user->groups[$groupPath]) {
+							if (!isset($AR->user->groups[$groupPath])) {
 								$AR->user->groups[$groupPath] = current($this->get($groupPath, "system.get.phtml"));
 							}
 						}
 					}
-					if (!$AR->user->groups["/system/groups/public/"]) {
+					if (!isset($AR->user->groups["/system/groups/public/"])) {
 						if ($public=current($this->get("/system/groups/public/", "system.get.phtml"))) {
 							$AR->user->groups[$public->path] = $public;
 						}
@@ -1012,7 +1034,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 									if ($gval && !is_array($gval)) {
 										$grants[$gkey] = $gval;
 									} else
-									if ($gval && !$grants[$gkey]) {
+									if ($gval && !($grants[$gkey]??null)) {
 										$grants[$gkey] = $gval;
 									}
 								}
@@ -1036,7 +1058,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 									if ($gval && !is_array($gval)) {
 										$grants[$gkey] = $gval;
 									} else
-									if ($gval && !$grants[$gkey]) {
+									if ($gval && !($grants[$gkey]??null)) {
 										$grants[$gkey] = $gval;
 									}
 								}
@@ -1084,7 +1106,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	if ($user->data->login == "admin") {
 			return true;
 		}
-		if ($user->data->groups['/system/groups/admin/']) {
+		if ($user->data->groups['/system/groups/admin/'] ?? null) {
 			return true;
 		}
 		return false;
@@ -1124,7 +1146,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 
 		if ( 	( !isset($grants[$grant]) || !$grants[$grant]
-					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
+					|| ( $modifier && is_array($grants[$grant]??null) && !($grants[$grant][$modifier]??null) )
 				) && !$isadmin ) {
 			// do login
 			$arLoginMessage = $ARnls["accessdenied"];
@@ -1143,12 +1165,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	global $AR;
 
 		$result=false;
-		if (!$AR->public) {
+		if (!($AR->public??null)) {
 			$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
 				$AR->public=current($this->get("/system/users/public/", "system.get.phtml"));
 			$this->popContext();
 		}
-		if ($AR->public) {
+		if ($AR->public??null) {
 			$AR->private=$AR->user;
 			$AR->user=$AR->public;
 			$result=$this->CheckSilent($grant, $modifier);
@@ -1165,19 +1187,19 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 
 		/* load config cache */
-		if (!$ARConfig->cache[$path]) {
+		if (!($ARConfig->cache[$path] ?? null)) {
 			$this->loadConfig($path);
 		}
 		if ($this->CheckAdmin($AR->user)) {
 			$result=1;
-		} else if ($grants=$AR->user->grants[$path]) {
-			$result=$grants[$grant];
+		} else if ($grants=$AR->user->grants[$path]??null) {
+			$result=$grants[$grant] ?? null;
 		} else {
 			$grants=$this->GetValidGrants();
-			$result=$grants[$grant];
+			$result=$grants[$grant]??null;
 		}
 		if ($modifier && is_array($result)) {
-			$result=$result[$modifier];
+			$result=$result[$modifier] ?? null;
 		}
 		return $result;
 	}
@@ -1219,7 +1241,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function resetConfig($path='') {
 	global $ARConfig;
 		$path = $this->make_path($path);
-		if ($ARConfig->cache[$path]) {
+		if ($ARConfig->cache[$path]??null) {
 			$path = preg_quote($path,'/');
 			$keys = preg_grep('/^'.$path.'/',array_keys($ARConfig->cache));
 			foreach ($keys as $cachepath) {
@@ -1249,7 +1271,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		// $context=$this->getContext(0);
 		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
 		// debug(print_r($ARConfig->nls, true));
-		if( !$ARConfig->cache[$this->parent] && $this->parent!=".." ) {
+		if( !($ARConfig->cache[$this->parent] ?? null) && $this->parent!=".." ) {
 			$parent = current($this->get($this->parent, "system.get.phtml"));
 			if ($parent) {
 				$parent->getConfig();
@@ -1277,13 +1299,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
 			//debug("pobject::getConfig() loaded config.ini @ ".$this->path);
 			// debug("getConfig:checkconfig einde");
-			$arConfig = $ARCurrent->arResult;
+			$arConfig = $ARCurrent->arResult ?? null;
 			if (!isset($arConfig)) {
 				$arConfig = $ARCurrent->arConfig;
 			}
 			unset($ARCurrent->arResult);
 			if (isset($arConfig['library']) && is_array($arConfig['library'])) {
-				if (!$ARConfig->libraries[$this->path]) {
+				if (! ( $ARConfig->libraries[$this->path] ?? null ) ) {
 					$ARConfig->libraries[$this->path] = array();
 				}
 				foreach ($arConfig['library'] as $libName => $libPath) {
@@ -1331,9 +1353,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 			// cache default templates
 			if (isset($this->data->config->templates) && count($this->data->config->templates)) {
-				$configcache->pinpTemplates    = $this->data->config->pinp;
-				$configcache->privatetemplates = $this->data->config->privatetemplates;
-				$configcache->localTemplates   = $this->data->config->templates;
+				$configcache->pinpTemplates    = $this->data->config->pinp ?? null;
+				$configcache->privatetemplates = $this->data->config->privatetemplates ?? null;
+				$configcache->localTemplates   = $this->data->config->templates ?? null;
 
 				if( !isset($configcache->hasDefaultConfigIni) || !$configcache->hasDefaultConfigIni ) {
 					foreach($configcache->localTemplates as $type => $templates ) {
@@ -1408,7 +1430,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			}
 
 			if (isset($this->data->config->customconfig) && is_array($this->data->config->customconfig)) {
-				$configcache->custom=array_merge(is_array($configcache->custom)?$configcache->custom:array(), $this->data->config->customconfig);
+				$configcache->custom =
+					array_merge(
+						( isset( $configcache->custom ) && is_array( $configcache->custom ) ) ? $configcache->custom : [],
+						$this->data->config->customconfig
+					)
+				;
 			}
 			$ARConfig->cache[$this->path]=$configcache;
 
@@ -1445,7 +1472,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$result=$ARConfig->cache['..'];
 			} else {
 				$parent=$this->make_path($path.'../');
-				if (!$ARConfig->cache[$parent]) {
+				if (!($ARConfig->cache[$parent]??null)) {
 					$this->pushContext(array("scope" => "php"));
 					// debug("loadConfig: parent $parent");
 					$cur_obj = current($this->get($parent, "system.get.phtml"));
@@ -1454,9 +1481,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					}
 					$this->popContext();
 				}
-				$result=$ARConfig->cache[$parent];
+				$result=$ARConfig->cache[$parent]??null;
 				$ARConfig->cache[ $path ] = $result;
-				$ARConfig->pinpcache[ $path ] = $ARConfig->pinpcache[ $parent ];
+				$ARConfig->pinpcache[ $path ] = $ARConfig->pinpcache[ $parent ]??null;
 			}
 			// restore old ARConfigChecked state
 			$ARConfigChecked = $configChecked;
@@ -1476,10 +1503,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		$path = $this->make_path($path);
 		$parent = $this->make_path($path.'../');
 
-		if (!$ARConfig->cache[$path]) {
+		if (!($ARConfig->cache[$path] ?? null)) {
 			$this->loadConfig($path);
 		}
-		if (!$ARConfig->pinpcache[$path]) {
+		if (!($ARConfig->pinpcache[$path] ?? null)) {
 			$config = $ARConfig->pinpcache[$parent];
 		} else {
 			$config = $ARConfig->pinpcache[$path];
@@ -1514,7 +1541,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function getLibraries($path = '') {
 	global $ARConfig;
 		$path = $this->make_path($path);
-		return (array)$ARConfig->libraries[$path];
+		return (array)($ARConfig->libraries[$path]??null);
 	}
 
 	public function mergeLibraryConfig( $defaultLibraryName, $defaults ) {
@@ -1536,7 +1563,8 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
-		global $AR;
+	global $AR;
+		$originalArType = $arType;
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = array_pad(explode('.',$arType,2),2,'');
 			$local = ($path === $this->path);
@@ -1579,8 +1607,15 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$arSuper=$AR->superClass[$arType];
 			}
 			$arType=$arSuper;
+			$ob = current(ar::get($path)->call('system.get.phtml'));
+			if ($ob && $ob->type==='pshortcut' && ($ob->data->path??null) && $ob->data->path!==$path && ar::exists($ob->data->path)) {
+				return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
+			}
 		}
-
+                $ob = current(ar::get($path)->call('system.get.phtml'));
+                if ($ob && $ob->type==='pshortcut' && $ob->data->path && $ob->data->path!==$path && ar::exists($ob->data->path)) {
+                        return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
+                }
 		return null;
 	}
 
@@ -1621,6 +1656,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$arLibraryPath = $context['arLibraryPath'];
 			} else {
 				$libpath = $path;
+				$lastlibpath = null;
 				while (!isset($arLibraryPath) && $libpath!=$lastlibpath) {
 					$lastlibpath = $libpath;
 					if (isset($ARConfig->libraries[$libpath][$arLibrary])) {
@@ -1633,7 +1669,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					}
 				}
 			}
-			if ($arLibraryPath) {
+			if ( $arLibraryPath ?? null ) {
 				debug("getPinpTemplate: found library '$arLibrary'. Searching for [".$arCallType."] $arCallFunction on '".$arLibraryPath."' up to '$top'");
 				$librariesSeen[$arLibraryPath] = true;
 				$inLibrary = true;
@@ -1660,7 +1696,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			} else if ($inLibrary) {
 
 				// faster matching on psection, prefix doesn't have to be a valid type
-				$prefix = substr($ARConfig->cache[$checkpath]->type,0,8);
+				$prefix = substr($ARConfig->cache[$checkpath]->type ?? "",0,8);
 
 				if ($prefix === 'psection') {
 					 // debug("BREAKING; $arTemplateId");
@@ -1685,7 +1721,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 								break 2;
 							}
 
-							$prefix = substr($ARConfig->cache[$libpath]->type,0,8);
+							$prefix = substr($ARConfig->cache[$libpath]->type??'',0,8);
 							if ($prefix === 'psection' || $top == $libpath) {
 								break;
 							}
@@ -1693,7 +1729,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 							$libpath = $this->store->make_path($libpath, "..");
 						}
 					}
-					debug("getPinpTemplate: found ".$arCallFunction." on ".$template['path']);
+					if (isset($template['path'])) {
+						debug("getPinpTemplate: found ".$arCallFunction." on ".$template['path']);
+					}
 				}
 
 			}
@@ -1756,7 +1794,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			// this will prevent the parents from setting the cache time
 			$initialConfigChecked = $ARConfigChecked;
 			$ARConfigChecked = true;
-			$config = ($ARConfig->cache[$this->path]) ? $ARConfig->cache[$this->path] : $this->loadConfig();
+			$config = isset($ARConfig->cache[$this->path]) ? $ARConfig->cache[$this->path] : $this->loadConfig();
 			$ARConfigChecked = $initialConfigChecked;
 			$ARConfig->nls=$config->nls ?? null;
 
@@ -1764,7 +1802,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default.
 			// The root starts with the system default (ariadne.phtml config file)
-			if ( !isset($ARCurrent->nls) ) {
+			if ( !isset($ARCurrent->nls) || !$ARCurrent->nls) {
 				if ( isset($config->root['nls']) ) {
 					$this->reqnls = $config->root['nls'];
 					if ( !$ARConfigChecked ) {
@@ -1805,10 +1843,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				}
 			}
 */
-			if (isset($this->data->custom) && is_array($this->data->custom) && $this->data->custom['none']) {
+			if (isset($this->data->custom) && is_array($this->data->custom) && ($this->data->custom['none'] ?? null)) {
 				$this->customdata=$this->data->custom['none'];
 			}
-			if (isset($this->data->custom) && is_array($this->data->custom) && $this->data->custom[$nls]) {
+			if (isset($this->data->custom) && is_array($this->data->custom) && ($this->data->custom[$nls] ?? null)) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 
@@ -1848,10 +1886,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 								return false;
 							}
 						} else {
-							$this->nlsdata=$this->data->$nls;
+							$this->nlsdata=$this->data->$nls ?? null;
 						}
 					} else {
-						$this->nlsdata=$this->data->$reqnls;
+						$this->nlsdata=$this->data->$reqnls ?? null;
 					}
 				}
 				$ARCurrent->nolangcheck=1;
@@ -1863,11 +1901,19 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			*/
 			$ARConfigChecked = true;
 			if ($arCallFunction) { // don't search for templates named ''
+				$template =
+					[
+							"arTemplateId" => null,
+							"keepurl" => null,
+							"dest" => null,
+							"src" => null
+					]
+				;
 				// FIXME: Redirect code has to move to getPinpTemplate()
 				$redirects	= $ARCurrent->shortcut_redirect ?? null;
 				if (isset($redirects) && is_array($redirects)) {
 					$redirpath = $this->path;
-					while (!$template['arTemplateId'] &&
+					while ( !($template['arTemplateId'] ?? null) &&
 							($redir = array_pop($redirects)) &&
 							$redir["keepurl"] &&
 							(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
@@ -1876,7 +1922,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 						$redirpath = $redir['src'];
 					}
 
-					if (!$template["arTemplateId"] && $redirpath) {
+					if ( !( $template["arTemplateId"] ?? null ) && $redirpath) {
 						$template = $this->getPinpTemplate($arCallFunction, $redirpath);
 					}
 				}
@@ -1953,7 +1999,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 							$this->popContext();
 							array_pop($ARCurrent->arCallStack);
 							return true;
-						} else if ($ARCurrent->forcenls || isset($this->data->nls->list[$reqnls])) {
+						} else if (($ARCurrent->forcenls ?? null) || isset($this->data->nls->list[$reqnls])) {
 							// the requested language is available.
 							$this->nlsdata=$this->data->$reqnls;
 							$this->nls=$reqnls;
@@ -1966,7 +2012,15 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 							// all objects must be displayed
 							// $this->reqnls=$this->nls; // set requested nls, for checks
 							$this->nls = isset($this->data->nls->default) ? $this->data->nls->default : $this->reqnls;
-							$this->nlsdata = $this->data->$nls ?: $this->data->{$this->nls} ?: $this->data;
+							$this->nlsdata = null;
+							if ( isset( $this->data->$nls ) && $this->data->$nls ) {
+								$this->nlsdata = $this->data->$nls;
+							} else
+							if ( isset( $this->data->{$this->nls} ) && $this->data->{$this->nls} ) {
+								$this->nlsdata = $this->data->{$this->nls};
+							} else {
+								$this->nlsdata = $this->data;
+							}
 							$continue=true;
 						} else {
 							debug("CheckConfig: requested language not available, allnls not set","object");
@@ -1975,13 +2029,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 						}
 						if ($continue) {
 							$eventData = new baseObject();
-							if ( !$AR->contextCallHandler ) { /* prevent onbeforecall from re-entering here */
+							if (!($AR->contextCallHandler ?? null)) { /* prevent onbeforecall from re-entering here */
 								$AR->contextCallHandler = true;
 								$eventData->arCallArgs = $arCallArgs;
 								$eventData->arCallFunction = $arCallFunction;
 								$eventData->arContext = $this->getContext();
 								$eventData = ar_events::fire('onbeforecall', $eventData);
-								$ARCurrent->arResult = $eventData->arResult;
+								$ARCurrent->arResult = $eventData->arResult ?? null;
 								$AR->contextCallHandler = false;
 								$continue = ($eventData!=false);
 							}
@@ -1993,7 +2047,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 									$ARCurrent->cacheCallChainSettings[$this->id] = $config->cacheSettings;
 								}
 
-								if ($ARCurrent->ARShowTemplateBorders) {
+								if ($ARCurrent->ARShowTemplateBorders ?? null) {
 									echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
 								}
 								set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
@@ -2005,12 +2059,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 								if (isset($arResult)) {
 									$ARCurrent->arResult=$arResult;
 								}
-								if ($ARCurrent->ARShowTemplateBorders) {
+								if ($ARCurrent->ARShowTemplateBorders ?? null) {
 									echo "<!-- arTemplateEnd -->";
 								}
-								if ( !$AR->contextCallHandler ) { /* prevent oncall from re-entering here */
+								if (!($AR->contextCallHandler ?? null)) { /* prevent oncall from re-entering here */
 									$AR->contextCallHandler = true;
-									$temp = $ARCurrent->arResult; /* event listeners will change ARCurrent->arResult */
+									$temp = $ARCurrent->arResult ?? null; /* event listeners will change ARCurrent->arResult */
 									$eventData->arResult = $temp;
 									ar_events::fire('oncall', $eventData );
 									$ARCurrent->arResult = $temp; /* restore correct result */
@@ -2147,7 +2201,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 								@unlink($fpath.$entry);
 								@unlink($hpath.$entry);
 								$cachestore->delete("/".$type."/".$nls.$fs_path.$entry);
-							} else if ( $recurse && !$recursed[$entry]) {
+							} else if ( $recurse && !($recursed[$entry]??null)) {
 								$this->ClearCache($path.$entry."/", false, true);
 								$recursed[$entry]=true;
 							}
@@ -2335,18 +2389,21 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					Parse_Str($arCallArgs);
 				}
 			}
+			
 			if (isset(${$nls}[$varname])) {
 				$result=${$nls}[$varname];
-			} else if (isset($ARCurrent->$nls) && isset($ARCurrent->$nls->$varname)) {
+			} else if ( isset( $ARCurrent->$nls->$varname ) ) {
 				$result=$ARCurrent->$nls->$varname;
-			} else if (($values=$_POST[$nls]) && isset($values[$varname])) {
-				$result=$values[$varname];
-			} else if (($values=$_GET[$nls]) && isset($values[$varname])) {
-				$result=$values[$varname];
-			} else if (($arStoreVars=$_POST["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
-				$result=$arStoreVars[$nls][$varname];
-			} else if (($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
-				$result=$arStoreVars[$nls][$varname];
+			} else if ( isset( $_POST[$nls][$varname] ) ) {
+				$values = $_POST[$nls];
+				$result=$_POST[$nls][$varname];
+			} else if ( isset( $_GET[$nls][$varname] ) ) {
+				$values = $_GET[$nls];
+				$result=$_GET[$nls][$varname];
+			} else if ( isset( $_POST["arStoreVars"][$nls][$varname] ) ) {
+				$result=$_POST["arStoreVars"][$nls][$varname];
+			} else if ( isset( $_GET["arStoreVars"][$nls][$varname] ) ) {
+				$result=$_GET["arStoreVars"][$nls][$varname];
 			}
 			if ($result===false) {
 				if (isset($this->data->{$nls}) && isset($this->data->{$nls}->{$varname})) {
@@ -2370,9 +2427,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$result=$_POST[$varname];
 			} else if (isset($_GET[$varname])) {
 				$result=$_GET[$varname];
-			} else if (($arStoreVars=$_POST["arStoreVars"]) && isset($arStoreVars[$varname])) {
+			} else if (($arStoreVars=($_POST["arStoreVars"] ?? null )) && isset($arStoreVars[$varname])) {
 				$result=$arStoreVars[$varname];
-			} else if (($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$varname])) {
+			} else if (($arStoreVars=($_GET["arStoreVars"] ?? null ))  && isset($arStoreVars[$varname])) {
 				$result=$arStoreVars[$varname];
 			}
 			if ($result===false) {
@@ -2388,7 +2445,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	public function showdata($varname, $nls="none", $emptyResult=false) {
-		echo htmlspecialchars($this->getdata($varname, $nls, $emptyResult), ENT_QUOTES, 'UTF-8');
+		echo htmlspecialchars($this->getdata($varname, $nls, $emptyResult)??'', ENT_QUOTES, 'UTF-8');
 	}
 
 	public function setnls($nls) {
@@ -2601,7 +2658,15 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
 		// FIXME: Redirect code has to move to getPinpTemplate()
-		$redirects	= $ARCurrent->shortcut_redirect;
+		$redirects = $ARCurrent->shortcut_redirect ?? null;
+		$template =
+			[
+				"arTemplateId" => null,
+				"keepurl" => null,
+				"dest" => null,
+				"src" => null
+			]
+		;
 		if (isset($redirects) && is_array($redirects)) {
 			$redirpath = $this->path;
 			while (!$template['arTemplateId'] &&
@@ -2617,10 +2682,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$template = $this->getPinpTemplate($arCallFunction, $redirpath, '', false, $arLibrariesSeen, $arSuperContext);
 			}
 		}
-		if (!$template["arTemplateId"]) {
+		if (!($template["arTemplateId"] ?? null)) {
 			$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, $arSuperContext);
 		}
-		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
+		if (isset($template) && $template["arCallTemplate"] && $template["arTemplateId"]) {
 			$exists = ar('template')->exists($template['arCallTemplatePath'],$template["arCallTemplate"]);
 			if ( $exists ) {
 				debug("call_super: found template ".$template["arCallTemplate"]." on object with id ".$template["arTemplateId"]);
@@ -2660,7 +2725,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					$eventData->arCallFunction = $arCallFunction;
 					$eventData->arContext = $this->getContext();
 					$eventData = ar_events::fire('onbeforecall', $eventData);
-					$ARCurrent->arResult = $eventData->arResult;
+					$ARCurrent->arResult = ($eventData->arResult ?? null);
 					$AR->contextCallHandler = false;
 					$continue = ($eventData!=false);
 				}
@@ -2674,7 +2739,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 					if ( !$AR->contextCallHandler ) { /* prevent oncall from re-entering here */
 						$AR->contextCallHandler = true;
-						$temp = $ARCurrent->arResult; /* event listeners will change ARCurrent->arResult */
+						$temp = ($ARCurrent->arResult ?? null); /* event listeners will change ARCurrent->arResult */
 						$eventData->arResult = $arResult;
 						ar_events::fire('oncall', $eventData );
 						$ARCurrent->arResult = $temp; /* restore correct result */
@@ -2685,7 +2750,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$this->popContext();
 			}
 		}
-		return $arResult;
+		return $arResult ?? null;
 	}
 
 	public function _get($path, $function="view.html", $args="") {
@@ -2762,10 +2827,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$result=$_POST[$var];
 		} else if (isset($_GET[$var])) {
 			$result=$_GET[$var];
-		} else if (($arStoreVars=$_POST["arStoreVars"]) && isset($arStoreVars[$var])) {
+		} else if (isset($_POST["arStoreVars"]) && ($arStoreVars=$_POST["arStoreVars"]) && isset($arStoreVars[$var])) {
 			$result=$arStoreVars[$var];
-		} else if (($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$var])) {
+		} else if (isset($_GET["arStoreVars"]) && ($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$var])) {
 			$result=$arStoreVars[$var];
+		} else {
+			$result = null;
 		}
 		return $result;
 	}
@@ -2824,7 +2891,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 		if( $check !== false && $check === $key ) {
 			$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
-			$grantsarray = (array)$AR->sgGrants[$path];
+			$grantsarray = (array)($AR->sgGrants[$path]??array());
 			$mg->compile($grants, $grantsarray);
 			$AR->sgGrants[$path] = $grantsarray;
 			$result = true;
@@ -2961,7 +3028,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function _getsessionvar($varname) {
 	global $ARCurrent;
 
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			return $ARCurrent->session->get($varname);
 		} else {
 			return false;
@@ -2970,7 +3037,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 	public function _setsessiontimeout($timeout = 0) {
 	global $ARCurrent;
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			return $ARCurrent->session->setTimeout($timeout);
 		} else {
 			return false;
@@ -2980,7 +3047,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	public function _killsession() {
 	global $ARCurrent;
 
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			$ARCurrent->session->kill();
 			unset($ARCurrent->session);
 		}
@@ -2988,7 +3055,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 	public function _sessionid() {
 	global $ARCurrent;
-		if ($ARCurrent->session) {
+		if ($ARCurrent->session ?? null) {
 			return $ARCurrent->session->id;
 		} else {
 			return 0;
@@ -3041,8 +3108,8 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if (!$path) {
 			$path=$this->path;
 		}
-		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-		if (!$skipRedirects && @count($ARCurrent->shortcut_redirect)) {
+		$config=(isset($ARConfig->cache[$path])) ? $ARConfig->cache[$path] : $this->loadConfig($path);
+		if (!$skipRedirects && isset($ARCurrent->shortcut_redirect) && @count($ARCurrent->shortcut_redirect)) {
 			$redir = end($ARCurrent->shortcut_redirect);
 			if ($redir["keepurl"] && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
 				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
@@ -3051,7 +3118,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				}
 			}
 		}
-		return $config->site;
+		if ($config) {
+			return $config->site;
+		}
 	}
 
 	public function parentsite($site) {
@@ -3066,7 +3135,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if (!$path) {
 			$path=$this->path;
 		}
-		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
+		$config=($ARConfig->cache[$path]??null) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->section;
 	}
 
@@ -3083,7 +3152,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			$path=$this->path;
 		}
 		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-		return $config->project;
+		return $config->project ?? null;
 	}
 
 	public function parentproject($path) {
@@ -3256,6 +3325,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 	public function _getuser() {
 	global $AR;
+		if ( !isset( $AR->pinp_user ) ) {
+			$AR->pinp_user = null;
+		}
 		if ($AR->pinp_user && $AR->pinp_user->data->login == $AR->user->data->login) {
 			$user = $AR->pinp_user;
 		} else {
@@ -3345,10 +3417,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			}
 		}
 
-		if ($this->arIsNewObject && $this->CheckSilent('add', $this->type)) {
+		if (($this->arIsNewObject ?? null) && $this->CheckSilent('add', $this->type)) {
 			unset($this->data->config);
 			$result = $this->save($properties, $vtype);
-		} else if (!$this->arIsNewObject && $this->CheckSilent('edit', $this->type)) {
+		} else if (!($this->arIsNewObject ?? null) && $this->CheckSilent('edit', $this->type)) {
 			$this->data->config = current($this->get('.', 'system.get.data.config.phtml'));
 			$result = $this->save($properties, $vtype);
 		}
@@ -3373,7 +3445,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		preg_match("/^\s*(.)/", $pattern, $regs);
 		$delim = $regs[1];
-		if (@eregi("\\${delim}[^$delim]*\\${delim}.*e.*".'$', $pattern)) {
+		if (@eregi("\\{$delim}[^$delim]*\\{$delim}.*e.*".'$', $pattern)) {
 			$pinp = new pinp($AR->PINP_Functions, 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
 		} else {
@@ -3457,6 +3529,49 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 	}
 
+	public function _implode( $arg1, $arg2 = null ) {
+		if ( $arg2 !== null ) {
+			if ( !is_array( $arg2 ) ) {
+				$temp = $arg1;
+				$arg1 = $arg2;
+				$arg2 = $temp;
+			}
+			return implode( $arg1, $arg2 );
+		}
+		return implode( $arg1 );
+	}
+
+	public function _strftime($format, $date) {
+		// Define a mapping of strftime format characters to DateTime format characters
+		$formatMapping = [
+			'%a' => 'D',	// Abbreviated weekday name (Sun)
+			'%A' => 'l',	// Full weekday name (Sunday)
+			'%b' => 'M',	// Abbreviated month name (Jan)
+			'%B' => 'F',	// Full month name (January)
+			'%c' => 'r',	// Preferred date and time representation (e.g., Mon Dec 25 14:30:00 2023)
+			'%d' => 'd',	// Day of the month (01-31)
+			'%H' => 'H',	// Hour in 24-hour format (00-23)
+			'%I' => 'h',	// Hour in 12-hour format (01-12)
+			'%j' => 'z',	// Day of the year (001-366)
+			'%m' => 'm',	// Month number (01-12)
+			'%M' => 'i',	// Minutes (00-59)
+			'%p' => 'A',	// AM or PM
+			'%S' => 's',	// Seconds (00-59)
+			'%U' => 'W',	// Week number of the year (00-52), Sunday as the first day of the week
+			'%w' => 'w',	// Day of the week (0-6, Sunday=0)
+			'%x' => 'd/m/y',// Preferred date representation without time (e.g., 12/25/2023)
+			'%X' => 'H:i:s',// Preferred time representation without date (e.g., 14:30:00)
+			'%y' => 'y',	// Two-digit year (00-99)
+			'%Y' => 'Y',	// Four-digit year (e.g., 2023)
+			'%z' => 'O',	// Timezone offset (+02:00)
+			'%Z' => 'T',	// Timezone abbreviation (e.g., UTC)
+		];
+
+		// Replace all strftime format characters with DateTime format characters
+		$dateTimeFormat = strtr($format, $formatMapping);
+		return DateTimeImmutable::createFromFormat('U', $date)->format($dateTimeFormat);
+	}
+
 	public function __call($name,$arguments) {
 		if ( $name[0] == '_' ) {
 			$fname = substr($name, 1);
@@ -3470,13 +3585,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				return $this->AR_implements($arguments[0]);
 			break;
 			default:
-				trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $name), E_USER_ERROR);
+				throw new Exception(sprintf('Call to undefined function: %s::%s().', get_class($this), $name));
 				return false;
 			break;
 		}
 	}
 
-	static public function pinpErrorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
+	static public function pinpErrorHandler($errno, $errstr, $errfile, $errline, $errcontext=null) {
 		global $nocache;
 		if (($errno & error_reporting()) == 0) {
 			return true;
@@ -3484,7 +3599,10 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		$nocache = true;
 		$context = pobject::getContext();
-		if ($context["arLibraryPath"]) { //  != null) {
+		if ( isset($context['arCallFunction']) && is_callable($context['arCallFunction'])) {
+			$context['arCallFunction'] = 'Closure';
+		}
+		if ($context["arLibraryPath"]??null) { //  != null) {
 			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n".$errstr."\n";
 		} else {
 			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n".$errstr."\n";

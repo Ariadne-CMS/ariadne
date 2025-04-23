@@ -1,21 +1,37 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace PhpParser;
 
-class Comment
+class Comment implements \JsonSerializable
 {
     protected $text;
-    protected $line;
+    protected $startLine;
+    protected $startFilePos;
+    protected $startTokenPos;
+    protected $endLine;
+    protected $endFilePos;
+    protected $endTokenPos;
 
     /**
      * Constructs a comment node.
      *
-     * @param string $text Comment text (including comment delimiters like /*)
-     * @param int    $line Line number the comment started on
+     * @param string $text          Comment text (including comment delimiters like /*)
+     * @param int    $startLine     Line number the comment started on
+     * @param int    $startFilePos  File offset the comment started on
+     * @param int    $startTokenPos Token offset the comment started on
      */
-    public function __construct($text, $line = -1) {
+    public function __construct(
+        string $text,
+        int $startLine = -1, int $startFilePos = -1, int $startTokenPos = -1,
+        int $endLine = -1, int $endFilePos = -1, int $endTokenPos = -1
+    ) {
         $this->text = $text;
-        $this->line = $line;
+        $this->startLine = $startLine;
+        $this->startFilePos = $startFilePos;
+        $this->startTokenPos = $startTokenPos;
+        $this->endLine = $endLine;
+        $this->endFilePos = $endFilePos;
+        $this->endTokenPos = $endTokenPos;
     }
 
     /**
@@ -23,35 +39,95 @@ class Comment
      *
      * @return string The comment text (including comment delimiters like /*)
      */
-    public function getText() {
+    public function getText() : string {
         return $this->text;
-    }
-
-    /**
-     * Sets the comment text.
-     *
-     * @param string $text The comment text (including comment delimiters like /*)
-     */
-    public function setText($text) {
-        $this->text = $text;
     }
 
     /**
      * Gets the line number the comment started on.
      *
-     * @return int Line number
+     * @return int Line number (or -1 if not available)
      */
-    public function getLine() {
-        return $this->line;
+    public function getStartLine() : int {
+        return $this->startLine;
     }
 
     /**
-     * Sets the line number the comment started on.
+     * Gets the file offset the comment started on.
      *
-     * @param int $line Line number
+     * @return int File offset (or -1 if not available)
      */
-    public function setLine($line) {
-        $this->line = $line;
+    public function getStartFilePos() : int {
+        return $this->startFilePos;
+    }
+
+    /**
+     * Gets the token offset the comment started on.
+     *
+     * @return int Token offset (or -1 if not available)
+     */
+    public function getStartTokenPos() : int {
+        return $this->startTokenPos;
+    }
+
+    /**
+     * Gets the line number the comment ends on.
+     *
+     * @return int Line number (or -1 if not available)
+     */
+    public function getEndLine() : int {
+        return $this->endLine;
+    }
+
+    /**
+     * Gets the file offset the comment ends on.
+     *
+     * @return int File offset (or -1 if not available)
+     */
+    public function getEndFilePos() : int {
+        return $this->endFilePos;
+    }
+
+    /**
+     * Gets the token offset the comment ends on.
+     *
+     * @return int Token offset (or -1 if not available)
+     */
+    public function getEndTokenPos() : int {
+        return $this->endTokenPos;
+    }
+
+    /**
+     * Gets the line number the comment started on.
+     *
+     * @deprecated Use getStartLine() instead
+     *
+     * @return int Line number
+     */
+    public function getLine() : int {
+        return $this->startLine;
+    }
+
+    /**
+     * Gets the file offset the comment started on.
+     *
+     * @deprecated Use getStartFilePos() instead
+     *
+     * @return int File offset
+     */
+    public function getFilePos() : int {
+        return $this->startFilePos;
+    }
+
+    /**
+     * Gets the token offset the comment started on.
+     *
+     * @deprecated Use getStartTokenPos() instead
+     *
+     * @return int Token offset
+     */
+    public function getTokenPos() : int {
+        return $this->startTokenPos;
     }
 
     /**
@@ -59,7 +135,7 @@ class Comment
      *
      * @return string The comment text (including comment delimiters like /*)
      */
-    public function __toString() {
+    public function __toString() : string {
         return $this->text;
     }
 
@@ -75,7 +151,8 @@ class Comment
      */
     public function getReformattedText() {
         $text = trim($this->text);
-        if (false === strpos($text, "\n")) {
+        $newlinePos = strpos($text, "\n");
+        if (false === $newlinePos) {
             // Single line comments don't need further processing
             return $text;
         } elseif (preg_match('((*BSR_ANYCRLF)(*ANYCRLF)^.*(?:\R\s+\*.*)+$)', $text)) {
@@ -105,15 +182,58 @@ class Comment
             //
             //     /* Some text.
             //        Some more text.
+            //          Indented text.
             //        Even more text. */
             //
-            // is handled by taking the length of the "/* " segment and leaving only that
-            // many space characters before the lines. Thus in the above example only three
-            // space characters are left at the start of every line.
-            return preg_replace('(^\s*(?= {' . strlen($matches[0]) . '}(?!\s)))m', '', $text);
+            // is handled by removing the difference between the shortest whitespace prefix on all
+            // lines and the length of the "/* " opening sequence.
+            $prefixLen = $this->getShortestWhitespacePrefixLen(substr($text, $newlinePos + 1));
+            $removeLen = $prefixLen - strlen($matches[0]);
+            return preg_replace('(^\s{' . $removeLen . '})m', '', $text);
         }
 
         // No idea how to format this comment, so simply return as is
         return $text;
+    }
+
+    /**
+     * Get length of shortest whitespace prefix (at the start of a line).
+     *
+     * If there is a line with no prefix whitespace, 0 is a valid return value.
+     *
+     * @param string $str String to check
+     * @return int Length in characters. Tabs count as single characters.
+     */
+    private function getShortestWhitespacePrefixLen(string $str) : int {
+        $lines = explode("\n", $str);
+        $shortestPrefixLen = \INF;
+        foreach ($lines as $line) {
+            preg_match('(^\s*)', $line, $matches);
+            $prefixLen = strlen($matches[0]);
+            if ($prefixLen < $shortestPrefixLen) {
+                $shortestPrefixLen = $prefixLen;
+            }
+        }
+        return $shortestPrefixLen;
+    }
+
+    /**
+     * @return       array
+     * @psalm-return array{nodeType:string, text:mixed, line:mixed, filePos:mixed}
+     */
+    public function jsonSerialize() : array {
+        // Technically not a node, but we make it look like one anyway
+        $type = $this instanceof Comment\Doc ? 'Comment_Doc' : 'Comment';
+        return [
+            'nodeType' => $type,
+            'text' => $this->text,
+            // TODO: Rename these to include "start".
+            'line' => $this->startLine,
+            'filePos' => $this->startFilePos,
+            'tokenPos' => $this->startTokenPos,
+            'endLine' => $this->endLine,
+            'endFilePos' => $this->endFilePos,
+            'endTokenPos' => $this->endTokenPos,
+        ];
     }
 }

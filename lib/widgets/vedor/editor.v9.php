@@ -21,10 +21,10 @@
 
 	$getargs = "?vdLanguage=" . RawURLEncode($language);
 	// CAS vars;
-	if ($requestorHost) {
+	if ($requestorHost??null) {
 		$getargs .= "&requestorHost=" . RawURLEncode($requestorHost);
 	}
-	if ($requestorPort) {
+	if ($requestorPort??null) {
 		$getargs .= "&requestorPort=" . RawURLEncode($requestorPort);
 	}
 
@@ -32,7 +32,7 @@
 	// js.html file
 	$oldnls=$this->nls;
 	$this->setnls($language);
-	$options=$this->call("editor.ini", $arCallArgs);
+	$options=$this->call("editor.ini", ($arCallArgs ?? null));
 	$vdBrowseRoot = $options['browse']['root'];
 	if (!$vdBrowseRoot) {
 		$vdBrowseRoot = $options['vdBrowseRoot']; // for backwards compat.
@@ -41,10 +41,10 @@
 		}
 	}
 	$this->setnls($oldnls);
-	if ( !$vedorPortalLink) {
+	if ( !($vedorPortalLink??null)) {
 		$vedorPortalLink = 'http://www.vedor.nl/';
 	}
-	if ( !$wgHTMLEditManageTemplate ) {
+	if ( !($wgHTMLEditManageTemplate??null) ) {
 		$wgHTMLEditManageTemplate = 'user.edit.html';
 	}
  	if ( !$options['doctype'] ) {
@@ -109,14 +109,14 @@
 	var objectPath='<?php echo $this->path; ?>';
 	var sitePath='<?php echo $this->currentsite(); ?>';
 	var objectURL='<?php echo $this->make_local_url(); ?>';
-	var logoffURL='<?php echo $this->make_local_url('', $nls); ?>';
+	var logoffURL='<?php echo $this->make_local_url('', ($nls ?? null)); ?>';
 	var objectURL_nls='<?php echo $this->make_local_url('',$language); ?>';
 	var ariadneRoot='<?php global $AR; echo $AR->dir->www; ?>';
 	var wgSaveTmpl='<?php echo $wgHTMLEditSaveTemplate; ?>';
 	var wgParentURL='<?php echo $this->make_local_url($this->parent); ?>';
 	var wgManageTmpl='<?php echo $wgHTMLEditManageTemplate; ?>';
 	var vdCurrentSite='<?php echo $this->make_local_url($this->currentsite(), $language); ?>';
-	var vdCurrentSiteNLS='<?php echo $this->make_local_url($this->currentsite(), $nls); ?>';
+	var vdCurrentSiteNLS='<?php echo $this->make_local_url($this->currentsite(), ($nls ?? null)); ?>';
 	var vdCurrentPath=objectPath;
 	var vdBrowseRoot='<?php echo $vdBrowseRoot; ?>';
 	var vdSelection = null;
@@ -3442,7 +3442,7 @@
 	/* FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME FIXME
 		dit werkt tijdelijk om het probleem heen dat de editor niet gestart kan wordne als er geen default view is gedefinieerd
 	*/
-	$tmpshortcut_redirect = $ARCurrent->shortcut_redirect;
+	$tmpshortcut_redirect = $ARCurrent->shortcut_redirect??null;
 	$ARCurrent->shortcut_redirect = array();
 	$wgVedorEditTemplateArguments = "vdLanguage=$language";
 	if (strpos($wgHTMLEditTemplate, '?') !== false) {

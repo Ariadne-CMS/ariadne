@@ -25,7 +25,7 @@
 			$this->call('typetree.ini');
 			$typelist = $ARCurrent->arTypeNames;
 
-			if (is_array($this->data->config->customconfig)) {
+			if (is_array($this->data->config->customconfig ?? null)) {
 				foreach( $this->data->config->customconfig as $name => $custom ) {
 					if (!$custom['nls']) {
 						$custom['nls']=0;
@@ -309,7 +309,7 @@
 </style>
 <!--<form name="customform" action="edit.object.custom.save.phtml" method="POST" onSubmit="save()">-->
 <input type="hidden" name="customfields" id="customfields">
-<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage ?? ""; ?>">
 	<select id="nameselect" name="fieldname" size="10" class="nameselect" onChange="show();">
 	</select>
 	<fieldset>

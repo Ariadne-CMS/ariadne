@@ -97,7 +97,7 @@
 		}
 		if( $debugisoff != "" && $DB["level"] > 0) {
 			debug("Debugging OFF ".$debugisoff,$DB["level"],$DB["stream"]);
-			if( $DB["fp"] ) {
+			if( $DB["fp"]??null ) {
 				@fclose($DB["fp"]);
 			}
 			$DB["level"]=$DB["off"];
@@ -122,7 +122,7 @@
 			$timestamping = date("H:i:s");
 			/* handle indentation */
 			if( $indent=="OUT" ) {
-				$DB_INDENT = substr($DB_INDENT,0,-2);
+				$DB_INDENT = substr($DB_INDENT??"  ",0,-2);
 			}
 			if( $indent=="IN" ) {
 				$DB_INDENT.="  ";

@@ -12,7 +12,7 @@
             }
 ?>
 
-	<div id="mogrify"><?php echo $ARnls["mogrifying"] . " " . $current_object_path; ?></div> <!--hier iets aan aanpassen voor current_object_path?-->
+	<div id="mogrify"><?php echo $ARnls["mogrifying"] . " " . ( $current_object_path ?? "" ); ?></div> <!--hier iets aan aanpassen voor current_object_path?-->
 <?php
             foreach ($targets as $target) {
                 $targetob = current($this->get($target, "system.get.phtml"));

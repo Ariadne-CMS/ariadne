@@ -5,12 +5,19 @@ class svnTest extends AriadneBaseTest
 	private static $repo;
 	private static $testpath;
 
-	public function setUp()
+	public function setUp(): void
 	{
+		if( !getenv('svnrepo') ) {
+			$this->marktestskipped(
+				'Skipping SVN test, no svn repo configured'
+			);
+			return;
+		}
+
 		$this->initAriadne();
 	}
 
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
 		self::$repo = getenv('svnrepo') . '/testlibrary/';
 	}
@@ -53,7 +60,8 @@ class svnTest extends AriadneBaseTest
 		$this->helperCheckout($version);
 		$res = ar::get(self::$testpath)->call('system.svn.info.php');
 		$info = current($res);
-		$checkrev = array_change_key_case($info, CASE_LOWER)['revision'];
+		$info = array_change_key_case($info, CASE_LOWER);
+		$checkrev = $info['revision']??null;
 		$this->assertEquals($version,$checkrev);
 		$obj = current(ar::get(self::$testpath)->call('system.get.phtml'));
 		$this->assertTrue(count($obj->data->config->pinp) > 0);
@@ -99,7 +107,7 @@ class svnTest extends AriadneBaseTest
 		);
 		$res = current(ar::get(self::$testpath)->call('system.save.layout.phtml' , $args));
 		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php'));
-		$this->assertInternalType('int',strpos($res,'+changed'));
+		$this->assertIsInt(strpos($res,'+changed'));
 		$this->assertNotFalse(strpos($res,'+changed'));
 
 	}
@@ -134,7 +142,7 @@ class svnTest extends AriadneBaseTest
 		);
 		$res = current(ar::get(self::$testpath)->call('system.save.layout.phtml' , $args));
 		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php'));
-		$this->assertInternalType('int',strpos($res,'+changed'));
+		$this->assertIsInt(strpos($res,'+changed'));
 		$this->assertNotFalse(strpos($res,'+changed'));
 
 		// reverting
@@ -167,12 +175,12 @@ class svnTest extends AriadneBaseTest
 		self::$testpath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
 		$this->helperCheckout(22);
 		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php',array('revision' => 23)));
-		$this->assertInternalType('int',strpos($res,'+test:serverdiff'));
+		$this->assertIsInt(strpos($res,'+test:serverdiff'));
 		$this->assertNotFalse(strpos($res,'+test:serverdiff'));
 
 		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php',array('revision' => 22)));
 		$this->assertEmpty($res);
-		$this->assertNotInternalType('int',strpos($res,'+test:serverdiff'));
+		$this->assertIsInt(strpos($res,'+test:serverdiff'));
 		$this->assertFalse(strpos($res,'+test:serverdiff'));
 
 	}

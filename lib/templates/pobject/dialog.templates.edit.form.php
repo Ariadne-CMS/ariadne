@@ -31,7 +31,7 @@
 	$template = $this->getvar("template");
 	if( !isset($template) ) {
 		$file = "";
-		if ($this->data->config->pinp[$type][$function][$language]) {
+		if ($this->data->config->pinp[$type][$function][$language] ?? null) {
 			$template=$type.".".$function.".".$language.".pinp";
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {
@@ -130,7 +130,7 @@
 		 <div class="bd">
 			  <ul class="first-of-type">
 <?php
-	if ($svn_enabled && $svn_info['revision']) {
+	if ($svn_enabled && isset($svn_info) && isset($svn_info['revision']) && strlen( $svn_info['revision'] ) ) {
 
 		$filename = $type.".".$function.".".$language.".pinp";
 		switch($svn_status[$filename]['wc-status']['item']) {
@@ -164,11 +164,11 @@
 				// No status
 				break;
 		}
-		$svn_img_src = $AR->dir->images . "/svn/$svn_img";
+		$svn_img_src = $AR->dir->images . "/svn/" . ( $svn_img ?? "" );
 ?>
 					<li class="yuimenubaritem">
 						<a class="yuimenubaritemlabel" href="#"><?php
-							if ($svn_img) {
+							if ( $svn_img ?? null ) {
 								?><img class="svn_icon" alt="<?php echo $svn_alt; ?>" src="<?php echo $svn_img_src; ?>">
 							<?php } ?><?php echo $ARnls["ariadne:svn"]; ?></a>
 						<div id="svn" class="yuimenu">
@@ -261,23 +261,23 @@
 	</div>
 	<div class="template_option">
 	<?php
-		if ($data->config->privatetemplates[$type][$function]) {
+		if ($data->config->privatetemplates[$type][$function]??null) {
 			$private=1;
 		}
 	?>
 		<label for="private" class="ontop"><?php echo $ARnls["ariadne:template:private"]; ?></label>
 		<input type="hidden" name="private" value="0">
-		<input type="checkbox" id="private" name="private" value="1" <?php if ($private) { echo " checked"; } ?>>
+		<input type="checkbox" id="private" name="private" value="1" <?php if ($private??null) { echo " checked"; } ?>>
 	</div>
 	<div class="template_option">
 	<?php
-		if ($data->config->templates[$type][$function][$language] || !$function) {
+		if ($data->config->templates[$type][$function][$language]??null || !($function??null)) {
 			$default=1;
 		}
 	?>
 		<label for="default" class="ontop"><?php echo $ARnls["default"]; ?></label>
 		<input type="hidden" name="default" value="0">
-		<input type="checkbox" id="default" name="default" value="1" <?php if ($default) { echo " checked"; } ?>>
+		<input type="checkbox" id="default" name="default" value="1" <?php if ($default??null) { echo " checked"; } ?>>
 	</div>
 
 	<input type="hidden" id="cursorOffset" name="cursorOffset">

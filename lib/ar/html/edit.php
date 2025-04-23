@@ -51,7 +51,7 @@
 				$path = ar::context()->getPath();
 			}
 			if ( self::$enabled ) {
-				return ' data-ar-path="'.htmlspecialchars( $path ).'"';
+				return ' data-ar-path="'.htmlspecialchars( $path??'' ).'"';
 			} else {
 				return '';
 			}

@@ -239,7 +239,7 @@
 					$newButtons[$key] = $this->parseButton($key, $button);
 				}
 			}
-			return $newButtons;
+			return $newButtons ?? null;
 		}
 
 		protected function getButton($button) {
@@ -429,6 +429,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_html_formInput {
 
 		protected $form;
@@ -501,7 +502,7 @@
 			}
 			$attributes = array('class' => $class);
 
-			if ( trim($help) ) {
+			if ( trim($help??'') ) {
 				$help = ar_html::el('div', $help, array('class' => 'helpContent'));
 				return ar_html::el('div', $help, $attributes);
 			} else {
@@ -979,7 +980,7 @@
 			if ( $rows ) {
 				$attributes['rows'] = $rows;
 			}
-			return ar_html::el('textarea', htmlspecialchars($value, ENT_QUOTES, 'UTF-8' ), $attributes);
+			return ar_html::el('textarea', htmlspecialchars($value??'', ENT_QUOTES, 'UTF-8' ), $attributes);
 		}
 	}
 
@@ -1274,7 +1275,7 @@
 						$option['value'],
 						$option['name'],
 						$selectedValue,
-						$option['disabled'],
+						( $option['disabled'] ?? null ),
 						'radioButton',
 						$name.'_'.$count
 					);
@@ -1329,7 +1330,7 @@
 
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
-			$this->children = $this->form->parseFields($field->children);
+			$this->children = $this->form->parseFields($field->children??null);
 		}
 
 		public function hasChildren() {
@@ -1502,7 +1503,7 @@
 
 			if ( isset( $field->value ) ) { // apply default behaviour, step 2
 				$this->normalizeChildren( $field->value );
-				$this->handleUpdates( $field->default );
+				$this->handleUpdates( $field->default??null );
 			}
 		}
 

@@ -24,7 +24,7 @@
 		wgDateForm[name].value=date;
 		wgDateForm['formatted'+name].value=formatted;
 		<?php
-			if (!$wgDateDontRegister) {
+			if ( !( $wgDateDontRegister ?? null ) ) {
 		?>
 		if (top.registerChange) {
 			if (!top.arFieldRegistry[wgDateForm[name].id]) {

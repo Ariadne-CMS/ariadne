@@ -8,7 +8,7 @@
 			$this->call("typetree.ini");
 		}
 
-                $myType = ( $ARCurrent->arTypeNames[$this->type] ? yui::labelspan($ARCurrent->arTypeNames[$this->type]) . "<br>" . yui::labelspan("(" . $this->type . ")") : yui::labelspan($this->type) );
+                $myType = ( isset( $ARCurrent->arTypeNames[$this->type] ) ? yui::labelspan($ARCurrent->arTypeNames[$this->type]) . "<br>" . yui::labelspan("(" . $this->type . ")") : yui::labelspan($this->type) );
 
 		$info = array(
 			'type' => $myType,

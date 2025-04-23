@@ -23,7 +23,7 @@
 				//  $error="Export file is missing. It's not in ".$testdir.$tempfilename.".";
 			}
 		}
-		if (!$error) {
+		if (!($error ?? null)) {
 			$filename=substr($this->path, strlen($this->parent), -1);
 			if (ldGetServerVar('HTTPS')) {
 				ldHeader("Pragma: cache");

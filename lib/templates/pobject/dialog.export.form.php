@@ -44,7 +44,7 @@
                 $type = $sourceob->type;
             }
 
-            $icon = $ARCurrent->arTypeIcons[$sourceob->type]['medium'] ? $ARCurrent->arTypeIcons[$sourceob->type]['medium'] : $sourceob->call("system.get.icon.php", array('size' => 'medium'));
+            $icon = $ARCurrent->arTypeIcons[$sourceob->type]['medium'] ?? $sourceob->call("system.get.icon.php", array('size' => 'medium'));
             $iconalt = $sourceob->type;
 
             if ( $sourceob->implements("pshortcut") ) {
@@ -63,9 +63,9 @@
             } else {
                 echo '<div>';
             }
-            echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
-            if ( $overlay_icon ) {
-                echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
+            echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt??'') . '" title="' . htmlspecialchars($iconalt??'') . '" class="typeicon">';
+            if ( $overlay_icon ?? null ) {
+                echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
             }
             echo '<div class="name">' . $sourceob->nlsdata->name . ' ';
             echo "( " . $ARCurrent->arTypeNames[$sourceob->type] . " / " . $sourceob->type . " )";

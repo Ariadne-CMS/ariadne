@@ -4,7 +4,7 @@
 		$arConfig = $this->loadUserConfig();
 		$extraroots = '';
 		foreach($arConfig['authentication'] as $grouptype => $authdirs) {
-			if (in_array($wgBrowseRoot, $arConfig['authentication'][$grouptype])) {
+			if (in_array(($wgBrowseRoot??null), $arConfig['authentication'][$grouptype])) {
 				foreach ($arConfig['authentication'][$grouptype] as $authpath) {
 					if ($authpath != $wgBrowseRoot) {
 						$extraroots .= "extraroots[]=$authpath&";
@@ -30,11 +30,13 @@
 </script>
 <fieldset id="data" class="browse">
 		<legend><?php echo $ARnls["path"]; ?></legend>
-		<div class="field">
-			<label for="target" class="required"><?php echo $ARnls["target"]; ?></label>
-			<input id="target" type="text" name="target" value="<?php echo $target; ?>" class="inputline wgWizAutoFocus">
-			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='window.open("<?php echo $this->make_ariadne_url('/'); ?>" + document.getElementById("target").value + "dialog.browse.php<?php echo $extraroots ? "?" . $extraroots : ""; ?>", "browse", "height=480,width=750"); return false;'>
-			<div class="clear"></div>
+		<div class="browse_wrapper">
+			<div class="field">
+				<label for="target" class="required"><?php echo $ARnls["target"]; ?></label>
+				<input id="target" type="text" name="target" value="<?php echo $target; ?>" class="inputline wgWizAutoFocus">
+				<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='window.open("<?php echo $this->make_ariadne_url('/'); ?>" + document.getElementById("target").value + "dialog.browse.php<?php echo $extraroots ? "?" . $extraroots : ""; ?>", "browse", "height=480,width=750"); return false;'>
+				<div class="clear"></div>
+			</div>
 		</div>
 </fieldset>
 <?php	}

@@ -1,0 +1,35 @@
+version: '3'
+services:
+    php-apache:
+        build:
+            context: ./docker
+            dockerfile: Dockerfile.php-apache
+        environment:
+            XDEBUG_CONFIG: remote_host=${XDEBUG_REMOTE_HOST:-host.docker.internal}
+        ports:
+            - 80:80
+        volumes:
+            - ./www/:/var/www/html
+            - .:/opt/ariadne
+        links:
+            - 'mysql'
+    mysql:
+        image: mysql:5.7
+        restart: always
+        command: mysqld --sql_mode="NO_ENGINE_SUBSTITUTION"
+        environment:
+            TZ: "Europe/Amsterdam"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_ROOT_PASSWORD: "frop"
+            MYSQL_USER: "ariadne"
+            MYSQL_PASSWORD: "secret"
+            MYSQL_DATABASE: "ariadne"
+        ports:
+            - '3306:3306'
+        expose:
+            - '3306'
+        volumes:
+            - ./docker/mysql-ariadne:/var/lib/mysql
+volumes:
+    mysql:
+    

@@ -8,6 +8,7 @@
 	ar_pinp::allow('ar');
 	ar_pinp::allow('ar_error');
 
+	#[\AllowDynamicProperties]
 	class ar implements arKeyValueStoreInterface {
 		protected static $instances = [];
 		protected static $ar;
@@ -129,18 +130,18 @@
 			if ( is_numeric($value) ) {
 				return $value;
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( 'self', 'taint' ) );
+				array_walk_recursive( $value, self::taint(...) );
 			} else if ( is_string($value) && $value ) { // empty strings don't need tainting
 				$value = new arTainted($value);
 			}
 			return $value;
 		}
 
-		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
+		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = []) {
 			if ( $value instanceof arTainted ) {
 				$value = filter_var($value->value, $filter, $flags);
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( 'self', 'untaintArrayItem'), array(
+				array_walk_recursive( $value, self::untaintArrayItem(...), array(
 					'filter' => $filter,
 					'flags' => $flags
 				) );
@@ -152,7 +153,7 @@
 			self::untaint( $value, $options['filter'], $options['flags'] );
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			global $ARCurrent, $ARConfig;
 
 			if ($ARCurrent->arCallStack) {
@@ -172,7 +173,7 @@
 			return ar_loader::getvar( $name );
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			global $ARCurrent;
 			$ARCurrent->$name = $value;
 		}
@@ -213,6 +214,7 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class arTainted {
 		public $value = null;
 
@@ -226,6 +228,7 @@
 	}
 
 
+	#[\AllowDynamicProperties]
 	class arObject {
 		public function __construct( $vars = '' ) {
 			if ( is_array($vars) ) {
@@ -238,6 +241,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class arBase {
 
 		public function __call($name, $arguments) {
@@ -254,6 +258,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class arWrapper {
 
 		protected $wrapped = null;
@@ -269,7 +274,20 @@
 					$name = substr($name, 1);
 				}
 			}
+
+                        foreach ($arguments as $key => $value) {
+                                if ($value instanceOf arWrapper) {
+                                        $arguments[$key] = $value->__unwrap();
+                                }
+                        }
+
 			if (ar_pinp::isAllowed($this, $name)) {
+				try {
+					return $this->__wrap( call_user_func_array( array( $this->wrapped, $name), $arguments) );
+				} catch( Exception $e ) {
+					return ar::error( $e->getMessage(), $e->getCode() );
+				}
+			} else if (ar_pinp::isAllowed('\\' . get_class($this->wrapped))) {
 				try {
 					return $this->__wrap( call_user_func_array( array( $this->wrapped, $name), $arguments) );
 				} catch( Exception $e ) {
@@ -297,18 +315,27 @@
 			$this->wrapped->$name = $value;
 		}
 
+		public function __unwrap() {
+			return $this->wrapped;
+		}
+		public function __toString() {
+			return $this->wrapped->__toString();
+		}
 	}
 
-
+	#[\AllowDynamicProperties]
 	class ar_error extends ar_exceptionDefault {
+		public $code, $previous;
+
 		protected static $throwExceptions = false;
 
 		public function __construct( $message = '', $code = 0, $previous = null ) {
 			if ( $previous && !($previous instanceof \Exception) ) {
-				$previous = new ar_error( $previous );
+				$previous = new ar_error( (string) $previous );
 			}
 			parent::__construct( (string) $message, (int) $code, $previous );
 			$this->code = $code;
+			$this->previous = $previous;
 		}
 
 		public function __call($name, $arguments) {
@@ -396,15 +423,15 @@
 			return ar::call($template, $params);
 		}
 
-		public static function _callSuper() {
-			return ar::callSuper();
+		public static function _callSuper($params = null) {
+			return ar::callSuper($params);
 		}
 
 		public static function _taint(&$value) {
 			ar::taint($value);
 		}
 
-		public static function _untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
+		public static function _untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = []) {
 			ar::untaint($value, $filter, $flags);
 		}
 
@@ -432,6 +459,18 @@
 		public static function _acquire( $varname, $options = array() ) {
 			return ar::acquire( $varname, $options );
 		}
+
+		public static function _construct($className, $args = array() ) {
+			return ar_pinp::construct($className, $args);
+		}
+
+		public static function _callStatic($className, $method, $args = array() ) {
+			return ar_pinp::callStatic($className, $method, $args);
+		}
+
+		public static function _unwrap(arWrapper $wrapped) {
+			return $wrapped->__unwrap();
+		}
 	}
 
 	function ar($name=null) {
@@ -448,11 +487,12 @@
 		public static function getLoader( $options = array() );
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_ariadneContext implements ar_contextInterface {
 
 		public static function makePath( $cwd, $path ) { //FIXME: move this method to a better place
 			$result = '/';
-			if ( $path[0] === '/' ) {
+			if ( $path && ($path[0] === '/' ) ) {
 				$path = substr( $path, 1);
 			} else {
 				$path = substr( $cwd, 1 ) . '/' . $path;
@@ -483,23 +523,23 @@
 		public static function getPath( $options = array() ) {
 			$me = self::getObject( $options );
 			if ($me) {
-				$path = $me->make_path( $options['path'] );
-				if ($options['skipShortcuts']) {
+				$path = $me->make_path( $options['path'] ?? null );
+				if ( $options['skipShortcuts'] ?? null ) {
 					$me->_load('mod_keepurl.php');
 					$realpath = pinp_keepurl::_make_real_path( $path );
 					if ($realpath) {
 						$path = $realpath;
 					}
-				} else if ($options['rememberShortcuts']) {
+				} else if ( $options['rememberShortcuts'] ?? null ) {
 					$me->_load('mod_keepurl.php');
 					$path = pinp_keepurl::_make_path( $path );
-				} else if ( $options['searchObject'] ) {
+				} else if ( $options['searchObject'] ?? null ) {
 					if (isset($me->data->path)) {
 						$path = $me->data->path;
 					}
 				}
 			} else {
-				$path = self::makePath( '/', $options['path'] );
+				$path = self::makePath( '/', $options['path'] ?? '' );
 			}
 			return $path;
 		}
@@ -507,7 +547,7 @@
 		public static function getObject( $options = array() ) {
 			if ( class_exists( 'pobject' ) ) {
 				$context = pobject::getContext();
-				$me = $context["arCurrentObject"];
+				$me = $context["arCurrentObject"]??null;
 			} else {
 				$me = null;
 			}
@@ -539,7 +579,7 @@
 				$data = $me->loadUserConfig();
 				$vars = explode('.', $varname);
 				foreach( $vars as $var ) {
-					$data = $data[$var];
+					$data = $data[$var] ?? null;
 				}
 				return $data;
 			}
@@ -547,21 +587,21 @@
 
 		public static function callAtPath( $path, $callback ) {
 			$ob = current( ar_store::get($path)->call('system.get.phtml'));
-			pobject::pushContext( array(
+			$ob->pushContext( array(
 					"arCurrentObject" => $ob,
 					"scope" => "php"
 					) );
 			call_user_func( $callback );
-			pobject::popContext();
+			$ob->popContext();
 		}
 
 	}
 
 	interface arKeyValueStoreInterface {
 
-		public function getvar( $name );
+		public static function getvar( $name );
 
-		public function putvar( $name, $value );
+		public static function putvar( $name, $value );
 
 	}
 

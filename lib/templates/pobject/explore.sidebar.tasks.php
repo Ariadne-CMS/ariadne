@@ -7,7 +7,7 @@
 
 		$tasks = array();
 
-		if( $this->CheckSilent("read") && $shortcutSidebar ) {
+		if( $this->CheckSilent("read") && isset($shortcutSidebar) && $shortcutSidebar ) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "explore.html",
 				'onclick' => "muze.ariadne.explore.view('".$this->path."'); return false;",
@@ -16,7 +16,7 @@
 			);
 		}
 
-		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) {
+		if ($this->CheckSilent("add",ARANYTYPE) && (!isset($hideAdd) || !$hideAdd)) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() ."dialog.add.php",
 				'onclick' => "muze.ariadne.explore.dialog.add(this.href); return false;",
@@ -41,7 +41,7 @@
 			);
 		}
 
-		if( !$shortcutSidebar ) {
+		if( !isset($shortcutSidebar) || !$shortcutSidebar ) {
 			if ($this->CheckSilent("delete")) {
 				$tasks[] = array(
 					'href' => $this->make_ariadne_url() . "dialog.rename.php",
@@ -105,6 +105,12 @@
 				'nlslabel' => $ARnls['ariadne:su']
 			);
 		}
+		if (!isset($path)) {
+			$path = null;
+		}
+		if (!isset($nls)) {
+			$nls = null;
+		}
 		$tasks[] = array( // we use make_local_url specifically here.
 			'href' => $this->make_local_url($path, $nls)."view.html",
 			'onclick' => "muze.ariadne.explore.arshow('_blank', this.href); return false;",
@@ -114,6 +120,9 @@
 
 		$arCallArgs["sectionName"] = "tasks";
 		$arCallArgs["sectionDisplayName"] = $ARnls["ariadne:options"];
+		if (!isset($icon)) {
+			$icon = null;
+		}
 		$arCallArgs["icon"] = $icon;
 
 		$section = array(
@@ -121,11 +130,11 @@
 			'label' => $ARnls["ariadne:options"],
 			'tasks' => $tasks
 		);
-		if( $shortcutSidebar ) {
-			if (!$ARCurrent->arTypeTree) {
+		if( isset($shortcutSidebar) && $shortcutSidebar ) {
+			if (!isset($ARCurrent->arTypeTree)) {
 				$this->call('typetree.ini');
 			}
-			$section['inline_icon'] = $ARCurrent->arTypeIcons[$this->type]['small'] ? $ARCurrent->arTypeIcons[$this->type]['small'] : $this->call('system.get.icon.php', array('size' => 'small'));
+			$section['inline_icon'] = $ARCurrent->arTypeIcons[$this->type]['small'] ?? $this->call('system.get.icon.php', array('size' => 'small'));
 			$section['inline_iconalt'] = $this->type;
 		}
 

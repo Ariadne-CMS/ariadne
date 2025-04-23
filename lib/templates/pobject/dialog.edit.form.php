@@ -24,7 +24,7 @@
 			value="<?php $this->showdata("value","none"); ?>" class="inputline">
 	</div>
 	<?php
-		if ( $arNewType ) {
+		if ( $arNewType??null ) {
             $this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
         }
 	?>

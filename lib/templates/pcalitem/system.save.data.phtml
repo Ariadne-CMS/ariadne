@@ -73,7 +73,7 @@
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			return false;
 		} else {
-			if (!$this->data->nls) {
+			if ( !isset( $this->data->nls ) ) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
@@ -83,7 +83,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 
 				if ($name=$this->getdata("name",$key)) { 
-					if (!$this->data->$key) {
+					if ( !isset( $this->data->$key ) ) {
 						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
@@ -102,17 +102,19 @@
 						$newnlsdata->page=$page;
 					}
 					if ($this->store->is_supported("fulltext")) {
-						$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
-								$newnlsdata->name." ".
-								$this->html_to_text($newnlsdata->summary)." ".
-								$this->html_to_text($newnlsdata->page)
-								);
+						$properties["fulltext"][$count]["value"]=
+							$this->store->format_for_fti(
+								( $newnlsdata->name ?? "" ) . " " .
+								$this->html_to_text( ( $newnlsdata->summary ?? "" ) ) . " " .
+								$this->html_to_text( ( $newnlsdata->page ?? "" ) )
+							)
+						;
 						$properties["fulltext"][$count]["nls"]=$key;
 					}
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ( isset( $this->data->$key ) ) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}
@@ -138,7 +140,7 @@
 					$this->data->endtime=mktime((int)$this->data->endhour, (int)$this->data->endminute, 0, $date_arr["mon"], $date_arr["mday"], $date_arr["year"]);
 				}
 				$this->data->priority=$this->getdata("priority","none");
-				$properties["priority"][0]["value"]=AddSlashes($priority);
+				$properties["priority"][0]["value"]=AddSlashes($this->data->priority);
 				if (!$repeat || ($repeat=="none")) { // advanced options not selected
 					debug("pcalitem/system.save.data.phtml: no advanced: repeat set to none ($repeat)","all");
 					$this->data->repeat="none";
@@ -194,7 +196,7 @@
 					}
 				}
 
-				if (!$dontsavetimeframes) {
+				if (! ( $dontsavetimeframes ?? null ) ) {
 					// now calculate the timeframes properties.
 					$length=$this->data->endtime - $this->data->starttime;
 					switch($this->data->repeat) {

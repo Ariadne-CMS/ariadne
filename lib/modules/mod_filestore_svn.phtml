@@ -59,6 +59,7 @@
 	require_once 'VersionControl/SVN.php';
 	require_once $ariadne.'/modules/mod_filestore.phtml';
 
+	#[\AllowDynamicProperties]
 	class filestore_svn extends filestore {
 
 		/* public */
@@ -91,7 +92,7 @@
 			
 			global $AR;
 			
-			if( !$AR->SVN->instance ) {
+			if( !($AR->SVN->instance ?? null) ) {
 
 				$AR->SVN->instance = VersionControl_SVN::factory(array(
 					"add",
@@ -412,7 +413,7 @@
 			} catch(VersionControl_SVN_Exception $e) {
 				return ar::error('svn exception',1311,$e);
 			}
-			$result = $result['list'][0]['entry'];
+			$result = $result['list'][0]['entry'] ?? null;
 			return $result;
 		}
 
@@ -884,7 +885,7 @@
 				}
 			}
 			$result[] = array (
-				'revision' => $revision,
+				'revision' => $revision ?? null,
 				'rest' => join("\n",$lines)
 			);
 			return $result;

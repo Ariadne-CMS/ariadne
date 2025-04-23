@@ -1,7 +1,7 @@
 <?php
-	error_reporting( E_ALL & ~(E_NOTICE | E_DEPRECATED | E_STRICT) );
+	error_reporting( E_ALL & ~(E_NOTICE) );
 	@include('./../ariadne.inc');
-	if(!$ariadne) {
+	if(!($ariadne ?? null)) {
 		$ariadne = realpath(__DIR__ . '/../');
 	}
 	$autoload = $ariadne."/../vendor/autoload.php";

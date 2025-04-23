@@ -14,7 +14,7 @@
 			<div class="field">
 				<label for="grants" class="required"><?php echo $ARnls["grants"]; ?></label>
 				<textarea id="grants" name="grants" class="inputbox<?php if( !$grantkey ) echo " wgWizAutoFocus"; ?>" rows="5" cols="42"><?php
-					echo htmlspecialchars($this->getvar("grants"), ENT_QUOTES, 'UTF-8');
+					echo htmlspecialchars($this->getvar("grants")??'', ENT_QUOTES, 'UTF-8');
 				?></textarea>
 			</div>
 			<div class="field">

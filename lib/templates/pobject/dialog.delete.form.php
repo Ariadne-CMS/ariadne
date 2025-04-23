@@ -57,22 +57,22 @@
 					$crumbs = $oldcrumbs;
 				}
 			}
-			$crumbs = htmlspecialchars( $crumbs . "/ " . $targetob->nlsdata->name );
-			$oldcrumbs = htmlspecialchars( $oldcrumbs . "/ " . $targetob->nlsdata->name );
+			$crumbs = htmlspecialchars( $crumbs??'' . "/ " . $targetob->nlsdata->name??'' );
+			$oldcrumbs = htmlspecialchars( $oldcrumbs??'' . "/ " . $targetob->nlsdata->name??'' );
 
-			if( !$ARCurrent->arTypeTree ) {
+			if( !isset($ARCurrent->arTypeTree) ) {
 				$targetob->call('typetree.ini');
 			}
 			$icons = $ARCurrent->arTypeIcons;
 			$names = $ARCurrent->arTypeNames;
 
-			$icon = $ARCurrent->arTypeIcons[$targetob->type]['medium'] ? $ARCurrent->arTypeIcons[$targetob->type]['medium'] : $targetob->call("system.get.icon.php", array('size' => 'medium'));
+			$icon = ($ARCurrent->arTypeIcons[$targetob->type]['medium']??null) ? $ARCurrent->arTypeIcons[$targetob->type]['medium'] : $targetob->call("system.get.icon.php", array('size' => 'medium'));
 
 			$iconalt = $targetob->type;
 			if ( $targetob->implements("pshortcut") ) {
 				$overlay_icon = $icon;
 				$overlay_alt = $targetob->type;
-				if ( $ARCurrent->arTypeIcons[$targetob->vtype]['medium'] ) {
+				if ( $ARCurrent->arTypeIcons[$targetob->vtype]['medium'] ?? null ) {
 					$icon = $ARCurrent->arTypeIcons[$targetob->vtype]['medium'];
 				} else {
 					$icon = current($targetob->get($targetob->data->path, "system.get.icon.php", array('size' => 'medium')));
@@ -87,16 +87,16 @@
                         } else {
                             echo '<div>';
                         }
-                        echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
+                        echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt??'') . '" title="' . htmlspecialchars($iconalt??'') . '" class="typeicon">';
 
-			if ( $overlay_icon ) {
-				echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
+			if ( $overlay_icon ?? null) {
+				echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
 			}
 			echo '<div class="name">' . $targetob->nlsdata->name . ' ';
 			echo '( <span class="crumbs" title="' . $oldcrumbs . '">' . $crumbs . '</span> )';
 			echo '</div>';
 			echo '<div class="path">' . $path . '</div>';
-			if ($total > 0 && !$targetob->checkfailed) {
+			if ($total > 0 && !( $targetob->checkfailed ?? false ) ) {
 				echo sprintf( $ARnls['q:removeall'], $targetob->nlsdata->name, $total);
 			}
                         echo '</div>';

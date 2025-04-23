@@ -57,20 +57,20 @@
 
 			switch($method) {
 				case 'GET' :
-					$result = isset($name) ? $_GET[$name] : $_GET;
+					$result = isset($name) ? ( $_GET[$name] ?? null ) : $_GET;
 				break;
 				case 'POST' :
-					$result = isset($name) ? $_POST[$name] : $_POST;
+					$result = isset($name) ? ( $_POST[$name] ?? null ) : $_POST;
 				break;
 				case 'COOKIE' :
-					$result = isset($name) ? $_COOKIE[$name] : $_COOKIE;
+					$result = isset($name) ? ( $_COOKIE[$name] ?? null ) : $_COOKIE;
 				break;
 				case 'SERVER' :
-					$result = isset($name) ? $_SERVER[$name] : $_SERVER;
+					$result = isset($name) ? ( $_SERVER[$name] ?? null ) : $_SERVER;
 				break;
 				default :
 					$result = !isset($name) ? $_REQUEST :
-						( isset($_POST[$name]) ? $_POST[$name] : $_GET[$name] );
+						( $_POST[$name] ?? ( $_GET[$name] ?? null ) );
 				break;
 			}
 			if (self::$tainting) {
@@ -185,7 +185,7 @@
 				$this->statusCode = $statusLine[1];
 			}
 
-			$this->requestHeaders = $options['header'];
+			$this->requestHeaders = $options['header'] ?? null;
 			return $result;
 		}
 
@@ -213,7 +213,7 @@
 			if (is_array($headers)) {
 				$headers = join("\r\n", $headers);
 			}
-			$this->options['header'] = $this->options['headers'].$headers;
+			$this->options['header'] = ($this->options['headers'] ?? '').$headers;
 			return $this;
 		}
 	}

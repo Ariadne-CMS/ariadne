@@ -1,0 +1,5 @@
+These tests are used for a quick http surface test to check if the demo site, login page, explore backend report any errors after installation.
+
+run.sh is used to run all the tests.
+
+To run individual tests, first run env.sh manually (or export your own variables first).

@@ -76,19 +76,24 @@ class TestHTML extends PHPUnit_Framework_TestCase
 
     function testEncoding()
     {
-        $euro = "\uc280";
-        $htmlString = "<html><head><title>Encodingtest</title></head><body>$euro</body></html>";
+        $entities = 'I&ntilde;t&euml;rn&acirc;ti&ocirc;n&agrave;liz&aelig;ti&oslash;n';
+        $i18n = html_entity_decode($entities, ENT_HTML5, 'UTF-8');
+
+        $htmlString = "<html><head><title>Encodingtest</title></head><body>$i18n</body></html>";
         $html = \arc\html::parse($htmlString, "utf-8");
-        $euroEl = $html->body->nodeValue;
-        $this->assertEquals( $euro, (string) $euroEl );
-        $htmlString = "<html><body>$euro</body></html>";
+        $i18nEl = $html->body->nodeValue;
+        $this->assertEquals( $i18n, (string) $i18nEl );
+
+        $htmlString = "<html><body>$i18n</body></html>";
         $html = \arc\html::parse($htmlString, "utf-8");
-        $euroEl = $html->body->nodeValue;
-        $this->assertEquals( $euro, (string) $euroEl );
-        $htmlString = "<ul><li>$euro</li></ul>";
+        $i18nEl = $html->body->nodeValue;
+        $this->assertEquals( $i18n, (string) $i18nEl );
+
+        $htmlString = "<ul><li>$i18n</li></ul>";
         $html = \arc\html::parse($htmlString, "utf-8");
-        $euroEl = $html->ul->li->nodeValue;
-        $this->assertEquals( $euro, (string) $euroEl );
+        $i18nEl = $html->ul->li->nodeValue;
+        $this->assertEquals( $i18n, (string) $i18nEl );
+
     }
 
 }

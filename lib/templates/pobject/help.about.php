@@ -19,7 +19,7 @@ include(AriadneBasePath."/version.php");
 				<div id="data">
 					<div id="version">
 					Version <?php echo $ARversion['version'];?><br>
-					<?php echo strftime('%B %d, %G',$ARversion['date']);?><br><br>
+					<?php echo DateTimeImmutable::createFromFormat('U', $ARversion['date'])->format('F d, Y'); ?><br><br>
 					&copy; 1998 - <?php echo $ARversion['year'];?> <a href="http://www.muze.nl/" target="_blank">Muze</a>
 					</div>
 					<form action="">

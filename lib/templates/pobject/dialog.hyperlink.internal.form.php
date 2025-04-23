@@ -14,7 +14,7 @@
 		$arnofollow  = ($this->getvar('rel') == "nofollow");
 
 		$matches = array();
-		if (preg_match('|(.*)#([^#]*)$|', $url, $matches)) {
+		if (preg_match('|(.*)#([^#]*)$|', $url??'', $matches)) {
 			if (!$aranchor) {
 				$aranchor = $matches[2];
 			}
@@ -27,12 +27,12 @@
 	}
 
 	function hyperlinkBrowse( path ) {
-		var objectURL = "<?php echo $this->make_ariadne_url($wgBrowsePath); ?>";
+		var objectURL = "<?php echo $this->make_ariadne_url($wgBrowsePath??''); ?>";
 		var linkURL = muze.load( objectURL + 'dialog.makeLocalURL.ajax?path=' + escape(path), true, false );
 		if (!linkURL) {
 			linkURL = objectURL;
 		}
-		window.open( linkURL + "dialog.browse.php?pathmode=siterelative&root=<?php echo urlencode($root); ?>", "browse", "height=480,width=750");
+		window.open( linkURL + "dialog.browse.php?pathmode=siterelative&root=<?php echo urlencode($root??''); ?>", "browse", "height=480,width=750");
 		return false;
 	}
 
@@ -42,12 +42,12 @@
 		<div class="field">
 			<input type="hidden" name="artype" value="internal">
 			<label for="arpath" class="required"><?php echo $ARnls["path"]; ?></label>
-			<input type="text" id="arpath" name="arpath" value="<?php echo htmlspecialchars($arpath); ?>" class="inputline wgWizAutoFocus">
+			<input type="text" id="arpath" name="arpath" value="<?php echo htmlspecialchars($arpath??''); ?>" class="inputline wgWizAutoFocus">
 			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick="return hyperlinkBrowse(document.getElementById('arpath').value);">
 		</div>
 		<div class="field">
 			<label for="aranchor"><?php echo $ARnls["ariadne:editor:anchor"]; ?></label>
-			<input type="text" id="aranchor" name="aranchor" value="<?php echo htmlspecialchars($aranchor); ?>" class="inputline">
+			<input type="text" id="aranchor" name="aranchor" value="<?php echo htmlspecialchars($aranchor??''); ?>" class="inputline">
 		</div>
 		<div class="field">
 			<label for="arlanguage"><?php echo $ARnls["ariadne:editor:language"]; ?></label>

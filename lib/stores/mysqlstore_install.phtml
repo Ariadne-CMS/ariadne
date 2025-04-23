@@ -33,6 +33,8 @@ CREATE TABLE ".$this->tbl_prefix."objects (
 	vtype varchar(32) DEFAULT '' NOT NULL,
 	lastchanged TIMESTAMP,
 	PRIMARY KEY (id),
+	KEY type (type),
+	KEY vtype (vtype),
 	KEY lastchanged (lastchanged)
 ) ENGINE " . $this->engine ;
 		$queries[2]["msg"]="creating properties table.";
@@ -51,6 +53,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	KEY implements (implements)
 ) ENGINE " . $this->engine ;
 
+		$error = false;
 		while ((list($key, $query)=each($queries)) && (!$error)) {
 			if ($query["msg"]) {
 				echo $query["msg"]."\n";
@@ -80,40 +83,35 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		switch($type) {
 			case "string": 
 				if ($size>0 && $size<256) {
-					$indexstring.="AR_$name,";
 					if (!isset($default)) {
 						$default = "";
 					}
 					$result="varchar($size) default '$default' not null\n";
 				} else {
 					$result=0;
-					$this->error="Wrong format for typedefinition $name: incorrect size."; 
+					$this->error="Wrong format for typedefinition $type($size): incorrect size."; 
 				}
 				break;
 			case "number":
 				if (!isset($default)) {
 					$default = 0;
 				}
-				$indexstring.="AR_$name,";
 				$result="int default $default not null\n";
 				break;
 			case "decimal":
 				if (!isset($default)) {
 					$default = 0;
 				}
-				$indexstring.="AR_$name,";
 				$result="decimal($size) default $default not null\n";
 				break;
 			case "boolean":
 				if (!isset($default)) {
 					$default = 0;
 				}
-				$indexstring.="AR_$name,";
 				$result="bool default $default not null\n";
 				break;
 			case "text":
 				$result="mediumtext not null\n";
-				$ftindexstring.="AR_$name,";
 				break;
 		}
 		return $result;
@@ -271,6 +269,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		$result=1;
 		$this->error="";
 		$ftindexstring="";
+		$indexstring="";
 		if (preg_match("/^[a-z][a-z0-9_-]*$/i",$property) && strlen($property)<=16) {
 			$create_string="create table ".$this->tbl_prefix."prop_".AddSlashes($property)." (\n";
 			foreach ($definition['fields'] as $name => $typedef) {
@@ -280,7 +279,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 					break;
 				}	 
 				$create_string.= "	AR_".$name."	";
-				$create_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+				$create_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default'] ?? null );
 				$create_string.= ",";
 				if ($typedef['type'] != 'text') {
 					$indexstring .= "AR_$name,";
@@ -292,10 +291,10 @@ CREATE TABLE ".$this->tbl_prefix."types (
 				// now add the 'object' field.
 				$create_string.="object int not null,\n";
 				// now add the correct indexes.
-				if ($indexes=="none") {
+				if (($definition['indexes']??null)=="none") {
 					$indexstring="";
 				} else {
-					if ($definition['indexes'] && is_array($definition['indexes'])) {
+					if (is_array($definition['indexes']??null)) {
 						$indexstring="";
 						foreach ($definition['indexes'] as $key => $values) {
 							$indexstring.="index id".$key."(";

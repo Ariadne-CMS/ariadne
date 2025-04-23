@@ -43,7 +43,7 @@
 			if ($this->data->middlename) {
 				$this->data->name.=" ".$this->data->middlename;
 			}
-			if (!$this->data->nls) {
+			if ( !isset( $this->data->nls ) ) {
 				$this->data->nls=new baseObject;
 			}
 			$properties["name"][]["value"]=$this->data->name;
@@ -56,7 +56,7 @@
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
 				if ($summary=$this->getdata("summary", $key)) {
-					if (!$this->data->$key) {
+					if ( !isset( $this->data->$key ) ) {
 						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;

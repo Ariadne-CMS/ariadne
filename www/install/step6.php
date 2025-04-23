@@ -68,6 +68,7 @@
 
 		// declare default object,
 		if (!class_exists('baseObject',false)) {
+			#[\AllowDynamicProperties]
 			class baseObject { }           // do not change
 		}
 
@@ -87,6 +88,7 @@
 			include("conf/salt.conf");
 			include("conf/session.conf");
 			include("conf/loader.conf");
+			include("conf/nls.conf");
 			include("conf/im.conf");
 			include("conf/svn.conf");
 
@@ -274,8 +276,8 @@
 								?>
 								<h2><?php echo $ARnls['install:download_config']; ?></h2>
 								<p><?php echo $ARnls['install:cant_write_config']; ?></p>
-								<p><?php echo $ARnls['install:to_continue']; ?> <a href="download_config.php" target="_blank"><?php echo $ARnls['install:download']; ?></a> <?php echo $ARnls['file_should_be']; ?>
-								<p><?php echo $ARnls['continue_when_done']; ?></p>
+								<p><?php echo $ARnls['install:to_continue']; ?> <a href="download_config.php" target="_blank"><?php echo $ARnls['install:download']; ?></a> <?php echo $ARnls['install:file_should_be']; ?>
+								<p><?php echo $ARnls['install:continue_when_done']; ?></p>
 								<input type="submit" class="button" name="downloaded_config" value="<?php echo $ARnls['install:continue_install']; ?>">
 								<?php
 								// show button to install after configfile has been placed.

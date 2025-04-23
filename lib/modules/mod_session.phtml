@@ -1,4 +1,5 @@
 <?php
+#[\AllowDynamicProperties]
 class session {
 
 	protected $changed = false;
@@ -6,9 +7,10 @@ class session {
 	function __construct($session_config, $id=0) {
 		debug("session([array],$id)","store");
 		// init session store
+
 		$inst_store = $session_config["dbms"]."store";
 		include_once($session_config["code"]."stores/$inst_store.phtml");
-		$this->sessionstore=new $inst_store($session_config["root"], $session_config);
+		$this->sessionstore=new $inst_store(($session_config['root'] ?? null), $session_config);
 
 		$this->timeout=$session_config["timeout"];
 		$this->updateInterval = $session_config["timeout"]/10;
@@ -16,6 +18,7 @@ class session {
 		if ((!$id) || (!$this->sessionstore->exists("/$id/"))) {
 			debug("session: generating new id", "all");
 			// generate new id
+			$attempts = 0;
 			do {
 				$attempts++;
 				$id = false;
@@ -54,7 +57,7 @@ class session {
 				$this->timeout = $this->system->timeout;
 			}
 			unset($result->data->system);
-			if ($result->data->ARSessionTimedout || $this->timeout && $this->lastchanged < (time()-$this->timeout)) {
+			if (($result->data->ARSessionTimedout ?? null) || $this->timeout && $this->lastchanged < (time()-$this->timeout)) {
 				debug("session: ".$this->id." ARSessionTimedout", "all");
 				$this->system->ARSessionTimedout = true;
 			}
@@ -66,14 +69,14 @@ class session {
 	}
 
 	function put($varname, $value, $system=0) {
-		debug("session->put($varname,$value,$system)","store");
+		debug("session->put($varname," . print_r($value, true) . ",$system)","store");
 		if (!$system) {
-			if ($this->data->$varname !== $value) {
+			if (($this->data->$varname ?? null) !== $value) {
 				$this->data->$varname=$value;
 				$this->changed = true;
 			}
 		} else {
-			if ($this->system->$varname !== $value) {
+			if (($this->system->$varname ?? null) !== $value) {
 				$this->system->$varname=$value;
 				$this->changed = true;
 			}
@@ -83,10 +86,15 @@ class session {
 
 	function get($varname, $system=0) {
 		debug("session->get($varname, $system)","store");
-		if (!$system) {
-			$result = $this->data->$varname;
+		$result = null;
+		if ( !$system ) {
+			if ( isset( $this->data->$varname ) ) {
+				$result = $this->data->$varname;
+			}
 		} else {
-			$result = $this->system->$varname;
+			if ( isset( $this->system->$varname ) ) {
+				$result = $this->system->$varname;
+			}
 		}
 		debug("session->get: end","all");
 		return $result;

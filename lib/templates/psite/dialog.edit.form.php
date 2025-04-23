@@ -46,22 +46,22 @@
 		if (getenv("ARIADNE_WORKSPACE") && workspace::enabled($this->path)) {
 	?>
 	<div class="field">
-		<label for="name" class="required"><?php echo $ARnls["ariadne:workspace:url"] . ": " . $workspace; ?></label>
+		<label for="name" class="required"><?php echo $ARnls["ariadne:workspace:url"] . ": "; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<input id="name" type="text" name="<?php echo $selectednls."[workspaceurl]"; ?>"
 			value="<?php
 					if (!$workspaceurl = $this->getdata("workspaceurl", $selectednls)) {
-						if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
+						if (!($this->arIsNewObject??null) && ($selectednls==$this->data->nls->default)) {
 							$url = $this->getdata("workspaceurl", "none");
 						}
 					}
-					echo htmlspecialchars( $workspaceurl, ENT_QUOTES, 'UTF-8');
+					echo htmlspecialchars( $workspaceurl??'', ENT_QUOTES, 'UTF-8');
 				?>" class="inputline">
 	</div>
 	<?php
 		}
 	?>
-	<?php if (!$arNewType) { ?>
+	<?php if (!($arNewType??null)) { ?>
 	<div class="field">
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
@@ -82,7 +82,7 @@
 	</div>
 	<?php } ?>
 	<?php
-		if ( $arNewType ) {
+		if ( $arNewType??null ) {
 			$this->call('dialog.edit.form.scaffolds.php', $this->getvar('arCallArgs'));
 		}
 	?>

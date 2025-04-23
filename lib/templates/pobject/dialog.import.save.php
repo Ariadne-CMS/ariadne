@@ -3,6 +3,9 @@
 		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
+	if (!isset($srcpath)) {
+		$srcpath = '';
+	}
 	ldDisablePostProcessing();
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		function progress($current, $total) {
@@ -20,7 +23,7 @@
 		function display($str) {
 			echo "<script type='text/javascript'>\n";
 			echo "var line = document.createElement('SPAN');";
-			echo "line.innerHTML = '" . str_replace("\n", "<br>", AddSlashes(htmlspecialchars($str))) . "';\n";
+			echo "line.innerHTML = '" . str_replace("\n", "<br>", AddSlashes(htmlspecialchars($str??''))) . "';\n";
 			echo "document.getElementById('progress_verbose').appendChild(line);\n";
 			echo "</script>";
 			flush();
@@ -31,7 +34,7 @@
                 <?php echo $ARnls['importobject'] . " $srcpath"; ?>
 		<div id="progressbar">
 			<div id="progress"></div>
-			<div id="progress_text">0/<?php echo $total; ?></div>
+			<div id="progress_text">0/<?php echo ($total ?? 0); ?></div>
 		</div>
 	</div>
 </div>

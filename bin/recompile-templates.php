@@ -18,7 +18,7 @@
 	}
 
 	$inst_store = $store_config["dbms"]."store";
-	$store=new $inst_store($root,$store_config);
+	$store=new $inst_store($root??null,$store_config);
 
 	/* now load a user (admin in this case)*/
 	$login = "admin";

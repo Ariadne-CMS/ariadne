@@ -1,4 +1,5 @@
 <?php
+#[\AllowDynamicProperties]
 class ar_core_pinpSandbox extends arBase {
 	public $this;
 	public $data;
@@ -17,25 +18,32 @@ class ar_core_pinpSandbox extends arBase {
 	public $reqnls;
 	public $arIsNewObject;
 	public $ARnls;
+	public $arConfig;
 
 	public function __construct($scope) {
+		$properties = array(
+			"data",
+			"customdata",
+			"nlsdata",
+			"customnlsdata",
+			"path",
+			"parent",
+			"type",
+			"vtype",
+			"priority",
+			"id",
+			"lastchanged",
+			"size",
+			"nls",
+			"reqnls",
+			"arIsNewObject",
+			"ARnls"
+		);
+		
 		$this->this          = $scope;
-		$this->data          = $scope->data;
-		$this->customdata    = $scope->customdata;
-		$this->nlsdata       = $scope->nlsdata;
-		$this->customnlsdata = $scope->customnlsdata;
-		$this->path          = $scope->path;
-		$this->parent        = $scope->parent;
-		$this->type          = $scope->type;
-		$this->vtype         = $scope->vtype;
-		$this->priority      = $scope->priority;
-		$this->id            = $scope->id;
-		$this->lastchanged   = $scope->lastchanged;
-		$this->size          = $scope->size;
-		$this->nls           = $scope->nls;
-		$this->reqnls        = $scope->reqnls;
-		$this->arIsNewObject = $scope->arIsNewObject;
-		$this->ARnls         = $scope->ARnls;
+		foreach ($properties as $property) {
+			$this->{$property} = $scope->{$property} ?? null;
+		}
 	}
 
 	private function isSafeCallable( $callable ) {
@@ -104,7 +112,7 @@ class ar_core_pinpSandbox extends arBase {
 				case 'array_filter':
 				case 'array_reduce':
 				case 'preg_replace_callback':
-					if ( $this->isSafeCallable($args[1])) {
+					if ( $this->isSafeCallable($args[1] ?? null)) {
 						return call_user_func_array( $function, $args );
 					}
 				break;
@@ -116,7 +124,7 @@ class ar_core_pinpSandbox extends arBase {
 				case 'array_udiff':
 				case 'array_udiff_assoc':
 					$l = count($args);
-					if ( $this->isSafeCallable($args[$l-1]) ) {
+					if ( $this->isSafeCallable($args[$l-1] ?? null) ) {
 						return call_user_func_array( $function, $args );
 					}
 				break;
@@ -124,7 +132,7 @@ class ar_core_pinpSandbox extends arBase {
 				case 'array_udiff_uassoc':
 				case 'array_uintersect_uassoc':
 					$l = count($args);
-					if ( $this->isSafeCallable($args[$l-1]) && $this->isSafeCallable( $args[$l-2] ) ) {
+					if ( $this->isSafeCallable($args[$l-1] ?? null) && $this->isSafeCallable( $args[$l-2] ?? null ) ) {
 						return call_user_func_array( $function, $args );
 					}
 				break;

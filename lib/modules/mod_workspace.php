@@ -5,24 +5,28 @@
 	(c) Muze 2011;
 */
 	class workspace {
-		function getLayer($workspace) {
+
+
+		static function getLayer($workspace) {
 			$layers = array( // FIXME: should only define this once, not every time function is called.
 				"live" => 0,
 				"workspace" => 1
 			);
-			return $layers[$workspace];
+			return $layers[$workspace] ?? null;
 		}
 
-		function enabled($path, $workspace="workspace") {
+		static function enabled($path, $workspace="workspace") {
+			$context = pobject::getContext();
+			$me = $context['arCurrentObject'];
 			// Check if the current path has an active workspace. Useful to warn the user that changes will not be directly visible.
 
-			if ($this->store->getLayer($path) == workspace::getLayer($workspace)) {
+			if ($me->store->getLayer($path) == workspace::getLayer($workspace)) {
 				return true;
 			}
 			return false;
 		}
 
-		function status($path, $recursive=false, $workspace="workspace") {
+		static function status($path, $recursive=false, $workspace="workspace") {
 			// Get the status of changes for the current path. This checks only the changes for this object, recursion to child objects is handled seperately.
 			// If $recursive is true, it will also check for
 			// changes in child objects. The resulting array
@@ -56,14 +60,14 @@
 
 			if (is_array($layerstatus)) {
 				if (!$recursive) {
-					if ($layerstatus[$me->path] && is_array($layerstatus[$me->path]['operation'])) {
+					if ( ( $layerstatus[$me->path] ?? null ) && is_array($layerstatus[$me->path]['operation'] ?? null)) {
 						foreach ($layerstatus[$me->path]['operation'] as $operation) {
 							$result[$operation] = true;
 						}
 					}
 				} else {
 					foreach ($layerstatus as $path) {
-						if (is_array($layerstatus[$path]['operation'])) {
+						if (is_array( $layerstatus[$path]['operation'] ?? null )) {
 							foreach ($layerstatus[$me->path]['operation'] as $operation) {
 								$result[$operation] = true;
 							}
@@ -75,7 +79,7 @@
 			return $result;
 		}
 
-		function diff($path, $recursive=false, $workspace="workspace") {
+		static function diff($path, $recursive=false, $workspace="workspace") {
 			// Get the changes for the current path against the current live. If recursive is true, it also returns the changes for the child objects.
 
 			return array(
@@ -98,19 +102,19 @@
 			);
 		}
 
-		function commit($paths, $workspace="workspace") {
+		static function commit($paths, $workspace="workspace") {
 			// Commit the changes that have been made in the active workspace to the actual store.
 			// $paths is an array containing the paths that will be commited.
 			return true;
 		}
 
-		function revert($paths, $workspace="workspace") {
+		static function revert($paths, $workspace="workspace") {
 			// Revert/discard the changes in the active workspace.
 			// $paths is an array containing the paths that will be reverted.
 			return true;
 		}
 
-		function activate($path, $workspace="workspace") {
+		static function activate($path, $workspace="workspace") {
 			// Activate the workspace for the current path. All
 			// calls on objects will return the workspaced
 			// version when this has been called. This should be

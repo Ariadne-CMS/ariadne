@@ -8,7 +8,7 @@
 			$me = $context["arCurrentObject"];
 			$path = $me->make_path($path);
 			$newpath = $path;
-			$redirects = $ARCurrent->shortcut_redirect;
+			$redirects = $ARCurrent->shortcut_redirect ?? null;
 			if (is_array($redirects)) {
 				while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest'] && $redir['keepurl']) {
 					$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));
@@ -23,7 +23,7 @@
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$path = $me->make_path($path);
-			if (@count($ARCurrent->shortcut_redirect)) {
+			if (@count($ARCurrent->shortcut_redirect ?? [])) {
 				$redir = reset($ARCurrent->shortcut_redirect);
 				if ($redir["keepurl"]) { // && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
 					$path = $redir["src"];
@@ -67,6 +67,7 @@
 
 			$path = $me->make_path($path);
 			$originalPath = $path;
+			$prevPath = null;
 			while ($path != $prevPath && !$me->exists($path)) {
 				$prevPath = $path;
 				$path = $me->make_path($path.'../');

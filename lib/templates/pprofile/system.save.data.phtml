@@ -32,7 +32,7 @@
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = array();
 
-		$properties["value"][]["value"]=$value;
+		$properties["value"][]["value"]=$value??'';
 		$this->data->name=$this->getdata("name","none");
 		$properties["name"][]["value"]=$this->data->name;
 		$properties["text"][]["value"]=$this->data->name;

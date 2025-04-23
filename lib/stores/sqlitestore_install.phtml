@@ -1,0 +1,592 @@
+<?php
+
+include_once( $ariadne . "/stores/sqlitestore.phtml");
+
+class sqlitestore_install extends sqlitestore {
+
+	public function __construct($path, $config) {
+		parent::__construct($path, $config);
+	}
+
+	function initialize() {
+		echo "initializing sqlite store.\n";
+
+		$tablename = $this->tbl_prefix . "nodes";
+
+		$queries = [];
+
+		$queries[0]["msg"]="creating nodes table.";
+		$queries[0]["query_string"]="
+CREATE TABLE " . $tablename . " (
+	path char(255) DEFAULT '' NOT NULL PRIMARY KEY,
+	parent char(255) DEFAULT '' NOT NULL,
+	object int(11) DEFAULT 0 NOT NULL,
+	priority int(11) DEFAULT 0 NOT NULL
+);";
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'object' on nodes table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_object on $tablename (object)"
+			]
+		;
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'parent' on nodes table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_parent on $tablename (parent)"
+			]
+		;
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'priority' on nodes table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_priority on $tablename (priority)"
+			]
+		;
+
+
+		$tablename = $this->tbl_prefix . "objects";
+
+		$queries[] =
+			[
+				"msg" =>
+					"creating objects table."
+				,
+				"query_string" => "
+CREATE TABLE " . $tablename . " (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	type char(32) DEFAULT '' NOT NULL,
+	object text,
+	vtype char(32) DEFAULT '' NOT NULL,
+	lastchanged UNSIGNED INTEGER NOT NULL DEFAULT ( strftime( '%s', 'now' ) )
+)"
+			]
+		;
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'type' on objects table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_type on $tablename (type)"
+			]
+		;
+
+
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'vtype' on objects table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_vtype on $tablename (vtype)"
+			]
+		;
+
+
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'lastchanged' on objects table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_lastchanged on $tablename (lastchanged)"
+			]
+		;
+
+
+		$tablename = $this->tbl_prefix . "properties";
+
+		$queries[] =
+			[
+				"msg" =>
+					"creating properties table."
+				,
+				"query_string" => "
+CREATE TABLE " . $tablename . " (
+	name char(21) DEFAULT '' NOT NULL PRIMARY KEY
+)"
+			]
+		;
+
+
+		$tablename = $this->tbl_prefix . "types";
+
+
+		$queries[] =
+			[
+				"msg" =>
+					"creating types table."
+				,
+				"query_string" => "
+CREATE TABLE " . $tablename . " (
+	type char(32) DEFAULT '' NOT NULL,
+	implements char(32) DEFAULT '' NOT NULL
+)"
+			]
+		;
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'type' on types table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_type on $tablename (type)"
+			]
+		;
+		$queries[] =
+			[
+				"msg" =>
+					"creating index 'implements' on types table"
+				,
+				"query_string" =>
+					"CREATE INDEX " . $tablename . "_implements on $tablename (implements)"
+			]
+		;
+
+
+		$error = false;
+		foreach ( $queries as $key => $query ) {
+			if ($query["msg"]) {
+				echo $query["msg"]."\n";
+			}
+			$qresult = $this->store_run_query($query["query_string"]);
+
+			if (!$qresult) {
+				$error=$this->error;
+				error("sqlite: $error");
+				continue;
+			}
+		}
+
+
+		if (!$error) {
+			$return=true;
+			// initialize locking tables
+			$this->mod_lock->init($this->tbl_prefix);
+
+			echo "sqlite store initialized.\n\n";
+		} else {
+			$return=false;
+		}
+		return $return;
+	}
+
+	function _generate_column_def($type, $size, $default = null) {
+		switch($type) {
+			case "string": 
+				if ($size>0 && $size<256) {
+					if (!isset($default)) {
+						$default = "";
+					}
+					$result="char($size) default '$default' not null\n";
+				} else {
+					$result=0;
+					$this->error="Wrong format for typedefinition $type($size): incorrect size."; 
+				}
+				break;
+			case "number":
+				if (!isset($default)) {
+					$default = 0;
+				}
+				$result="int default $default not null\n";
+				break;
+			case "decimal":
+				if (!isset($default)) {
+					$default = 0;
+				}
+				$result="decimal($size) default $default not null\n";
+				break;
+			case "boolean":
+				if (!isset($default)) {
+					$default = 0;
+				}
+				$result="bool default $default not null\n";
+				break;
+			case "text":
+				$result="text not null\n";
+				break;
+		}
+		return $result;
+	}
+	
+	function alter_property($property, $definition) {
+		if ( ! $this->has_property ( $property ) ) {
+			return $this->create_property($property, $definition);
+		}
+		$table = $this->tbl_prefix."prop_".AddSlashes($property);
+		$tablespec = $this->getTableDefinition($table);
+		$indexspec = $this->getIndexDefinition($table);
+		$ftindex   = array();
+		$autoindex = array();
+		foreach ($definition['fields'] as $name => $typedef) {
+			$alter_string="alter table ".$table." ";
+
+			if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
+				$result=0;
+				$this->error="Wrong format for type: $name";
+				error($this->error);
+				break;
+			}
+			$tname =  "AR_".$name;
+			if ($typedef['type'] != 'text') {
+				$autoindex[] = $name;
+			} else {
+				$ftindex[] = $name;
+			}
+
+			$currentSpec = $tablespec[$tname];
+			if ( isset($currentSpec) ) {
+				if(
+					( $typedef['type'] == 'string' &&  (
+						$typedef['size'] > $currentSpec['typelength'] ||
+						$typedef['default'] != $currentSpec['default']
+						)
+					) ||
+					( $typedef['type'] == 'number' &&  (
+						isset($typedef['default']) && $typedef['default'] != $currentSpec['default']
+						)
+					) ||
+					( $typedef['type'] == 'boolean' &&  (
+						$typedef['default'] != $currentSpec['default']
+						)
+					)
+				) {
+
+					$alter_string.= " modify ".$tname." ";
+					$alter_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+
+					$qresult = $this->store_run_query($alter_string);
+					print $alter_string . "\n";;
+
+					if (!$qresult ) {
+						error($this->error);
+					}
+				}
+			} else {
+				// field is new
+				$alter_string.= " add ".$tname." ";
+				$alter_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+				$qresult = $this->store_run_query($alter_string);
+				echo $alter_string."\n";
+
+				if (!$qresult ) {
+					error($this->error);
+				}
+			}
+		}
+		// get indexes
+		// match default index
+		// match indexes
+		if($definition['indexes'] != 'none' && !is_array($definition['indexes']) ){
+			// automatic index creation, stub data
+			$definition['indexes'][0] = $autoindex;
+		}
+		if(is_array($definition['indexes']) && count($definition['indexes'])){
+			// indexes are explicit defined
+			foreach($definition['indexes'] as $key => $indexdef) {
+				$indexname = 'id'.$key;
+				$trans = array_map(function($name) { return 'AR_'. $name ; }, $indexdef);
+				$diff = array_diff_assoc($trans,$indexspec[$indexname]);
+				if( count($diff) != 0 ){
+					if(isset($indexspec[$indexname])) {
+						$query = "alter table $table drop index $indexname";
+						$qresult = $this->store_run_query($query);
+						if (!$qresult ) {
+							error($this->error);
+						}
+					}
+
+					$query = "alter table $table add index $indexname (".join(',',$trans).")";
+					$qresult = $this->store_run_query($query);
+					if (!$qresult ) {
+						error($this->error);
+					}
+				} 
+			}
+		}
+		if(count($ftindex)){
+			$ftindex = array_map(function($name) { return 'AR_'. $name ; }, $ftindex);
+			$curindex =(array)$indexspec['fti'];
+			$diff = array_diff_assoc($ftindex, $curindex);
+			if(  count($diff) != 0 ){
+				if(isset($indexspec['fti'])){
+					$query = "alter table $table drop index fti";
+					$qresult = $this->store_run_query($query);
+					if (!$qresult ) {
+						error($this->error);
+					}
+				}
+
+				$query = "alter table $table add fulltext index fti (".join(',',$ftindex).")";
+				$qresult = $this->store_run_query($query);
+				if (!$qresult ) {
+					error($this->error);
+				}
+			}
+		}
+	}
+
+
+	function create_property($property, $definition) {
+	/**********************************************************************
+
+		This function creates a new property type. This property can then be
+	used by objects to set special information on which to quickly search
+	using find.
+
+	$name must be a string of at most 16 characters from the set [a-zA-Z0-9_] 
+	or '-', starting with a letter (a-zA-Z).
+
+	$definition describes which name value pairs this property contains and
+	which type (and size) each value is.
+	$definition is defined as: $definition[{name}][{type}]={size}
+		{name} is defined like $name above
+		(type} can be 'number', 'string', 'text' or 'boolean'
+		{size} is only used for the string type and can not be more than 255. 
+	$indexes describes which indexes the storage layer should consider
+		for the property. Default behaviour is to create one index for the
+		complete set of name-value pairs. If you want you can create a smaller
+		index, or more than one index.
+	$indexes is defined as: $indexes[][]={name} || $indexes="none"
+		e.g. $indexes[0][0]="name1";
+	 $indexes[1][0]="name2"
+				 $indexes[1][1]="name3";
+		this would create two indexes, one on "name1" and one on "name2" and
+		"name3".
+		{name} is defined like $name above. 
+	if $indexes is set to "none", no user indexes will be created on this 
+	property. This is usually not a good thing to do. 
+	 
+	**********************************************************************/
+		$result=1;
+		$this->error="";
+		$ftindexstring="";
+		$indexlist = [];
+		if (preg_match("/^[a-z][a-z0-9_-]*$/i",$property) && strlen($property)<=16) {
+			$tablename = $this->tbl_prefix."prop_".AddSlashes($property);
+			$create_string="create table $tablename (\n";
+			foreach ($definition['fields'] as $name => $typedef) {
+				if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
+					$result=0;
+					$this->error="Wrong format for type: $name";
+					break;
+				}	 
+				$create_string.= "	AR_".$name."	";
+				$create_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default'] ?? null );
+				$create_string.= ",";
+			}
+			if ($result) {
+				// now add the 'object' field.
+				$create_string.="object int not null\n";
+				// now add the correct indexes.
+				if ( is_array( $definition[ "indexes" ] ?? null ) && count( $definition[ "indexes" ] ) ) {
+					foreach ($definition['indexes'] as $key => $values) {
+						$indexstring="CREATE INDEX " . $tablename . "_id".$key." ON $tablename (";
+						$comma="";
+						foreach ($values as $key2 => $name) {
+							if (preg_match("/^[a-z][a-z0-9_-]*$/i",$name) && strlen($name)<=16) {
+								$indexstring.=$comma."AR_".$name;
+							} else {
+								$result=0;
+								$this->error="Wrong format for index ".$key." in: ".$name;
+								break;
+							}
+							$comma=",";
+						}
+						$indexstring.=")";
+						array_push( $indexlist, $indexstring );
+					}
+				} else {
+					$indexlist[] = "CREATE INDEX " . $tablename . "_id0 ON $tablename ( AR_$name ) ";
+				}
+				if ($ftindexstring) {
+					// create the full text index
+					$indexlist[] = "fulltext fti( AR_$name )";
+				}
+
+				if ($result) {
+					// finally add the index on the object field and close the query.
+					$indexlist[] = "CREATE INDEX " . $tablename . "_object ON $tablename (object)";
+					$create_string .= ")\n";
+					$this->store_run_query($create_string);
+
+					foreach ( $indexlist as $query_string ) {
+						$this->store_run_query( $query_string );
+						$create_string .= $query_string . "\n";
+					}
+
+					$query_string="insert into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
+					$qresult = $this->store_run_query($query_string);
+
+					if (!$qresult ) {
+						error($this->error);
+					}
+					//FIXME: check for succes first, how?
+				}
+			}
+		} else {
+			$result=0;
+			$this->error="Wrong format for property name: $property";
+		}
+		debug("create_property: $create_string","store");
+		return $result;
+	}
+
+	function has_property($property) {
+		$this->error="";
+		$eproperty=AddSlashes($property);
+		$query_string="select 1 from ".$this->tbl_prefix."prop_$eproperty limit 1";
+		debug($query_string,"store");
+		$qresult = $this->store_run_query($query_string);
+		if (!$qresult) {
+			return false;
+		}
+		return true;	
+	}
+
+	function remove_property($property) {
+	/**********************************************************************
+
+		This function removes the property with the given name. It does not
+	check whether there are types left which use this property. It returns
+	true when the named property is succesfully removed. This means it also
+	returns true if the property didn't exist in the first place.
+	Otherwise it will return false.
+
+	**********************************************************************/
+
+		$this->error="";
+		$eproperty=AddSlashes($property);
+		$remove_string="drop table ".$this->tbl_prefix."prop_$eproperty";
+		debug($remove_string,"store");
+		$this->store_run_query($remove_string);
+
+		$query_string="delete from ".$this->tbl_prefix."properties where name='$eproperty'";
+		$qresult = $this->store_run_query($query_string);
+		if (!$qresult) {
+			error($this->error);
+		}
+		//FIXME: check for succes first, check whether table no longer exists.
+		return 1;
+	}
+	
+	function add_type($type, $implements) {
+	/**********************************************************************
+	
+		This function does not actually create a type, it only serves to
+	notify to the system that $type exists and that it implements the
+	type or interface given in $implements.
+	$type and $implements must be strings of at most 16 characters.
+
+	**********************************************************************/
+
+		$this->error="";
+		if ($type && $implements && (strlen($type)<33) && (strlen($implements)<33)) {
+			$etype=AddSlashes($type);
+			$eimplements=AddSlashes($implements);
+			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";
+			$qresult = $this->store_run_query($query_string);
+			if (!$qresult) {
+				error($this->error);
+			} else {
+				$result=1;
+			}	
+		} else {
+			$this->error="Wrong format for type or implements";
+		}
+		return $result;
+	}
+
+	function del_type($type, $implements="") {
+	/**********************************************************************
+
+		This function notifies the system that either:
+	1) A type no longer implements a certain type or interface, or
+	2) a type no longer exists.
+
+	**********************************************************************/
+
+		$this->error="";
+		$etype=AddSlashes($type);
+		if (!$implements) {
+			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' or implements='$etype'";
+		} else {
+			$eimplements=AddSlashes($implements);
+			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' and implements='$etype'";
+		}
+		$qresult = $this->store_run_query($query_string);
+		if (!$qresult) {
+			error($this->error);
+			$result=0;
+		} else {
+			$result=1;
+		}
+		return $result;
+	}
+
+	protected function getTableDefinition($table){
+		$result = array();
+		$qresult = $this->store_run_query('show columns from '.$table);
+		while($qresult && $row = $qresult->fetch_assoc()) {
+			$row = array_change_key_case ( $row, CASE_LOWER);
+			$rowresult['field']   = $row['field'];
+			$rowresult['extra']   = $row['extra'];
+			$rowresult['null']    = $row['null'];
+			$rowresult['default'] = $row['default'];
+
+			// parse type
+			preg_match('/([a-z]+)(\(([,0-9]+)\))?/i',$row['type'],$parsed);
+			$rowresult['type'] = $parsed[1];
+			if(isset($parsed[3]) && $parsed[3] !== '' ) {
+				$rowresult['typelength'] = $parsed[3];
+			}
+
+			$result[$row['field']] = $rowresult;
+		}
+		return $result;
+
+	}
+	protected function getIndexDefinition($table){
+		$result = array();
+		$qresult = $this->store_run_query('show index from '.$table);
+		while($qresult && $row = $qresult->fetch_assoc()) {
+			$row = array_change_key_case ( $row, CASE_LOWER);
+			// -1 because the definition is 0 based, and the db 1 based
+			$result[$row['key_name']][$row['seq_in_index'] -1] = $row['column_name'];
+		}
+		return $result;
+
+	}
+
+	/*
+	 * update ndoes table to minimal path length
+	 */
+	public function upgradeNodes() {
+		$tablespec = $this->getTableDefinition($this->tbl_prefix.'nodes');
+		foreach($tablespec as $row) {
+			if($row['field'] == 'path' || $row['field'] == 'parent') {
+				$length = $row['typelength'];
+				if(
+					( is_numeric($length) && $length >= 127) && // sanity check
+					( $length <= MAX_PATH_LENGTH ) // do we need a upgrade ?
+				) {
+					$query = 'alter table `'.$this->tbl_prefix.'nodes` CHANGE `'.$row['field'].'` `'.$row['field'].'` varchar('.(MAX_PATH_LENGTH+1).')  not null default ""';
+					print $query ."\n";
+					$upresult = $this->store_run_query($query);
+					if($upresult) {
+						print "Success\n";
+					}
+				}
+			}
+		}
+	}
+
+}

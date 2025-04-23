@@ -4,10 +4,11 @@
 
 	$ARCurrent->nolangcheck=true;
 	function objectDiff($object1, $object2, $prefix="") {
+		$result = "";
 		foreach ($object1 as $key => $value) {
 			if (is_string($value)) {
 				if (is_array($object1)) {
-					$diff = (string)ar_beta_diff::diff(htmlentities($object2[$key]), htmlentities($value));
+					$diff = (string)ar_beta_diff::diff(htmlentities($object2[$key] ?? null), htmlentities($value));
 
 					if ($diff) {
 						$result .= "<h2>" . $prefix . "[" . $key . "]</h2>";
@@ -17,7 +18,7 @@
 					}
 
 				} elseif (is_object($object1)) {
-					$diff = (string)ar_beta_diff::diff(htmlentities($object2->{$key}), htmlentities($value));
+					$diff = (string)ar_beta_diff::diff(htmlentities($object2->{$key} ?? null), htmlentities($value));
 
 					if ($diff) {
 						$result .= "<h2>" . $prefix . "->" . $key . "</h2>";
@@ -28,15 +29,15 @@
 				}
 			} elseif (is_array($value)) {
 				if (is_array($object1)) {
-					$result .= objectDiff($object1[$key], $object2[$key], $prefix . "[" . $key . "]");
+					$result .= objectDiff($object1[$key] ?? null, $object2[$key] ?? null, $prefix . "[" . $key . "]");
 				} elseif (is_object($object1)) {
-					$result .= objectDiff($object1->{$key}, $object2->{$key}, $prefix . "[" . $key . "]");
+					$result .= objectDiff($object1->{$key} ?? null, $object2->{$key} ?? null, $prefix . "[" . $key . "]");
 				}
 			} elseif (is_object($value)) {
 				if (is_array($object1)) {
-					$result .= objectDiff($value, $object2[$key], $prefix . "->" . $key);
+					$result .= objectDiff($value, $object2[$key] ?? null, $prefix . "->" . $key);
 				} elseif (is_object($object1)) {
-					$result .= objectDiff($value, $object2->{$key}, $prefix . "->" . $key);
+					$result .= objectDiff($value, $object2->{$key} ?? null, $prefix . "->" . $key);
 				}
 			}
  		}
@@ -58,7 +59,7 @@
 				$ob2 = current($this->get($path, "system.get.phtml"));
 
 				echo "<h1>" . $ob1->nlsdata->name . "</h1>";
-				echo objectDiff($ob1->data, $ob2->data, "data");
+				echo objectDiff($ob1->data ?? null, $ob2->data ?? null, "data");
 			}
 		}
 		// $this->call("window.close.objectadded.js");

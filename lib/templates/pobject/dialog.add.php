@@ -14,7 +14,7 @@
 			)
 		);
 
-		if ( $wgWizAction == 'save' ) {
+		if ( isset($wgWizAction) && ($wgWizAction == 'save') ) {
 			$wgWizButtons = array(
 				"cancel" => array(
 					"value" => $ARnls["cancel"]

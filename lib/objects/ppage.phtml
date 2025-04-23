@@ -57,9 +57,9 @@ class ppage extends pobject { // ppage class definition
 
 	function GetPage($nls="", $source=false, $full=false) {
 		if (!$nls) {
-			$target=$this->nlsdata->page;
+			$target=$this->nlsdata->page??'';
 		} else if ($this->data->$nls) {
-			$target=$this->data->$nls->page;
+			$target=$this->data->$nls->page??'';
 		}
 		if ($source) {
 			return htmlspecialchars($this->ParsePage($target, $full));

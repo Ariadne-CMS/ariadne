@@ -9,6 +9,9 @@
 		$password 	= $this->getdata('password');
 		$checkunder 	= $this->getdata('checkunder');
 		$revision	= $this->getdata('revision');
+		if ( !isset( $repoPath ) ) {
+			$repoPath = null;
+		}
 
 		if (!isset($repository) || $repository == '') {
 			echo $ARnls['err:svn:enterURL'];
@@ -20,7 +23,7 @@
 			$svn	= $fstore->connect($this->id, $username, $password);
 			$svn_info = $fstore->svn_info($svn);
 
-			if ($svn_info['revision']) {
+			if ($svn_info['revision'] ?? null) {
 				echo $this->path . " is already under version control - update instead.\n";
 			} else {
 				if ($repoPath) {
@@ -51,6 +54,11 @@
 					$result = $fstore->svn_checkout($svn, $repository, $revision);
 				}
 
+				if (ar_error::isError($result)) {
+					echo "ERROR: ".$result."\n"; flush();
+					flush();
+				}
+
 				if ($result) {
 					$last = array_pop($result);
 					$templates = array();
@@ -66,7 +74,7 @@
 						}
 						flush();
 					}
-					echo "<span class='svn_revisionline'>Done ".$last->path." Revision ".$last["revision"]."</span>\n\n";
+					echo "<span class='svn_revisionline'>Done ". ( $last[ "path" ] ?? "" ) . " Revision ".$last["revision"]."</span>\n\n";
 
 					$this->call(
 						"system.svn.compile.templates.php",

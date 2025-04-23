@@ -14,7 +14,7 @@
 		);
 
 		$wgWizAction = $this->getdata("wgWizAction");
-		if ($_SERVER["CONTENT_LENGTH"] && !$wgWizAction) {
+		if (($_SERVER["CONTENT_LENGTH"] ?? null) && !$wgWizAction) {
 			$this->error = $ARnls["err:fileupload"];
 		}
 

@@ -4,6 +4,7 @@
 	ar_pinp::allow( 'ar_htmlElement' );
 	ar_pinp::allow( 'ar_htmlNodes' );
 
+	#[\AllowDynamicProperties]
 	class ar_html extends ar_xml {
 
 		public static $xhtml = false;
@@ -223,6 +224,7 @@
 		}
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_htmlNodes extends ar_xmlNodes {
 
 		public function toString( $indentWith = null ) {
@@ -247,10 +249,12 @@
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_htmlNode extends ar_xmlNode {
 
 	}
 
+	#[\AllowDynamicProperties]
 	class ar_htmlElement extends ar_xmlElement {
 
 		public function __toString() {

@@ -24,7 +24,7 @@
 			if ( !$attributes ) {
 				$attributes = array();
 			}
-			if ( !$attributes['type'] ) {
+			if ( !($attributes['type']??null) ) {
 				$attributes['type'] = 'text/css';
 			}
 			parent::__construct( $tagName, $attributes, null, $parentNode );
@@ -49,7 +49,7 @@
 			$this->rules[$selector] = new ar_cssStyles(
 				$this->rules,
 				array_merge(
-					(array) $this->rules[$selector],
+					(array) ($this->rules[$selector]??null),
 					(array) $styles
 				)
 			);

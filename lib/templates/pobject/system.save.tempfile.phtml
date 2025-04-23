@@ -1,4 +1,11 @@
 <?php
+	if (!isset($this->arIsNewObject)) {
+		$this->arIsNewObject = null;
+	}
+	if (!isset($this->error)) {
+		$this->error = null;
+	}
+
 	if (($this->arIsNewObject &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||

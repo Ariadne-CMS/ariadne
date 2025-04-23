@@ -48,16 +48,16 @@
 			$spath."datatable/datatable-min.js"
 		);
 
-		if (!$wgWizNextStep) {
+		if (!($wgWizNextStep ?? null)) {
 			$searchcookie = ldGetUserCookie("ariadneDialogSearch");
 
-			if ($searchcookie['context'] == 1) {
+			if ($searchcookie['context']??null == 1) {
 				$wgWizNextStep = 1;
 				$this->putvar('searchname', $searchcookie['searchname']);
 				$this->putvar('searchtext', $searchcookie['searchtext']);
 				$this->putvar('arimplements', $searchcookie['arimplements']);
 			}
-			if ($searchcookie['advanced'] == 1) {
+			if ($searchcookie['advanced']??null == 1) {
 				$wgWizNextStep = 2;
 				$this->putvar('query', $searchcookie['query']);
 			}

@@ -95,10 +95,10 @@
 			} else if ( $value instanceof ar_listExpression ) {
 				$content = self::value( $value->item( $current ) );
 			} else {
-				if ( preg_match( '/^\s*<!\[CDATA\[/', $value ) ) {
+				if ( preg_match( '/^\s*<!\[CDATA\[/', $value??'' ) ) {
 					$content = $value;
 				} else {
-					$content = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
+					$content = htmlspecialchars( $value??'', ENT_QUOTES, 'UTF-8' );
 				}
 			}
 			return $content;
@@ -199,7 +199,7 @@
 			$ns = $x->query('namespace::*', $DOMElement);
 			foreach( $ns as $node) {
 				$uri = $DOMElement->lookupNamespaceURI( $node->localName );
-				if ($allns[$node->localName]!=$uri && $node->localName!='xmlns') {
+				if (isset($allns[$node->localName]) && $allns[$node->localName]!=$uri && $node->localName!='xmlns') {
 					$declaredns['xmlns:'.$node->localName] = $uri;
 				}
 			}
@@ -406,7 +406,8 @@
 			parent::__construct($nodes);
 		}
 
-		public function offsetSet($offset, $value) {
+		public function offsetSet($offset, $value): void
+		{
 			if (!$value instanceof ar_xmlNodeInterface) {
 				$value = new ar_xmlNode( $value );
 			}
@@ -808,7 +809,7 @@
 			return $el;
 		}
 
-		function insertBefore( $el, ar_xmlNodeInterface $referenceEl = null ) {
+		function insertBefore( $el, ?ar_xmlNodeInterface $referenceEl ) {
 			$this->_removeChildNodes( $el );
 			if ( !isset($referenceEl) ) {
 				return $this->_appendChild( $el );
@@ -1040,8 +1041,8 @@
 				// this bit of magic allows ar_xmlNodes->setAttribute to override only
 				// specific attribute values, leaving others alone, by specifying a
 				// non-number key.
-				if ( !is_array($this->attributes[$name]) ) {
-					$this->attributes[$name] = array( $this->attributes[$name] );
+				if ( !is_array($this->attributes[$name]??null) ) {
+					$this->attributes[$name] = array( $this->attributes[$name]??null );
 				}
 				$this->attributes[$name] = array_merge( $this->attributes[$name], $value );
 			} else {

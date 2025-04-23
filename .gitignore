@@ -3,3 +3,5 @@ www/ariadne.inc
 bin/createsymlinks.ini
 *~
 DEADJOE
+files/*
+vendor/*

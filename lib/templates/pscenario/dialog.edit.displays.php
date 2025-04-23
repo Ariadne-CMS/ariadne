@@ -62,10 +62,13 @@
 			// now setup the hidden form values
 			if (is_array($displays)) {
 				$ddata=$this->getdata("display", "none");
+				if ( !is_array( $ddata ) ) {
+					$ddata = [];
+				}
 				foreach( $displays as $key => $val ) {
 					?>
-						<input type="hidden" name="display[<?php echo $val; ?>][start]" value="<?php echo (int) $ddata[$val]["start"]; ?>">
-						<input type="hidden" name="display[<?php echo $val; ?>][end]" value="<?php echo (int) $ddata[$val]["end"]; ?>">
+						<input type="hidden" name="display[<?php echo $val; ?>][start]" value="<?php echo (int)($ddata[$val]["start"] ?? 0); ?>">
+						<input type="hidden" name="display[<?php echo $val; ?>][end]" value="<?php echo (int)($ddata[$val]["end"] ?? 0); ?>">
 					<?php
 				}
 			}

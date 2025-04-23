@@ -1,29 +1,29 @@
 <?php 
-  if (!$wgDate) {
+  if ( !( $wgDate ?? null ) ) {
     $temp=getdate(time()); 
   } else {
     $temp=getdate($wgDate);
   }
   // adjust timestamp to midnight
   $wgDate=mktime(0,0,0,$temp["mon"],$temp["mday"],$temp["year"]);
-  if (!$wgDateName) {
+  if ( !( $wgDateName ?? null ) ) {
     $wgDateName="date";
   }
-  if (!$wgDateTitle) {
+  if ( !( $wgDateTitle ?? null ) ) {
     // $wgDateTitle="Select Date";
   }
-  if (!$wgDateFormat) {
-    $wgDateFormat="%m-%d-%Y";
+  if ( !( $wgDateFormat ?? null ) ) {
+    $wgDateFormat="Y-m-d";
   }
-  if (!$wgDateSize) {
+  if ( !( $wgDateSize ?? null ) ) {
     $wgDateSize=10;
   }
 ?>
 <input type="hidden" name="<?php echo $wgDateName; ?>" id="<?php echo $wgDateName; ?>" value="<?php echo $wgDate; ?>">
 <input type="text" name="formatted<?php echo $wgDateName; ?>" id="formatted<?php echo $wgDateName; ?>" value="<?php 
-  echo strftime($wgDateFormat, $wgDate); 
+  echo DateTimeImmutable::createFromFormat('U', $wgDate)->format($wgDateFormat);
 ?>" size="<?php echo $wgDateSize; ?>" class="editable_border"<?php
-  if ($wgDateTitle) {
+  if ($wgDateTitle ?? null) {
     echo " onFocus=\"this.blur();\">\n<input type=\"button\" name=\"wgDateButton\" value=\"$wgDateTitle\"".
          " onClick=\"SelectDate(this.form['".
          $wgDateName."'], $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat', this.form);\">";

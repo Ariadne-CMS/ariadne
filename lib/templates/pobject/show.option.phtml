@@ -1,17 +1,17 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if (!$modifier) {
+		if (!($modifier ?? null)) {
 			$modifier=ARTHISTYPE;
 		}
-		if (!$grant || $this->CheckSilent($grant, $modifier)) {
-			if (!$arLanguage) {
+		if (!($grant ?? null) || $this->CheckSilent($grant, $modifier)) {
+			if (!($arLanguage ?? null)) {
 				$arLanguage = $nls;
 			}
 			?><option value="<?php echo $this->path; ?>"<?php 
-			if ($selected==$this->path) { 
+			if (($selected??null)==$this->path) { 
 				echo " selected";
 			} 
-			?>><?php echo $this->showdata('name', $arLanguage); ?></option><?php
+			?>><?php echo $this->data->{$arLanguage}->name ?? $nlsdata->name; ?></option><?php
 		}
 	}
 ?>

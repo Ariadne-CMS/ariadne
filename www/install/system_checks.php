@@ -9,7 +9,7 @@
 	}
 
 	function check_database_support() {
-		if (check_mysql() || check_postgresql()) {
+		if (check_mysql() || check_postgresql() || check_sqlite()) {
 			return true;
 		}
 		return false;
@@ -17,6 +17,13 @@
 
 	function check_mysql() {
 		if(function_exists('mysqli_connect')) {
+			return true;
+		}
+		return false;
+	}
+
+	function check_sqlite() {
+		if(class_exists('SQLite3')) {
 			return true;
 		}
 		return false;
@@ -105,7 +112,7 @@
 	}
 
 	function check_ariadne_path() {
-		@include("../ariadne.inc");
+		include("../ariadne.inc");
 		if (is_readable($ariadne . "/templates/pobject/")) {
 			return true;
 		}
@@ -260,6 +267,9 @@
 				case 'postgresql':
 					return check_connect_db_postgresql($conf);
 				break;
+				case 'sqlite':
+					return true;
+				break;
 			}
 			// FIXME: Add postgresql checks too
 		}
@@ -276,6 +286,9 @@
 				case 'postgresql':
 					return check_select_db_postgresql($conf);
 				break;
+				case 'sqlite':
+					return true;
+				break;
 			}
 		}
 		return false;
@@ -291,6 +304,9 @@
 				case 'postgresql':
 					return check_db_grants_postgresql($conf);
 				break;
+				case 'sqlite':
+					return true;
+				break;
 			}
 		}
 		return false;
@@ -305,6 +321,9 @@
 				break;
 				case 'postgresql':
 					return true; // No known issues for postgres
+				break;
+				case 'sqlite':
+					return true;
 				break;
 			}
 		}
@@ -370,7 +389,7 @@
 		$port = null;
 		$host = $conf->host;
 		if ( strpos($conf->host,':') !== false) {
-			list($host,$port) = explode($conf->host, ':',2);
+			list($host,$port) = explode(':', $conf->host??'' ,2);
 		}
 
 		if( $conf->host == ''){
@@ -409,6 +428,9 @@
 			break;
 			case 'postgresql':
 				return check_db_is_empty_postgresql($conf);
+			break;
+			case 'sqlite':
+				return true;
 			break;
 		}
 		return false;
@@ -543,10 +565,10 @@
 	}
 
 	function find_in_path($needle,array $extrapath=array()) {
-		$paths = explode(PATH_SEPARATOR,getServerVar('PATH'));
+		$paths = explode(PATH_SEPARATOR,getServerVar('PATH')??'');
 		$paths = array_merge($paths,$extrapath);
 
-		$exts = explode(PATH_SEPARATOR, getServerVar('PATHEXT'));
+		$exts = explode(PATH_SEPARATOR, getServerVar('PATHEXT')??'');
 
 		foreach($paths as $path){
 			$file = $path . DIRECTORY_SEPARATOR . $needle;

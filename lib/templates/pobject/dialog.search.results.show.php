@@ -28,14 +28,14 @@
   $date=getdate($this->lastchanged);
   $now=getdate(time());
   if ($now["year"]!=$date["year"]) {
-    echo strftime("&nbsp;%m/%Y", $this->lastchanged);
+    echo DateTimeImmutable::createFromFormat('U', $this->lastchanged)->format(' m/Y');
   } else if ($this->lastchanged<(time()-86400)) {
-    echo strftime("&nbsp;%d/%m", $this->lastchanged);
+    echo DateTimeImmutable::createFromFormat('U', $this->lastchanged)->format(' d/m');
   } else {
-    echo strftime("&nbsp;%H:%M", $this->lastchanged);
+    echo DateTimeImmutable::createFromFormat('U', $this->lastchanged)->format(' H:i');
   }
 ?></td><td "yui-dt-sortable yui-dt-last yui-dt-col-language"><?php
-  if (is_array($this->data->nls->list)) {
+  if (is_array($this->data->nls->list??null)) {
 	asort($this->data->nls->list);
     reset($this->data->nls->list);
     foreach( $this->data->nls->list as $key => $value ) {

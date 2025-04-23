@@ -55,6 +55,7 @@
 	define("DIRMODE",0770);
 	define("FILEMODE",0660);
 
+	#[\AllowDynamicProperties]
 	class filestore {
 
 		protected $root;
@@ -390,7 +391,7 @@
 			$id = $this->addObjectToLayer( $id );
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
-				$result=touch($path, $time);
+				$result=@touch($path, $time);
 			} else {
 				$result=false;
 			}

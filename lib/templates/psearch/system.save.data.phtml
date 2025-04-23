@@ -27,7 +27,7 @@
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 			return false;
 		} else {
-			if (!$this->data->nls) {
+			if (!isset($this->data->nls)) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
@@ -37,7 +37,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 
 				if ($name=$this->getdata("name",$key)) { 
-					if (!$this->data->$key) {
+					if (!isset($this->data->$key)) {
 						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
@@ -51,7 +51,7 @@
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if (isset($this->data->$key)) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}

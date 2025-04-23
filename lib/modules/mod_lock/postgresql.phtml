@@ -23,6 +23,9 @@
 
 
 class postgresqllock {
+	public $tbl_prefix;
+	public $dbh;
+	public $lock_duration;
 
 	function __construct($tbl_prefix="") {
 		debug("postgresqllock::postgresqllock($tbl_prefix)");

@@ -340,10 +340,9 @@ class AMQPChannel extends AbstractChannel
         $auto_delete = true,
         $internal = false,
         $nowait = false,
-        $arguments = null,
+        $arguments = array(),
         $ticket = null
     ) {
-        $arguments = $this->getArguments($arguments);
         $ticket = $this->getTicket($ticket);
 
         list($class_id, $method_id, $args) = $this->protocolWriter->exchangeDeclare(
@@ -436,10 +435,9 @@ class AMQPChannel extends AbstractChannel
         $source,
         $routing_key = '',
         $nowait = false,
-        $arguments = null,
+        $arguments = array(),
         $ticket = null
     ) {
-        $arguments = $this->getArguments($arguments);
         $ticket = $this->getTicket($ticket);
 
         list($class_id, $method_id, $args) = $this->protocolWriter->exchangeBind(
@@ -476,13 +474,19 @@ class AMQPChannel extends AbstractChannel
      * @param string $destination
      * @param string $source
      * @param string $routing_key
+     * @param bool $nowait
      * @param array $arguments
      * @param int $ticket
      * @return mixed
      */
-    public function exchange_unbind($destination, $source, $routing_key = '', $arguments = null, $ticket = null)
-    {
-        $arguments = $this->getArguments($arguments);
+    public function exchange_unbind(
+        $destination,
+        $source,
+        $routing_key = '',
+        $nowait = false,
+        $arguments = array(),
+        $ticket = null
+    ) {
         $ticket = $this->getTicket($ticket);
 
         list($class_id, $method_id, $args) = $this->protocolWriter->exchangeUnbind(
@@ -490,6 +494,7 @@ class AMQPChannel extends AbstractChannel
             $destination,
             $source,
             $routing_key,
+            $nowait,
             $arguments
         );
 
@@ -520,9 +525,14 @@ class AMQPChannel extends AbstractChannel
      * @param int $ticket
      * @return mixed|null
      */
-    public function queue_bind($queue, $exchange, $routing_key = '', $nowait = false, $arguments = null, $ticket = null)
-    {
-        $arguments = $this->getArguments($arguments);
+    public function queue_bind(
+        $queue,
+        $exchange,
+        $routing_key = '',
+        $nowait = false,
+        $arguments = array(),
+        $ticket = null
+    ) {
         $ticket = $this->getTicket($ticket);
 
         list($class_id, $method_id, $args) = $this->protocolWriter->queueBind(
@@ -564,9 +574,13 @@ class AMQPChannel extends AbstractChannel
      * @param int $ticket
      * @return mixed
      */
-    public function queue_unbind($queue, $exchange, $routing_key = '', $arguments = null, $ticket = null)
-    {
-        $arguments = $this->getArguments($arguments);
+    public function queue_unbind(
+        $queue,
+        $exchange,
+        $routing_key = '',
+        $arguments = array(),
+        $ticket = null
+    ) {
         $ticket = $this->getTicket($ticket);
 
         list($class_id, $method_id, $args) = $this->protocolWriter->queueUnbind(
@@ -612,10 +626,9 @@ class AMQPChannel extends AbstractChannel
         $exclusive = false,
         $auto_delete = true,
         $nowait = false,
-        $arguments = null,
+        $arguments = array(),
         $ticket = null
     ) {
-        $arguments = $this->getArguments($arguments);
         $ticket = $this->getTicket($ticket);
 
         list($class_id, $method_id, $args) = $this->protocolWriter->queueDeclare(
@@ -806,6 +819,7 @@ class AMQPChannel extends AbstractChannel
 
         } else {
             $message = $this->get_and_unset_message($delivery_tag);
+            $message->delivery_info['delivery_tag'] = $delivery_tag;
             $this->dispatch_to_handler($handler, array($message));
         }
     }
@@ -904,7 +918,7 @@ class AMQPChannel extends AbstractChannel
      * @param bool $no_ack
      * @param bool $exclusive
      * @param bool $nowait
-     * @param callback|null $callback
+     * @param callable|null $callback
      * @param int|null $ticket
      * @param array $arguments
      * @return mixed|string
@@ -1423,6 +1437,10 @@ class AMQPChannel extends AbstractChannel
      */
     protected function getArguments($arguments)
     {
+        @trigger_error(sprintf(
+            'Method "%s" is deprecated, please use an array as a default argument instead',
+            __METHOD__
+        ), E_USER_DEPRECATED);
         return (null === $arguments) ? array() : $arguments;
     }
 

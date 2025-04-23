@@ -13,7 +13,7 @@
 			<label for="language"><?php echo $ARnls["default"]; ?></label>
 			<select name="language">
 			<?php
-				if (!$newtype) {
+				if (!($newtype ?? null)) {
 					$language=$data->language;
 				} else {
 					$language=$ARCurrent->default;
@@ -36,7 +36,7 @@
 			reset($AR->nls->list);
 			asort($AR->nls->list);
 			while (list($arnls, $value)=each($AR->nls->list)) {
-				if ($languagelist[$arnls]) {
+				if ($languagelist[$arnls] ?? null) {
 					$image=$AR->dir->images.'nls/small/'.$arnls.'.gif';
 					$selected=" checked";
 				} else {

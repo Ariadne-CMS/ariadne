@@ -8,13 +8,13 @@
 	}
 
 	require_once($this->store->get_config("code")."modules/mod_yui.php");
-	if (!$ARCurrent->arTypeTree) {
+	if (!isset($ARCurrent->arTypeTree)) {
 		$this->call("typetree.ini");
 	}
-	if (!$items_per_page) {
+	if (!isset($items_per_page) || !$items_per_page) {
 		$items_per_page = 60;
 	}
-	$current_page = $page;
+	$current_page = (isset($page) ? $page : null);
 	if (!$current_page) {
 		$current_page = 1;
 	}
@@ -52,7 +52,7 @@
 	$orderqueries['filename'] = $orderqueries['path'];
 
 	$order = $this->getvar('order');
-	if (!$order || !$orderqueries[$order]) {
+	if (!$order || !($orderqueries[$order]??null)) {
 		$orderQuery = "name.$nls.value $direction, name.none.value $direction";
 	} else {
 		$orderQuery = [];
@@ -129,7 +129,7 @@
 
 		$colDefs = $eventData['args']['columns'];
 		foreach($colDefs as $colKey => $colDef ) {
-			if ( $colDef['hide'] ) {
+			if ( isset($colDef['hide']) && $colDef['hide'] ) {
 				unset($colDefs[$colKey]);
 			} else {
 				$colDefs[$colKey] = array_merge($colDef, [ 'key' => $colKey ]);
@@ -152,7 +152,7 @@
 				if (is_array($item['language'])) {
 					$datarow['language'] = '';
 					foreach( $item['language'] as $key => $value ) {
-						$datarow['language'] .= "<img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"> ";
+						$datarow['language'] .= "<img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value??'')."\"> ";
 					}
 				}
 				array_push($datalist, $datarow);

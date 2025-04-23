@@ -1,5 +1,6 @@
 <?php
 	$ARversion = array();
-	$ARversion['version'] = '10-rc1';
-	$ARversion['date'] = strtotime('2018-12-19');
-	$ARversion['year'] = strftime('%G', $ARversion['date']);
+	$ARversion['version'] = '12-rc1';
+	$ARversion['date'] = strtotime('2025-04-24');
+	$ARversion['year'] = DateTimeImmutable::createFromFormat('U', $ARversion['date'])->format('Y');
+

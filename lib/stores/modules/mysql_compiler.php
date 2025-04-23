@@ -28,13 +28,16 @@ class mysql_compiler extends sql_compiler {
 		if ($arguments) {
 			extract($arguments);
 		}
+		if (!$node) {
+			return null;
+		}
 		switch ((string)$node["id"]) {
 			case 'property':
 				$table=$this->tbl_prefix.$node["table"];
 				$field=$node["field"];
 				$record_id=$node["record_id"];
 				if (!$record_id) {
-					if ($this->in_orderby && $node["nls"]) {
+					if ($this->in_orderby && ( $node[ "nls" ] ?? null ) ) {
 						/*
 							we do a left join so that we will also find non
 							matching objects
@@ -78,8 +81,8 @@ class mysql_compiler extends sql_compiler {
 			case 'custom':
 				$table = $this->tbl_prefix."prop_custom";
 				$field = $node["field"];
-				$nls = $node["nls"];
-				$record_id = $node["record_id"];
+				$nls = $node["nls"] ?? null;
+				$record_id = $node["record_id"] ?? null;
 				/*
 					when we are compiling orderby properties we always want
 					to assign it to a new table alias

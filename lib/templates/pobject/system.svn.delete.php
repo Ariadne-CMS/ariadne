@@ -3,7 +3,7 @@
 		$this->resetloopcheck();
 
 		$fstore	= $this->store->get_filestore_svn("templates");
-		$svn	= $fstore->connect($this->id, $repository, $username, $password);
+		$svn	= $fstore->connect($this->id, $repository ?? null, $username ?? null, $password ?? null);
 
 		$type = $this->getvar("type");
 		$function = $this->getvar("function");
@@ -22,7 +22,7 @@
 					}
 				}
 			} else {
-				echo(htmlspecialchars($result));
+				echo(htmlspecialchars($result??''));
 			}
 			flush();
 		}

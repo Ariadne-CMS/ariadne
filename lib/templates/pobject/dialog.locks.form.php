@@ -1,5 +1,5 @@
 <?php
-	$locks=$this->store->mod_lock->get_locks($this->data->login);
+	$locks=$this->store->mod_lock->get_locks($this->data->login??null);
 	$arReturnPage = $this->getdata('arReturnPage');
 
 	require_once($this->store->get_config("code")."modules/mod_yui.php");
@@ -58,7 +58,7 @@
 	}
 </script>
 
-	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($arReturnPage); ?>">
+	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($arReturnPage??''); ?>">
 	<div id="resultSet" class="yui-dt">
 		<table id="resultsTable">
 		<thead>

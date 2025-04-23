@@ -492,7 +492,7 @@ class pphoto extends pfile { // pphoto class definition
 		global $AR, $ARConfig;
 		$unknown = false;
 
-		if( !$ARConfig->photoContext[$this->id] ) {
+		if( !($ARConfig->photoContext[$this->id]??null) ) {
 			$ARConfig->photoContext[$this->id] = $context;
 		}
 
@@ -543,7 +543,7 @@ class pphoto extends pfile { // pphoto class definition
 
 
 		if (!$this->data->toolarge) {
-			if (!$ARCurrent->arDontCache && $ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] != -1 && $this->CheckPublic('read')) {
+			if (!($ARCurrent->arDontCache??null) && ($ARCurrent->cacheCallChainSettings[$this->id]['serverCache']??null) != -1 && $this->CheckPublic('read')) {
 				$ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] = -2;
 			}
 			$this->set_context("build");
@@ -589,7 +589,7 @@ class pphoto extends pfile { // pphoto class definition
 							$cmd_array[1] = preg_replace("|\\\#|", "#", $cmd_array[1]);
 
 							preg_match("|\xb6(.*?)\xb6|", $cmd_array[1], $matches);
-							$text = $matches[1];
+							$text = $matches[1]??null;
 							$cmd_array[1] = preg_replace("|\xb6.*?\xb6|", "\xb6\xb6", $cmd_array[1]);
 
 							// Escaped shell command line here.
@@ -619,7 +619,7 @@ class pphoto extends pfile { // pphoto class definition
 					$this->error=sprintf($ARnls["err:changetempdirfailed"],$this->store->get_config("files"));
 				}
 			}
-			if( is_array($ARConfig->photoTempFiles[$this->id])) {
+			if( is_array($ARConfig->photoTempFiles[$this->id]??null)) {
 				foreach($ARConfig->photoTempFiles[$this->id] as $tempfile){
 					@unlink($tempfile);
 				}
@@ -642,6 +642,7 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function getimageinfo(&$extrainfo=false, $nls = '') {
+		$result = 0;
 
 		$this->pushContext( Array( "arCurrentObject" => $this));
 		$file = "file";

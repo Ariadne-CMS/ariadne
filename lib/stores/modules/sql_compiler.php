@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 abstract class sql_compiler {
 	protected $skipDefaultOrderBy;
 	protected $store;
@@ -45,9 +46,9 @@ abstract class sql_compiler {
 				$node["value"] = stripslashes($value);
 				return $node;
 			break;
-			case $this->_SCAN_NUM_START[$yych]:
+			case ($this->_SCAN_NUM_START[$yych] ?? false):
 				$value = $yych;
-				$yych = $YYBUFFER[++$YYCURSOR];
+				$yych = $YYBUFFER[++$YYCURSOR]??null;
 				while (isset($this->_SCAN_NUM[$yych])) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
@@ -81,19 +82,21 @@ abstract class sql_compiler {
 		$reg_id='^[[:space:]]*(([a-z_][a-z0-9_]*)(:[a-z]+)?([.][a-z_][a-z0-9_]*)?([.][a-z_][a-z0-9_]*)?)';
 		$reg_id.='[[:space:]]*';
 
+		$record_id = null;
+		
 		$YYCURSOR = 0;
-		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 			$YYCURSOR++;
 		}
 		$value = '';
-		$yych = $YYBUFFER[$YYCURSOR];
+		$yych = $YYBUFFER[$YYCURSOR]??null;
 
-		if ($this->_SCAN_AZ[$yych]) {
+		if (isset($this->_SCAN_AZ[$yych])) {
 			$value .= $yych;
 			$yych = $YYBUFFER[++$YYCURSOR];
 			while (isset($this->_SCAN_AZ_09[$yych])) {
 				$value .= $yych;
-				$yych = $YYBUFFER[++$YYCURSOR];
+				$yych = (isset($YYBUFFER[++$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null);
 			}
 			$match_1 = $value; $value = '';
 			if ($yych === ':') {
@@ -106,7 +109,7 @@ abstract class sql_compiler {
 			}
 			if ($yych === '.') {
 				$yych = $YYBUFFER[++$YYCURSOR];
-				if ($this->_SCAN_AZ[$yych]) {
+				if (isset($this->_SCAN_AZ[$yych])) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
 					while (isset($this->_SCAN_AZ_09[$yych])) {
@@ -118,7 +121,7 @@ abstract class sql_compiler {
 			}
 			if ($yych === '.') {
 				$yych = $YYBUFFER[++$YYCURSOR];
-				if ($this->_SCAN_AZ[$yych]) {
+				if (isset($this->_SCAN_AZ[$yych])) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
 					while (isset($this->_SCAN_AZ_09[$yych])) {
@@ -132,8 +135,8 @@ abstract class sql_compiler {
 		}
 
 
-		if($match_1) {
-			if (!$match_2) {
+		if($match_1??null) {
+			if (!isset($match_2) || !$match_2) {
 				/* default table is 'object' */
 				$match_2 = $match_1;
 				$match_1 = "object";
@@ -160,7 +163,7 @@ abstract class sql_compiler {
 			} else
 			if ($table === "my") {
 				$node["id"] = "custom";
-				if ($match_3) {
+				if ($match_3 ?? null) {
 					$node["nls"] = $field;
 					$field = $match_3;
 				}
@@ -178,7 +181,7 @@ abstract class sql_compiler {
 			}
 		}
 		$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
-		return $node;
+		return $node??null;
 	}
 
 	protected function parse_cmp_expr(&$YYBUFFER) {
@@ -217,15 +220,15 @@ abstract class sql_compiler {
 
 	protected function parse_group_expr(&$YYBUFFER) {
 		$YYCURSOR = 0;
-		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 			$YYCURSOR++;
 		}
-		$yych = $YYBUFFER[$YYCURSOR++];
+		$yych = $YYBUFFER[$YYCURSOR++]??null;
 		if ($yych === '(') {
 			$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 			$result = $this->parse_or_expr($YYBUFFER);
 			$YYCURSOR = 0;
-			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 				$YYCURSOR++;
 			}
 			$yych = $YYBUFFER[$YYCURSOR++];
@@ -302,17 +305,17 @@ abstract class sql_compiler {
 		$field = $this->parse_ident($YYBUFFER);
 
 		$YYCURSOR = 0;
-		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+		while (isset($YYBUFFER[$YYCURSOR]) && isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
 			$YYCURSOR++;
 		}
 		$value = '';
-		$yych  = $YYBUFFER[$YYCURSOR];
-		if ($this->_SCAN_AZ[$yych]) {
+		$yych  = isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null;
+		if (isset($this->_SCAN_AZ[$yych])) {
 			$value .= $yych;
 			$yych = $YYBUFFER[++$YYCURSOR];
 			while (isset($this->_SCAN_AZ[$yych])) {
 				$value .= $yych;
-				$yych = $YYBUFFER[++$YYCURSOR];
+				$yych = $YYBUFFER[++$YYCURSOR] ?? null;
 			}
 			$sort_type = strtoupper($value);
 			if (!($sort_type == 'ASC' || $sort_type == 'DESC')) { // If sort type is anything else than ASC or DESC, it is not part of the order by.
@@ -323,17 +326,17 @@ abstract class sql_compiler {
 		} else {
 			$sort_type = 'ASC';
 		}
-		while (is_array($field)) {
+		while (isset($field) && is_array($field)) {
 			$result = array(
 				'id' => 'orderbyfield',
 				'type' => $sort_type,
 				'right' => $field,
-				'left' => $result
+				'left' => (isset($result) ? $result : null)
 			);
-			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			while (isset($this->_SCAN_WS[(isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null)])) {
 				$YYCURSOR++;
 			}
-			$yych  = $YYBUFFER[$YYCURSOR];
+			$yych  = (isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null);
 			if ($yych !== ',') {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 				unset($field);
@@ -341,17 +344,18 @@ abstract class sql_compiler {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 1);
 				$field = $this->parse_ident($YYBUFFER);
 				$YYCURSOR = 0;
-				while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+				while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]??null])) {
 					$YYCURSOR++;
 				}
 				$value = '';
-				$yych  = $YYBUFFER[$YYCURSOR];
-				if ($this->_SCAN_AZ[$yych]) {
+				$yych  = $YYBUFFER[$YYCURSOR]??null;
+				if ($this->_SCAN_AZ[$yych]??null) {
 					$value .= $yych;
 					$yych = $YYBUFFER[++$YYCURSOR];
 					while (isset($this->_SCAN_AZ[$yych])) {
 						$value .= $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];
+						$YYCURSOR++;
+						$yych = isset($YYBUFFER[$YYCURSOR]) ? $YYBUFFER[$YYCURSOR] : null;
 					}
 					$sort_type = strtoupper($value);
 					if (!($sort_type == 'ASC' || $sort_type == 'DESC')) { // If sort type is anything else than ASC or DESC, it is not part of the order by.
@@ -446,7 +450,7 @@ abstract class sql_compiler {
 			$query=substr($query, strlen($regs[0]));
 			$node["id"]="orderby";
 			$node["right"]=$this->parse_orderby($query);
-			$node["left"]=$result;
+			$node["left"]=$result ?? null;
 			$result=$node;
 		}
 		if (preg_match('|^[[:space:]]*limit[[:space:]]+([0-9]+)[[:space:]]*([,][[:space:]]*([0-9]+))?|i', $query, $regs)) {
@@ -477,11 +481,12 @@ abstract class sql_compiler {
 		$this->offset=$offset;
 		$this->layers=$layers;
 
-		$tree=$this->parse_query($query);
+		$parseQueryString = $query . "\0";
+		$tree=$this->parse_query( $parseQueryString );
 
 		if ( $this->error ) {
 			return null;
-		} else if ( trim($query) ) {
+		} else if ( trim($parseQueryString) ) {
 			// no error detected, but there is still a part of the query left
 			$this->error="unkown operator near '$query'";
 			return null;

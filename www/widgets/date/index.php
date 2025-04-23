@@ -60,6 +60,10 @@ body {
 		result = result.replace("%d", zeroFill(date.getDate(), 2));
 		result = result.replace("%Y", date.getFullYear());
 		result = result.replace("%y", date.getFullYear().toString().substr(2,2));
+		result = result.replace("m", zeroFill(date.getMonth() + 1, 2));
+		result = result.replace("d", zeroFill(date.getDate(), 2));
+		result = result.replace("Y", date.getFullYear());
+		result = result.replace("y", date.getFullYear().toString().substr(2,2));
 		return result;
 	}
 

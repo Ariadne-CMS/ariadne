@@ -148,7 +148,7 @@
 				$content = new ar_htmlNodes( $content );
 			}
 			$el = new ar_html_menuElement( $name, $attributes, $content );
-			$el->setAttribute('class', ['menuRoot' => 'menuRoot'] );
+			$el->setAttribute('class', 'menuRoot' );
 			return $el;
 		}
 
@@ -181,7 +181,7 @@
 		public $css = null;
 
 		public function __construct( $tagName = 'ul', $attributes = array(), $childNodes = null, $parentNode = null ) {
-			if (!$attributes['class'] && !$attributes['id']) {
+			if (!($attributes['class']??null) && !($attributes['id']??null)) {
 				$attributes['class'] = 'menu';
 			}
 			if (!$tagName) {
@@ -218,7 +218,7 @@
 			$this->current = $this->root;
 			$listTag = $this->options['listTag'];
 			$itemTag = $this->options['itemTag'];
-			if ($this->attributes['id']) {
+			if ($this->attributes['id']??null) {
 				$prefix = '#'.$this->attributes['id'];
 			} else {
 				$prefix = $listTag . '.' . $this->attributes['class'];
@@ -245,7 +245,7 @@
 
 		public function setAttribute( $attribute, $value ) {
 			parent::setAttribute( $attribute, $value );
-			if ($this->attributes['id']) {
+			if ($this->attributes['id']??null) {
 				$this->prefix = '#'.$this->attributes['id'];
 			} else {
 				$this->prefix = $this->options['listTag'] . '.' . $this->attributes['class'];
@@ -587,17 +587,17 @@ EOF;
 
 		private function _getItemInfo( $item, $key, $parent, $current ) {
 			if ( $item instanceof ar_htmlElement ) {
-				if ($item->attributes['href']) {
+				if ($item->attributes['href']??null) {
 					$url = $item->attributes['href'];
 				} else {
 					$url = null;
 				}
 				$item = array( 'node' => $item, 'url' => $url );
 			}
-			if (!is_array($item)) {
+			if (!is_array($item??null)) {
 				$item = array( 'name' => $item );
 			}
-			$path = $item['path'];
+			$path = $item['path']??null;
 			if ( !isset($path) ) {
 				$path = $key;
 				$item['path'] = ( ( $parent!='[root]' ) ? $parent : '' ) . $key;
@@ -626,8 +626,8 @@ EOF;
 				}
 				if ( ($item['path']==$current) || ($item['url'] == $current) ) {
 					$linkAttributes['class']['menuCurrent'] = 'menuCurrent';
-					if (!is_array($item['attributes']['class'])) {
-						$item['attributes']['class'] = array( $item['attributes']['class'] );
+					if (!is_array($item['attributes']['class']??null)) {
+						$item['attributes']['class'] = array( $item['attributes']['class']??null );
 					}
 					$item['attributes']['class']['menuCurrent'] = 'menuCurrent';
 				} else if ( ( strpos( $current, $item['path'] ) === 0 ) ||
@@ -642,14 +642,14 @@ EOF;
 				);
 			} else {
 				$link = $item['node']->a[0];
-				if ( ($item['path']==$current) || ($item['url'] == $current) || ( $link && $link->attributes['href']==$current ) ) {
+				if ( ($item['path']==$current) || ($item['url'] == $current) || ( $link && ($link->attributes['href'] ?? null ) == $current ) ) {
 					if ($link) {
 						$link->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 					}
 					$item['node']->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 				} else if ( ( strpos( $current, $item['path'] ) === 0 ) ||
-					 ( strpos( $current, $item['url'] ) === 0 ) ||
-					 ( $link && strpos( $current, $link->attributes['href'] ) === 0 ) ) {
+					 ( strpos( $current, $item['url']??'' ) === 0 ) ||
+					 ( $link && strpos( $current, $link->attributes['href'] ?? '' ) === 0 ) ) {
 					$item['node']->setAttribute('class', array( 'menuParent' => 'menuParent' ) );
 				}
 
@@ -682,7 +682,7 @@ EOF;
 						$ul->appendChild($itemNode);
 					}
 				}
-				if ($itemInfo['children']) {
+				if ($itemInfo['children']??null) {
 					$this->_fillFromArray( $itemInfo['children'], $current, $itemInfo['url'] );
 				}
 			}
@@ -702,7 +702,7 @@ EOF;
 							}
 
 							if ( isset($this->items[$newparent]) ) {
-								$parentNode = current( $this->items[$newparent]->getElementsByTagName( $this->options['listTag'] ) );
+								$parentNode = $this->items[$newparent]->getElementsByTagName( $this->options['listTag'] )->getIterator()->current();
 								if (!$parentNode || !isset($parentNode)) {
 									$parentNode = $this->items[$newparent]->appendChild( ar_html::el( $this->options['listTag'] ) );
 								}
@@ -857,12 +857,12 @@ EOF;
 		}
 
 		public function configure( $options ) {
-			if ($options['top']) {
+			if ($options['top']??null) {
 				$this->root( ar('loader')->makeURL($options['top']), $options['top'] );
 			} else {
 				$options['top'] = $this->root;
 			}
-			if ($options['current']) {
+			if ($options['current']??null) {
 				$this->current( $options['current'] );
 			} else {
 				$options['current'] = $this->current;

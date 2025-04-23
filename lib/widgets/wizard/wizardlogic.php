@@ -16,8 +16,8 @@
 
   No result.
  ********************************************************************/
-if (!$wgWizCallObject) {
-	if ($wgWizNewType) {
+if (!isset($wgWizCallObject) || !$wgWizCallObject) {
+	if (isset($wgWizNewType) && $wgWizNewType) {
 		if (!$wgWizNewfilename) {
 			$wgWizNewFilename="{5:id}";
 		}
@@ -45,7 +45,7 @@ $wgWizShowSections=false;
 $tcount = 0;
 if(isset($wgWizFlow) && is_array($wgWizFlow)){
 	foreach( $wgWizFlow as $wizStep ) {
-		if( $wizStep["template"]) {
+		if($wizStep["template"] ?? null) {
 			$tcount++;
 		}
 	}
@@ -60,27 +60,27 @@ if( $tcount > 1 ) {
 	$wgWizShowSections=false;
 	}
  */
-if (!$wgWizAction) {
+if (!isset($wgWizAction) || !$wgWizAction) {
 	$wgWizAction=$this->getdata("wgWizAction","none");
 }
-if (!$wgWizControl) {
+if (!isset($wgWizControl) || !$wgWizControl) {
 	$wgWizControl=$this->getdata("wgWizControl","none");
 }
-if (!$wgWizCurrent) {
+if (!isset($wgWizCurrent) || !$wgWizCurrent) {
 	$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 }
-if (!$wgWizNextStep && !($wgWizNextStep=$ARCurrent->wgWizNextStep)) {
+if ((!isset($wgWizNextStep) || !$wgWizNextStep) && !($wgWizNextStep=(isset($ARCurrent->wgWizNextStep) ? $ARCurrent->wgWizNextStep : 0))) {
 	$wgWizNextStep=$this->getdata("wgWizNextStep","none");
 }
-if( !$wgWizNextStep) {
+if( !isset($wgWizNextStep) || !$wgWizNextStep) {
 	$wgWizNextStep = 1;
 }
 
-if( $wgWizFlow[0][$wgWizAction] ) {
+if( isset($wgWizFlow[0]) && isset($wgWizFlow[0][$wgWizAction]) && $wgWizFlow[0][$wgWizAction] ) {
 	$wgWizTemplate = $wgWizFlow[0][$wgWizAction];
-} else if ($wgWizShowSections) {
+} else if (isset($wgWizShowSections) && $wgWizShowSections) {
 	$wgWizTemplate=$wgWizFlow[$wgWizNextStep]["template"];
-} else if ($wgWizFlow[1]["template"]) { // no showsections, check if step 1 has a template
+} else if (isset($wgWizFlow[1]) && isset($wgWizFlow[1]["template"]) && $wgWizFlow[1]["template"]) { // no showsections, check if step 1 has a template
 	$wgWizTemplate=$wgWizFlow[1]["template"];
 } else {
 	$wgWizTemplate=$wgWizFlow[0]["template"];
@@ -93,6 +93,6 @@ if (!$wgWizHeader) {
 	$wgWizTabsTemplate='dialog.edit.languagetabs.php';
 	}
  */
-if ($wgWizFlow[$wgWizNextStep]["nolang"] && $wgWizTabsTemplate == 'dialog.edit.languagetabs.php') {
+if (isset($wgWizFlow[$wgWizNextStep]) && isset($wgWizFlow[$wgWizNextStep]["nolang"]) && $wgWizFlow[$wgWizNextStep]["nolang"] && $wgWizTabsTemplate == 'dialog.edit.languagetabs.php') {
 	unset($wgWizTabsTemplate);
 }

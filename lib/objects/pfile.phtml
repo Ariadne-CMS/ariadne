@@ -40,13 +40,14 @@ require_once(AriadneBasePath."/modules/mod_mimemagic.php");
 class pfile extends pobject { // pfile class definition
 
 	protected function getNlsForFile($file,$nls) {
+	global $ARConfig;
 		// private function, requires that the push/pop context will be done by the caller
 		if(!$nls){
 			$nls = $this->nls;
 		}
 		$ret = ar_store_files::exists($file, $nls);
 		if (!$ret) {
-			$nls = $this->data->nls->default;
+			$nls = $this->data->nls->default ?? $ARConfig->nls->default;
 			$ret = ar_store_files::exists($file, $nls);
 			if (!$ret) {
 				$nls = null;
@@ -64,6 +65,14 @@ class pfile extends pobject { // pfile class definition
 		} else {
 			$ret = null; //backwards compatibility... there was no error checking before
 		}
+		$this->popcontext();
+		return $ret;
+	}
+
+	function GetFileStream($file='file', $nls='') {
+		$this->pushContext( Array( "arCurrentObject" => $this));
+		$nls = $this->getNlsForFile($file,$nls);
+		$ret = ar_store_files::get($file, $nls);
 		$this->popcontext();
 		return $ret;
 	}
@@ -112,7 +121,7 @@ class pfile extends pobject { // pfile class definition
 		if ($mimetype && function_exists("get_content_type")) {
 			$mimetype = get_content_type($mimetype, basename($this->path));
 		}
-		if (!$ARCurrent->arDontCache && $ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] != -1 && $this->CheckPublic('read')) {
+		if (!($ARCurrent->arDontCache??null) && ($ARCurrent->cacheCallChainSettings[$this->id]['serverCache']??null) != -1 && $this->CheckPublic('read')) {
 			$ARCurrent->cacheCallChainSettings[$this->id]['serverCache'] = -2;
 		}
 		$template = $this->getvar("arCallFunction");
@@ -123,10 +132,10 @@ class pfile extends pobject { // pfile class definition
 			$size = $file->size();
 		}
 
-		if (ldSetContent($mimetype, $size)) {
+		if (ldSetContent($mimetype, ($size??null))) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
-			if (!$ARCurrent->arDontCache) {
+			if (!($ARCurrent->arDontCache??null)) {
 				if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
 					// always set the client side cache headers, independant of
 					// server side cache configuration. Except for private content
@@ -197,13 +206,16 @@ class pfile extends pobject { // pfile class definition
 
 		$nls = $this->getNlsForFile($file,$nls);
 
+		$mimetype = "";
 		if ( isset($this->data->$nls->mimetype) ) {
 			$mimetype = $this->data->$nls->mimetype;
 		}
 		if ( !$mimetype ) {
 			$defaultnls = $this->data->nls->default;
 			$nls = $defaultnls;
-			$mimetype = $this->data->{$defaultnls}->mimetype;
+			if ( isset( $this->data->{$defaultnls}->mimetype ) ) {
+				$mimetype = $this->data->{$defaultnls}->mimetype;
+			}
 		}
 		$file_plaintext = $file."_plaintext";
 

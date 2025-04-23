@@ -2,7 +2,54 @@
 
 All Notable changes to `php-amqplib` will be documented in this file
 
-## [Unreleased]
+## 2.8.0 - 2018-10-23
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/3)
+
+- Drop testing and support for PHP 5.3
+- Use specific exceptions instead of general `AMQPRuntimeException`: [PR](https://github.com/php-amqplib/php-amqplib/pull/600)
+- Allow overriding of `LIBRARY_PROPERTIES` - [PR](https://github.com/php-amqplib/php-amqplib/pull/606)
+
+## 2.7.2 - 2018-02-11
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/5)
+
+- PHP `5.3` compatibility [PR](https://github.com/php-amqplib/php-amqplib/issues/539)
+
+## 2.7.1 - 2018-02-01
+
+- Support PHPUnit 6 [PR](https://github.com/php-amqplib/php-amqplib/pull/530)
+- Use `tcp_nodelay` for `StreamIO` [PR](https://github.com/php-amqplib/php-amqplib/pull/517)
+- Pass connection timeout to `wait` method [PR](https://github.com/php-amqplib/php-amqplib/pull/512)
+- Fix possible indefinite waiting for data in StreamIO [PR](https://github.com/php-amqplib/php-amqplib/pull/423), [PR](https://github.com/php-amqplib/php-amqplib/pull/534)
+- Change protected method check_heartbeat to public [PR](https://github.com/php-amqplib/php-amqplib/pull/520)
+- Ensure access levels are consistent for calling `check_heartbeat` [PR](https://github.com/php-amqplib/php-amqplib/pull/535)
+
+## 2.7.0 - 2017-09-20
+
+### Added
+- Increased overall test coverage
+- Bring heartbeat support to socket connection
+- Add message delivery tag for publisher confirms
+- Add support for serializing DateTimeImmutable objects
+
+### Fixed
+- Fixed infinite loop on reconnect - check_heartbeat
+- Fixed signal handling exit example
+- Fixed exchange_unbind arguments
+- Fixed invalid annotation for channel_id
+- Fixed socket null error on php 5.3 version
+- Fixed timeout parameters on HHVM before calling stream_select
+
+### Changed
+- declare(ticks=1) no longer needed after PHP5.3 / amqplib 2.4.1
+- Minor DebugHelper improvements
+
+### Enhancements
+- Add extensions requirements to README.md
+- Add PHP 7.1 to Travis build
+- Reduce memory usage in StreamIO::write()
+- Re-enable heartbeats after reconnection
 
 ## 2.6.3 - 2016-04-11
 

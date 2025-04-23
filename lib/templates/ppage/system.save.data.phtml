@@ -5,12 +5,12 @@
  
 	******************************************************************/
         require_once($this->store->get_config('code')."modules/mod_page.php");
-	if ((($this->arIsNewObject &&
+	if (((($this->arIsNewObject??null) &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||
-			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
+			(!($this->arIsNewObject??null) && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
-		if (!$this->arIsNewObject) {
+		if (!($this->arIsNewObject??null)) {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
 		    $this->data=current($this->get(".","system.get.data.phtml"));
@@ -32,19 +32,19 @@
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error = ar::error( sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]), 1101);
 		} else {
-			if (!$this->data->nls) {
+			if ( !isset( $this->data->nls ) ) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 
-			if ($ContentEditOptionsPath) {
+			if ($ContentEditOptionsPath??null) {
 				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
 				if (!$arEditorSettings) {
 					$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
 					$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
 				}
 			} else {
-				$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+				$arEditorSettings=$ARCurrent->editorSettings[$this->path]??null;
 				if (!$arEditorSettings) {
 					$arEditorSettings=$this->call("editor.ini");
 					$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
@@ -58,9 +58,8 @@
 			reset($AR->nls->list);
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
-
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					if (!$this->data->$key) {
+					if ( !isset( $this->data->$key ) ) {
 						debug("$key not yet set","all");
 						$newnlsdata=new baseObject;
 					} else {
@@ -74,7 +73,9 @@
 					$properties["text"][$count]["value"]=$newnlsdata->name;
 					$properties["text"][$count]["nls"]=$key;
 					$count++;
+
 					$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
+
 					if ($arEditorSettings) {
 						if ($arEditorSettings["htmlcleaner"]["enabled"]) {
 							include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
@@ -99,9 +100,9 @@
 					$count++;
 					if ($this->store->is_supported("fulltext")) {
 						$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
-								$newnlsdata->name." ".
-								$this->html_to_text($newnlsdata->summary)." ".
-								$newnlsdata->title." ".
+								($newnlsdata->name??'')." ".
+								$this->html_to_text(($newnlsdata->summary??''))." ".
+								($newnlsdata->title??'')." ".
 								$this->html_to_text($this->getdata("page",$key))
 								);
 						$properties["fulltext"][$count]["nls"]=$key;
@@ -109,13 +110,13 @@
 					$this->data->{$key}=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ( isset( $this->data->$key ) ) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}
 				}
 			}
-			$arIsNewObject = $this->arIsNewObject;
+			$arIsNewObject = $this->arIsNewObject??null;
 			$arResult = $this->save($properties);
 
 			if (!$this->error) {

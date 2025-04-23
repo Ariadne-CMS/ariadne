@@ -46,11 +46,11 @@
 						unset($this->data->config->usergrants[$path][$grant]);
 					} else {
 						unset($this->data->config->usergrants[$path][$grant][$modifier]);
-						if (!@count($this->data->config->usergrants[$path][$grant])) {
+						if (!count($this->data->config->usergrants[$path][$grant])) {
 							unset($this->data->config->usergrants[$path][$grant]);
 						}
 					}
-					if (!@count($this->data->config->usergrants[$path])) {
+					if ( !count( $this->data->config->usergrants[ $path ] ?? [] ) ) {
 						unset($this->data->config->usergrants[$path]);
 					}
 				}

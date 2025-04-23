@@ -18,12 +18,12 @@
 		if( $type && $language && $function ) { // single commit
 			$single = true;
 			$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
-			if ($this->data->config->templates[$type][$function]) {
+			if ( $this->data->config->templates[$type][$function] ?? null ) {
 				$default = 1;
 			} else {
 				$default = 0;
 			}
-			if ($this->data->config->privatetemplates[$type][$function]) {
+			if ( $this->data->config->privatetemplates[$type][$function] ?? null ) {
 				$private = 1;
 			} else {
 				$private = 0;
@@ -49,13 +49,13 @@
 					foreach( $values as $function => $templatelist ) {
 						foreach($templatelist as $language => $node) {
 							$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
-							if ($this->data->config->templates[$type][$function]) {
+							if ($this->data->config->templates[$type][$function] ?? null) {
 								$default = 1;
 							} else {
 								$default = 0;
 							}
 
-							if ($this->data->config->privatetemplates[$type][$function]) {
+							if ($this->data->config->privatetemplates[$type][$function] ?? null) {
 								$private = 1;
 							} else {
 								$private = 0;
@@ -74,7 +74,7 @@
 			}
 
 			$svn_status = (array)$fstore->svn_status($svn);
-			$deleted_templates = $this->data->config->deleted_templates;
+			$deleted_templates = $this->data->config->deleted_templates ?? null;
 			if ($deleted_templates) {
 				foreach ( $deleted_templates as $type => $values) {
 					foreach ($values as $function => $templatelist) {
@@ -109,10 +109,10 @@
 			echo "Commit failed.<br>\n";
 			if (count($errs = $fstore->svnstack->getErrors())) {
 				foreach ($errs as $err) {
-					echo htmlspecialchars($err['message'], ENT_QUOTES, 'UTF-8')."<br>\n";
+					echo htmlspecialchars($err['message']??'', ENT_QUOTES, 'UTF-8')."<br>\n";
 				}
 			}
-		} elseif($result && $pinp && !$single ) {
+		} elseif( ( $result ?? null ) && ( $pinp ?? null ) && !( $single ?? null ) ) {
 			foreach( $pinp as $type => $values ) {
 				foreach( $values as $function => $templatelist ) {
 					foreach( $templatelist as $language => $node ) {

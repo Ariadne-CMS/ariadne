@@ -5,12 +5,16 @@
 	include_once($this->store->get_config("code")."modules/mod_grant.php");
 	include_once($this->store->get_config("code")."ar.php");
 
+	$error = "";
+
+	$maxloop = $maxloop ?? 0;
 
 	$userConfig = $this->loadUserConfig();
 	$authconfig = $userConfig['authentication'];
 
-	define('ARGRANTBYTYPE', 8);
-
+	if (!defined('ARGRANTBYTYPE')) {
+		define('ARGRANTBYTYPE', 8);
+	}
 	$selectedpath = $this->getdata("selectedpath");
 	$selecteduser = $this->getdata("selecteduser");
 	$moregrants = $this->getdata("moregrants");
@@ -45,7 +49,7 @@
 	$users = array();
 	$selectedob = current($this->get($selectedpath, "system.get.phtml"));
 	while (($selectedob->parent != '..')) {
-		if($selectedob && $selectedob->data->config->grants) {
+		if($selectedob && ($selectedob->data->config->grants??null)) {
 			foreach ($selectedob->data->config->grants as $type => $grant) {
 				foreach ($grant as $id => $grants) {
 					if ($type == 'pgroup') {
@@ -78,7 +82,7 @@
 							$grants[$grantname] = ARGRANTBYTYPE;
 						}
 					}
-					if (!is_array($users[$path])) {
+					if (!is_array($users[$path]??null)) {
 						$users[$path] = array(
 							"name" => $name,
 							"type" => $type,
@@ -103,13 +107,13 @@
 	if (!is_array($extrausers)) {
 		$extrausers = array();
 	}
-	if ($users[$selecteduser]['grants_inherited']) {
+	if ($users[$selecteduser]['grants_inherited']??null) {
 		$extrausers[] = $selecteduser;
 	}
 
 	foreach ($extrausers as $key => $extrauser) {
-		if ($users[$extrauser]) {
-			if ($users[$extrauser]['grants_inherited']) {
+		if ($users[$extrauser]??null) {
+			if ($users[$extrauser]['grants_inherited'] ?? null) {
 				unset($users[$extrauser]);
 			} else {
 				continue;
@@ -164,24 +168,28 @@
 		$data[$selectedpath][$selecteduser]['grants']['bytype'][$moregrants][$typename] = ARGRANTGLOBAL;
 	}
 
-	function arrayMergeCorrect($left, $right) {
-		if (is_null($right)) {
-			return $left;
-		}
-		if (is_array($right)) {
-			foreach ($right as $key => $value) {
-				if (!is_numeric($key)) {
-					$left[$key] = isset($left[$key]) ? arrayMergeCorrect($left[$key], $value) : $value;
-				} else {
-					$left[] = arrayMergeCorrect($left[$key], $value);
-				}
+	if (!function_exists("arrayMergeCorrect")) {
+		function arrayMergeCorrect($left, $right) {
+			if ($left == '') {
+				$left = [];
 			}
-			return $left;
-		} else {
-			return $right;
+			if (is_null($right)) {
+				return $left;
+			}
+			if (is_array($right)) {
+				foreach ($right as $key => $value) {
+					if (!is_numeric($key)) {
+						$left[$key] = isset($left[$key]) ? arrayMergeCorrect($left[$key], $value) : $value;
+					} else {
+						$left[] = arrayMergeCorrect($left[$key], $value);
+					}
+				}
+				return $left;
+			} else {
+				return $right;
+			}
 		}
 	}
-
 
 	$typetree = $this->call('typetree.ini');
 	$typenames = $this->getvar("arTypeNames");
@@ -216,26 +224,28 @@
 ?>
 <div class="items">
 	<h2><?php echo $ARnls['ariadne:grants:users_with_grants']; echo yui::labelspan($selectedpath, 20); ?></h2>
-	<input type="hidden" name="selecteduser" value="<?php echo htmlspecialchars($selecteduser); ?>">
+	<input type="hidden" name="selecteduser" value="<?php echo htmlspecialchars($selecteduser??''); ?>">
 	<?php if ($error) { ?>
 		<div class="error"><?php echo $error; ?></div>
 	<?php } ?>
 	<?php	foreach ($users as $path => $info) {
 			$user_id = str_replace("/", ":", $path);
-			$formdata = $data[$selectedpath][$path];
-			$stored_formdata = $stored_vars['data'][$selectedpath][$path];
+			$formdata = $data[$selectedpath][$path] ?? [];
+			$stored_formdata = $stored_vars['data'][$selectedpath][$path]??null;
 
 			// Merge info fromdata form with $info
-			$info['grants'] = arrayMergeCorrect($info['grants'], $stored_formdata['grants']);
-			$info['grants'] = arrayMergeCorrect($info['grants'], $formdata['grants']);
+			$info['grants'] = arrayMergeCorrect($info['grants'], $stored_formdata['grants']??null);
+			$info['grants'] = arrayMergeCorrect($info['grants'], $formdata['grants']??null);
 //			$info['grants'] = array_merge($info['grants'], $stored_formdata['grants'], $formdata['grants']);
 //			echo "<pre>";
 //			print_r($info['grants']);
 			if (isset($textswitch) && $textswitch == 1) {
-				$grants = (array)$formdata['grants']['array'];
-				foreach ($grants as $key => $val) {
-					if ($val == 8) {
-						$grants[ $key ] = $formdata['grants']['bytype'][ $key ];
+				if ( isset( $formdata[ "grants" ][ "array" ] ) ) {
+					$grants = (array)$formdata['grants']['array'] ?? [];
+					foreach ($grants as $key => $val) {
+						if ($val == 8) {
+							$grants[ $key ] = $formdata['grants']['bytype'][ $key ] ?? null;
+						}
 					}
 				}
 				$info['grants']['grantsstring'] = grantsArrayToString($grants);
@@ -244,7 +254,7 @@
 				$newgrants = array();
 //				print_r($info['grants']);
 
-				$g_comp->compile($formdata['grants']['grantsstring'], $newgrants);
+				$g_comp->compile($formdata['grants']['grantsstring'] ?? "", $newgrants);
 
 				$grants_by_type = array();
 				foreach ($newgrants as $grantname => $grantvalue) {
@@ -256,35 +266,40 @@
 						$newgrants[$grantname] = ARGRANTBYTYPE;
 					}
 				}
-				$formdata['grants']['array'] = $newgrant;
+
+				$formdata['grants']['array'] = $newgrants;
+				$info[ "grants" ][ "array" ] = $newgrants;
 				$formdata['grants']['bytype'] = $grants_by_type;
+				$info[ "grants" ][ "bytype " ] = $grants_by_type;
 
 			}
 //			echo "</pre>";
 	?>
-		<div class="item<?php if($path == $selecteduser) { echo " selected";} if ($info['grants_inherited']) { echo " inherited";} ?>">
+		<div class="item<?php if($path == $selecteduser) { echo " selected";} if ($info['grants_inherited']??null) { echo " inherited";} ?>">
 			<div class="info">
 				<label class="block" for="selectuser_<?php echo $user_id; ?>">
 					<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], 'size' => 'medium'));?>" alt="<?php echo $info['type']; ?>">
 					<span class="name"><?php echo $info['name']; ?></span><br>
-					<span class="grants_string"><?php echo htmlspecialchars($info['grants']['grantsstring']); ?></span>
+					<span class="grants_string"><?php echo htmlspecialchars($info['grants']['grantsstring']??''); ?></span>
 				</label>
 				<input type="submit" name="selecteduser" class="hidden" value="<?php echo $path; ?>" id="selectuser_<?php echo $user_id; ?>">
 			</div>
-			<?php 	if (!$info['grants_inherited']) { ?>
-				<?php	if($textmode) {	?>
+			<?php 	if (!($info['grants_inherited']??null)) { ?>
+				<?php	if($textmode??null) {	?>
 					<label class="textmode block" for="textmode"></label>
 					<input class="hidden" type="submit" name="textmode" value="0" id="textmode">
 					<div class="grants_textmode">
 						<h2>Advanced grants</h2>
-						<textarea class="grantstext" name="data[<?php echo $selectedpath;?>][<?php echo $path; ?>][grants][grantsstring]" rows=4 cols=30><?php echo htmlspecialchars( $info['grants']['grantsstring'] ); ?></textarea>
+						<textarea class="grantstext" name="data[<?php echo $selectedpath;?>][<?php echo $path; ?>][grants][grantsstring]" rows=4 cols=30><?php
+							echo htmlspecialchars( $info['grants']['grantsstring']??'' );
+						?></textarea>
 					</div>
 				<?php	} else {	?>
 					<label class="textmode block" for="textmode"></label>
 					<input class="hidden" type="submit" name="textmode" value="1" id="textmode">
 					<div class="grants">
 						<?php	foreach ($available_grants as $grant => $grant_name) {
-								if ($info['grants']['array'][$grant]) {
+								if ($info['grants']['array'][$grant]??null) {
 									$checked = "checked = 'checked' ";
 									$value = $info['grants']['array'][$grant];
 								} else {
@@ -294,7 +309,7 @@
 								if ($grant == $moregrants) {
 									$checked .= "disabled";
 								}
-								if ($info['grants']['array'][$grant] == 0 || $info['grants']['array'][$grant] == 6) {
+								if (($info['grants']['array'][$grant]??null) == 0 || ($info['grants']['array'][$grant]??null) == 6) {
 									// normal grants;
 									$labelclass="normal";
 								} else {
@@ -302,7 +317,7 @@
 								}
 
 
-								if (is_array($info['grants']['bytype'])) {
+								if (is_array($info['grants']['bytype']??null)) {
 									foreach ($info['grants']['bytype'] as $bytype_grant => $bytype_types) {
 										foreach ($bytype_types as $bytype_type => $bytype_value) {
 											$dataname = "data[$selectedpath][$path][grants][bytype][$bytype_grant][$bytype_type]";
@@ -313,9 +328,9 @@
 									}
 								}
 						?>
-							<div class="field checkbox <?php echo $class; ?>">
+							<div class="field checkbox <?php echo $class ?? ""; ?>">
 								<input name="data[<?php echo $selectedpath; ?>][<?php echo $path; ?>][grants][array][<?php echo $grant; ?>]" type='hidden' value='0'>
-								<input class="<?php echo $extraclass; ?>" name="data[<?php echo $selectedpath; ?>][<?php echo $path; ?>][grants][array][<?php echo $grant; ?>]" <?php echo $checked; ?> type='checkbox' id='<?php echo $grant; ?>' value='<?php echo $value;?>'>
+								<input class="<?php echo $extraclass ?? ""; ?>" name="data[<?php echo $selectedpath; ?>][<?php echo $path; ?>][grants][array][<?php echo $grant; ?>]" <?php echo $checked; ?> type='checkbox' id='<?php echo $grant; ?>' value='<?php echo $value;?>'>
 								<label class="<?php echo $labelclass; ?>" for='<?php echo $grant; ?>'><?php echo $grant_name; ?></label>
 								<label for="moregrants_<?php echo $grant; ?>" class="block more" title="More grants"></label>
 								<?php if ($grant == $moregrants) { ?>
@@ -364,7 +379,7 @@
 									</div>
 									<div class="types">
 										<?php
-											if (is_array($info['grants']['bytype']) && is_array($info['grants']['bytype'][$moregrants])) {
+											if (is_array($info['grants']['bytype']) && is_array($info['grants']['bytype'][$moregrants] ?? null) ) {
 												foreach ($info['grants']['bytype'][$moregrants] as $type => $value) {
 													$name = $typenames[$type];
 										?>
@@ -419,6 +434,7 @@
 			}
 		}
 
+		$extraroots = $extraroots ?? '';
 		$wgBrowseRoot = $defaultGroupDir;
 		$arConfig = $this->loadUserConfig();
 		foreach (array('groupdirs', 'userdirs') as $groupType) {

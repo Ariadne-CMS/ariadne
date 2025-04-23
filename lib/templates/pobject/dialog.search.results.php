@@ -6,12 +6,11 @@
 			"searchname" => $this->getdata("searchname"),
 			"searchtext" => $this->getdata("searchtext"),
 			"arimplements" => $this->getdata("arimplements"),
-			"context" => $context,
-			"advanced" => $advanced
-
+			"context" => $context ?? null,
+			"advanced" => $advanced ?? null
 		), "ariadneDialogSearch");
 
-		$query = $this->call("dialog.search.results.query.php", array("context" => $context, "advanced" => $advanced));
+		$query = $this->call("dialog.search.results.query.php", array("context" => ($context ?? null), "advanced" => ($advanced ?? null)));
 
 		if ($query || $this->getvar("wgWizAction") === "0" ) {
 ?>
@@ -94,7 +93,7 @@
 <?php
 			$this->putvar("oddeven", "odd");
 			$this->putvar("first", "true");
-			if( !$this->find($arPath, $query, "dialog.search.results.show.php", "", 0, 0) ){
+			if( !$this->find($arPath ?? null, $query, "dialog.search.results.show.php", "", 0, 0) ){
 				if( $this->error) {
 					echo "<tr><td colspan=5>";
 					error($this->error);

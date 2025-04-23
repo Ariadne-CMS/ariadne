@@ -4,31 +4,31 @@
 	require_once($AR->dir->install."/lib/ar/html.php");
 
 	class pinp_yui {
-		static public function _getSection( $section ) {
+		public static function _getSection( $section ) {
 			return yui::getSection( $section );
 		}
 	}
 
 	class yui {
 
-		static public function getSectionContent($settings) {
+		public static function getSectionContent($settings) {
 			$result = '';
 
 			if(is_array($settings)) {
 				foreach ($settings as $item) {
 					$result .= '<a class="sidebar_task';
-					if ($item['class']) {
+					if ($item['class'] ?? null) {
 						$result .= ' ' . $item['class'];
 					}
 					$result .= '"';
 
-					if ($item['href']) {
+					if ($item['href'] ?? null) {
 						$result .= ' href="' . $item['href'] . '"';
 					}
-					if ($item['onclick']) {
+					if ($item['onclick'] ?? null) {
 						$result .= ' onclick="' . $item['onclick'] . '"';
 					}
-					if ($item['target']) {
+					if ($item['target'] ?? null) {
 						$result .= ' target="' . $item['target'] . '"';
 					} else {
 						// FIXME: This should not be used in strict doctype, but we don't want it in our
@@ -39,11 +39,12 @@
 
 					$result .= '>';
 
-					if ($item['icon']) {
+					$item['iconalt'] = $item['iconalt'] ?? '';
+					if ($item['icon'] ?? null) {
 						$result .= '<img class="task_icon" src="' . $item['icon'] . '" alt="' . $item['iconalt'] . '" title="' . $item['iconalt'] . '">&nbsp;&nbsp;';
 					}
 
-					$itemlabel = $item['nlslabel'];
+					$itemlabel = $item['nlslabel'] ?? '';
 					$maxlabellength = 25;
 					if (mb_strlen($itemlabel, "utf-8") > $maxlabellength) {
 						$origName = $itemlabel;
@@ -57,23 +58,23 @@
 		}
 
 
-		static public function getSection($section) {
-			$invisibleSections= $_COOKIE['invisibleSections'];
+		public static function getSection($section) {
+			$invisibleSections = $_COOKIE['invisibleSections'] ?? null;
 
 			$maxheadlength = 18;
-			if ($section['icon']) {
+			if ($section['icon'] ?? null) {
 				$maxheadlength = 14;
 			}
 
 			$sectionDisplayName = $section['label'];
 			$sectionName = $section['id'];
-			$icon = $section['icon'];
+			$icon = $section['icon'] ?? null;
 
 			if (mb_strlen($sectionDisplayName, "utf-8") > $maxheadlength) {
-				$origName = htmlspecialchars($sectionDisplayName);
-				$sectionDisplayName = "<span title=\"$origName\">".htmlspecialchars(mb_substr($sectionDisplayName, 0, $maxheadlength-3, "utf-8")."...")."</span>";
+				$origName = htmlspecialchars($sectionDisplayName??'');
+				$sectionDisplayName = "<span title=\"$origName\">".htmlspecialchars(mb_substr($sectionDisplayName??'', 0, $maxheadlength-3, "utf-8")."...")."</span>";
 			} else {
-				$sectionDisplayName = htmlspecialchars($sectionDisplayName);
+				$sectionDisplayName = htmlspecialchars($sectionDisplayName??'');
 			}
 			$icontag = "";
 			if ($icon) {
@@ -83,7 +84,7 @@
 				}
 			}
 
-			if (strstr(strtolower($invisibleSections), $sectionName . ";")) {
+			if (strstr(strtolower($invisibleSections??''), $sectionName . ";")) {
 				$section_class = " collapsed";
 			} else {
 				$section_class = " expanded";
@@ -94,9 +95,9 @@
 				$sectionhead_class .= " iconsection";
 			}
 
-			if( $section['inline_icon'] ) {
+			if( $section['inline_icon'] ?? null ) {
 				$sectionhead_class .= " iconinlinesection";
-				$icontag .= '<img src="' . $section['inline_icon'] . '" class="inline_icon" alt="' . $section['inline_iconalt'] . '" title="' . $section['inline_iconalt'] . '">';
+				$icontag .= '<img src="' . $section['inline_icon'] . '" class="inline_icon" alt="' . ( $section['inline_iconalt'] ?? "" ) . '" title="' . ($section['inline_iconalt'] ?? "" ) . '">';
 			}
 
 			$togglehref = "javascript:muze.ariadne.explore.sidebar.section.toggle('" . $sectionName . "');";
@@ -115,13 +116,13 @@
 
 			$result .= '<div class="section_content">';
 
-			if ($section['details']) {
+			if ($section['details'] ?? null) {
 				$result .= '<div class="details">';
 				$result .= $section['details'];
 				$result .= '</div>';
 			}
 
-			$result .= self::getSectionContent($section['tasks']);
+			$result .= self::getSectionContent($section['tasks'] ?? null);
 			$result .= '</div>';
 
 			$result .= '</div>';
@@ -132,7 +133,7 @@
 
 
 		/* explore.sidebar.info.php */
-		static public function section_table($info) {
+		public static function section_table($info) {
 			global $ARnls;
 			$result = '';
 			if (is_array($info)) {
@@ -145,19 +146,19 @@
 			return $result;
 		}
 
-		static public function labelspan($label, $maxlabellength=16) {
+		public static function labelspan($label, $maxlabellength=16) {
 			// Reduce length of a label if they are too long.
-			if (mb_strlen($label, "utf-8") > $maxlabellength) {
-				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."..."));
+			if (mb_strlen($label ?? '', "utf-8") > $maxlabellength) {
+				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label??'', 0, $maxlabellength-3,"utf-8")."..."));
 			} else {
-				$label = htmlspecialchars($label);
+				$label = htmlspecialchars($label??'');
 			}
 			return $label;
 		}
 
 
 	/* dialog.templates.list.php */
-		static public function layout_sortfunc($a, $b) {
+		public static function layout_sortfunc($a, $b) {
 			if ($a == $b) {
 				 return 0;
 			}
@@ -165,13 +166,13 @@
 		}
 
 	/* explore.php */
-		static public function yui_menuitems($menuitems, $menuname, $menuid='') {
+		public static function yui_menuitems($menuitems, $menuname, $menuid='') {
 			$result = '';
 			if (is_array($menuitems)) {
 				$nodes = ar_html::nodes();
 
 				foreach ($menuitems as $item) {
-					if (!$item['href']) {
+					if (!isset($item['href'])) {
 						$item['href'] = "#";
 					}
 
@@ -180,15 +181,15 @@
 						"href" => $item["href"],
 					);
 
-					if( $item["onclick"] ) {
+					if( isset($item["onclick"]) ) {
 						$link["onclick"] = $item["onclick"];
 					}
-					if( $item["icon"] ) {
+					if( isset($item["icon"]) ) {
 						$icon = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"], "title" => $item["iconalt"]));
 					} else {
 						$icon = false;
 					}
-					if( $item["label"] ) {
+					if( isset($item["label"]) ) {
 						$content = ar_html::tag("span", array("class" => "menulabel"), $item['label']);
 					} else {
 						$content = false;
@@ -196,10 +197,13 @@
 
 					$a = ar_html::tag("a", $link, $icon, $content);
 
-					if( is_array($item['submenu']) ) {
+					if( isset($item['submenu']) && is_array($item['submenu']) ) {
 						$submenu = self::yui_menuitems($item['submenu'], "yuimenu");
 					} else {
 						$submenu = false;
+					}
+					if (!isset($item['id'])) {
+						$item['id'] = '';
 					}
 					$nodes[] = ar_html::tag("li", array("id" => $item['id'], "class" => $menuname."item"), $a, $submenu);
 				}
@@ -232,7 +236,7 @@
 			return $class;
 		}
 
-		static public function showTable($divId, $tableId, $columnDefs, $data) {
+		public static function showTable($divId, $tableId, $columnDefs, $data) {
 
 			if (!is_array($columnDefs)) {
 				return;
@@ -250,7 +254,7 @@
 				$headcols[] = ar_html::tag('th', array('class' => $class ),
 						ar_html::tag('div', array('class' => 'yui-dt-header'),
 							ar_html::tag('span', array('class' => 'yui-dt-label'),
-								 ar_html::tag('a', array('class' => 'yui-dt-sortable'), htmlspecialchars($columnDefs[$num]['label']) )
+								 ar_html::tag('a', array('class' => 'yui-dt-sortable'), htmlspecialchars($columnDefs[$num]['label']??'') )
 							)
 						)
 					);
@@ -294,7 +298,7 @@
 			echo ar_html::tag('div', array('id' => $divId, 'class' => 'yui-dt-'), $table)."\n";
 		}
 
-		static public function showTableJs($divId, $tableId, $columnDefs) {
+		public static function showTableJs($divId, $tableId, $columnDefs) {
 			$jsColDefs = '';
 			$jsFields = '';
 			foreach ($columnDefs as $colDef) {
@@ -350,7 +354,7 @@
 			echo '		muze.event.attach(document.body, "viewpaneLoaded", muze.ariadne.explore.viewpane.hideRows)' . "\n";
 		}
 
-		static public function colDefs($fields) {
+		public static function colDefs($fields) {
 			global $ARnls;
 
 			// Create a default set of column definitions given a set of field keys.
@@ -375,7 +379,7 @@
 			return $columnDefs;
 		}
 
-		static public function getSvnIcon($status) {
+		public static function getSvnIcon($status) {
 			global $AR;
 			global $ARnls;
 
@@ -386,14 +390,14 @@
 				$iconsrc = $AR->dir->images . 'svn/ModifiedIcon.png';
 				$alt = $ARnls['ariadne:svn:modified'];
 			}
-			if ($iconsrc) {
+			if (isset($iconsrc)) {
 				return ar_html::tag('img', array('class' => 'explore_svnicon', 'src' => $iconsrc, 'alt' => $alt, 'title' => $alt ));
 			} else {
 				return null;
 			}
 		}
 
-		static public function getTypeIcon($item, $viewtype='list') {
+		public static function getTypeIcon($item, $viewtype='list') {
 
 
 			$type = $item["type"];
@@ -406,6 +410,9 @@
 			}
 
 			$result = ar_html::nodes();
+			if (!isset($item['vtype'])) {
+				$item['vtype'] = '';
+			}
 			if( $type == "pshortcut" ) {
 				$result[] = ar_html::tag('img', array('title' => $item['vtype'], 'alt' => $item['vtype'], 'class' => 'explore_icon', 'src' => $item['icons'][$iconsize]) );
 				$result[] = ar_html::tag('img', array('title' => $item['type'], 'alt' => $item['type'], 'class' => 'explore_icon_shortcut_'.$viewtype, 'src' => $item['overlay_icons'][$iconsize]) );
@@ -415,7 +422,7 @@
 			return $result;
 		}
 
-		static public function showList($data, $viewtype='list') {
+		public static function showList($data, $viewtype='list') {
 			global $ARnls;
 
 			if (is_array($data['objects']) && count($data['objects']) && $data['total'] > 0) {
@@ -433,7 +440,7 @@
 				}
 				foreach ($data['objects'] as $node) {
 					$content = self::getTypeIcon($node, $viewtype);
-					if( is_array($node['svn']) ) {
+					if( is_array($node['svn'] ?? null) ) {
 						$content[] = self::getSvnIcon($node['svn']['status']);
 					}
 
@@ -443,31 +450,31 @@
 					}
 					$content[]= ar_html::tag('span', array('class' => 'explore_name'), self::labelspan($node['name'], $maxlen ));
 					$nodes[] = ar_html::tag( 'li', array('class' => $item_class, 'data-path' => $node['path']), 
-						ar_html::tag( 'a', array('class' => 'explore_link', 'href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;", 'title' => $node['name']), $content) );
+						ar_html::tag( 'a', array('class' => 'explore_link', 'href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']??'') . "'); return false;", 'title' => $node['name']), $content) );
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {
 
 				if ($data['total'] > 1000) {
-					$content = htmlspecialchars($ARnls['ariadne:too_many_objects_found'] . " (" . $data['total'] . ")");
+					$content = htmlspecialchars($ARnls['ariadne:too_many_objects_found']??'' . " (" . $data['total'] . ")");
 					$selectoptions = array(
 						"sanity-off" => $ARnls['ariadne:select:showall']
 					);
 
 					foreach ($selectoptions as $key => $value) {
-						$content .= '<br><a href="#" onclick="muze.ariadne.explore.viewpane.setfilter(\'' . htmlspecialchars($key) . '\'); return false;">' . htmlspecialchars($value) . '</a>';
+						$content .= '<br><a href="#" onclick="muze.ariadne.explore.viewpane.setfilter(\'' . htmlspecialchars($key??'') . '\'); return false;">' . htmlspecialchars($value??'') . '</a>';
 					}
 
 					$result = ar_html::tag('div', array('class'=>'noobjects'), $content);
 				} else {
-					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:no_objects_found']) );
+					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:no_objects_found']??'') );
 				}
 			}
 			echo $result."\n";
 		}
 
-		private function getPagingPrev($current_page) {
-			global $AR;
+		private static function getPagingPrev($current_page) {
+			global $AR, $ARnls;
 			return array(
 				"class" => "prev",
 				"image" => $AR->dir->www . "images/icons/small/prev.png",
@@ -477,8 +484,8 @@
 
 		}
 
-		private function getPagingNext($current_page) {
-			global $AR;
+		private static function getPagingNext($current_page) {
+			global $AR, $ARnls;
 			return array(
 				"class" => "next",
 				"image" => $AR->dir->www . "images/icons/small/next.png",
@@ -596,19 +603,19 @@
 
 		private static function getPagingImage($image, $label) {
 			if (!$image) {
-				return htmlspecialchars($label);
+				return htmlspecialchars($label??'');
 			}
 
 			$result = '<img src="'. $image . '"';
 			if ($label) {
-				$result .= ' alt="' . htmlspecialchars($label) . '"';
-				$result .= ' title="' . htmlspecialchars($label) . '"';
+				$result .= ' alt="' . htmlspecialchars($label??'') . '"';
+				$result .= ' title="' . htmlspecialchars($label??'') . '"';
 			}
 			$result .= '>';
 			return $result;
 		}
 
-		static public function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
+		public static function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
 			$pagingentries = self::getPagingEntries($total, $items_per_page, $current_page);
 
 			if (!sizeof($pagingentries)) {
@@ -622,20 +629,20 @@
 			$result .= "'>";
 			foreach ($pagingentries as $entry) {
 				$result .= "<li";
-				if ($entry['class']) {
+				if ( $entry['class'] ?? "" ) {
 					$result .= ' class="' . $entry['class'] . '"';
 				}
 				$result .= ">";
 				$result .= "<a";
 
-				if ($entry['onclick']) {
+				if ($entry['onclick'] ?? null) {
 					$result .= ' onclick="' . $entry['onclick'] . '"';
 				}
-				$result .= self::getPagingLink($entry['href']);
+				$result .= self::getPagingLink( ( $entry['href'] ?? "" ) );
 
 				$result .= ">";
 
-				$result .= self::getPagingImage($entry['image'], $entry['label']);
+				$result .= self::getPagingImage( $entry['image'] ?? "", $entry['label'] ?? "" );
 
 				$result .= "</a>";
 				$result .= "</li>";
@@ -646,11 +653,11 @@
 
 
 		/* dialog.add.list.php */
-		static public function getTypes($arObject, $showall) {
+		public static function getTypes($arObject, $showall) {
 			$result = Array();
 			if (!$showall) {
 				$typetree = $arObject->call('typetree.ini');
-				$thistypetree = $typetree[$arObject->type];
+				$thistypetree = $typetree[$arObject->type]??null;
 
 				if (is_array($thistypetree)) {
 					foreach( $thistypetree as $type => $name ) {
@@ -676,7 +683,8 @@
 			return $result;
 		}
 
-		static public function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
+		public static function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
+			$class = '';
 			if (!$arObject->CheckSilent("add", $type)) {
 				$class .= "greyed";
 			}
@@ -701,7 +709,7 @@
 			return $result;
 		}
 
-		function getItems($arObject, $typeslist, $currentpath, $arReturnTemplate) {
+		public static function getItems($arObject, $typeslist, $currentpath, $arReturnTemplate) {
 			$result = array();
 			foreach( $typeslist as $type => $name ) {
 				$result[] = self::checkType($arObject, $type, $name, $currentpath, $arReturnTemplate);

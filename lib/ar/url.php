@@ -10,7 +10,7 @@
 
 		public function __construct( $url ) {
 			$query = new \arc\url\PHPQuery();
-			$this->url = new \arc\url\Url($url, $query);
+			$this->url = new \arc\url\Url($url??'', $query);
 			$this->query = new ar_urlQuery($query);
 		}
 
@@ -61,11 +61,11 @@
 			return (string)$url;
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->query->$name;
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
 
@@ -113,11 +113,11 @@
 			$this->query->{$name} = $value;
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->query->{$name};
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
 
@@ -133,18 +133,22 @@
 			$this->query->import( $values );
 		}
 
-		public function offsetExists($name){
+		public function offsetExists($name): bool
+		{
 			return isset($this->query->{$name});
 		}
 
-		public function &offsetGet($name) {
+		public function &offsetGet($name): mixed
+		{
 			return $this->query->{$name};
 		}
 
-		public function offsetSet($name, $value) {
+		public function offsetSet($name, $value): void
+		{
 			$this->query->{$name} = $value;
 		}
-		public function offsetUnset($name) {
+		public function offsetUnset($name): void
+		{
 			unset($this->query->{$name});
 		}
 

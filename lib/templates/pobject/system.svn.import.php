@@ -18,11 +18,11 @@
 			$svn	= $fstore->connect($this->id, $username, $password);
 			$svn_info = $fstore->svn_info($svn);
 
-			if ($svn_info['revision']) {
+			if (isset($svn_info['revision'])) {
 				echo $this->path . " is already under version control - update instead.<br>"; // FIXME: nls
 			}
 
-			if ($repoPath) {
+			if (isset($repoPath)) {
 				$repo_subpath = substr($this->path, strlen($repoPath));
 			} else {
 				// This is also the first loop!
@@ -52,7 +52,7 @@
 			$fileinfo['']['ar:name'] = $this->nlsdata->name;
 
 			echo "<span class='svn_adddirline'>Adding ".$this->path."</span>\n"; // FIXME: nls
-			$pinp = $this->data->config->pinp;
+			$pinp = $this->data->config->pinp ?? null;
 			if ($pinp) {
 				foreach( $pinp as $type => $values ) {
 					foreach( $values as $function => $templatelist ) {

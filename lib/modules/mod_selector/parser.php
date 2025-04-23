@@ -8,12 +8,12 @@
 			$this->scanner->next();
 		}
 
-		public function parse($greedyMatching = '!', $stack = Array()) {
+		public function parse($greedyMatching = '!', $stack = array()) {
 			$node = $this->parseOr($greedyMatching, $stack);
 			return $node;
 		}
 
-		public function parseOr($greedyMatching = '!', $stack) {
+		public function parseOr($greedyMatching = '!', $stack = array()) {
 			$node = $this->parseAnd($greedyMatching, $stack);
 			while ($this->scanner->token_ahead == T_OR) {
 				$this->scanner->next();
@@ -29,7 +29,7 @@
 			return $node;
 		}
 
-		public function parseAnd($greedyMatching = '!', $stack) {
+		public function parseAnd($greedyMatching = '!', $stack = array()) {
 			$prevNode = null;
 			while ($node = $this->parseIdent($greedyMatching, $stack)) {
 					$node = $this->parseRepeat($node, $stack);
@@ -48,7 +48,7 @@
 			return $prevNode;
 		}
 
-		public function parseIdent($greedyMatching = '!', $stack) {
+		public function parseIdent($greedyMatching = '!', $stack = array()) {
 				$greedyMatching = $this->parseGreedyness($greedyMatching);
 				switch ($this->scanner->token_ahead) {
 					case T_RECURSE_DEF:

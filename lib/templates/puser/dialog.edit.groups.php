@@ -11,7 +11,7 @@
 
 		$flagurl = $AR->dir->images."nls/small/$selectednls.gif";
 
-		$login = $this->data->login;
+		$login = $this->data->login ?? null;
 		if (!$login) {
 			$login = $this->getdata("arNewFilename", "none");
 		}

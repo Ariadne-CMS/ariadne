@@ -5,7 +5,7 @@
 
 		$editor="dialog.templates.edit.php";
 
-		if( !$ARCurrent->arTypeTree ) {
+		if( !isset($ARCurrent->arTypeTree) ) {
 			$this->call('typetree.ini');
 		}
 		$icons = $ARCurrent->arTypeIcons;
@@ -143,7 +143,7 @@
 	if ($AR->Grep->path) {
 ?>
 	<div class="searchdiv">
-		<input class="text" type="text" id="search" name="search" value="<?php echo htmlspecialchars($search); ?>">
+		<input class="text" type="text" id="search" name="search" value="<?php echo htmlspecialchars($search??''); ?>">
 		<input type="submit" id="searchbutton" class="wgWizControl" name="wgWizControl" onclick="document.wgWizForm.wgWizAction.value='grep'" value="<?php echo $ARnls["search"]; ?>">
 	</div>
 <?php
@@ -160,7 +160,7 @@
 				$file=substr($file, strrpos($file, '/'));
 				$file=substr($file, 2);
 				$file = substr($file, 0, strrpos($file, '.'));
-				if( !is_array($grepresults[$file])) {
+				if( !is_array($grepresults[$file]??null)) {
 					$grepresults[$file] = array();
 				}
 				$grepresults[$file][] = $linenr.": ".$line;
@@ -187,13 +187,13 @@
 			</td>
 		</tr></thead><tbody>
 		<?php
-			$pinp = $data->config->pinp;
-			$templates = $data->config->templates;
-			$privatetemplates = $data->config->privatetemplates;
+			$pinp = $data->config->pinp ?? null;
+			$templates = $data->config->templates ?? null;
+			$privatetemplates = $data->config->privatetemplates ?? null;
 
 			if ($svn_enabled && $svn_status ) {
-				$deleted_templates = $data->config->deleted_templates;
-				$deleted_privatetemplates = $data->config->deleted_privatetemplates;
+				$deleted_templates = $data->config->deleted_templates ?? [];
+				$deleted_privatetemplates = $data->config->deleted_privatetemplates ?? [];
 
 				foreach ($svn_status as $filename=>$file_status) {
 					if ($file_status['wc-status']['item'] == "missing") {
@@ -241,6 +241,10 @@
 						$flagbuttons = '';
 						$flag_svn = '';
 						$grep_results = '';
+						$svn_style = '';
+						$svn_style_hide = '';
+						$svn_img = '';
+						
 						foreach ($templatelist as $language => $template) {
 							$filename = $type . "." . $function . "." . $language . ".pinp";
 							$filename_short = $type . "." . $function . "." . $language;
@@ -269,7 +273,7 @@
 									case "deleted":
 										$svn_img = "DeletedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:deleted'];
-										if ($this->data->config->deleted_templates[$type][$function][$language]) {
+										if ($this->data->config->deleted_templates[$type][$function][$language] ?? null) {
 											$svn_style = "blurred";
 											$svn_style_hide = "hidden";
 										}
@@ -288,7 +292,7 @@
 								}
 							}
 
-							$flag = "<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\">";
+							$flag = "<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".(isset($AR->nls->list[$language]) ? $AR->nls->list[$language] : "")."\">";
 							if ($svn_enabled && (count($templatelist) > 1) && $svn_img ) {
 								$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 								$flag_svn = '<img class="flag_svn_icon" alt="' . $svn_alt . '" src="' . $svn_img_src . '">';
@@ -301,25 +305,25 @@
 							}
 							$flagbuttons .= "\">" . $flag . $flag_svn . "</a> ";
 
-							if( is_array( $grepresults) && is_array($grepresults[$filename_short]) ) {
+							if( is_array( $grepresults) && is_array(($grepresults[$filename_short] ?? null)) ) {
 								foreach( $grepresults[$filename_short] as $r ) {
 									list( $ln, $tx ) = explode(":", $r, 2);
 									if (count($templatelist) > 1) {
 										$grep_results .= $flag . "&nbsp;";
 									}
 									$grep_results .= "<a href=\"".$this->make_ariadne_url().$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
-									"&amp;lineOffset=".rawurlencode($ln)."&amp;language=".rawurlencode($language)."\">".htmlspecialchars($r)."</a><br>";
+									"&amp;lineOffset=".rawurlencode($ln)."&amp;language=".rawurlencode($language)."\">".htmlspecialchars($r??'')."</a><br>";
 								}
 							}
 						}
 
-						$icon_src = $ARCurrent->arTypeIcons[$type]["small"] ? $ARCurrent->arTypeIcons[$type]["small"] : $this->call("system.get.icon.php", array("type" => $type, "size" => "small"));
+						$icon_src = ( $ARCurrent->arTypeIcons[$type]["small"] ?? null ) ? $ARCurrent->arTypeIcons[$type]["small"] : $this->call("system.get.icon.php", array("type" => $type, "size" => "small"));
 						$icon_alt = $type;
 						?><tr valign="middle">
 							<td class="svn">
 								<?php
 									if ($svn_enabled) {
-										if ($svn_img) {
+										if (isset($svn_img) && $svn_img) {
 											$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 											?><img class="svn_icon" alt="<?php echo $svn_alt; ?>" src="<?php echo $svn_img_src;?>"><?php
 										}
@@ -327,20 +331,20 @@
 								?>
 							</td>
 						       <td align="left" valign="middle" style="height:23px;">
-								<div class="<?php echo $svn_style; ?>">
+								<div class="<?php echo (isset($svn_style) ? $svn_style : ''); ?>">
 									<img class="type_icon" alt="<?php echo $icon_alt; ?>" src="<?php echo $icon_src; ?>">
 								<?php echo $type; ?>&nbsp;</div></td>
-							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo $svn_style; ?>"><?php
-								if (!$templates[$type][$function]) {
+							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo (isset($svn_style) ? $svn_style : ''); ?>"><?php
+								if (!isset($templates[$type][$function]) || !$templates[$type][$function]) {
 									echo "<img class='local' src='{$AR->dir->images}local.gif' alt='local'>&nbsp;";
 								}
-								if ($privatetemplates[$type][$function]) {
+								if (isset($privatetemplates[$type][$function]) && $privatetemplates[$type][$function]) {
 									echo "<img class='private' src='{$AR->dir->images}private.png' alt='" . $ARnls['ariadne:template:private'] . "' title='" . $ARnls['ariadne:template:private'] . "'>";
 								}
 							?>
 							<?php echo $function; ?></div>
 							</td>
-							<td><div class="<?php echo $svn_style; ?>"><?php
+							<td><div class="<?php echo (isset($svn_style) ? $svn_style : ''); ?>"><?php
 								echo $flagbuttons;
 							?></div></td>
 								<?php
@@ -368,8 +372,8 @@
 							<td>
 								<div style="display:none;"><?php print $mtime; ?></div>
 								<div class="<?php echo $svn_style_hide;?>">
-									<?php echo strftime("%H:%M", $mtime); ?>&nbsp;&nbsp;
-									<?php echo strftime("%d %b %Y", $mtime); ?>&nbsp;
+									<?php echo DateTimeImmutable::createFromFormat('U', $mtime)->format('H:i'); ?>&nbsp;&nbsp;
+									<?php echo DateTimeImmutable::createFromFormat('U', $mtime)->format('d M Y'); ?>&nbsp;
 								</div>
 							</td>
 							<td>

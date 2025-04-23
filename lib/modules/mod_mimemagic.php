@@ -770,9 +770,9 @@
 			$extension = substr($extension, $ePos + 1);
 		}
 
-		$result = $contenttypes_data[$extension][$mimetype];
+		$result = $contenttypes_data[$extension][$mimetype] ?? null;
 		if (!$result) {
-			if (is_array($contenttypes_data[$extension])) {
+			if (is_array($contenttypes_data[$extension] ?? null)) {
 				foreach ($contenttypes_data[$extension] as $check => $res) {
 					if (preg_match("|$check|i", $mimetype)) {
 						return $res;

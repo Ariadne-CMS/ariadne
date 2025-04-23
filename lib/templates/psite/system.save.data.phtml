@@ -5,14 +5,13 @@
  
 	******************************************************************/
 
-	if ((($this->arIsNewObject &&
+	if (((($this->arIsNewObject??null) &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||
-			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
+			(!($this->arIsNewObject??null) && $this->CheckLogin("edit"))) &&
 			$this->CheckConfig()) {
 
 		$this->error = null;
-
 		$arResult = $this->call("pdir::system.save.data.phtml",$arCallArgs);
 		if ( $this->error ) {
 			return $arResult;
@@ -28,24 +27,24 @@
 			$name = $this->getdata("name",$key);
 			if ($name) {
 				// backwards compatibility for data
-				$urlList = $this->data->${key}->urlList;
+				$urlList = $this->data->{$key}->urlList??null;
 				if( (!is_array($urlList)) ) {
 					// empty urlList
 					$urlList = array();
-					if ( isset($this->data->${key}->url)) {
+					if ( isset($this->data->{$key}->url)) {
 						// convert data from url
-						$urlList[] = $this->data->${key}->url;
+						$urlList[] = $this->data->{$key}->url;
 					} else {
 						// default nls case
 						if( $this->data->nls->default == $key  && isset($this->data->url) ) {
 							$urlList[] = $this->data->url;
 						}
 					}
-					$this->data->${key}->urlList = $urlList;
+					$this->data->{$key}->urlList = $urlList;
 				}
 			}
 			// unset data nolonger needed, will be regenerated
-			unset($this->data->${key}->url);
+			unset($this->data->{$key}->url);
 		}
 		// unset data nolonger needed, will be regenerated
 		unset($this->data->url);
@@ -61,7 +60,7 @@
 			$name = $this->getdata("name",$key);
 			if ($name) {
 					$nlsArgs = $this->getvar($key);
-					$urlList = $nlsArgs['urlList'];
+					$urlList = $nlsArgs['urlList']??null;
 					if(isset($urlList)) {
 						$handleOldApi=false;
 						break;
@@ -78,8 +77,8 @@
 				$name = $this->getdata("name",$key);
 				if ($name) {
 					$nlsArgs = $this->getvar($key);
-					$url = $nlsArgs['url'];
-					$urlList = $this->data->${key}->urlList;
+					$url = $nlsArgs['url']??null;
+					$urlList = $this->data->{$key}->urlList;
 					if(is_array($nlsArgs) && array_key_exists('url', $nlsArgs)) {
 						if( $url == '') {
 							// settting url to an empty string if the api sets the argument to empty
@@ -166,8 +165,8 @@
 
 						preg_match('|^([a-z0-9]+:)?//([^/:]+)(:[0-9]+)?|i', $url, $regs);
 						$this->data->config->url_list['nls'][$key][] = $url;
-						if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
-							$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
+						if (!($this->data->config->url_list['host'][($regs[2]??null).($regs[3]??null)]??null)) {
+							$this->data->config->url_list['host'][($regs[2]??null).($regs[3]??null)] = $key;
 						} else {
 							$this->error = ar::error("Please fill in distinctive hostnames; they should not be the same for different languages.", 1208);
 							break 2; // break the foreach and the nls while loop
@@ -181,7 +180,7 @@
 						$properties["url"][$count]["protocol"] = $regs[1];
 						$properties["url"][$count]["host"]     = $regs[2];
 
-						if ($regs[3]) {
+						if ($regs[3]??null) {
 							$properties["url"][$count]["port"]= (int)substr($regs[3], 1);
 						}
 
@@ -192,7 +191,7 @@
 					if (substr($workspaceurl, -1, 1)=='/') {
 						$workspaceurl=substr($workspaceurl, 0, -1);
 					}
-					if ($workspaceurl!=$this->data->$key->workspaceurl) {
+					if($workspaceurl!=($this->data->$key->workspaceurl??null)) {
 						$this->data->$key->workspaceurl=$workspaceurl;
 					}
 
@@ -206,19 +205,19 @@
 						}
 					}
 
-					$properties["url"][$count]["protocol"] = $regs[1];
-					$properties["url"][$count]["host"]     = $regs[2];
+					$properties["url"][$count]["protocol"] = $regs[1]??null;
+					$properties["url"][$count]["host"]     = $regs[2]??null;
 
-					if ($regs[3]) {
+					if ($regs[3]??null) {
 						$properties["url"][$count]["port"] = (int)substr($regs[3], 1);
 					}
 					$count++;
 				}
 			}
 			$this->data->url = $this->data->{$this->data->nls->default}->url;
-			$this->data->workspaceurl=$this->data->{$this->data->nls->default}->workspaceurl;
+			$this->data->workspaceurl=$this->data->{$this->data->nls->default}->workspaceurl??null;
 
-			if (!$this->error) {
+			if (!($this->error??null)) {
 				$arResult = $this->save($properties);
 			}
 

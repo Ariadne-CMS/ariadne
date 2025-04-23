@@ -1,16 +1,31 @@
 <?php
-	$path=$this->store->make_path($this->parent, $data->path);
+	$path=$this->store->make_path($this->parent, $data->path ?? null );
 	$MAXLOOPCOUNT=10;
-	if ($ARBeenhere[$arCallFunction][$path]<$MAXLOOPCOUNT) {
+	if (
+		!isset($ARBeenHere) ||
+		!isset($ARBeenHere[$arCallFunction]) ||
+		!isset($ARBeenHere[$arCallFunction][$path]) ||
+		($ARBeenHere[$arCallFunction][$path]<$MAXLOOPCOUNT)
+	) {
+		if (!isset($ARBeenHere)) {
+			$ARBeenHere = array();
+		}
+		if (!isset($ARBeenHere[$arCallFunction])) {
+			$ARBeenHere[$arCallFunction] = array();
+		}
+		if (!isset($ARBeenHere[$arCallFunction][$path])) {
+			$ARBeenHere[$arCallFunction][$path] = 0;
+		}
+		
 		$ARBeenHere[$arCallFunction][$path]+=1;
 
 		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 			if ($path && $this->store->exists($path)) {
 				$arCallArgs["arShortCut"] = $this->path;
-				if (!is_array($ARCurrent->shortcut_redirect)) {
+				if (!is_array($ARCurrent->shortcut_redirect ?? null)) {
 					$ARCurrent->shortcut_redirect = array();
 				}
-				array_push($ARCurrent->shortcut_redirect, array("src" => $this->path, "dest" => $path, "keepurl" => $this->data->keepurl));
+				array_push($ARCurrent->shortcut_redirect, array("src" => $this->path, "dest" => $path, "keepurl" => ($this->data->keepurl ?? null)));
 					$arResult=current($this->get($path, $arCallFunction, $arCallArgs));
 				array_pop($ARCurrent->shortcut_redirect);
 			} else {
@@ -18,7 +33,9 @@
 				debug("pshortuct::default.phtml: ".sprintf($ARnls["err:shortcutnopath"],$this->path,$path));
 			}
 		}
-		unset($ARConfig->cache[$this->data->path]->templates_path);
+		if ( $this->data->path ?? null ) {
+			unset($ARConfig->cache[$this->data->path]->templates_path);
+		}
 	} else {
 		error( sprintf($ARnls["err:shortcutloopexceed"],$data->path, $arCallFunction,$MAXLOOPCOUNT,$this->path) );
 	}

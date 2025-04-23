@@ -1,6 +1,6 @@
 <?php
 	$context    = $this->getContext(ARCALLINGCONTEXT);
-	if (($context["addProfileSettings"] || $this->CheckSilent("edit")) && $this->CheckConfig()) {
+	if ((($context["addProfileSettings"]??null) || $this->CheckSilent("edit")) && $this->CheckConfig()) {
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=current($this->get("","system.get.data.phtml"));

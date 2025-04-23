@@ -7,25 +7,33 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This library is a _pure PHP_ implementation of the AMQP protocol. It's been tested against [RabbitMQ](http://www.rabbitmq.com/).
+This library is a _pure PHP_ implementation of the [AMQP 0-9-1 protocol](http://www.rabbitmq.com/tutorials/amqp-concepts.html).
+It's been tested against [RabbitMQ](http://www.rabbitmq.com/).
 
 **Requirements: PHP 5.3** due to the use of `namespaces`.
+
+**Requirements: bcmath extension** This library utilizes the bcmath PHP extension. The installation steps vary per PHP version and the underlying OS. The following example shows how to add to an existing PHP installation on Ubuntu 15.10:
+
+```bash
+sudo apt-get install php7.0-bcmath
+```
 
 The library was used for the PHP examples of [RabbitMQ in Action](http://manning.com/videla/) and the [official RabbitMQ tutorials](http://www.rabbitmq.com/tutorials/tutorial-one-php.html).
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-## New Maintainers (02/10/2016) ##
+## Project Maintainers
 
-Thanks to [videlalvaro](https://github.com/videlalvaro) for his hard work in maintaining php-amqplib!  He's done a fantastic job
-and has left big shoes to fill.
+Thanks to [videlalvaro](https://github.com/videlalvaro) and [postalservice14](https://github.com/postalservice14) for their hard work maintaining php-amqplib! The library wouldn't be where it is without them.
 
-The package will now be maintained by [postalservice14](https://github.com/postalservice14) and [nubeiro](https://github.com/nubeiro).
+The package is now maintained by [nubeiro](https://github.com/nubeiro) and several Pivotal engineers
+working on RabbitMQ and related projects.
 
 ## Supported RabbitMQ Versions ##
 
 Starting with version 2.0 this library uses `AMQP 0.9.1` by default and thus requires [RabbitMQ 2.0 or later version](http://www.rabbitmq.com/download.html).
-You shouldn't need to change your code, but test before upgrading.
+Usually server upgrades do not require any application code changes since
+the protocol changes very infrequently but please conduct your own testing before upgrading.
 
 ## Supported RabbitMQ Extensions ##
 
@@ -38,22 +46,16 @@ Since the library uses `AMQP 0.9.1` we added support for the following RabbitMQ 
 
 Extensions that modify existing methods like `alternate exchanges` are also supported.
 
+### Related libraries
+
+* [enqueue/amqp-lib](https://github.com/php-enqueue/amqp-lib) is a [amqp interop](https://github.com/queue-interop/queue-interop#amqp-interop) compatible wrapper.
+
 ## Setup ##
 
- Add a `composer.json` file to your project:
-
-```javascript
-{
-  "require": {
-      "php-amqplib/php-amqplib": "2.6.*"
-  }
-}
-```
-
-Then provided you have [composer](http://getcomposer.org) installed, you can run the following command:
+Ensure you have [composer](http://getcomposer.org) installed, then run the following command:
 
 ```bash
-$ composer.phar install
+$ composer require php-amqplib/php-amqplib
 ```
 
 That will fetch the library and its dependencies inside your vendor folder. Then you can add the following to your
@@ -116,6 +118,28 @@ please refer to the [official RabbitMQ tutorials](http://www.rabbitmq.com/tutori
 - `amqp_consumer_fanout_{1,2}.php` and `amqp_publisher_fanout.php`: demos fanout exchanges with named queues.
 - `basic_get.php`: demos obtaining messages from the queues by using the _basic get_ AMQP call.
 
+## Multiple hosts connections ##
+
+If you have a cluster of multiple nodes to which your application can connect,
+you can start a connection with an array of hosts. To do that you should use
+the `create_connection` static method.
+
+For example:
+```
+$connection = AMQPStreamConnection::create_connection([
+    ['host' => HOST1, 'port' => PORT, 'user' => USER, 'password' => PASS, 'vhost' => VHOST],
+    ['host' => HOST2, 'port' => PORT, 'user' => USER, 'password' => PASS, 'vhost' => VHOST]
+],
+$options);
+```
+
+This code will try to connect to `HOST1` first, and connect to `HOST2` if the
+first connection fails. The method returns a connection object for the first
+successful connection. Should all connections fail it will throw the exception
+from the last connection attempt.
+
+See `demo/amqp_connect_multiple_hosts.php` for more examples.
+
 ## Batch Publishing ##
 
 Let's say you have a process that generates a bunch of messages that are going to be published to the same `exchange` using the same `routing_key` and options like `mandatory`.
@@ -172,7 +196,67 @@ the server (which still has a complete copy) to forward it to a Dead Letter Exch
 
 By default, no truncation will occur. To disable truncation on a Channel that has had it enabled, pass `0` (or `null`) to `AMQPChannel::setBodySizeLimit()`.
 
-##UNIX Signals##
+## Connection recovery ##
+
+Some RabbitMQ clients using automated connection recovery mechanisms to reconnect
+and recover channels and consumers in case of network errors.
+
+Since this client is using a single-thread, you can set up connection recovery
+using exception handling mechanism.
+
+Exceptions which might be thrown in case of connection errors:
+
+```
+PhpAmqpLib\Exception\AMQPIOException
+\RuntimeException
+\ErrorException
+```
+
+Some other exceptions might be thrown, but connection can still be there. It's
+always a good idea to clean up an old connection when handling an exception
+before reconnecting.
+
+For example, if you want to set up a recovering connection:
+
+```
+$connection = null;
+$channel = null;
+while(true){
+    try {
+        $connection = new AMQPStreamConnection(HOST, PORT, USER, PASS, VHOST);
+        // Your application code goes here.
+        do_something_with_connection($connection);
+    } catch(AMQPIOException $e) {
+        cleanup_connection($connection);
+        usleep(WAIT_BEFORE_RECONNECT_uS);
+    } catch(\RuntimeException $e) {
+        cleanup_connection($connection);
+        usleep(WAIT_BEFORE_RECONNECT_uS);
+    } catch(\ErrorException $e) {
+        cleanup_connection($connection);
+        usleep(WAIT_BEFORE_RECONNECT_uS);
+    }
+}
+
+```
+
+A full example is in `demo/connection_recovery_consume.php`.
+
+This code will reconnect and retry the application code every time the
+exception occurs. Some exceptions can still be thrown and should not be handled
+as a part of reconnection process, because they might be application errors.
+
+This approach makes sense mostly for consumer applications, producers will
+require some additional application code to avoid publishing the same message
+multiple times.
+
+This was a simplest example, in a real-life application you might want to
+control retr count and maybe gracefully degrade wait time to reconnection.
+
+You can find a more excessive example in #444
+
+
+## UNIX Signals ##
 
 If you have installed [PCNTL extension](http://www.php.net/manual/en/book.pcntl.php) dispatching of signal will be handled when consumer is not processing message.
 
@@ -183,8 +267,8 @@ $pcntlHandler = function ($signal) {
         case \SIGUSR1:
         case \SIGINT:
             // some stuff before stop consumer e.g. delete lock etc
-            exit(0);
-            break;
+            pcntl_signal($signal, SIG_DFL); // restore handler
+            posix_kill(posix_getpid(), $signal); // kill self with signal, see https://www.cons.org/cracauer/sigint.html
         case \SIGHUP:
             // some stuff to restart consumer
             break;
@@ -193,12 +277,10 @@ $pcntlHandler = function ($signal) {
     }
 };
 
-declare(ticks = 1) {
-    pcntl_signal(\SIGTERM, $pcntlHandler);
-    pcntl_signal(\SIGINT,  $pcntlHandler);
-    pcntl_signal(\SIGUSR1, $pcntlHandler);
-    pcntl_signal(\SIGHUP,  $pcntlHandler);
-}
+pcntl_signal(\SIGTERM, $pcntlHandler);
+pcntl_signal(\SIGINT,  $pcntlHandler);
+pcntl_signal(\SIGUSR1, $pcntlHandler);
+pcntl_signal(\SIGHUP,  $pcntlHandler);
 ```
 
 To disable this feature just define constant `AMQP_WITHOUT_SIGNALS` as `true`
@@ -234,17 +316,7 @@ $ make benchmark
 
 ## Tests ##
 
-To successfully run the tests you need to first setup the test `user` and test `virtual host`.
-
-You can do that by running the following commands after starting RabbitMQ:
-
-```bash
-$ rabbitmqctl add_vhost phpamqplib_testbed
-$ rabbitmqctl add_user phpamqplib phpamqplib_password
-$ rabbitmqctl set_permissions -p phpamqplib_testbed phpamqplib ".*" ".*" ".*"
-```
-
-Once your environment is set up you can run your tests like this:
+To successfully run the tests you need to first have a stock RabbitMQ broker running locally.Then, run tests like this:
 
 ```bash
 $ make test
@@ -292,7 +364,7 @@ Patches are very welcome!
 Author: Vadim Zaliva <lord@crocodile.org>
 
 [ico-version]: https://img.shields.io/packagist/v/php-amqplib/php-amqplib.svg?style=flat-square
-[ico-license]: https://img.shields.io/badge/license-LGPL-brightgreen.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-LGPL_2.1-brightgreen.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/php-amqplib/php-amqplib/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/php-amqplib/php-amqplib.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/php-amqplib/php-amqplib.svg?style=flat-square

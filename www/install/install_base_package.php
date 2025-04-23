@@ -14,7 +14,7 @@
 
 	/* instantiate the store */
 	$inst_store = $store_config["dbms"]."store";
-	$store = new $inst_store($root,$store_config);
+	$store = new $inst_store($root??null,$store_config);
 
 //	echo "== importing base.ax file\n\n";
 	$ARCurrent->nolangcheck = true;

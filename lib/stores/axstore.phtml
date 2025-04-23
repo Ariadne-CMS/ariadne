@@ -8,7 +8,9 @@ define("AX_WITHOUT_TEMPLATES", 4);
 define("AX_WITHOUT_FILES", 8);
 define("AX_VERSION", 4);
 
+#[\AllowDynamicProperties]
 class axstore {
+	public $database, $writable, $temp, $files, $code, $tar, $tempdir, $ofile, $error, $filestores;
 
 	var $nodes;
 	var $objects;
@@ -27,7 +29,7 @@ class axstore {
 	*****************/
 
 	function __construct($path, $config) {
-		debug("axstore($path, $config)", "store");
+		debug("axstore($path, " . json_encode($config) . ")", "store");
 		include_once($config["code"]."modules/mod_tar.phtml");
 
 		$this->database=$config["database"];
@@ -76,7 +78,7 @@ class axstore {
 									include_once($this->code."objects/".$class.".phtml");
 									// check if this is a link (does the object already exist?)
 
-									if (!$this->objects[$data[0]]) {
+									if (!($this->objects[$data[0]] ?? null)) {
 
 										$object=new $class;
 										$object->id=(int)$data[0];
@@ -140,7 +142,7 @@ class axstore {
 					} else {
 						$this->error="Possibly supplied an corrupted ax file: could not find ".$this->tempdir."/objects.data";
 					}
-
+					$this->error = $this->error ?? null;
 					if (!$this->error && file_exists($this->tempdir."/templates.tgz")) {
 						if (!$this->tar->extract($this->tempdir."/templates.tgz", "", $this->tempdir)) {
 							$this->error="Could not untar templates archive: ".$this->tar->error;
@@ -176,11 +178,11 @@ class axstore {
 
 
 	function get($path) {
-		$node = $this->nodes[$path];
+		$node = $this->nodes[$path]??null;
 		if ($node) {
 			$result["list"][0]=$node;
 		}
-		return $result;
+		return $result??null;
 	}
 
 	function ls($path) {
@@ -229,8 +231,8 @@ class axstore {
 		$node[path]->children[path]->children[path]
 	*/
 	function _recurse_find($node, &$result, &$criteria, &$limit, &$offset) {
-		if (!$criteria["object"]["type"]["="] || $criteria["object"]["type"]["="]=="'".$node->object->type."'") {
-			if (!$criteria["object"]["vtype"]["="] || $criteria["object"]["vtype"]["="]=="'".$node->object->vtype."'") {
+		if (!($criteria["object"]["type"]["="]??null) || $criteria["object"]["type"]["="]=="'".$node->object->type."'") {
+			if (!($criteria["object"]["vtype"]["="]??null) || $criteria["object"]["vtype"]["="]=="'".$node->object->vtype."'") {
 				$found=1;
 				if (is_array($criteria)) {
 					$found=0;
@@ -243,7 +245,7 @@ class axstore {
 										case '=':
 											@reset($node->object->properties);
 											$found=false;
-											while (!$found && (list(,$propvalue)=@each($node->object->properties[$criteria_table_key]))) {
+											while (!$found && isset($node->object->properties[$criteria_table_key]) && (list(,$propvalue)=@each($node->object->properties[$criteria_table_key]))) {
 												if ($criteria_condition_value==$propvalue[$criteria_table_prop_key]) {
 													$found=true;
 												}
@@ -260,7 +262,7 @@ class axstore {
 				}
 			}
 		}
-		if (is_array($node->children)) {
+		if (is_array($node->children??null)) {
 			reset($node->children);
 			while (($limit>0 || $limit < 0) && (list(,$child)=each($node->children))) {
 				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
@@ -269,7 +271,12 @@ class axstore {
 	}
 
 	function find($path, $criteria, $limit=100, $offset=0) {
-		if ($this->nodes[$path]) {
+		$result =
+			[
+				"list" => []
+			]
+		;
+		if ( isset( $this->nodes[ $path ] ) ) {
 			if ( $limit == 0 ) { $limit = -1; }
 			$this->_recurse_find($this->nodes[$path], $result["list"], $criteria, $limit, $offset);
 		}
@@ -397,11 +404,12 @@ class axstore {
 
 	function call($template, $args, $objects, $options = array() ) {
 		$result = Array();
-		if (is_array($objects["list"])) {
+		if (is_array($objects["list"]??null)) {
 			reset($objects["list"]);
 			while (list(,$node)=each($objects["list"])) {
 				$this->_load_object_data($node->object);
 				$node->object->init($this, $node->path, $node->object->data);
+				$node->object->runtime_ref = $node->object->runtime_ref ?? 0;
 				$node->object->runtime_ref++;
 				$parent=$this->make_path($node->path, "..");
 				if ($parent=="/") {
@@ -496,12 +504,12 @@ class axstore {
 	}
 
 	function exists($path) {
-		if ($this->nodes[$path]) {
+		if ($this->nodes[$path] ?? null) {
 			$result=$this->nodes[$path]->object->id;
 		} else {
 			debug("axstore::exists($path) false", "store");
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	function save($path, $type, $data, $properties="", $vtype="", $priority=false, $axflags=AX_NORMAL) {
@@ -575,7 +583,7 @@ class axstore {
 
 			ksort($this->nodes);	// resort nodes array
 
-			if ($this->nodes[$parent]) {
+			if ($this->nodes[$parent] ?? null) {
 				$this->nodes[$parent]->children[$path]=$this->nodes[$path];
 				ksort($this->nodes[$parent]->children); // sort list
 			}
@@ -625,11 +633,11 @@ class axstore {
 				}
 			}
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	function load_property($object, $property, $values="") {
-		debug("axstore::load_property($object, $property, [values])","all");
+		debug("axstore::load_property($object, " . json_encode($property) . ", [values])","all");
 
 		if ($object) {
 			$currProp=0;
@@ -662,7 +670,7 @@ class axstore {
 
 	function get_filestore($name) {
 		require_once($this->code."modules/mod_filestore.phtml");
-		if (!$this->filestores[$name]) {
+		if (!($this->filestores[$name] ?? null)) {
 			$this->filestores[$name]=new filestore($name, $this->tempdir."/", $this);
 		}
 		return $this->filestores[$name];
@@ -670,7 +678,7 @@ class axstore {
 
 
 	function _save_object($path, $object) {
-		if (!$this->sfp) {
+		if (!($this->sfp ?? null)) {
 			$this->sfp=fopen($this->tempdir."/objects.save", "wb+");
 			if (!$this->sfp) {
 				$this->error="could not create tempory file 'objects.save'";
@@ -678,7 +686,7 @@ class axstore {
 		}
 		if (!$this->error) {
 			fseek($this->sfp, 0, SEEK_END);
-			if (!$object->storage) {
+			if (!($object->storage ?? null)) {
 				$object->storage=new baseObject;
 			}
 			$object->storage->fp=$this->sfp;
@@ -689,9 +697,9 @@ class axstore {
 				$object->type."&".
 				$object->vtype."&".
 				(int)($object->lastchanged)."&".
-				(int)($object->priority)."&".
+				(int)($object->priority ?? null)."&".
 				base64_encode(serialize($object->data))."&".
-				base64_encode(serialize($object->properties)).
+				base64_encode(serialize($object->properties ?? null)).
 				"\n";
 			$result=fwrite($this->sfp, $wstring);
 		}
@@ -700,7 +708,8 @@ class axstore {
 
 	// private function which loads $object->data and $object->properties
 	function _load_object_data($object) {
-		if ($object && !$object->data) {
+		$line = '';
+		if ($object && !($object->data ?? null)) {
 			fseek($object->storage->fp, $object->storage->offset);
 			$rline=fgets($object->storage->fp);
 			$line.=$rline;
@@ -711,16 +720,16 @@ class axstore {
 				$result=1;
 			}
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	function _free_object_data($object) {
-		if ($object && ( $object->runtime_ref <=0 )) {
+		if ($object && ( ($object->runtime_ref ?? null) <=0 )) {
 			unset($object->data);
 			unset($object->properties);
 			$result=1;
 		}
-		return $result;
+		return $result ?? null;
 	}
 
 	function rm_dir($path) {
@@ -757,7 +766,7 @@ class axstore {
 			if ($fp_objects=fopen($this->tempdir."/tempobjects.data", "wb")) {
 				if ($fp_nodes=fopen($this->tempdir."/nodes.data", "wb")) {
 					while (list($path, $node)=each($this->nodes)) {
-						if (!$node->object->written_to_file) {
+						if (!($node->object->written_to_file ?? null)) {
 							fseek($node->object->storage->fp, $node->object->storage->offset);
 							$temp_line=fgets($node->object->storage->fp);
 							$object_line=trim($temp_line);
@@ -767,7 +776,7 @@ class axstore {
 							fwrite($fp_objects, $object_line);
 						}
 						$node_line=$path."&".(int)$node->object->id;
-						$node_line.="&".(int)$node->nextid;
+						$node_line.="&".(int)($node->nextid ?? null);
 						$node_line.="&".(int)$node->priority;
 						$node_line.="&".(int)$node->axflags;
 						$node_line.="\n";
@@ -776,7 +785,7 @@ class axstore {
 					fclose($fp_nodes);
 					fclose($fp_objects);
 
-					if ($this->ofile) {
+					if ($this->ofile ?? null) {
 						fclose($this->ofile); 
 						@unlink($this->tempdir."/objects.data");
 					}
@@ -796,7 +805,7 @@ class axstore {
 							fclose($this->sfp);
 							unlink($this->tempdir."/objects.save");
 						}
-						if ($this->ofp) {
+						if ($this->ofp ?? null) {
 							fclose($this->ofp);
 						}
 

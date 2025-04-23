@@ -3,7 +3,7 @@
 	$ARCurrent->allnls = true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$configcache=$ARConfig->cache[$this->path];
-		if ($configcache->custom) {
+		if ($configcache->custom ?? null) {
 			foreach( $configcache->custom as $key => $definition ) {
 				if (($definition["type"]==$this->type) ||
 					($definition["inherit"] && ($this->implements($definition["type"])))) {
@@ -32,7 +32,7 @@
 
 
 		// Custom data and locking gets added last.
-		if( $hascustomdata ) {
+		if( $hascustomdata ?? null ) {
 			$wgWizFlow[] = array(
 				"title" => $ARnls["customdata"],
 				"image" => $AR->dir->images.'wizard/customdata.png',
@@ -54,7 +54,7 @@
 		$wgWizFlow = $this->call("user.wizard.edit.html", array("wgWizFlow" => $wgWizFlow));
 
 		$this->call("typetree.ini");
-		$name=$ARCurrent->arTypeNames[$this->type];
+		$name=$ARCurrent->arTypeNames[$this->type] ?? $this->type;
 
 		// spawn wizard
 		$wgWizHeaderIcon = $this->call("system.get.icon.php");

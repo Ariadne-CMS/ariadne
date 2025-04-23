@@ -30,7 +30,7 @@
                     if (!$type) {
                         $type = $targetob->type;
                     }
-                    $icon = $ARCurrent->arTypeIcons[$targetob->type]['medium'] ? $ARCurrent->arTypeIcons[$targetob->type]['medium'] : $targetob->call("system.get.icon.php", array('size' => 'medium'));
+                    $icon = $ARCurrent->arTypeIcons[$targetob->type]['medium'] ?? $targetob->call("system.get.icon.php", array('size' => 'medium'));
                     $iconalt = $targetob->type;
                     if ( $targetob->implements("pshortcut") ) {
                         $overlay_icon = $icon;
@@ -53,12 +53,12 @@
                         } else {
                             echo '<div>';
                         }
-                    echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
-                        if ( $overlay_icon ) {
-                            echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
+                    echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt??'') . '" title="' . htmlspecialchars($iconalt??'') . '" class="typeicon">';
+                        if ( $overlay_icon ?? null ) {
+                            echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
                         }
                     echo '<div class="name">' . $targetob->nlsdata->name . ' ';
-                    echo "( " . $ARCurrent->arTypeNames[$targetob->type] . " / " . $targetob->type . " )";
+                    echo "( " . ($ARCurrent->arTypeNames[$targetob->type]??'') . " / " . $targetob->type . " )";
                     echo '</div>';
                     echo '<div class="path">' . $target . '</div>';
                     echo '</div>';

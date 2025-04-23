@@ -1,12 +1,12 @@
 <?php
-	if (!$wgHTMLEditOptionsPath) {
-		if ($this->arIsNewObject) {
+	if (!($wgHTMLEditOptionsPath??null)) {
+		if ($this->arIsNewObject??null) {
 			$wgHTMLEditOptionsPath=$this->parent;
 		} else {
 			$wgHTMLEditOptionsPath=$this->path;
 		}
 	}
-	if (!$wgHTMLEditOptions) {
+	if (!($wgHTMLEditOptions??null)) {
 		$wgHTMLEditOptions=current($this->get($wgHTMLEditOptionsPath, "editor.ini"));
 	}
 ?><script type="text/javascript">
@@ -33,6 +33,7 @@
 		echo "var ";
 		make_ini_options("wgHTMLEditOptions", $wgHTMLEditOptions);
 	}
+    $options = $options??'';
     $options.="options[editor.ini]=".RawUrlEncode($wgHTMLEditOptionsPath);
 ?>
 wgHTMLEditOptions["editor.ini"]="<?php echo $wgHTMLEditOptionsPath; ?>";

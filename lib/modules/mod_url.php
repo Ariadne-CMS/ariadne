@@ -19,7 +19,7 @@ class URL {
 		/* find and replace the current page */
 		$find[] = "%\\Q".$me->make_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
-		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$me->path."\\E(user.edit.page.html|view.html)?%";
+		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".($ARCurrent->session->id??null)."-)?".$nls_match."\\Q".$me->path."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
 		$find[] = "%\\Q".$me->make_local_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
@@ -28,25 +28,26 @@ class URL {
 		if ($site && $site !== '/') {
 			$siteURL = $me->make_url($site, "");
 			$rootURL = $me->make_url("/", "");
+			if ($page) {
+				/* use the rootURL to rebuild the site URL */
+				$page = preg_replace_callback(
+					"%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%",
+					function ($matches) {
+						return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
+					},
+					$page);
 
-			/* use the rootURL to rebuild the site URL */
-			$page = preg_replace_callback(
-				"%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%",
-				function ($matches) {
-					return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
-				},
-				$page);
-
-			/*
-				a site has been configured so we can directly place
-				the nls_match2 after the siteURL
-			*/
-			$page = preg_replace_callback(
-				"%\\Q$siteURL\\E".$nls_match2."%",
-				function ($matches) {
-					return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
-				},
-				$page);
+				/*
+					a site has been configured so we can directly place
+					the nls_match2 after the siteURL
+				*/
+				$page = preg_replace_callback(
+					"%\\Q$siteURL\\E".$nls_match2."%",
+					function ($matches) {
+						return $matches[2] ? '{arSite/'.$matches[2].'}' : '{arSite}';
+					},
+					$page);
+			}
 		}
 
 		// change hardcoded links and images to use a placeholder for the root
@@ -69,9 +70,9 @@ class URL {
 		}
 
 		// change hand pasted sources, which may or may not include session id's
-		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?(".$nls_match.")?/%";
+		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".($ARCurrent->session->id??null)."-)?(".$nls_match.")?/%";
 		$repl[] = "{arBase\\3}/";
-		if ($ARCurrent->session && $ARCurrent->session->id) {
+		if (($ARCurrent->session ?? null) && $ARCurrent->session->id) {
 			// check for other session id's:
 			$find[] = "%/-[^-]{4}-%";
 			$repl[] = "{arSession}";
@@ -79,7 +80,7 @@ class URL {
 			//$repl[] = "{arSession}";
 		}
 
-		return preg_replace($find, $repl, $page);
+		return preg_replace($find, $repl, $page??'');
 	}
 
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
@@ -90,31 +91,31 @@ class URL {
 		$find = array();
 		$repl = array();
 
-		if ($ARCurrent->session && $ARCurrent->session->id) {
+		if (($ARCurrent->session ?? null) && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
 			$session='';
 		}
 		$site = $me->currentsite($me->path, true);
 		$root = $me->store->get_config("root");
-		if (substr($root, -3) == "/$me->nls") {
+		if (substr($root??'', -3) == "/$me->nls") {
 			$root = substr($root, 0, -3);
 		}
 		if ($site && $site !== '/') {
 			$page = preg_replace_callback(
 				"%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%",
 				function ($matches) use ($me, $site) {
-					return $me->make_url($site, $matches[1]);
+					return $me->make_url($site, $matches[1] ?? null);
 				},
-				$page
+				$page??''
 			);
 
 			$page = preg_replace_callback(
 				"%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%",
 				function ($matches) use ($me,$site) {
-					return $me->make_url($site, $matches[1]);
+					return $me->make_url($site, $matches[1] ?? null);
 				},
-				$page
+				$page??''
 			);
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%";
@@ -126,7 +127,7 @@ class URL {
 		$page = preg_replace_callback(
 			"%\\{arCurrentPage(?:/([^}]+))?\\}%",
 			function($matches) use ($me) {
-				return $me->make_local_url('', $matches[1]);
+				return $me->make_local_url('', $matches[1] ?? null);
 			},
 			$page
 		);
@@ -142,7 +143,7 @@ class URL {
 		$page = preg_replace($find, $repl, $page);
 
 		// FIXME: Maybe do not process arCall when ESI is enabled?
-		$page = URL::processArCall($page, $full);
+		$page = URL::processArCall($page, $full??null);
 
 		return $page;
 	}
@@ -157,8 +158,8 @@ class URL {
 		$regExp = '|\{arCall:(.*?)\}|i';
 
 		while (preg_match($regExp, $page, $matches)) {
-			if( !$settings ) {
-				if( !$ARCurrent->arEditorSettings) {
+			if( !($settings ?? null) ) {
+				if( !($ARCurrent->arEditorSettings ?? null) ) {
 					$settings = $me->call("editor.ini");
 				} else {
 					$settings = $ARCurrent->arEditorSettings;
@@ -173,7 +174,7 @@ class URL {
 					$template = basename($rest);
 				}
 				$path = $me->make_path( substr($rest, 0, -(strlen($template))) );
-				if (is_array($settings['arCall'][$template])) {
+				if (is_array($settings['arCall'][$template]??null)) {
 					$cpaths = $settings['arCall'][$template]['paths'];
 					if (is_array($cpaths)) {
 						$mayCall = false;

@@ -1,0 +1,7 @@
+FROM php:8.4-apache
+LABEL maintainer="yvo@muze.nl"
+RUN apt-get update
+RUN apt-get install -y git subversion tidy imagemagick poppler-utils libzip-dev zip
+RUN docker-php-ext-install mysqli exif bcmath zip
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+COPY . /opt/ariadne/

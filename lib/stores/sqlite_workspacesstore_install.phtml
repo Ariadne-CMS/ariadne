@@ -1,0 +1,142 @@
+<?php
+
+include_once($ariadne."/stores/sqlite_workspacesstore.phtml");
+include_once($ariadne."/stores/sqlitestore_install.phtml");
+
+class sqlite_workspacesstore_install extends sqlite_workspacesstore {
+
+	function upgrade() {
+		$error = false;
+		$result = true;
+		$nodes_tbl = $this->tbl_prefix . "nodes";
+		$objects_tbl = $this->tbl_prefix . "objects";
+
+		$nextNodesID = "(SELECT IFNULL( MAX( id ), 0 ) + 1 FROM $nodes_tbl)";
+
+		echo "upgrading mysql store for workspace support.\n";
+		$queries = [
+			"ALTER TABLE $nodes_tbl RENAME TO old_$nodes_tbl",
+			"CREATE TABLE " . $nodes_tbl . " (
+				id int(11) NOT NULL,
+				layer int(11) NOT NULL DEFAULT 0,
+				path char(255) DEFAULT '' NOT NULL,
+				parent char(255) DEFAULT '' NOT NULL,
+				object int(11) DEFAULT 0 NOT NULL,
+				priority int(11) DEFAULT 0 NOT NULL
+			)",
+			"CREATE INDEX ws_" . $nodes_tbl . "_object ON $nodes_tbl( object )",
+			"CREATE INDEX ws_" . $nodes_tbl . "_path ON $nodes_tbl( path )",
+			"CREATE INDEX ws_" . $nodes_tbl . "_parent ON $nodes_tbl( parent )",
+			"CREATE INDEX ws_" . $nodes_tbl . "_priority ON $nodes_tbl( priority )",
+//			"CREATE UNIQUE INDEX ws_" . $nodes_tbl . "_id ON $nodes_tbl( id, layer )",
+			"CREATE UNIQUE INDEX ws_" . $nodes_tbl . "_layer ON $nodes_tbl( layer, path )",
+			"INSERT INTO $nodes_tbl( id, path, parent, object, priority ) SELECT 0, path, parent, object, priority FROM old_$nodes_tbl",
+
+			"DROP TABLE old_$nodes_tbl",
+
+			"ALTER TABLE $objects_tbl RENAME TO old_$objects_tbl",
+
+			"CREATE TABLE $objects_tbl (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				layer int(11) DEFAULT 0 NOT NULL,
+				type char(32) DEFAULT '' NOT NULL,
+				object text,
+				vtype char(32) DEFAULT '' NOT NULL,
+				lastchanged UNSIGNED INTEGER NOT NULL DEFAULT ( strftime( '%s', 'now' ) )
+			)",
+
+			"CREATE INDEX ws_" . $objects_tbl . "_layer ON $objects_tbl( layer )",
+			"CREATE INDEX ws_" . $objects_tbl . "_type ON $objects_tbl( type )",
+			"CREATE INDEX ws_" . $objects_tbl . "_vtype ON $objects_tbl( vtype )",
+			"CREATE INDEX ws_" . $objects_tbl . "_lastchanged ON $objects_tbl( lastchanged )",
+
+			"INSERT INTO $objects_tbl( id, type, object, vtype, lastchanged ) SELECT id, type, object, vtype, lastchanged FROM old_$objects_tbl",
+			"DROP TABLE old_$objects_tbl"
+		];
+/*
+				array("query_string" => "alter table ".$this->tbl_prefix."objects add layer int(11) NOT NULL DEFAULT '0'"),
+				array("query_string" => "alter table ".$this->tbl_prefix."objects add key layer (layer)"),
+*/
+
+		foreach ( $queries as $query_string ) {
+
+			if ($query_string) {
+				echo "Executing: " . $query_string . "\n";
+			}
+			$qresult = $this->store_run_query( $query_string );
+
+			if (!$qresult) {
+				$result = false;
+				$error=$this->dbh->error;
+				$errno=$this->dbh->errno;
+				error("Mysql: $errno: $error");
+				break;
+			}
+		}
+
+		if ( $result ) {
+			echo "Creating unique id's for $nodes_tbl\n";
+			$next_id = 1;
+			$query = $this->store_run_query( "select path from $nodes_tbl" );
+			while ( ( $row = $query->fetchArray( SQLITE3_ASSOC ) ) ) {
+				$qresult =
+					$this->store_run_query( "update $nodes_tbl set id = :id where path = :path and layer = 0",
+						[
+							"id" => $next_id++,
+							"path" => $row[ "path" ]
+						]
+					)
+				;
+				if (!$qresult) {
+					$result = false;
+					$error=$this->dbh->error;
+					$errno=$this->dbh->errno;
+					error("Mysql: $errno: $error");
+					break;
+				}
+			}
+		}
+		if ( $result ) {
+			echo "Creating unique combined key (id, layer)\n";
+			$qresult = $this->store_run_query( "CREATE UNIQUE INDEX ws_" . $nodes_tbl . "_id ON $nodes_tbl( id, layer )" );
+			if (!$qresult) {
+				$result = false;
+				$error=$this->dbh->error;
+				$errno=$this->dbh->errno;
+				error("Mysql: $errno: $error");
+			}
+		}
+
+		return $result;
+
+	}
+
+	function initialize() {
+		print("Init clasic mylsqstore\n");
+		$result = $this->sqlitestore->initialize();
+		if ($result) {
+			print "Upgrade to workspace\n";
+			$result = $this->upgrade();
+		} else {
+			print "Init failed\n";
+			return false;
+		}
+		return $result;
+	}
+
+	public function __construct($path, $config) {
+		parent::__construct($path, $config);
+		$this->sqlitestore = new sqlitestore_install($path, $config);
+	}
+
+	public function add_type($type, $implements){
+		return $this->sqlitestore->add_type($type, $implements);
+	}
+
+	public function create_property($property, $definition) {
+		return $this->sqlitestore->create_property($property, $definition);
+	}
+	public function alter_property($property, $definition) {
+		return $this->sqlitestore->alter_property($property, $definition);
+	}
+}

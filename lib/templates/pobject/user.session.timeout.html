@@ -6,12 +6,12 @@
 	$nocache=true;
 	// make sure no language select dialog is shown.
 	$ARCurrent->nolangcheck=true;
-	if (!$arReturnPath) {
+	if ( !( $arReturnPath ?? null ) ) {
 		$split=strrpos($AR_PATH_INFO, "/");
 		$function=substr($AR_PATH_INFO,$split+1);
 		$arReturnPath=$this->path;
 	}
-	if (!$arReturnTemplate) {
+	if ( !( $arReturnTemplate ?? null ) ) {
 		$arReturnTemplate=$function;
 		if (ldGetServerVar("QUERY_STRING")) {
 			$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");

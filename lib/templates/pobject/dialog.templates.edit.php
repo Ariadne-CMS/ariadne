@@ -32,7 +32,7 @@
 			),
 		);
 
-		$wgWizTitle=sprintf($ARnls["edittemplate"],$this->path.($function ? $function : $ARnls["new"]));
+		$wgWizTitle = sprintf( $ARnls["edittemplate"], $this->path . ( $function ?? $ARnls["new"] ) );
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/templates.png';
 

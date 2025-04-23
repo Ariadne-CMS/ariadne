@@ -39,7 +39,7 @@ class html extends xml
      * @param string|Proxy $html
      * @param string $encoding
      * @return Proxy
-     * @throws \arc\Exception
+     * @throws \arc\UnknownError
      */
     public static function parse( $html=null, $encoding = null ) 
     {

@@ -7,7 +7,9 @@
 		unset($this->data->config->customconfig);
 		$customfields = $this->getdata("customfields","none");
 		if (is_string($customfields)) {
-			parse_str($customfields);
+			$params = [];
+			parse_str( $customfields, $params );
+			$customfields = $params[ "customfields" ];
 		}
 		if (is_array($customfields)) {
 			while (list($key, $value)=each($customfields)) {

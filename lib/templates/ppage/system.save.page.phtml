@@ -8,9 +8,9 @@
 			$this->error="Unknown language selected... weird";
 		} else {
 			if (!$page) {
-				$page=$htmltext;
+				$page=$htmltext??null;
 			}
-			if ($ContentEditOptionsPath) {
+			if ($ContentEditOptionsPath??null) {
 				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
 				if (!$arEditorSettings) {
 					$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
@@ -67,7 +67,7 @@
 				$properties["references"][$count]["path"]=$ref;
 				$count++;
 			}
-			$this->save($properties);
+			$this->save($properties??null);
 			$arResult=$page;
 
 			global $cache_config;

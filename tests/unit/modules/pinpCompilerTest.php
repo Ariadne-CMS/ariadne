@@ -202,7 +202,6 @@ EOD;
 	$int_b		= (integer) "3";
 	$float_a	= (float) "1.1";
 	$float_b	= (double) "1.2";
-	$float_c	= (real) "1.3";
 	$string_a	= (string) 1;
 	$array_a 	= (array) null;
 	$object_a	= (object) Array("a" => "1", "b" => "2");
@@ -285,7 +284,7 @@ EOD;
 <pinp>
 	$test = 'outside';
 	$var = function () {
-		return $test;
+		return $test??null;
 	};
 
 	return $var($test);

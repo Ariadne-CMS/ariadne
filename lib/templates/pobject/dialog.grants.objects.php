@@ -19,7 +19,7 @@
 	// FIXME: Add grants check, make the objects array dynamic.
 	$children = $this->find($this->path, '', 'system.get.phtml'); // FIXME: Default limit 100 isn't nice here.
 	foreach ($children as $key => $child) {
-		if ($child->path == $this->path || $child->data->config->grants) {
+		if ($child->path == $this->path || ($child->data->config->grants??null)) {
 			$objects[$child->path] = array(
 				"name" => $child->nlsdata->name,
 				"type" => $child->type
@@ -30,7 +30,7 @@
 	$extrapaths = $this->getdata("extrapaths");
 	if (is_array($extrapaths)) {
 		foreach ($extrapaths as $key => $extrapath) {
-			if ($objects[$extrapath] || !$this->exists($extrapath)) {
+			if ($objects[$extrapath] ?? null || !$this->exists($extrapath)) {
 				unset($extrapaths[$key]);
 				continue;
 			} else {
@@ -72,8 +72,8 @@
 ?>
 <div class="items">
 <h2><?php echo $ARnls['ariadne:grants:objects_with_grants']; ?></h2>
-	<input type="hidden" name="selectedpath" value="<?php echo htmlspecialchars($selectedpath); ?>">
-	<?php	if ($error) { ?>
+	<input type="hidden" name="selectedpath" value="<?php echo htmlspecialchars($selectedpath??''); ?>">
+	<?php	if ($error??null) { ?>
 		<div class="error"><?php echo $error; ?></div>
 	<?php	} ?>
 	<?php 	foreach ($objects as $path => $info) {

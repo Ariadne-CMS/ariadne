@@ -115,7 +115,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 					debug('No current object found on the context stack, skipping loadtext', 'all');
 					return $this;
 				}
-				$arResult = $ARCurrent->arResult;
+				$arResult = $ARCurrent->arResult ?? null;
 				$me->pushContext(array());
 					$oldnls = $me->reqnls;
 					$me->reqnls = $nls;
@@ -127,15 +127,15 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 				$me->popContext();
 
 				$nlsarray = array();
-				if( is_array($ARCurrent->arResult) ) {
+				if( is_array($ARCurrent->arResult ?? null ) ) {
 					$nlsarray = $ARCurrent->arResult;
-				} elseif( is_array($me->{$varName}) ) {
+				} elseif( is_array($me->{$varName} ?? null ) ) {
 					$nlsarray = $me->{$varName};
-				} elseif( is_array($ARCurrent->{$varName}) ) {
+				} elseif( isset($ARCurrent->{$varName}) && is_array($ARCurrent->{$varName}) ) {
 					$nlsarray = $ARCurrent->{$varName};
 				}
 				$ARCurrent->arResult = $arResult;
-				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$nlsarray);
+				$this->languages[$nls] = array_merge((array)($this->languages[$nls] ?? null), (array)$nlsarray);
 			}
 		}
 		return $this;
@@ -143,7 +143,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 
 	/* ArrayAccess */
 
-	public function offsetSet( $offset, $value ) {
+	public function offsetSet( $offset, $value ) : void {
 		if ($offset == "") {
 			$this->currentList[] = $value;
 		} else {
@@ -151,15 +151,18 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 		}
 	}
 
-	public function offsetExists( $offset ) {
+	public function offsetExists( $offset ) : bool
+	{
 		return ( $this->getEntry( $offset ) !== null );
 	}
 
-	public function offsetUnset( $offset ) {
+	public function offsetUnset( $offset ) : void
+	{
 		unset($this->currentList[$offset]);
 	}
 
-	private function getEntry( $offset ) {
+	private function getEntry( $offset ) : mixed
+	{
 		if( isset( $this->currentList[$offset] ) ) {
 			return $this->currentList[$offset];
 		} elseif( strpos($offset, ":") !== false ) { // $ARnls["ariadne:foo"] => try and autoload "ariadne.$currentLanguage"
@@ -182,29 +185,35 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 	}
 
 
-	public function offsetGet( $offset ) {
+	public function offsetGet( $offset ) : mixed
+	{
 		$value = $this->getEntry( $offset );
 		return ( isset( $value ) ? $value : "{".$offset."}" );
 	}
 
 	/* Iterator */
-	public function current() {
+	public function current() : mixed
+	{
 		return current($this->currentList);
 	}
 
-	public function key() {
+	public function key() : mixed
+	{
 		return key($this->currentList);
 	}
 
-	public function next() {
-		return next($this->currentList);
+	public function next() : void
+	{
+		next($this->currentList);
 	}
 
-	public function rewind() {
-		return reset($this->currentList);
+	public function rewind() : void
+	{
+		reset($this->currentList);
 	}
 
-	public function valid() {
+	public function valid() : bool
+	{
 		$value = key($this->currentList);
 		return isset($value);
 	}

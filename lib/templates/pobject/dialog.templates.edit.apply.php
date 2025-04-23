@@ -1,6 +1,9 @@
 <?php
 
 	if( $this->CheckLogin("layout") && $this->CheckConfig() ) {
+		if (!isset($this->error)) {
+			$this->error = null;
+		}
 		$args = array(
 			"type"		=> $this->getvar("newtype"),
 			"function"	=> $this->getvar("newfunction"),

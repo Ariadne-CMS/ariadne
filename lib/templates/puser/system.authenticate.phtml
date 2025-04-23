@@ -1,6 +1,6 @@
 <?php
 	debug("CHECKPASSWORD: ".($this->CheckPassword($ARPassword) ? "true" : "false"));
-	if ((!$this->data->config || !$this->data->config->disabled) && $this->CheckPassword($ARPassword)) {
+	if ((!$this->data->config || !isset($this->data->config->disabled) || !$this->data->config->disabled) && $this->CheckPassword($ARPassword)) {
 		$arResult = $this;
 	}
 ?>

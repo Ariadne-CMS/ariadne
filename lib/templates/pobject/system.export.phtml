@@ -3,7 +3,7 @@
 		global $AR;
 
 		$saved_object = array();
-		if ( !is_array($exclude_list) ) {
+		if ( !is_array($exclude_list ?? null) ) {
 			$exclude_list = array();
 		}
 
@@ -17,7 +17,7 @@
 		if (!function_exists('display')) {
 			function display($str) {
 				global $ARCurrent;
-				if ($ARCurrent->options["verbose"]) {
+				if ($ARCurrent->options["verbose"] ?? null) {
 					echo "$str";
 					flush();
 				}
@@ -99,38 +99,38 @@
 
 			if ($save_obj) {
 				display("processing($newpath)	");
-				if ($ARCurrent->options["without_data"]) {
+				if ($ARCurrent->options["without_data"] ?? null) {
 					display("no data for (".$object->path.")");
 					$object->axflags |= AX_WITHOUT_DATA;
 				}
 
-				if ($ARCurrent->options["without_templates"]) {
+				if ($ARCurrent->options["without_templates"] ?? null) {
 					unset($object->data->config->privatetemplates);
 					unset($object->data->config->templates);
 					unset($object->data->config->pinp);
 					$object->axflags |= AX_WITHOUT_TEMPLATES;
 				}
 
-				if ($ARCurrent->options["without_files"]) {
+				if ($ARCurrent->options["without_files"] ?? null) {
 					$object->axflags |= AX_WITHOUT_FILES;
 				}
 
 				if (!isset($saved_object[$object->id])) {
-					if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
+					if ((!($ARCurrent->options["force"] ?? null) || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
 
 						$saved_object[$object->id]=$newpath;
 
 						// we may never overwrite an existing object with a
 						// dummy object
-						if (!($object->axflags & AX_DUMMY) && 
-								!($object->axflags & AX_WITHOUT_DATA)) {
+						if (!(($object->axflags ?? null) & AX_DUMMY) && 
+								!(($object->axflags ?? null) & AX_WITHOUT_DATA)) {
 
 							$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
 										$ARCurrent->importStore->get($newpath)));
 
 							if (
 									($object->lastchanged > $oldObject->lastchanged) || 
-									( ( $oldObject->axflags & AX_DUMMY) && !($object->axflags & AX_DUMMY) )) {
+									( ( ($oldObject->axflags ?? null) & AX_DUMMY) && !(($object->axflags??null) & AX_DUMMY) )) {
 								display("(updating)");
 								$save_obj = true;
 							} else {
@@ -161,7 +161,7 @@
 
 						} else {
 							$impObject = clone $object;
-							display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
+							display("(saving ".(($impObject->axflags ?? null) ? " (".($object->axflags ?? '').") " : "").")");
 							$impObject->arIsNewObject = true;
 							$impObject->path = $newpath;
 							if ($newpath!="/") {
@@ -179,18 +179,18 @@
 						}
 					}
 
-					if (!($object->axflags & AX_DUMMY)) {
+					if (!(($object->axflags ?? null) & AX_DUMMY)) {
 						$clearcachePath = getCommonParent($clearcachePath,$newpath,$object->store);
 
 						$object->newObject=current(
 								$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
 									$ARCurrent->importStore->get($newpath)));
 
-						if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
+						if (!(($object->axflags ?? null) & AX_WITHOUT_TEMPLATES)) {
 							// (update or set templates and files)
 							$object->call("system.export.templates.phtml", $arCallArgs);
 						}
-						if (!($object->axflags & AX_WITHOUT_FILES)) {
+						if (!(($object->axflags ?? null) & AX_WITHOUT_FILES)) {
 							$object->call("system.export.files.phtml", $arCallArgs);
 						}
 					}
@@ -220,7 +220,7 @@
 		foreach($AR->nls->list as $key => $value){
 			$dummy->$key=new baseObject;
 			$dummy->$key->name="Dummy node";
-			$dummy->nls->list[$key]=$val;
+			$dummy->nls->list[$key]=($val ?? null);
 		}
 
 
@@ -280,20 +280,21 @@
 
 		$clearcachePath = false;
 
-		if (!is_array($ARCurrent->options['rewrite_references'])) {
+		if (!is_array($ARCurrent->options['rewrite_references'] ?? null)) {
 			$ARCurrent->options['rewrite_references'] = array();
-		} else if ($ARCurrent->options['rewrite_references']['default']) {
+		} else if ($ARCurrent->options['rewrite_references']['default'] ?? null) {
 			unset($ARCurrent->options['rewrite_references']['default']);
 			$ARCurrent->options['rewrite_references'][ $rootpath ] = $destpath;
 		}
 
-		if ( $ARCurrent->options["query"] != '' && $ARCurrent->AXAction == "export") {
+		$criteria = '';
+		if ( ($ARCurrent->options["query"] ?? null) != '' && $ARCurrent->AXAction == "export") {
 			$criteria = " (".$ARCurrent->options["query"].") ";
 		}
 
 		$countcriteria = '';
-		if (!$ARCurrent->importStore->error) {
-			if($ARCurrent->options['without_children'] == true){
+		if (!($ARCurrent->importStore->error ?? null)) {
+			if(($ARCurrent->options['without_children'] ?? null) == true){
 				if($criteria){
 					$criteria .= ' and ';
 				}
@@ -313,8 +314,10 @@
 			progress(0, $items_to_process);
 
 			$this->store->call($exportObject ,$arCallArgs,$this->store->find($srcpath,$criteria,0,0));
-			if (!$ARCurrent->options["without_grants"]) {
+			if (!($ARCurrent->options["without_grants"]??null)) {
 				// reset config
+				$arguments = $arguments??null;
+
 				$destobj = current($ARCurrent->importStore->call("system.get.phtml", $arguments,
 						$ARCurrent->importStore->get($destpath)));
 				$destobj->resetConfig();
@@ -346,7 +349,7 @@
 										break;
 									}
 								}
-								if( ! is_null($group) ) {
+								if( ! is_null($group ?? null ) ) {
 									display("	$newpath\n");
 									$result=current($group->get($newpath, "system.import.grants.phtml", 
 															array(
@@ -391,7 +394,7 @@
 										break;
 									}
 								}
-								if( ! is_null($user) ) {
+								if( !is_null($user??null) ) {
 									display("	$newpath\n");
 									$result=current($user->get($newpath, "system.import.grants.phtml", 
 															array(

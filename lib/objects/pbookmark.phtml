@@ -150,7 +150,7 @@ class pbookmark extends pobject { // class definition
 								$this->errorseverity=5;
 								$this->errormessage="Error: Server returned an unknown respons.";
 								echo "<pre>\n";
-								echo htmlspecialchars($result);
+								echo htmlspecialchars($result??'');
 								echo "\n</pre>";
 							}
 							break;

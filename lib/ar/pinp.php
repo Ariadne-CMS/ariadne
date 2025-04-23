@@ -19,10 +19,17 @@
 			self::$allowed[$class]['matches'] = array_combine( $methods, array_fill( 0, count($methods), true ) );
 		}
 
-		public static function isAllowed($class, $method) {
+		public static function isAllowed($class, $method=null) {
 			// FIXME: support interfaces?
 			if (!is_string($class)) {
 				$class = get_class($class);
+			}
+// This breaks the demo site;
+//			if (!isset(self::$allowed[$class])) {
+//				return false;
+//			}
+			if ($method===null && self::$allowed[$class]) { // only accept original class here
+				return true;
 			}
 			$current = $class;
 			do {
@@ -41,6 +48,34 @@
 				}
 			} while ($current = get_parent_class($current));
 			return false;
+		}
+
+		public static function construct($className, $args = array() ) {
+			if (self::isAllowed($className)) {
+				foreach ($args as $key => $value) {
+					if ($value instanceOf arWrapper) {
+						$args[$key] = $value->__unwrap();
+					}
+				}
+
+				// return new $className(...$args);
+				return new arWrapper( new $className(...$args) );
+			} else {
+				throw new Exception("$className is not allowed");
+			}
+		}
+
+		public static function callStatic($className, $method, $args = array() ) {
+			if (self::isAllowed($className)) {
+				foreach ($args as $key => $value) {
+					if ($value instanceOf arWrapper) {
+						$args[$key] = $value->__unwrap();
+					}
+				}
+				return new arWrapper( call_user_func(array($className, $method), ...$args) );
+			} else {
+				throw new Exception("$className::$method is not allowed");
+			}
 		}
 
 		public static function getCallback( $method, $params = array() ) {
@@ -101,4 +136,4 @@
 		}
 	}
 
-	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback', 'load', 'loaded', 'exists'));
+	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback', 'load', 'loaded', 'exists', 'new'));

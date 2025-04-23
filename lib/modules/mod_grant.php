@@ -1,10 +1,11 @@
 <?php
 	define("T_G_IDENT",		253);
 
+	#[\AllowDynamicProperties]
 	class mod_grant {
 		function get_token() {
-			$this->token = $this->token_ahead;
-			$this->token_value = $this->token_ahead_value;
+			$this->token = $this->token_ahead??null;
+			$this->token_value = $this->token_ahead_value??null;
 			$this->input = preg_replace('/^([[:space:]]|,)*/', '', $this->input);
 			//echo "scanner: input(".$this->input.")<br>\n";
 			switch (true) {
@@ -121,7 +122,7 @@
 		function compile($input, &$grants) {
 			$this->input = $input;
 			$this->get_token();
-			while (!$this->error && $this->parse_stmt($grants));
+			while (!($this->error??null) && $this->parse_stmt($grants));
 			ksort($grants);
 			foreach( $grants as $key => $value ) {
 				if( is_array($value) ) {

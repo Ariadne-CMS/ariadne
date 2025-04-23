@@ -1,4 +1,5 @@
 <?php
+	#[\AllowDynamicProperties]
 	class mod_auth_default {
 
 		function __construct($config=Array()) {
@@ -49,11 +50,11 @@
 
 			if (!$user) {
 				$user = $this->authExternalUser($login, $password, $ARLoginPath);
-				$ARUserDir = $user->parent;
+				$ARUserDir = $user->parent ?? null;
 			}
 
 			if ($user) {
-				if ((!$user->data->config || !$user->data->config->disabled)) {
+				if (!$user->data->config || !($user->data->config->disabled ?? null) ) {
 					if ($login !== "public") {
 						/* welcome to Ariadne :) */
 						ldSetCredentials($login, $ARUserDir);
@@ -92,7 +93,7 @@
 			);
 
 			if ($user) {
-				if ((!$user->data->config || !$user->data->config->disabled)) {
+				if (!$user->data->config || !($user->data->config->disabled ?? null) ) {
 					$AR->user = $user;
 					$result = true;
 				} else {
@@ -113,7 +114,7 @@
 			$result = null;
 			if ($login) {
 				debug("checkLogin: initiating new login ($login)", "all");
-				if ($ARCurrent->session) {
+				if ($ARCurrent->session ?? null) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
 					if (!$ARUserDir) {
 						$ARUserDir = "/system/users/";
@@ -163,7 +164,7 @@
 
 				}
 			} else {
-				if ($ARCurrent->session) {
+				if ($ARCurrent->session ?? null) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
 					if (!$ARUserDir) {
 						$ARUserDir = "/system/users/";

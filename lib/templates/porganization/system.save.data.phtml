@@ -45,10 +45,12 @@
 			$this->data->url=$this->getdata("url","none");
 
 			$emails = $this->getdata("emails", "none");
+			if (!$emails) {
+				$emails = [];
+			}
 			$rawemails = $emails;
 			if (!is_array($emails)) {
 				$emails=explode(",",$emails);
-
 			}
 
 			$emails = array_values(array_filter($emails));
@@ -56,7 +58,7 @@
 				$this->data->emails=$emails;
 			}
 
-			if (!$this->data->nls) {
+			if ( !isset( $this->data->nls ) ) {
 				$this->data->nls=new baseObject;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
@@ -66,7 +68,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 
 				if ($this->getdata("name", $key)) {
-					if (!$this->data->$key) {
+					if ( !isset( $this->data->$key ) ) {
 						$newnlsdata=new baseObject;
 					} else {
 						$newnlsdata=$this->data->$key;
@@ -85,26 +87,28 @@
 					$properties["text"][$count]["nls"]=$key;
 					$count++;
 					if ($this->store->is_supported("fulltext")) {
-						$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
-								$newnlsdata->name." ".
-								$newnlsdata->summary." ".
-								$newnlsdata->title." ".
-								$this->data->address." ".
-								$this->data->zipcode." ".
-								$this->data->city." ".
-								$this->data->country." ".
-								$this->data->telephone." ".
-								$this->data->fax." ".
-								$this->data->pobox." ".
-								$this->data->url." ".
-								$rawemails
-								);
+						$properties["fulltext"][$count]["value"] =
+							$this->store->format_for_fti(
+								( $newnlsdata->name ?? "" ) . " ".
+								( $newnlsdata->summary ?? "" ) . " ".
+								( $newnlsdata->title ?? "" ) . " ".
+								( $this->data->address ?? "" ) ." ".
+								( $this->data->zipcode ?? "" ) ." ".
+								( $this->data->city ?? "" ) ." ".
+								( $this->data->country ?? "" ) ." ".
+								( $this->data->telephone ?? "" ) ." ".
+								( $this->data->fax ?? "" ) ." ".
+								( $this->data->pobox ?? "" ) ." ".
+								( $this->data->url ?? "" ) ." ".
+								implode( " ", $rawemails )
+							)
+						;
 						$properties["fulltext"][$count]["nls"]=$key;
 					}
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
+					if ( isset( $this->data->$key ) ) {
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}

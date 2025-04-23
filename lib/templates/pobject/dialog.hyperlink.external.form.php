@@ -21,11 +21,11 @@
 		<div class="field">
 			<input type="hidden" name="artype" value="external">
 			<label for="url" class="required"><?php echo $ARnls["url"]; ?></label>
-			<input type="text" id="url" name="url" value="<?php echo htmlspecialchars($url); ?>" class="inputline wgWizAutoFocus">
+			<input type="text" id="url" name="url" value="<?php echo htmlspecialchars($url??''); ?>" class="inputline wgWizAutoFocus">
 		</div>
 		<div class="field">
 			<label for="aranchor"><?php echo $ARnls["ariadne:editor:anchor"]; ?></label>
-			<input type="text" id="aranchor" name="aranchor" value="<?php echo htmlspecialchars($aranchor); ?>" class="inputline">
+			<input type="text" id="aranchor" name="aranchor" value="<?php echo htmlspecialchars($aranchor??''); ?>" class="inputline">
 		</div>
 		<div class="field">
 			<label for="arbehaviour"><?php echo $ARnls["ariadne:editor:behaviour"]; ?></label>

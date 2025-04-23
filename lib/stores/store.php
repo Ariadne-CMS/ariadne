@@ -34,7 +34,7 @@
 
 *******************************************************************************/
 
-
+#[\AllowDynamicProperties]
 abstract class store {
 
 	public $error;
@@ -260,7 +260,7 @@ abstract class store {
 			// features depending on config values
 			case 'fulltext_boolean':
 			case 'fulltext':
-				if ($this->config[$feature]) {
+				if ($this->config[$feature] ?? false) {
 					$result = true;
 				} else {
 					$result = false;
@@ -298,6 +298,7 @@ abstract class store {
 		$object->priority=(int)$priority;
 		$object->ARnls = $ARnls;
 		$object->init($this, $path, $data);
+		$object->error = null;
 		return $object;
 	}
 
@@ -355,7 +356,7 @@ abstract class store {
 
 	public function get_filestore_svn($name) {
 		require_once($this->code."modules/mod_filestore_svn.phtml");
-		if (!$this->_filestores["svn_" . $name]) {
+		if (!isset($this->_filestores["svn_" . $name])) {
 			$this->_filestores["svn_" . $name] = new filestore_svn($name, $this->files, $this);
 		}
 		return $this->_filestores["svn_" . $name];
@@ -372,13 +373,13 @@ abstract class store {
 	}
 
 	protected function serialize($value, $path) {
-		if ($value->failedDecrypt && $value->originalData) {
+		if (isset($value->failedDecrypt) && $value->failedDecrypt && $value->originalData) {
 			$value = $value->originalData;
 			return $value;
 		}
 
 		// Notice: When upgrading to a new crypto format, prepend the object data with a key of the crypto. This way you can be backwards compatible but new objects will be saved in the new crypto.
-		if ($this->config['crypto'] instanceof \Closure) {
+		if (isset($this->config['crypto']) && $this->config['crypto'] instanceof \Closure) {
 			$crypto = $this->config['crypto']();
 			// use the last crypto configured;
 			$cryptoConfig = end($crypto);
@@ -407,7 +408,7 @@ abstract class store {
 		return serialize($value);
 	}
 
-	private function fixObjectClass($value) {
+	static function fixObjectClass($value) {
 		return str_replace('O:6:"object"', 'O:8:"stdClass"', $value);
 	}
 

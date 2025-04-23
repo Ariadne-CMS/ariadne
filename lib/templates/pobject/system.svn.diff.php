@@ -11,6 +11,7 @@
 		$function = $this->getvar("function");
 		$language = $this->getvar("language");
 
+		$filename = "";
 		if ($type && $function && $language) {
 			$filename = $type . "." . $function . "." . $language . ".pinp";
 		}
@@ -22,7 +23,7 @@
 			$arResult = $status;
 		} else {
 			if( $colorize ) {
-				$status = $this->call("system.svn.diff.colorize.php", array("diff" => $status, "nowrap" => $nowrap));
+				$status = $this->call("system.svn.diff.colorize.php", array("diff" => $status, "nowrap" => $nowrap ?? null ));
 			}
 
 			$arResult = $status;

@@ -1,4 +1,5 @@
 <?php
+	#[\AllowDynamicProperties]
 	class mod_tar {
 		protected $config;
 		protected $tar_error_handler;
@@ -70,10 +71,12 @@
 
 
 		function untar_system($tarfile, $file, $dstdir) {
+			$this->error = $this->error ?? '';
+
 			debug("untar_system($tarfile, $file, $dstdir)");
 
 			if ($this->tar_error_handler) {
-				$errfile=$dstdir."/tar.errors";
+				$errfile=$dstdir."/tar.untar.errors";
 				$errfile=$this->_fix_tar_paths($errfile);
 				$handler=sprintf($this->tar_error_handler, $errfile);
 			}
@@ -111,7 +114,7 @@
 
 		function tar_system($tarfile, $file, $dstdir) {
 			if ($this->tar_error_handler) {
-				$errfile=$dstdir."/tar.errors";
+				$errfile=$dstdir."/tar.tar.errors";
 				$errfile=$this->_fix_tar_paths($errfile);
 				$handler=sprintf($this->tar_error_handler, $errfile);
 			}

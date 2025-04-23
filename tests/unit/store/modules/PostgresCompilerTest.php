@@ -2,13 +2,13 @@
 
 class PostgresCompilerTest extends AriadneBaseTest
 {
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
 		self::initAriadne();
 		parent::setUpBeforeClass();
 	}
 
-	protected function setUp()
+	protected function setUp(): void
 	{
 		global $store_config;
 		if( $store_config["dbms"] !== 'postgresql' ) {

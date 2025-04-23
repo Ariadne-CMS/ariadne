@@ -64,7 +64,7 @@ class page {
 	}
 
 	public static function getBody($page) {
-		if (stripos($page, "</body") !== false) {
+		if (stripos($page??'', "</body") !== false) {
 			$page = preg_replace('|</BODY.*$|is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
@@ -74,7 +74,7 @@ class page {
 				return '<!-- Error: Backtrack limit was exhausted (531) -->';
 			}
 		}
-		if (stripos($page, "<body") !== false) {
+		if (stripos($page??'', "<body") !== false) {
 			$page = preg_replace('/^.*<BODY[^>]*>/is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
@@ -180,7 +180,7 @@ class page {
 			unset($node['attribs'][$contentEditable]);
 			$result = true;
 		}
-		if ($node['attribs']['ar:type'] == "template") {
+		if (($node['attribs']['ar:type']??null) == "template") {
 				$path     = $node['attribs']['ar:path'];
 				$template = $node['attribs']['ar:name'];
 				$argsarr  = array();
@@ -202,7 +202,7 @@ class page {
 				// return from worker function
 				return true;
 		}
-		if (is_array($node['children'])) {
+		if (is_array($node['children']??null)) {
 			foreach ($node['children'] as $key => $child) {
 				// single | makes the following line always run the compileworker
 				// method, while any return true in that method makes $result true

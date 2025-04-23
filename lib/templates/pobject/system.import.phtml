@@ -29,7 +29,7 @@
 			}
 		}
 
-		if (is_array($convert_charsets)) {
+		if (is_array($convert_charsets ?? null)) {
 			reset($convert_charsets);
 			while (list($nls, $charset)=each($convert_charsets)) {
 				echo "converting charset ($nls, $charset)\n";
@@ -56,7 +56,7 @@
 				$this->properties,
 				$this->vtype,
 				$this->priority,
-				$this->axflags);
+				$this->axflags ?? null);
 
 		$this->error = $this->store->error;
 	}

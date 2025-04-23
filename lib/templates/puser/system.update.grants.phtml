@@ -2,7 +2,7 @@
 	if ($AR->user && ($AR->user->data->login=="admin" || $AR->user->grants["config"])) { // can not be called directly from loader
 		switch($action) {
 			case "delete" :
-				if (!$grant) {
+				if (!($grant??null)) {
 					unset($data->config->usergrants[$path]);
 				} else {
 					unset($data->config->usergrants[$path][$grant]);

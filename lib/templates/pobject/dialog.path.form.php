@@ -4,7 +4,7 @@
 		if ($this->getvar('sources')) {
 			$sources = $this->getvar("sources");
 		} else {
-			   $sources = array($this->path);
+			 $sources = array($this->path);
 		}
 
 		$target = $this->getvar("target");
@@ -13,7 +13,10 @@
 			$target = $this->path;
 		}
 
-                $pathmode = $this->getvar("pathmode");
+		$pathmode = $this->getvar("pathmode");
+		if ( !isset( $jail ) ) {
+			$jail = "";
+		}
 ?>
 <script type="text/javascript">
 	var updateTimer = false;
@@ -118,10 +121,10 @@
 				}
 			}
 
-			$crumbs = htmlspecialchars( $crumbs . "/ " . $sourceob->nlsdata->name );
-			$oldcrumbs = htmlspecialchars( $oldcrumbs . "/ " . $sourceob->nlsdata->name );
+			$crumbs = htmlspecialchars( $crumbs??'' . "/ " . $sourceob->nlsdata->name??'' );
+			$oldcrumbs = htmlspecialchars( $oldcrumbs??'' . "/ " . $sourceob->nlsdata->name??'' );
 
-			if( !$ARCurrent->arTypeTree ) {
+			if( !isset($ARCurrent->arTypeTree) ) {
 				$sourceob->call('typetree.ini');
 			}
 			$icons = $ARCurrent->arTypeIcons;
@@ -155,9 +158,9 @@
 			} else {
 			    echo '<div class="browse">';
 			}
-			echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
-			if ( $overlay_icon ) {
-			echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
+			echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt??'') . '" title="' . htmlspecialchars($iconalt??'') . '" class="typeicon">';
+			if ( $overlay_icon ?? null ) {
+			echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt??'') . '" title="' . htmlspecialchars($overlay_alt??'') . '" class="overlay_typeicon">';
 			}
 			echo '<div class="name">' . $sourceob->nlsdata->name . ' ';
 			echo '( <span class="crumbs" title="' . $oldcrumbs . '">' . $crumbs . '</span> )';

@@ -97,8 +97,11 @@
 	}
 
 
-	function ldRegisterFile($field = "file", &$error) {
+	function ldRegisterFile($field, &$error) {
 	global $ARnls, $store, $arguments;
+		if (!isset($field)) {
+			$field = "file";
+		}
 		debug("ldRegisterFile([$field], [error])");
 
 		require_once($store->code."modules/mod_mimemagic.php");

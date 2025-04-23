@@ -117,7 +117,7 @@ class htmlcleanertag {
 
 				$_name = $matches[1];
 				$i += strlen($_name);
-				$chr = $str[$i];
+				$chr = $str[$i]??null;
 
 				if ($chr == '=') {
 					$_state = 3;
@@ -304,12 +304,12 @@ class htmlcleaner
 		}
 
 		$body = "<htmlcleaner>$body</htmlcleaner>";
-		$rewrite_rules = $config["rewrite"];
+		$rewrite_rules = $config["rewrite"]??null;
 		$return = '';
 		$parts = htmlcleaner::dessicate($body);
 
 		// flip emtied rules so we can use it as indexes
-		if (is_array($config["delete_emptied"])) {
+		if (is_array($config["delete_emptied"]??null)) {
 			$config["delete_emptied"] = array_flip($config["delete_emptied"]);
 		}
 		if (isset($config["delete_empty_containers"]) && is_array($config["delete_empty_containers"])) {
@@ -360,7 +360,7 @@ class htmlcleaner
 					do {
 						$closed = array_pop($delete_stack);
 					} while ($closed["tag"] && $closed["tag"] != $part->nodeName);
-					if ($closed["delete"]) {
+					if ($closed["delete"] ?? null) {
 						unset($part);
 					}
 				}
@@ -380,9 +380,9 @@ class htmlcleaner
 			}
 
 
-			if ($part && is_array($rewrite_rules)) {
+			if (($part ?? null) && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
-					if (preg_match('/'.$tag_rule.'/is', $part->nodeName)) {
+					if (preg_match('/'.$tag_rule.'/is', $part->nodeName??'')) {
 						if (is_array($attrib_rules)) {
 							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
 								foreach ($part->attributes as $attrib_key=>$attrib_val) {
@@ -434,7 +434,7 @@ class htmlcleaner
 					}
 				}
 			}
-			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false) {
+			if (($part ?? null) && strstr($part->nodeValue??'','<?xml:namespace')===false) {
 				$return .= $part->toString();
 			}
 		}

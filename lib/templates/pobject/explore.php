@@ -4,23 +4,23 @@
 		//$base_object = $AR->user;
 		$base_object = $this;
 
-		if (!$ARCurrent->arTypeTree) {
+		if (isset($ARCurrent->arTypeTree)) {
 			$base_object->call("typetree.ini");
 		}
 
 		// This set initializes the tree from the user object
 		$path 	= $base_object->path;
 		$name 	= $base_object->nlsdata->name;
-		$icon 	= $ARCurrent->arTypeIcons[$base_object->type]['medium'] ? $ARCurrent->arTypeIcons[$base_object->type]['medium'] : $base_object->call('system.get.icon.php', array('size' => 'medium'));
+		$icon 	= isset($ARCurrent->arTypeIcons[$base_object->type]['medium']) ? $ARCurrent->arTypeIcons[$base_object->type]['medium'] : $base_object->call('system.get.icon.php', array('size' => 'medium'));
 
 		$loader = $this->store->get_config('root');
 		$wwwroot = $AR->dir->www;
-		$interface = $data->interface;
+		$interface = $data->interface ?? null;
 
 		$yui_base = $wwwroot . "js/yui/";
 
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
-		$viewmode = $_COOKIE["viewmode"];
+		$viewmode = isset($_COOKIE["viewmode"]) ? $_COOKIE["viewmode"] : false;
 		if( !$viewmode || !$viewmodes[$viewmode] ) {
 			$viewmode = 'list';
 		}

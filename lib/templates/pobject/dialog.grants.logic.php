@@ -147,7 +147,7 @@
 				foreach ($grants as $grant => $modifiers) {
 					if (!is_array($modifiers)) {
 						$grant_type=arGetGrantType($modifiers);
-						$grant_display .= htmlspecialchars($grant_type); // echo
+						$grant_display .= htmlspecialchars($grant_type??''); // echo
 					} else {
 						$grant_type='';
 					}
@@ -173,7 +173,7 @@
 						$grant_display .= "( ";
 						foreach ($modifiers as $modifier => $value) {
 							$grant_type=arGetGrantType($value);
-							$grant_display .= htmlspecialchars($grant_type);
+							$grant_display .= htmlspecialchars($grant_type??'');
 							$grant_display .= $modifier." ";
 							$grant_string .= $grant_type.$modifier." ";
 						}

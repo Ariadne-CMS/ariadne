@@ -96,7 +96,7 @@
 
 		$loader = $this->store->get_config('root');
 		$wwwroot = $AR->dir->www;
-		$interface = $data->interface;
+		$interface = $data->interface ?? null;
 
 		$yui_base = $wwwroot . "js/yui/";
 	//	$yui_base = "http://developer.yahoo.com/yui/";
@@ -104,7 +104,7 @@
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
 		$viewmode = $this->getvar("viewmode");
 		if( !$viewmode || !$viewmodes[$viewmode] ) {
-			$viewmode = ldGetUserCookie("viewmode");
+			$viewmode = $_COOKIE['viewmode']??null;
 			if( !$viewmode || !$viewmodes[$viewmode] ) {
 				$viewmode = 'list';
 			}
@@ -112,12 +112,12 @@
 
 		$ordering = array("name" => 1, "filename" => 1, "ctime" => 1, "mtime" => 1, "modified" => 1, "priority" => 1, "path" => 1); // List of allowed ordering options;
 		$directions = array("asc" => 1, "desc" => 1);
-		$order = strtolower($this->getvar('order'));
+		$order = strtolower($this->getvar('order')??'');
 		if (!$order || !$ordering[$order]) {
 			$order = 'name';
 		}
 
-		$direction = strtolower($this->getvar('direction'));
+		$direction = strtolower($this->getvar('direction')??'');
 		if (!$direction || !$directions[$direction]) {
 			$direction = 'asc';
 		}
@@ -219,23 +219,23 @@
 
 <script type="text/javascript">
 	// Pass the settings for the tree to javascript.
-	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo AddCSlashes( $loader, ARESCAPE ); ?>';
+	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo AddCSlashes( ($loader??''), ARESCAPE ); ?>';
 
 	muze.ariadne.explore.tree.baseNodes	= [{
-			"path" : "<?php echo AddCSlashes( $path, ARESCAPE ); ?>",
-			"name" : "<?php echo AddCSlashes( $name, ARESCAPE ); ?>",
-			"icon" : "<?php echo AddCSlashes( $icon, ARESCAPE ); ?>"
+			"path" : "<?php echo AddCSlashes( ($path??''), ARESCAPE ); ?>",
+			"name" : "<?php echo AddCSlashes( ($name??''), ARESCAPE ); ?>",
+			"icon" : "<?php echo AddCSlashes( ($icon??''), ARESCAPE ); ?>"
 	}];
 
-	muze.ariadne.registry.set('root', '<?php echo AddCSlashes( $root, ARESCAPE ); ?>');
-	muze.ariadne.registry.set('jail', '<?php echo AddCSlashes( $jail, ARESCAPE ); ?>');
-	muze.ariadne.registry.set('ARRoot', '<?php echo AddCSlashes( $AR->root, ARESCAPE ); ?>');
-	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( $this->store->get_config('root'), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('root', '<?php echo AddCSlashes( ($root??''), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('jail', '<?php echo AddCSlashes( ($jail??''), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('ARRoot', '<?php echo AddCSlashes( ($AR->root??''), ARESCAPE ); ?>');
+	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( ($this->store->get_config('root')??''), ARESCAPE ); ?>');
 
 	// setting session ID for unique naming of windows within one ariadne session.
-	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( $ARCurrent->session->id, ARESCAPE ); ?>");
+	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( ($ARCurrent->session->id??''), ARESCAPE ); ?>");
 
-	muze.ariadne.registry.set("path", "<?php echo AddCSlashes( $browsepath, ARESCAPE ); ?>");
+	muze.ariadne.registry.set("path", "<?php echo AddCSlashes( ($browsepath??''), ARESCAPE ); ?>");
 <?php
 	if( $AR->user->data->windowprefs["edit_object_layout"] ) {
 		echo "\tmuze.ariadne.registry.set('window_new_layout', 1);\n";
@@ -244,7 +244,7 @@
 		echo "\tmuze.ariadne.registry.set('window_new_grants', 1);\n";
 	}
 
-	foreach ((array)$extraroots as $extrapath) {
+	foreach (($extraroots??[]) as $extrapath) {
 		if ($extrapath != $path) {
 			$extrapath_ob = current($this->get($extrapath, "system.get.phtml"));
 			if ($extrapath_ob) {
@@ -377,7 +377,7 @@
 						<?php } else { ?>
 							<input size="30" id="searchpath" class="text searchpath" type="text" name="arPath" value="<?php echo $browsepath; ?>">
 						<?php } ?>
-						<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
+						<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']??''); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
 					</div>
 					<div id="resultscontainer"></div>
 				</form>
@@ -408,7 +408,7 @@
 					$extraButtonsEventData = new baseObject();
 					$extraButtonsEventData = ar_events::fire( 'ariadne:onbeforebrowsebuttons', $extraButtonsEventData );
 					if ($extraButtonsEventData) {
-						$this->call("dialog.browse.buttons.html", array( "hideAdd" => $hideAdd ));
+						$this->call("dialog.browse.buttons.html", array( "hideAdd" => ($hideAdd ?? null)));
 						$this->call("dialog.browse.buttons.extra.html");
 						ar_events::fire('ariadne:onbrowsebuttons');
 					}

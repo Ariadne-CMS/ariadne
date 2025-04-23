@@ -35,7 +35,7 @@
 			if ( !$files ) {
 				$files = array();
 			}
-			$files = array_map( array('self','parseName'), $files );
+			$files = array_map( self::parseName(...), $files );
 			if ( isset($nls) ) {
 				$files = array_filter( $files, function($f) use($nls) {
 					return ( $f['nls'] == $nls );
@@ -119,8 +119,10 @@
 			list( $ob, $fstore ) = static::getStore();
 			$fname = static::compileName($name, $nls);
 			if ( !$fstore->exists($ob->id, $fname) && !isset($nls) ) {
-				$nls = $ob->data->nls->default;
-				$fname = static::compileName($name, $nls);
+				if ( isset( $ob->data->nls ) ) {
+					$nls = $ob->data->nls->default;
+					$fname = static::compileName($name, $nls);
+				}
 			}
 			if ( !$fstore->exists($ob->id, $fname ) ) {
 				return false;

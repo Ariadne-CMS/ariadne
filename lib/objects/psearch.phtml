@@ -20,7 +20,7 @@ require_once(AriadneBasePath."/objects/pdir.phtml");
 
 class psearch extends pdir { // psearch class definition
 
-	function ls($path, $function="list.html", $args="") {
+	function ls($path = '', $function = 'list.html', $args = '') {
 		$path=$this->store->make_path($this->path, $path);
 		if( (substr($path, 0, strlen($this->path))==$this->path)) {
 			return pdir::find($this->data->path, $this->data->query, $function, $args);
@@ -47,13 +47,19 @@ class psearch extends pdir { // psearch class definition
 		}
 	}
 
-	function count_find($path, $criteria) {
-		$path=$this->store->make_path($this->path, $path);
+	function count_find($path='', $criteria='') {
+		if ($path!='') {
+			$path=$this->store->make_path($this->path, $path);
+		} else {
+			$path = $this->store->make_path($this->path);
+		}
 		if( (substr($path, 0, strlen($this->path))==$this->path)) {
-			if ($criteria) {
-				$criteria = "(" . $this->data->query . ") and " . $criteria;
-			} else {
-				$criteria = $this->data->query;
+			if ($this->data->query) {
+				if ($criteria != '') {
+					$criteria = "(" . $this->data->query . ") and " . $criteria;
+				} else {
+					$criteria = $this->data->query;
+				}
 			}
 			return pdir::count_find($this->data->path, $criteria);
 		} else {

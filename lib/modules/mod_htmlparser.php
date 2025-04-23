@@ -83,9 +83,9 @@
 
 			do {
 				switch (true) {
-					case $yych === $scanner['class_attrib_start'][$yych] && ($YYSTATE == AR_HTMLPARSER_STATE_DOCTYPE):
+					case $yych === ($scanner['class_attrib_start'][$yych]??null) && ($YYSTATE == AR_HTMLPARSER_STATE_DOCTYPE):
 						$value = $yych;
-						while ($scanner['class_attrib_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+						while (($scanner['class_attrib_next'][$yych = $YYBUFFER[++$YYCURSOR]]??null) == $yych) {
 							$value .= $yych;
 						}
 						return AR_HTMLPARSER_T_ATTRIB_VAL;
@@ -114,12 +114,11 @@
 						return AR_HTMLPARSER_T_ATTRIB_VAL;
 					break;
 					case $yych === '=' && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
-						while ($scanner['class_whitespace'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych);
+						while (($scanner['class_whitespace'][$yych = $YYBUFFER[++$YYCURSOR]]??null) == $yych);
 						$YYSTATE = AR_HTMLPARSER_STATE_ATTRIB;
-						contine;
 					break;
-					case $yych === $scanner['class_whitespace'][$yych] && (($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG) || ($YYSTATE == AR_HTMLPARSER_STATE_CLOSE_TAG) || ($YYSTATE == AR_HTMLPARSER_STATE_DOCTYPE)):
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+					case $yych === ($scanner['class_whitespace'][$yych]??null) && (($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG) || ($YYSTATE == AR_HTMLPARSER_STATE_CLOSE_TAG) || ($YYSTATE == AR_HTMLPARSER_STATE_DOCTYPE)):
+						$yych = $YYBUFFER[++$YYCURSOR];
 					break;
 					case $yych === '-' && ($YYSTATE == AR_HTMLPARSER_STATE_COMMENT):
 						if (substr($YYBUFFER, $YYCURSOR, 3) == '-->') {
@@ -143,7 +142,7 @@
 						$YYSTATE	= AR_HTMLPARSER_STATE_CLOSE_TAG;
 						$YYCURSOR	+= 1;
 						$value		= "";
-						while ($scanner['class_ident_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+						while (($scanner['class_ident_next'][$yych = $YYBUFFER[++$YYCURSOR]]??null) == $yych) {
 							$value .= $yych;
 						}
 						return AR_HTMLPARSER_T_CLOSE_TAG;
@@ -157,7 +156,7 @@
 					case $yych == '<' && ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
 						$YYSTATE	= AR_HTMLPARSER_STATE_OPEN_TAG;
 						$value		= "";
-						while ($scanner['class_ident_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+						while (($scanner['class_ident_next'][$yych = $YYBUFFER[++$YYCURSOR]]??null) == $yych) {
 							$value .= $yych;
 						}
 						if (strtolower($value) == 'script') {
@@ -165,16 +164,16 @@
 						}
 						return AR_HTMLPARSER_T_OPEN_TAG;
 					break;
-					case $yych === $scanner['class_attrib_start'][$yych] && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
+					case $yych === ($scanner['class_attrib_start'][$yych]??null) && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
 						$value = $yych;
-						while ($scanner['class_attrib_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+						while (($scanner['class_attrib_next'][$yych = $YYBUFFER[++$YYCURSOR]]??null) == $yych) {
 							$value .= $yych;
 						}
 						return AR_HTMLPARSER_T_ATTRIB;
 					break;
-					case $yych === $scanner['class_number'][$yych] && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
+					case $yych === ($scanner['class_number'][$yych]??null) && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
 						$value = $yych;
-						while ($scanner['class_number'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+						while (($scanner['class_number'][$yych = $YYBUFFER[++$YYCURSOR]]??null) == $yych) {
 							$value .= $yych;
 						}
 						return AR_HTMLPARSER_T_NUMBER;
@@ -185,7 +184,7 @@
 						} else {
 							$YYSTATE = AR_HTMLPARSER_STATE_TEXT;
 						}
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+						$yych = $YYBUFFER[++$YYCURSOR];
 					break;
 					case ord($yych) === 0:
 						$value = $yych;
@@ -194,14 +193,14 @@
 					case $yych === $yych && ($YYSTATE == AR_HTMLPARSER_STATE_ATTRIB):
 						$YYSTATE = AR_HTMLPARSER_STATE_OPEN_TAG;
 						$value = "";
-						while ($scanner['class_whitespace'][$yych] !== $yych && ($yych != "\000" && $yych != ">")) {
+						while (($scanner['class_whitespace'][$yych]??null) !== $yych && ($yych != "\000" && $yych != ">")) {
 							$value .= $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
 						return AR_HTMLPARSER_T_ATTRIB_VAL;
 					break;
 					case $yych === $yych && ($YYSTATE == AR_HTMLPARSER_STATE_OPEN_TAG):
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+						$yych = $YYBUFFER[++$YYCURSOR];
 					break;
 					case ($YYSTATE == AR_HTMLPARSER_STATE_TEXT):
 						$value = "";
@@ -297,7 +296,7 @@
 					break;
 					case AR_HTMLPARSER_T_OPEN_TAG:
 						$nextTag = strtolower($parser["token_ahead_value"]);
-						if ($nextTag == $tagName && in_array($tagName, $siblings)) {
+						if ($nextTag == ($tagName??null) && in_array($tagName, $siblings)) {
 							if ($parser['options']['noTagResolving']) {
 								$parentNode['htmlTagClose'] = "";
 							}
@@ -317,7 +316,7 @@
 					break;
 					case AR_HTMLPARSER_T_CLOSE_TAG:
 						$closeTag = $parser["token_ahead_value"];
-						if ($tagName != strtolower($closeTag)) {
+						if (($tagName??null) != strtolower($closeTag)) {
 							// continue parsing because closing tag does not match current tag
 							// FIXME: create a better check
 							static::nextToken($parser);
@@ -328,11 +327,10 @@
 								$node['html'] = "</".$parser["token_value"].">";
 								$result[] = $node;
 							}
-							continue;
 						}
 
 						// if we do not resolve tags, we have to add this one as text
-						if ($parser['options']['noTagResolving']) {
+						if ($parser['options']['noTagResolving']??null) {
 							$parentNode['htmlTagClose'] = "</".$parser['token_ahead_value'].">";
 						}
 
@@ -342,7 +340,7 @@
 						static::nextToken($parser);
 				}
 			}
-			if ($parser['options']['noTagResolving']) {
+			if ($parser['options']['noTagResolving']??null) {
 				$parentNode['htmlTagClose'] = "";
 			}
 			return $result;
@@ -350,7 +348,7 @@
 
 		protected static function compile_Attribs(&$node) {
 			$result = "";
-			if (is_array($node['attribs'])) {
+			if (is_array($node['attribs']??null)) {
 				foreach ($node['attribs'] as $key => $value) {
 					$result .= " $key";
 					if ($value !== false) {
