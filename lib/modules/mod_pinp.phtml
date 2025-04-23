@@ -1802,7 +1802,16 @@ class pinp {
 		}
 		$this->error = null;
 		$pipes = [];
-		$proc = proc_open( "/usr/local/bin/php -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
+
+		$phpBinary = null;
+		if (!isset($phpBinary) && file_exists("/usr/local/bin/php")) {
+			$phpBinary = "/usr/local/bin/php";
+		}
+		if (!isset($phpBinary) && file_exists("/usr/bin/php")) {
+			$phpBinary = "/usr/bin/php";
+		}
+
+		$proc = proc_open( "$phpBinary -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
 		if ( !is_resource( $proc ) ) {
 			die( "Could not open php!\n" );
 		}
