@@ -62,7 +62,7 @@ if [ $INSTALL_WARNINGS -gt 0 ]; then
 	exit 1;
 fi
 
-if [ $INSTALL_ERRORS -gt 0 ]; then
+if [ $INSTALL_NOTICE -gt 0 ]; then
 	echo "Installer reported notices.";
 	grep -i notice ${TMPDIR}/installer.output.txt
 	exit 1;
