@@ -1,16 +1,9 @@
 #!/bin/bash
 
-if [ "${TRAVIS}" = "true" ] ; then
-	BUILDROOT="${TRAVIS_BUILD_DIR}"
-	URL='http://localhost/ariadne/';
-	TESTDB='ariadne'
-	DB="${DB}"
-else
-	BUILDROOT="${1}"
-	URL="${2}"
-	TESTDB="${3}"
-	DB="${4}"
-fi
+BUILDROOT="${1}"
+URL="${2}"
+TESTDB="${3}"
+DB="${4}"
 
 if [ -z "${BUILDROOT}" -o -z "${URL}" -o -z "${TESTDB}" -o -z "${DB}" ] ; then
 	echo "Error: run as ./tests/run.sh `pwd` url dbname dbtype";

@@ -112,7 +112,7 @@
 	}
 
 	function check_ariadne_path() {
-		@include("../ariadne.inc");
+		include("../ariadne.inc");
 		if (is_readable($ariadne . "/templates/pobject/")) {
 			return true;
 		}

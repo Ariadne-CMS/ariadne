@@ -1020,6 +1020,9 @@ class pinp {
 				case ($in_special === "usort"):
                                         $parsed = preg_replace( "/[?][?][ ]null[)][!][!][!][!]/", ")!!!!", $parsed );
 				break;
+				case ($in_special === "compileFuncCallArgs"):
+					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
+				break;
 			}
 
 			$result .= $parsed;
@@ -1169,7 +1172,7 @@ class pinp {
 
 
 	function parse_variable_reference($inDQString = false) {
-		$skipNullDefaulter = ( trim( $this->token_value ) === '&' );
+		$skipNullDefaulter = ( trim( $this->token_value??'' ) === '&' );
 		$this->next_token(); // eat $ sign;
 		$result = $this->var_prefix.$this->parse_var_index("", "_", $inDQString);
 		if ($this->error) {
@@ -1758,10 +1761,11 @@ class pinp {
 		$this->tokens = Array();
 		$this->new_template = "";
 		$this->in_pinp = true;
-		$this->new_template = $this->parse_func_call_args();
+		$this->new_template = $this->parse_func_call_args("compileFuncCallArgs");
 		if (!$this->error) {
 			$this->syntax_test("<"."?php function test(".$this->new_template.") { } ?".">");
 		}
+		// $this->new_template = preg_replace( "/[ ][?][?][ ][n][u][l][l][)][!][!][!][!]/", ")", $this->new_template );
 		return $this->new_template;
 	}
 
@@ -1802,7 +1806,16 @@ class pinp {
 		}
 		$this->error = null;
 		$pipes = [];
-		$proc = proc_open( "/usr/local/bin/php -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
+
+		$phpBinary = null;
+		if (!isset($phpBinary) && file_exists("/usr/local/bin/php")) {
+			$phpBinary = "/usr/local/bin/php";
+		}
+		if (!isset($phpBinary) && file_exists("/usr/bin/php")) {
+			$phpBinary = "/usr/bin/php";
+		}
+
+		$proc = proc_open( "$phpBinary -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
 		if ( !is_resource( $proc ) ) {
 			die( "Could not open php!\n" );
 		}
