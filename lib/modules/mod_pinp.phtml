@@ -1802,7 +1802,7 @@ class pinp {
 		}
 		$this->error = null;
 		$pipes = [];
-		$proc = proc_open( PHP_BINARY . " -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
+		$proc = proc_open( "/usr/local/bin/php -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
 		if ( !is_resource( $proc ) ) {
 			die( "Could not open php!\n" );
 		}
