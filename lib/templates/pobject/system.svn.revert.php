@@ -28,7 +28,7 @@
 						unset($status[$filename]);
 					} else {
 						$props = $fstore->svn_get_ariadne_props($svn, $filename);
-						echo "<span class='svn_addtemplateline'>Reverting ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
+						echo "<span class='svn_addtemplateline'>Reverting ".$this->path.($props["ar:function"]??'')." (".($props["ar:type"]??'').") [".($props["ar:language"]??'')."] ".( ($props["ar:default"]??'') == '1' ? $ARnls["default"] : "")."</span>\n";
 						$fstore->svn_revert($svn, $filename);
 						$templates[] = $fstore->get_path($svn, $filename);
 					}
