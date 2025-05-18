@@ -1461,7 +1461,7 @@
 			if ( isset($check['Delete']) ) {
 				$delete = $check['Delete'];
 				ar::untaint($delete);
-				if ( $this->children[$delete] ) {
+				if ( $this->children[$delete]??null ) {
 					unset( $this->children[$delete] );
 				}
 			} else if ( isset( $check['Add'] ) ) {
