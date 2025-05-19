@@ -96,3 +96,7 @@
 			$ARnls[$key] = $value;
 		}
 	}
+
+	foreach ($AR->PINP_AllowedClasses as $class) {
+		ar_pinp::allow($class);
+	}
