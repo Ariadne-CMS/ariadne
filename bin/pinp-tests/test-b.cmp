@@ -1,0 +1,4 @@
+<?php 
+	$local->foo = "blah";
+	$local->blah = &$local->foo;
+ ?>
