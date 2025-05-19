@@ -20,9 +20,9 @@ services:
         environment:
             TZ: "Europe/Amsterdam"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-            MYSQL_ROOT_PASSWORD: "frop"
+            MYSQL_ROOT_PASSWORD: "Ahx6ohngohch"
             MYSQL_USER: "ariadne"
-            MYSQL_PASSWORD: "secret"
+            MYSQL_PASSWORD: "Hohtai6shaht"
             MYSQL_DATABASE: "ariadne"
         ports:
             - '3306:3306'
