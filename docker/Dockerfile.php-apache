@@ -1,7 +1,9 @@
-FROM php:8.4-apache
+FROM php:8.3-apache
 LABEL maintainer="yvo@muze.nl"
 RUN apt-get update
-RUN apt-get install -y git subversion tidy imagemagick poppler-utils libzip-dev zip
+RUN apt-get install -y git subversion tidy imagemagick poppler-utils libzip-dev zip ssl-cert
 RUN docker-php-ext-install mysqli exif bcmath zip
+RUN a2enmod rewrite allowmethods ssl
+
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY . /opt/ariadne/
