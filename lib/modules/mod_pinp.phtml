@@ -874,6 +874,8 @@ class pinp {
 		$pspell_funcs="pspell_add_to_personal|pspell_add_to_session|pspell_check|pspell_clear_session|pspell_config_create|".
 		  "pspell_config_ignore|pspell_config_mode|pspell_config_runtogether|pspell_config_save_repl|pspell_new_config|".
 		  "pspell_new_personal|pspell_new|pspell_save_wordlist|pspell_store_replacement|pspell_suggest";
+		$openssl_funcs="openssl_pkey_get_public|openssl_pkey_get_private|openssl_pkey_get_details|openssl_sign|openssl_random_pseudo_bytes";
+		$apache_funcs="apache_request_headers";
 		$imap_funcs="imap_8bit|imap_alerts|imap_append|imap_base64|imap_binary|imap_body|imap_bodystruct|imap_check|imap_clearflag_full|".
 		  "imap_close|imap_create|imap_createmailbox|imap_delete|imap_deletemailbox|imap_errors|imap_expunge|imap_fetch_overview|".
 		  "imap_fetchbody|imap_fetchheader|imap_fetchmime|imap_fetchstructure|imap_fetchtext|imap_gc|imap_get_quota|imap_get_quotaroot|".
@@ -886,7 +888,8 @@ class pinp {
 		$this->allowed_functions=array_flip(explode("|", strtolower("$array_funcs|$object_funcs|$ctype_funcs|$filter_funcs|".
 		  "$control_funcs|$datetime_funcs|$math_funcs|".
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$stream_funcs|$var_funcs|$xml_funcs|".
-		  "$allowed_functions|$debug_funcs|$loader_funcs|$ob_funcs|$iconv_funcs|$mb_funcs|$pspell_funcs|$imap_funcs|$zlib_funcs")));
+		  "$allowed_functions|$debug_funcs|$loader_funcs|$ob_funcs|$iconv_funcs|$mb_funcs|$pspell_funcs|$imap_funcs|$zlib_funcs|".
+		  "$openssl_funcs|apache_funcs")));
 
 		/*
 			create lookup table for cast-types
@@ -999,6 +1002,7 @@ class pinp {
 				case ($in_special === "array_push"):
 				case ($in_special === "array_shift"):
 				case ($in_special === "array_unshift"):
+				case ($in_special === "openssl_sign"):
 					// only fix the first param (everything on the outersides)
 					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
 				break;
