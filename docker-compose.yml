@@ -7,9 +7,9 @@ services:
         environment:
             XDEBUG_CONFIG: remote_host=${XDEBUG_REMOTE_HOST:-host.docker.internal}
         ports:
-            - 80:80
+            - 443:443
         volumes:
-            - ./www/:/var/www/html
+            - ./www/:/var/www/html/ariadne
             - .:/opt/ariadne
         links:
             - 'mysql'
