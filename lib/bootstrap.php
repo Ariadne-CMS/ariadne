@@ -97,6 +97,6 @@
 		}
 	}
 
-	foreach ($AR->PINP_AllowedClasses as $class ?? []) {
+	foreach ($AR->PINP_AllowedClasses??[] as $class) {
 		ar_pinp::allow($class);
 	}
