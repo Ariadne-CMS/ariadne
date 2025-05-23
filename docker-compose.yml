@@ -13,6 +13,7 @@ services:
         volumes:
             - ./www/:/var/www/html/ariadne
             - .:/opt/ariadne
+            - ./docker/ariadne.inc-docker:/var/www/html/ariadne/ariadne.inc
         links:
             - 'mysql'
     mysql:
