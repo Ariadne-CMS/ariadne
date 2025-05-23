@@ -1,0 +1,45 @@
+# Running Ariadne in Docker
+
+The Ariadne docker container build instructions are located in the docker/
+directory.
+
+The container is based on the apache-php container with a separate MySQL
+container (running from a stock version).
+
+# env setup
+
+An example environment file is available in the ariadne root directory:
+docker.env-example.
+
+Copy this file to your own. Edit it to modify the default secrets that are
+in the file and replace them with your own.
+
+```
+cp docker.env .env
+```
+
+After that, you should be able to start up the docker container with the
+supplied docker-compose file:
+
+```
+docker-compose up
+```
+
+Note that at this point the Ariadne code is available, but Ariadne itself is
+not yet installed.
+
+Log into the container:
+```
+docker exec -it ariadne-php_1 bash
+cd /opt/ariadne/docker
+bash install-ariadne.sh
+```
+
+After this, you should have a demo site viewable on https://ariadne.local/
+
+# DNS gotcha and snake oil certificate
+
+The local sites are under https with a snake-oil certificate, you expect
+warnings for an invalid certificate when accessing ariadne with this name.
+
+You may also need to add the ariadne.local host to /etc/hosts to make them available for the browser by pointing them to 127.0.0.1.
