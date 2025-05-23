@@ -6,6 +6,8 @@ services:
             dockerfile: Dockerfile.php-apache
         environment:
             XDEBUG_CONFIG: remote_host=${XDEBUG_REMOTE_HOST:-host.docker.internal}
+            ARIADNE_PASSWORD: ${ARIADNE_PASSWORD}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         ports:
             - 443:443
         volumes:
@@ -20,9 +22,9 @@ services:
         environment:
             TZ: "Europe/Amsterdam"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-            MYSQL_ROOT_PASSWORD: "Ahx6ohngohch"
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_USER: "ariadne"
-            MYSQL_PASSWORD: "Hohtai6shaht"
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_DATABASE: "ariadne"
         ports:
             - '3306:3306'
