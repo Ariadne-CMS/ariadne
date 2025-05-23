@@ -7,3 +7,4 @@ RUN a2enmod rewrite allowmethods ssl
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY . /opt/ariadne/
+COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
