@@ -1,0 +1,4 @@
+<pinp>
+	$foo = "blah";
+	$blah = &$foo;
+</pinp>

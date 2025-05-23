@@ -6,11 +6,14 @@ services:
             dockerfile: Dockerfile.php-apache
         environment:
             XDEBUG_CONFIG: remote_host=${XDEBUG_REMOTE_HOST:-host.docker.internal}
+            ARIADNE_PASSWORD: ${ARIADNE_PASSWORD}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         ports:
-            - 80:80
+            - 443:443
         volumes:
-            - ./www/:/var/www/html
+            - ./www/:/var/www/html/ariadne
             - .:/opt/ariadne
+            - ./docker/ariadne.inc-docker:/var/www/html/ariadne/ariadne.inc
         links:
             - 'mysql'
     mysql:
@@ -20,9 +23,9 @@ services:
         environment:
             TZ: "Europe/Amsterdam"
             MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-            MYSQL_ROOT_PASSWORD: "frop"
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_USER: "ariadne"
-            MYSQL_PASSWORD: "secret"
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_DATABASE: "ariadne"
         ports:
             - '3306:3306'
