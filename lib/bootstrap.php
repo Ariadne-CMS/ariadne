@@ -48,6 +48,10 @@
 
 	$loaderType = ($ARLoader)?$ARLoader:'web';
 
+	if (!file_exists(AriadneBasePath."/../vendor/autoload.php")) {
+		echo "Vendor autoload.php is missing, please run 'composer install' to fix this.";
+		exit();
+	}
 	require_once(AriadneBasePath."/../vendor/autoload.php");
 	require_once(AriadneBasePath.'/configs/ariadne.phtml');
 	require_once(AriadneBasePath.'/configs/ariadne-default.phtml');
