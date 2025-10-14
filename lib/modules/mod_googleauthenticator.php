@@ -72,6 +72,8 @@ class GoogleAuthenticator {
      */
     public function checkCode($secret, $code)
     {
+        ar::untaint($secret);
+        ar::untaint($code);
         $time = floor(time() / 30);
         for ($i = -2; $i <= 2; ++$i) {
             if ($this->codesEqual($this->getCode($secret, $time + $i), $code)) {
