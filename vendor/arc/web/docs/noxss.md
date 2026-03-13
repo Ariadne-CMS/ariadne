@@ -7,13 +7,13 @@ The `prevent()` method must be called at the end of handling any request.
 
 Usage
 -----
-    <?php
-        \arc\noxss::detect();
-    
-        // handle request normally
-    
-        \arc\noxss::prevent();
-    ?>
+```php
+    \arc\noxss::detect();
+
+    // handle request normally
+
+    \arc\noxss::prevent();
+```
 
 If any suspicious characters are found in any input argument, `detect()` will start an output buffer. `prevent()` will 
 check that buffer. If any of the suspicious input arguments are detected as-is in the buffer, `prevent()` will send a 
@@ -22,17 +22,17 @@ check that buffer. If any of the suspicious input arguments are detected as-is i
 If you want to handle the bad request yourself, you can pass a callback function to `prevent()`. It will only be called 
 in the case of a bad request and the only argument to the callback is the generated output.
 
-    <?php
-        \arc\noxss::detect();
-    
-        // do your own stuff, load your routes, run your app, etc.
-    
-        \arc\noxss::prevent(function($output) {
-            error_log('We are under attack!');
-            header('400 Bad Request');
-            echo '<h1>Bad Request, go home!</h1>';
-        });
-    ?>
+```php
+    \arc\noxss::detect();
+
+    // do your own stuff, load your routes, run your app, etc.
+
+    \arc\noxss::prevent(function($output) {
+        error_log('We are under attack!');
+        header('400 Bad Request');
+        echo '<h1>Bad Request, go home!</h1>';
+    });
+```
 
 Although you can potentially try to fix the output and strip out any offending content, you shouldn't. Any kind of
 'cleaning' you do, can and will be used against you. Smart attackers will use your cleaning routine to do

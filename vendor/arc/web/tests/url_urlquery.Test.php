@@ -10,7 +10,7 @@
      */
 
 
-    class TestUrlQuery extends PHPUnit_Framework_TestCase
+    class TestUrlQuery extends PHPUnit\Framework\TestCase
     {
         function testparsePHPUrl()
         {
@@ -71,4 +71,32 @@
             $this->assertFalse( $query['frml'] == '2;frup=3' );
         }
 
+        function testArrayAccess()
+        {
+            $starturl = 'http://www.ariadne-cms.org/';
+            $url = \arc\url::url($starturl);
+            $query = $url->query;
+            $query->foo = ['bar' => 'baz'];
+            $this->assertEquals( 'baz', $query->foo['bar'] );
+
+            $query->foo['bar'] = 'zab';
+            $this->assertEquals( 'zab', $query->foo['bar'] );
+
+            $query->foo['baz'] = 'bar';
+            $this->assertEquals( 'bar', $query->foo['baz'] );
+
+            unset($query->foo['baz']);
+            $this->assertArrayNotHasKey('baz', $query->foo);
+        }
+
+        function testArrayToString()
+        {
+            $starturl = 'http://www.ariadne-cms.org/';
+            $url = \arc\url::url($starturl);
+            $query = $url->query;
+            $query->foo = ['bar' => 'baz'];
+            $query->foo['baz'] = 'bar';
+            $str = (string)$url;
+            $this->assertEquals('http://www.ariadne-cms.org/?foo%5Bbar%5D=baz&foo%5Bbaz%5D=bar', $str);
+        }
     }

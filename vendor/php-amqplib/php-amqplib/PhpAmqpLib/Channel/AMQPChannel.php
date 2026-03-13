@@ -2,28 +2,34 @@
 namespace PhpAmqpLib\Channel;
 
 use PhpAmqpLib\Exception\AMQPBasicCancelException;
+use PhpAmqpLib\Exception\AMQPChannelClosedException;
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Exception\AMQPProtocolChannelException;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire;
 use PhpAmqpLib\Wire\AMQPReader;
 use PhpAmqpLib\Wire\AMQPWriter;
 
 class AMQPChannel extends AbstractChannel
 {
-    /** @var array */
+    /**
+     * @var callable[]
+     * @internal Use is_consuming() to check if there is active callbacks
+     */
     public $callbacks = array();
 
     /** @var bool Whether or not the channel has been "opened" */
     protected $is_open = false;
 
     /** @var int */
-    protected $default_ticket;
+    protected $default_ticket = 0;
 
     /** @var bool */
-    protected $active;
+    protected $active = true;
 
     /** @var array */
-    protected $alerts;
+    protected $alerts = array();
 
     /** @var bool */
     protected $auto_decode;
@@ -68,22 +74,29 @@ class AMQPChannel extends AbstractChannel
      * @see basic_publish()
      * @see publish_batch()
      */
-    private $publish_cache;
+    private $publish_cache = array();
 
     /**
      * Maximal size of $publish_cache
      *
      * @var int
      */
-    private $publish_cache_max_size;
+    private $publish_cache_max_size = 100;
+
+    /**
+     * Maximum time to wait for operations on this channel, in seconds.
+     * @var float $channel_rpc_timeout
+     */
+    private $channel_rpc_timeout;
 
     /**
      * @param \PhpAmqpLib\Connection\AbstractConnection $connection
      * @param null $channel_id
      * @param bool $auto_decode
+     * @param int $channel_rpc_timeout
      * @throws \Exception
      */
-    public function __construct($connection, $channel_id = null, $auto_decode = true)
+    public function __construct($connection, $channel_id = null, $auto_decode = true, $channel_rpc_timeout = 0)
     {
         if ($channel_id == null) {
             $channel_id = $connection->get_free_channel_id();
@@ -91,17 +104,10 @@ class AMQPChannel extends AbstractChannel
 
         parent::__construct($connection, $channel_id);
 
-        $this->publish_cache = array();
-        $this->publish_cache_max_size = 100;
-
         $this->debug->debug_msg('using channel_id: ' . $channel_id);
 
-        $this->default_ticket = 0;
-        $this->is_open = false;
-        $this->active = true; // Flow control
-        $this->alerts = array();
-        $this->callbacks = array();
         $this->auto_decode = $auto_decode;
+        $this->channel_rpc_timeout = $channel_rpc_timeout;
 
         try {
             $this->x_open();
@@ -109,6 +115,14 @@ class AMQPChannel extends AbstractChannel
             $this->close();
             throw $e;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function is_open()
+    {
+        return $this->is_open;
     }
 
     /**
@@ -121,6 +135,7 @@ class AMQPChannel extends AbstractChannel
         }
         $this->channel_id = $this->connection = null;
         $this->is_open = false;
+        $this->callbacks = array();
     }
 
     /**
@@ -148,10 +163,12 @@ class AMQPChannel extends AbstractChannel
      * @param int $reply_code
      * @param string $reply_text
      * @param array $method_sig
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function close($reply_code = 0, $reply_text = '', $method_sig = array(0, 0))
     {
+        $this->callbacks = array();
         if ($this->is_open === false || $this->connection === null) {
             $this->do_close();
 
@@ -164,11 +181,17 @@ class AMQPChannel extends AbstractChannel
             $method_sig[1]
         );
 
-        $this->send_method_frame(array($class_id, $method_id), $args);
+        try {
+            $this->send_method_frame(array($class_id, $method_id), $args);
+        } catch (\Exception $e) {
+            $this->do_close();
+
+            throw $e;
+        }
 
         return $this->wait(array(
             $this->waitHelper->get_wait('channel.close_ok')
-        ));
+        ), false, $this->channel_rpc_timeout );
     }
 
     /**
@@ -203,6 +226,7 @@ class AMQPChannel extends AbstractChannel
      * Enables/disables flow from peer
      *
      * @param $active
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function flow($active)
@@ -212,7 +236,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('channel.flow_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -244,6 +268,7 @@ class AMQPChannel extends AbstractChannel
 
     /**
      * @param string $out_of_band
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     protected function x_open($out_of_band = '')
@@ -257,7 +282,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('channel.open_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -279,6 +304,7 @@ class AMQPChannel extends AbstractChannel
      * @param bool $active
      * @param bool $write
      * @param bool $read
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function access_request(
@@ -302,7 +328,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('access.request_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -329,7 +355,8 @@ class AMQPChannel extends AbstractChannel
      * @param bool $internal
      * @param bool $nowait
      * @param array $arguments
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|null
      */
     public function exchange_declare(
@@ -365,7 +392,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('exchange.declare_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -382,7 +409,8 @@ class AMQPChannel extends AbstractChannel
      * @param string $exchange
      * @param bool $if_unused
      * @param bool $nowait
-     * @param null $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|null
      */
     public function exchange_delete(
@@ -407,7 +435,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('exchange.delete_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -427,7 +455,8 @@ class AMQPChannel extends AbstractChannel
      * @param string $routing_key
      * @param bool $nowait
      * @param array $arguments
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|null
      */
     public function exchange_bind(
@@ -457,7 +486,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('exchange.bind_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -476,7 +505,8 @@ class AMQPChannel extends AbstractChannel
      * @param string $routing_key
      * @param bool $nowait
      * @param array $arguments
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function exchange_unbind(
@@ -502,7 +532,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('exchange.unbind_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -522,7 +552,8 @@ class AMQPChannel extends AbstractChannel
      * @param string $routing_key
      * @param bool $nowait
      * @param array $arguments
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|null
      */
     public function queue_bind(
@@ -552,7 +583,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('queue.bind_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -571,7 +602,8 @@ class AMQPChannel extends AbstractChannel
      * @param string $exchange
      * @param string $routing_key
      * @param array $arguments
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function queue_unbind(
@@ -595,7 +627,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('queue.unbind_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -615,8 +647,9 @@ class AMQPChannel extends AbstractChannel
      * @param bool $exclusive
      * @param bool $auto_delete
      * @param bool $nowait
-     * @param array $arguments
-     * @param int $ticket
+     * @param array|\PhpAmqpLib\Wire\AMQPTable $arguments
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|null
      */
     public function queue_declare(
@@ -650,7 +683,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('queue.declare_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -675,7 +708,8 @@ class AMQPChannel extends AbstractChannel
      * @param bool $if_unused
      * @param bool $if_empty
      * @param bool $nowait
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|null
      */
     public function queue_delete($queue = '', $if_unused = false, $if_empty = false, $nowait = false, $ticket = null)
@@ -698,7 +732,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('queue.delete_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -717,7 +751,8 @@ class AMQPChannel extends AbstractChannel
      *
      * @param string $queue
      * @param bool $nowait
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|null
      */
     public function queue_purge($queue = '', $nowait = false, $ticket = null)
@@ -733,7 +768,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('queue.purge_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -869,6 +904,7 @@ class AMQPChannel extends AbstractChannel
      * @param string $consumer_tag
      * @param bool $nowait
      * @param bool $noreturn
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function basic_cancel($consumer_tag, $nowait = false, $noreturn = false)
@@ -883,7 +919,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('basic.cancel_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -910,6 +946,14 @@ class AMQPChannel extends AbstractChannel
     }
 
     /**
+     * @return bool
+     */
+    public function is_consuming()
+    {
+        return !empty($this->callbacks);
+    }
+
+    /**
      * Starts a queue consumer
      *
      * @param string $queue
@@ -921,6 +965,7 @@ class AMQPChannel extends AbstractChannel
      * @param callable|null $callback
      * @param int|null $ticket
      * @param array $arguments
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed|string
      */
     public function basic_consume(
@@ -943,7 +988,7 @@ class AMQPChannel extends AbstractChannel
             $no_ack,
             $exclusive,
             $nowait,
-            $this->protocolVersion == '0.9.1' ? $arguments : null
+            $this->protocolVersion === Wire\Constants091::VERSION ? $arguments : null
         );
 
         $this->send_method_frame(array($class_id, $method_id), $args);
@@ -951,7 +996,7 @@ class AMQPChannel extends AbstractChannel
         if (false === $nowait) {
             $consumer_tag = $this->wait(array(
                 $this->waitHelper->get_wait('basic.consume_ok')
-            ));
+            ), false, $this->channel_rpc_timeout);
         }
 
         $this->callbacks[$consumer_tag] = $callback;
@@ -1003,7 +1048,8 @@ class AMQPChannel extends AbstractChannel
      *
      * @param string $queue
      * @param bool $no_ack
-     * @param int $ticket
+     * @param int|null $ticket
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function basic_get($queue = '', $no_ack = false, $ticket = null)
@@ -1016,7 +1062,7 @@ class AMQPChannel extends AbstractChannel
         return $this->wait(array(
             $this->waitHelper->get_wait('basic.get_ok'),
             $this->waitHelper->get_wait('basic.get_empty')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -1102,7 +1148,7 @@ class AMQPChannel extends AbstractChannel
      * @param string $routing_key
      * @param bool $mandatory
      * @param bool $immediate
-     * @param int $ticket
+     * @param int|null $ticket
      */
     public function basic_publish(
         $msg,
@@ -1112,18 +1158,26 @@ class AMQPChannel extends AbstractChannel
         $immediate = false,
         $ticket = null
     ) {
+        if ($this->connection === null) {
+            throw new AMQPChannelClosedException('Channel connection is closed.');
+        }
         $pkt = new AMQPWriter();
         $pkt->write($this->pre_publish($exchange, $routing_key, $mandatory, $immediate, $ticket));
 
-        $this->connection->send_content(
-            $this->channel_id,
-            60,
-            0,
-            mb_strlen($msg->body, 'ASCII'),
-            $msg->serialize_properties(),
-            $msg->body,
-            $pkt
-        );
+        try {
+            $this->connection->send_content(
+                $this->channel_id,
+                60,
+                0,
+                mb_strlen($msg->body, 'ASCII'),
+                $msg->serialize_properties(),
+                $msg->body,
+                $pkt
+            );
+        } catch (AMQPConnectionClosedException $e) {
+            $this->do_close();
+            throw $e;
+        }
 
         if ($this->next_delivery_tag > 0) {
             $this->published_messages[$this->next_delivery_tag] = $msg;
@@ -1137,7 +1191,7 @@ class AMQPChannel extends AbstractChannel
      * @param string $routing_key
      * @param bool $mandatory
      * @param bool $immediate
-     * @param int $ticket
+     * @param int|null $ticket
      */
     public function batch_basic_publish(
         $msg,
@@ -1202,6 +1256,7 @@ class AMQPChannel extends AbstractChannel
      * @param int $prefetch_size
      * @param int $prefetch_count
      * @param bool $a_global
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function basic_qos($prefetch_size, $prefetch_count, $a_global)
@@ -1216,7 +1271,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('basic.qos_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -1231,6 +1286,7 @@ class AMQPChannel extends AbstractChannel
      * Redelivers unacknowledged messages
      *
      * @param bool $requeue
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function basic_recover($requeue = false)
@@ -1240,7 +1296,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('basic.recover_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -1293,6 +1349,7 @@ class AMQPChannel extends AbstractChannel
     }
 
     /**
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function tx_commit()
@@ -1301,7 +1358,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('tx.commit_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -1315,6 +1372,7 @@ class AMQPChannel extends AbstractChannel
     /**
      * Rollbacks the current transaction
      *
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function tx_rollback()
@@ -1323,7 +1381,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('tx.rollback_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -1340,6 +1398,7 @@ class AMQPChannel extends AbstractChannel
      * Beware that only non-transactional channels may be put into confirm mode and vice versa
      *
      * @param bool $nowait
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return null
      */
     public function confirm_select($nowait = false)
@@ -1352,7 +1411,9 @@ class AMQPChannel extends AbstractChannel
             return null;
         }
 
-        $this->wait(array($this->waitHelper->get_wait('confirm.select_ok')));
+        $this->wait(array(
+            $this->waitHelper->get_wait('confirm.select_ok')
+        ), false, $this->channel_rpc_timeout);
         $this->next_delivery_tag = 1;
     }
 
@@ -1369,7 +1430,9 @@ class AMQPChannel extends AbstractChannel
      * Waits for pending acks and nacks from the server.
      * If there are no pending acks, the method returns immediately
      *
-     * @param int $timeout Waits until $timeout value is reached
+     * @param int|float $timeout Waits until $timeout value is reached
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException
+     * @throws \PhpAmqpLib\Exception\AMQPRuntimeException
      */
     public function wait_for_pending_acks($timeout = 0)
     {
@@ -1377,20 +1440,19 @@ class AMQPChannel extends AbstractChannel
             $this->waitHelper->get_wait('basic.ack'),
             $this->waitHelper->get_wait('basic.nack'),
         );
-
-        while (count($this->published_messages) !== 0) {
-            if ($timeout > 0) {
-                $this->wait($functions, true, $timeout);
-            } else {
-                $this->wait($functions);
-            }
+        $timeout = max(0, $timeout);
+        while (!empty($this->published_messages)) {
+            $this->wait($functions, false, $timeout);
         }
     }
 
     /**
-     * Waits for pending acks, nacks and returns from the server. If there are no pending acks, the method returns immediately.
+     * Waits for pending acks, nacks and returns from the server.
+     * If there are no pending acks, the method returns immediately.
      *
-     * @param int $timeout If set to value > 0 the method will wait at most $timeout seconds for pending acks.
+     * @param int|float $timeout If set to value > 0 the method will wait at most $timeout seconds for pending acks.
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException
+     * @throws \PhpAmqpLib\Exception\AMQPRuntimeException
      */
     public function wait_for_pending_acks_returns($timeout = 0)
     {
@@ -1400,18 +1462,16 @@ class AMQPChannel extends AbstractChannel
             $this->waitHelper->get_wait('basic.return'),
         );
 
-        while (count($this->published_messages) !== 0) {
-            if ($timeout > 0) {
-                $this->wait($functions, true, $timeout);
-            } else {
-                $this->wait($functions);
-            }
+        $timeout = max(0, $timeout);
+        while (!empty($this->published_messages)) {
+            $this->wait($functions, false, $timeout);
         }
     }
 
     /**
      * Selects standard transaction mode
      *
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException if the specified operation timeout was exceeded
      * @return mixed
      */
     public function tx_select()
@@ -1420,7 +1480,7 @@ class AMQPChannel extends AbstractChannel
 
         return $this->wait(array(
             $this->waitHelper->get_wait('tx.select_ok')
-        ));
+        ), false, $this->channel_rpc_timeout);
     }
 
     /**
@@ -1445,7 +1505,7 @@ class AMQPChannel extends AbstractChannel
     }
 
     /**
-     * @param int $ticket
+     * @param int|null $ticket
      * @return int
      */
     protected function getTicket($ticket)

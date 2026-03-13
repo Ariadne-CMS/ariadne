@@ -9,8 +9,9 @@
      * file that was distributed with this source code.
      */
 
-    class TestHTTP extends PHPUnit_Framework_TestCase
+    class TestHTTP extends PHPUnit\Framework\TestCase
     {
+
         function testGet()
         {
             $res = \arc\http::get( 'http://www.ariadne-cms.org/', '?foo=bar' );
@@ -67,10 +68,10 @@ HTTP/1.1 200 OK
 Cache-Control: private,max-age=300,s-maxage=900
 EOF;
             $headers = \arc\http\headers::parse($headerString);
-            $cachetime = \arc\http\headers::parseCacheTime($headers);
+            $cachetime = \arc\http\headers::parseCacheTime($headers, true);
             $this->assertEquals(300, $cachetime);
 
-            $cachetime = \arc\http\headers::parseCacheTime($headers, false);
+            $cachetime = \arc\http\headers::parseCacheTime($headers);
             $this->assertEquals(0, $cachetime);
         }
 
@@ -86,4 +87,26 @@ EOF;
             $this->assertEquals(300, $cachetime);
         }
 
+        function testCacheMultiline()
+        {
+            $headerString = <<< EOF
+HTTP/1.1 200 OK
+Cache-Control: public,
+    max-age=300,s-maxage=900
+EOF;
+            $headers = \arc\http\headers::parse($headerString);
+            $cachetime = \arc\http\headers::parseCacheTime($headers);
+            $this->assertEquals(300, $cachetime);
+        }
+
+        function testAcceptContent()
+        {
+            $header = 'Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1, text/html;level=2;q=0.4, *'.'/'.'*;q=0.5';
+            $accept = \arc\http\headers::parseHeader($header);
+            $this->assertEquals('0.3', $accept[0]['q']);
+            $this->assertEquals('1',$accept[2]['level']);
+            $acceptable = ['text/plain','text/html'];
+            $result = \arc\http\headers::accept($header, $acceptable);
+            $this->assertEquals('text/html', $result);
+        }
     }

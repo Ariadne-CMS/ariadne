@@ -19,6 +19,29 @@ namespace arc;
 final class http
 {
     /**
+     * Returns a http\ServerRequest object with properties for most
+     * information in a server request, like url, method, body, etc.
+     * @return http\ServerRequest
+     */
+    public static function serverRequest()
+    {
+        $context = \arc\context::$context;
+        if (!isset($context->serverRequest)) {
+            $context->serverRequest = new http\ServerRequest();
+        }
+        return $context->serverRequest;
+    }
+
+    /**
+     * Returns a http\Htpasswd object with all users in the htpasswd file
+     * @param string $htpasswd a string in htpasswd format
+     * @return http\Htpasswd
+     */
+    public static function htpasswd($htpasswd) {
+        return new http\Htpasswd($htpasswd);
+    }
+
+    /**
      * Send a HTTP request with a specific method, GET, POST, etc.
      * @param null  $method The method to use, GET, POST, etc.
      * @param null  $url    The URL to request

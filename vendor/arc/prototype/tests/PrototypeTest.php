@@ -9,7 +9,7 @@
      * file that was distributed with this source code.
      */
 
-    class PrototypeTest extends PHPUnit_Framework_TestCase
+    class PrototypeTest extends PHPUnit\Framework\TestCase
     {
         function testPrototype()
         {
@@ -86,6 +86,17 @@
             $this->assertEquals( $foo->foo(), 'Bar');
         }
 
+        function testInvoke()
+        {
+            $foo = \arc\prototype::create([
+                '__invoke' => function () {
+                    return 'foobar';
+                }
+            ]);
+            $result = $foo();
+            $this->assertEquals('foobar', $result);
+        }
+
         function testToString()
         {
             $foo = \arc\prototype::create([
@@ -130,6 +141,7 @@
 
         function testFreeze()
         {
+            $this->expectException(\LogicException::class);
             $foo = \arc\prototype::create([]);
             \arc\prototype::freeze($foo);
             $foo->bar = 'bar';
@@ -138,6 +150,7 @@
 
         function testNotExtendable()
         {
+            $this->expectException(\LogicException::class);
             $foo = \arc\prototype::create([
                 'bar' => 'Bar'
             ]);
@@ -178,6 +191,7 @@
             ]);
             $bar = $foo->bar;
             $this->assertEquals('Bar', $bar);
+            $this->expectException(\LogicException::class);
             $foo->bar = 'Foo';
             $this->assertEquals('Bar', $bar);
         }
@@ -222,6 +236,24 @@
             $foo->bar = 'Foo';
             $result = $foo->bar;
             $this->assertEquals('FooFooBar', $result);            
+        }
+
+        function testIntrospection()
+        {
+            $foo = \arc\prototype::create( [
+                'foo' => 'bar',
+                'bar' => function () {
+                    return $this->foo;
+                }
+            ]);
+            $bar = \arc\prototype::extend( $foo, [
+                'foo' => 'rab'
+            ]);
+            $this->assertTrue(\arc\prototype::hasPrototype($bar, $foo));
+            $prototypes = \arc\prototype::getPrototypes($bar);
+            $this->assertEquals($prototypes[0], $foo);
+            $instances = \arc\prototype::getInstances($foo);
+            $this->assertEquals($instances[0], $bar);
         }
 
     }

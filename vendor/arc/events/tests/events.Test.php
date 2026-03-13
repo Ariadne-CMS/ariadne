@@ -10,7 +10,7 @@
      */
 
 
-    class TestEvents extends PHPUnit_Framework_TestCase
+    class TestEvents extends PHPUnit\Framework\TestCase
     {
         function testFireListenRemove()
         {

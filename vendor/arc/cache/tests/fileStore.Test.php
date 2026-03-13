@@ -9,7 +9,7 @@
      * file that was distributed with this source code.
      */
 
-    class TestFileStore extends PHPUnit_Framework_TestCase
+    class TestFileStore extends PHPUnit\Framework\TestCase
     {
         function filestoreHelper()
         {
@@ -23,12 +23,12 @@
             $this->assertEquals('test', $fs->getvar('test'));
         }
 
-        function testgeInfo()
+        function testgetInfo()
         {
             $fs = self::filestoreHelper();
             $fs->putVar('test','test');
             $info = $fs->getInfo('test');
-            $this->assertInternalType('array',$info);
+            $this->assertIsArray($info);
             foreach( ['mtime','ctime','size'] as $key) {
                 $this->assertArrayHasKey($key, $info);
             }

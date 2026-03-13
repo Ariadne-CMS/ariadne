@@ -34,7 +34,7 @@ class PHPQuery extends Query
      */
     protected function compile($values)
     {
-        return http_build_query( $values );
+        return http_build_query( $values, '', '&', PHP_QUERY_RFC3986 );
     }
 
     /**

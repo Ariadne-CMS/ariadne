@@ -29,20 +29,22 @@ class path
      *	@param string $root The root or topmost parent to return. Defaults to '/'.
      *	@return array Array of all parent paths, starting at the root and ending with the given path.
      *		Note: It includes the given path!
+     *		Note: when $path is not a child of $root, and empty array is returned
      */
     public static function parents($path, $root = '/')
     {
-        // returns all parents starting at the root, up to and including the path itself
-        $prevpath = '/';
-        $parents = self::reduce( $path, function ($result, $entry) use ($root, &$prevpath) {
-            $prevpath .= $entry . '/';
-            if (strpos( $prevpath, $root ) === 0 && $prevpath !== $root) {
-                // Add only parents below the root
-                $result[] = $prevpath;
-            }
+        $parents = [];
+        if (self::isChild($path, $root)) {
+            $subpath = substr($path, strlen($root));
+            // returns all parents starting at the root, up to and including the path itself
+            $prevpath = '';
+            $parents = self::reduce( $subpath, function ($result, $entry) use ($root, &$prevpath) {
+                $prevpath .= $entry . '/';
+                $result[] = $root . $prevpath;
 
-            return $result;
-        }, array( $root ) );
+                return $result;
+            }, [ $root ] );
+        }
 
         return $parents;
     }
@@ -60,46 +62,30 @@ class path
      *	@param string $cwd The current working directory. For relative paths this is the starting point.
      *	@return string The absolute path, without '..', '.' or '//' entries.
      */
-    public static function collapse($path, $cwd = '/')
+    public static function collapse($path, $cwd = null)
     {
         // removes '.', changes '//' to '/', changes '\\' to '/', calculates '..' up to '/'
-        if (!isset($path[0])) {
-            return $cwd;
+        if ( $path instanceof \arc\path\Value ) {
+            return (string)$path;
         }
-        if ($path[0] !== '/' && $path[0] !== '\\') {
+        if ( !isset($path[0]) ) {
+            return (string)$cwd;
+        }
+        if ( isset($cwd) && $cwd && $path[0] !== '/' && $path[0] !== '\\' ) {
             $path = $cwd . '/' . $path;
         }
-        if (isset( self::$collapseCache[$path] )) { // cache hit - so return that
-
-            return self::$collapseCache[$path];
+        if ( isset(self::$collapseCache[$path]) ) { // cache hit - so return that
+            return (string)self::$collapseCache[$path];
+        } else {
+            $value = new \arc\path\Value($path);
+            if ( isset(self::$collapseCache[(string)$value]) ) {
+                self::$collapseCache[$path] = self::$collapseCache[(string)$value];
+                return (string)self::$collapseCache[(string)$value];
+            } else {
+                self::$collapseCache[$path] = self::$collapseCache[(string) $value] = $value;
+                return (string)$value;
+            }
         }
-        $tempPath = str_replace('\\', '/', (string) $path);
-        $collapsedPath = self::reduce(
-            $tempPath,
-            function ($result, $entry) {
-                switch ($entry) {
-                    case '..':
-                        $result = dirname( $result );
-                        if (isset($result[1])) { // fast check to see if there is a dirname
-                            $result .= '/';
-                        }
-                        $result[0] = '/'; // php has a bug in dirname('/') -> returns a '\\' in windows
-                        break;
-                    case '.':
-                        break;
-                    default:
-                        $result .= $entry .'/';
-                        break;
-                }
-
-                return $result;
-            },
-            '/' // initial value, always start paths with a '/'
-        );
-        // store the collapsed path in the cache, improves performance by factor > 10.
-        self::$collapseCache[$path] = $collapsedPath;
-
-        return $collapsedPath;
     }
 
     /**
@@ -157,7 +143,7 @@ class path
             $parent .= '/';
         }
         $parent[0] = '/'; // dirname('/something/') returns '\' in windows.
-        if (strpos( $parent, $root ) !== 0) { // parent is outside of the root
+        if (strpos( (string)$parent, (string)$root ) !== 0) { // parent is outside of the root
 
             return null;
         }
@@ -181,7 +167,7 @@ class path
             $path = '/' . $path;
         }
 
-        return substr( $path, 1, strpos( $path, '/', 1) - 1 );
+        return substr( (string)$path, 1, strpos( (string)$path, '/', 1) - 1 );
     }
 
     /**
@@ -199,7 +185,7 @@ class path
             $path = '/' . $path;
         }
 
-        return substr( $path, strpos( $path, '/', 1) );
+        return substr( (string)$path, strpos( (string)$path, '/', 1) );
     }
 
     /**
@@ -235,7 +221,9 @@ class path
      */
     public static function isChild($path, $parent)
     {
-        return ( strpos( $path, $parent ) === 0 );
+        $parent = self::collapse($parent);
+        $path   = self::collapse($path, $parent);
+        return ( strpos( (string)$path, (string)$parent ) === 0 );
     }
 
     /**
@@ -245,14 +233,12 @@ class path
      */
     public static function isAbsolute($path)
     {
-        return $path[0] === '/';
+        return isset($path[0]) && $path[0] === '/';
     }
 
     protected static function getSplitPath($path)
     {
-        return array_filter( explode( '/', $path ), function ($entry) {
-            return ( isset( $entry ) && $entry !== '' );
-        });
+        return preg_split('|/|', $path, -1, PREG_SPLIT_NO_EMPTY);
     }
 
     /**
@@ -273,7 +259,7 @@ class path
         if (count($splitPath)) {
             $result = array_map( $callback, $splitPath );
 
-            return '/' . join( $result, '/' ) .'/';
+            return '/' . implode( '/', $result ) .'/';
         } else {
             return '/';
         }

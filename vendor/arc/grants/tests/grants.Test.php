@@ -10,7 +10,7 @@
      */
 
 
-    class TestGrants extends PHPUnit_Framework_TestCase
+    class TestGrants extends PHPUnit\Framework\TestCase
     {
         function testGrantsSetGet()
         {

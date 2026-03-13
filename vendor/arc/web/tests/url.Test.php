@@ -11,49 +11,70 @@
      */
 
 
-    class TestUrl extends PHPUnit_Framework_TestCase
+    class TestUrl extends PHPUnit\Framework\TestCase
     {
         function testSafeUrl()
         {
             $starturl = 'http://www.ariadne-cms.org/?frop=1';
             $url = \arc\url::safeUrl($starturl);
             $this->assertInstanceOf('\arc\url\Url', $url);
-            $this->assertEquals($url.'', $starturl);
+            $this->assertEquals( $starturl, (string)$url);
 
             $starturl = 'http://www.ariadne-cms.org/?frop=1&frop=2';
             $url = \arc\url::safeUrl($starturl);
             $url->fragment = 'test123';
-            $this->assertEquals($url.'', $starturl .'#test123');
-
-            $starturl = 'http://www.ariadne-cms.org/view.html?some+thing';
-            $url = \arc\url::safeUrl($starturl);
-            $this->assertInstanceOf('\arc\url\Url', $url);
-            $this->assertEquals($url.'', $starturl);
-            $this->assertEquals($url->query[0], 'some thing');
+            $this->assertEquals( $starturl .'#test123', (string)$url);
 
             $starturl = 'http://www.ariadne-cms.org/view.html?some%20thing';
             $url = \arc\url::safeUrl($starturl);
             $this->assertInstanceOf('\arc\url\Url', $url);
-            $this->assertEquals($url->query[0], 'some thing');
+            $this->assertEquals( $starturl, (string)$url);
+            $this->assertEquals( 'some thing', $url->query[0] );
+
+            $starturl = 'http://www.ariadne-cms.org/view.html?some%20thing';
+            $url = \arc\url::safeUrl($starturl);
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertEquals('some thing', $url->query[0] );
         }
 
-        function testparseUrl()
+        function testparseUrlQueryMultipleElements()
         {
-            $starturl = 'http://www.ariadne-cms.org/?frop=1';
+            $starturl = 'http://www.ariadne-cms.org/?test=test&test=frop';
             $url = \arc\url::url($starturl);
             $this->assertInstanceOf('\arc\url\Url', $url);
-            $this->assertEquals($url.'', $starturl);
+            $this->assertInstanceOf( '\arc\url\PHPQuery', $url->query );
+            $this->assertEquals( 'frop', ''.$url->query['test'], "PHP url parser, the second instance has precedence");
+            $this->assertNotEquals( $starturl, ''.$url );
+        }
 
-            $starturl = 'http://www.ariadne-cms.org/?frop=1&frml=2';
+        function testparseUrlQueryUnnumberedElements()
+        {
+            $starturl = 'http://www.ariadne-cms.org/?test[]=test&test[]=frop';
             $url = \arc\url::url($starturl);
-            $url->fragment = 'test123';
-            $this->assertEquals($url.'', $starturl .'#test123');
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertInstanceOf( '\arc\url\PHPQuery', $url->query );
+            $this->assertEquals( ['test', 'frop'], $url->query['test'], "Auto indexed array from query");
+            $this->assertEquals( (string)$url, (string) \arc\url::url($url) );
+        }
 
+        function testparseUrlQueryNumberedElements()
+        {
+            $starturl = 'http://www.ariadne-cms.org/?test[1]=test&test[0]=frop';
+            $url = \arc\url::url($starturl);
+            $this->assertInstanceOf('\arc\url\Url', $url);
+            $this->assertInstanceOf( '\arc\url\PHPQuery', $url->query );
+            $this->assertEquals( ['frop', 'test'], $url->query['test'], "manual index array from query");
+            $this->assertEquals( (string)$url, (string) \arc\url::url($url) );
+        }
+
+        function testparseUrlQueryWithEncodedSpace()
+        {
             $starturl = 'http://www.ariadne-cms.org/view.html?foo=some+thing';
             $url = \arc\url::url($starturl);
             $this->assertInstanceOf('\arc\url\Url', $url);
-            $this->assertEquals($url.'', $starturl);
-            $this->assertEquals($url->query['foo'], 'some thing');
+            $this->assertNotEquals( $starturl, (string)$url, '+ signed should be encoded with %20 conform rfc 3986' );
+            $this->assertEquals( $starturl, str_replace('%20','+',(string)$url ));
+            $this->assertEquals( 'some thing', $url->query['foo']);
 
         }
 
@@ -62,7 +83,7 @@
             $starturl = 'http://foo:bar@www.ariadne-cms.org:80/';
             $url = \arc\url::url($starturl);
             $this->assertInstanceOf('\arc\url\Url', $url);
-            $this->assertEquals($url.'', $starturl);
+            $this->assertEquals( $starturl, $url);
         }
 
         function testParseCommonURLS()
@@ -78,12 +99,69 @@
                 'urn:oasis:names:specification:docbook:dtd:xml:4.1.2',
                 '//google.com',
                 '../../relative/',
-                'file:///C:/'
+                'file:///C:/',
+                'http://www.ariadne-cms.org/~user/page'
             ];
-            foreach ($commonUrls as $sourceUrl) {
-                $url =\arc\url::safeUrl( $sourceUrl );
-                $this->assertEquals( ''.$url, $sourceUrl );
-            }
+            $parsedUrls = array_map( function($url) {
+                return (string)\arc\url::safeUrl($url);
+            }, $commonUrls);
+
+            $this->assertEquals( $commonUrls, $parsedUrls);
         }
+
+      function testEvilURL1()
+      {
+         $evilURL = 'http://127.0.0.1:11211:80/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->port, 80 );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->port, 80 );
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://127.0.0.1:80/', $safeURL);
+      }
+
+      function testEvilURL2()
+      {
+         $evilURL = 'http://google.com#@evil.com/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, 'google.com' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, 'google.com');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://google.com#%40evil.com%2F', $safeURL);
+      }
+
+      function testEvilURL3()
+      {
+         $evilURL = 'http://foo@evil.com:80@google.com/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, 'google.com' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, 'google.com');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://foo%40evil.com:80@google.com/', $safeURL);
+      }
+
+      function testEvilURL4()
+      {
+         $evilURL = 'http://foo@127.0.0.1 @google.com/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, 'google.com' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, 'google.com');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://foo%40127.0.0.1%20@google.com/', $safeURL);
+      }
+
+      function testEvilURL5()
+      {
+         $evilURL = 'http://127.0.0.1:11211#@google.com:80/';
+         $parsed = \arc\url::url($evilURL);
+         $this->assertEquals( $parsed->host, '127.0.0.1' );
+         $parsedSafe = \arc\url::safeUrl($evilURL);
+         $this->assertEquals( $parsedSafe->host, '127.0.0.1');
+         $safeURL = (string) $parsed;
+         $this->assertEquals( 'http://127.0.0.1:11211#%40google.com%3A80%2F', $safeURL);
+      }
 
     }

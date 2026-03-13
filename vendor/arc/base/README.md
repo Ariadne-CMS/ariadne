@@ -35,15 +35,14 @@ arc/base contains
 - [path](docs/path.md): parse paths, including relative paths, get parents, etc.
 - [tree](docs/tree.md): methods to parse filesystem-like trees and search and alter them
 - [hash](docs/hash.md): methods to ease common tasks with nested hashes
-- template: simple php based templates, with compile option
+- [template](docs/template.md): simple php based templates, with compile option
 - [context](docs/context.md): nested scope or stackable DI container
-- [lambda](docs/lambda.md): prototypical inheritance, ad hoc objects and partial function application
-- Proxy trait
+- [lambda](docs/lambda.md): partial function application
 
 Example code
 ------------
 
-###\arc\path
+### \arc\path
 
     \arc\path::collapse( '../', '/current/directory/' );
     // => '/current/'
@@ -70,7 +69,7 @@ Example code
     }, '\\' );
     // => '\\a\\b\\';
 
-###\arc\tree
+### \arc\tree
 
     $tree = \arc\tree::expand([
         '/' => 'Root',
@@ -93,7 +92,7 @@ Example code
     });
     // => [ '/foo/bar/' => 'Bar' ]
 
-###\arc\hash
+### \arc\hash
 
     \arc\hash::get( '/foo/bar/', [ 'foo' => [ 'bar' => 'baz' ] ] );
     // => 'baz'
@@ -113,31 +112,3 @@ Example code
         )
     );
     // => [ '/foo/bar/' => 'A bar', '/foo/baz/' => 'Not a bar' ]
-
-###\arc\lambda
-
-    $di = \arc\lambda::prototype([
-         'dsn'      => 'mysql:dbname=testdb;host=127.0.0.1';
-         'user'     => 'dbuser',
-         'password' => 'dbpassword',
-         'database' => \arc\lambda::singleton( function() {
-             // this generates a single PDO object once and then returns it for each subsequent call
-             return new PDO( $this->dsn, $this->user, $this->password );
-         } ),
-         'session'  => function() {
-             // this returns a new mySession object for each call
-             return new mySession();
-         }
-    ] );
-    // creates a prototype object to be used as dependency injection container
-
-    $diCookieSession = $di->extend( [
-         'session'  => function() {
-             return new myCookieSession();
-         }
-    ] );
-    // extends the $di object to change the session handling
-
-    $db = $di->database();
-    // returns a single instance of the database connection, defined as runtime singleton
-

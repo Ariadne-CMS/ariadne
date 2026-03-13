@@ -7,8 +7,8 @@ ARC: Ariadne Component Library
 [![Latest Unstable Version](https://poser.pugx.org/arc/cache/v/unstable.svg)](https://packagist.org/packages/arc/cache)
 [![License](https://poser.pugx.org/arc/cache/license.svg)](https://packagist.org/packages/arc/cache)
 
-A flexible component library for PHP 5.4+ 
------------------------------------------ 
+A flexible component library for PHP 
+------------------------------------ 
 
 The Ariadne Component Library is a spinoff from the Ariadne Web 
 Application Framework and Content Management System 
@@ -18,13 +18,17 @@ arc/cache contains
 ------------------
 - cache: a generic cache class and caching proxy object. See [docs/cache.md](docs/cache.md) for more information.
 
-TODO
-----
+Example code:
 
-- \arc\cache\Proxy: allow more control on retrieval:
-  get contents from cache even though cache may be stale
-  perhaps through an extra option in __construct
-  
-- \arc\cache\Proxy: stampede protection is skipped when the cacheStore wait() call fails,
-  it then just calls the target object and method. This may not be desirable, should
-  probably make this configurable.
+```php
+    $cachedObject = \arc\cache::proxy( new heavyClass() );
+    $result = $cachedObject->aHeavyCall();
+```
+
+Or a caching http client, using arc-web:
+
+```php
+    $cachedHTTPClient = \arc\cache::proxy( \arc\http::client(), function($params) {
+        return ( \arc\http\headers::parseCacheTime( $params['target']->responseHeaders ) );
+    });
+```

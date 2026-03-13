@@ -1,8 +1,8 @@
 {
 	"require": {
-		"php": ">=8.0",
+		"php": ">=8.3",
 		"mrclay/jsmin-php": "~2.3",
-		"arc/arc": "~2.0",
+		"arc/arc": "~3.0",
 		"mishal/iless": "~1",
 		"leafo/lessphp": "v0.4.0",
 		"erusev/parsedown": "~1",
@@ -18,5 +18,10 @@
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^9.2"
+	},
+	"config": {
+		"audit": {
+			"block-insecure": false
+		}
 	}
 }

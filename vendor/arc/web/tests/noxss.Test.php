@@ -10,7 +10,7 @@
      */
 
 
-    class TestNoXSS extends PHPUnit_Framework_TestCase
+    class TestNoXSS extends PHPUnit\Framework\TestCase
     {
         function testDetectPrevent()
         {
