@@ -3541,7 +3541,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		return implode( $arg1 );
 	}
 
-	public function _strftime($format, $date) {
+	public function _strftime($format, $date=null) {
 		// Define a mapping of strftime format characters to DateTime format characters
 		$formatMapping = [
 			'%a' => 'D',	// Abbreviated weekday name (Sun)
@@ -3569,6 +3569,9 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 
 		// Replace all strftime format characters with DateTime format characters
 		$dateTimeFormat = strtr($format, $formatMapping);
+		if ($date===null) {
+			$date = time();
+		}
 		return DateTimeImmutable::createFromFormat('U', $date)->format($dateTimeFormat);
 	}
 
