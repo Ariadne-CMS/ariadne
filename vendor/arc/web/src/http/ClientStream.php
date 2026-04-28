@@ -18,11 +18,34 @@ namespace arc\http;
  */
 class ClientStream implements Client
 {
-    private $options        = ['headers' => []];
+    public $whitelist = [
+        'http','https'
+    ];
 
+    private $options = [
+        'headers'          => [],
+        'timeout'          => 5,
+        'ignore_errors'    => true,
+        'protocol_version' => 1.1
+    ];
+
+    /**
+     */
     public $responseHeaders = null;
+    /**
+     */
     public $requestHeaders  = null;
-
+    /**
+     */
+    public $verbs           = [
+        'GET'     => true,
+        'POST'    => true,
+        'PUT'     => true,
+        'DELETE'  => true,
+        'OPTIONS' => true,
+        'HEAD'    => true,
+        'TRACE'   => true
+    ];
     /**
      * Merges header string and headers array to single string with all headers
      * @return string
@@ -56,17 +79,19 @@ class ClientStream implements Client
     public function request( $type, $url, $request = null, $options = [] )
     {
         $url = \arc\url::url( (string) $url);
+        if (!in_array($url->scheme, $this->whitelist)) {
+            throw new \arc\IllegalRequest("Scheme ".$url->scheme." is not allowed", \arc\exceptions::ILLEGAL_ARGUMENT);
+        }
         if ($type == 'GET' && $request) {
             $url->query->import( $request);
             $request = null;
         }
-
         $options = [
             'method'  => $type,
             'content' => $request
-        ] + $options;
+        ] + (array) $options;
 
-        $options['headers'] = $this->mergeHeaders(
+        $options['header'] = $this->mergeHeaders(
             \arc\hash::get('header', $this->options),
             \arc\hash::get('headers', $this->options),
             \arc\hash::get('header', $options),
@@ -78,7 +103,7 @@ class ClientStream implements Client
         $context = stream_context_create( [ 'http' => $options ] );
         $result  = @file_get_contents( (string) $url, false, $context );
         $this->responseHeaders = isset($http_response_header) ? $http_response_header : null; //magic php variable set by file_get_contents.
-        $this->requestHeaders  = isset($options['headers']) ? explode("\r\n",$options['headers']) : [];
+        $this->requestHeaders  = isset($options['header']) ? explode("\r\n",$options['header']) : [];
 
         return $result;
     }
@@ -91,52 +116,15 @@ class ClientStream implements Client
         $this->options = $options;
     }
 
-    /**
-     * Send a GET request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function get( $url, $request = null, $options = [] )
+    public function __call( $name, $args )
     {
-        return $this->request( 'GET', $url, $request, $options );
-    }
-
-    /**
-     * Send a POST request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function post( $url, $request = null, $options = [] )
-    {
-        return $this->request( 'POST', $url, $request, $options );
-    }
-
-    /**
-     * Send a PUT request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function put( $url, $request = null, $options = [] )
-    {
-        return $this->request( 'PUT', $url, $request, $options );
-    }
-
-    /**
-     * Send a DELETE request
-     * @param string         $url     The URL to request
-     * @param array|string   $request The query string
-     * @param array          $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function delete( $url, $request = null, $options = [] )
-    {
-        return $this->request( 'DELETE', $url, $request, $options );
+        $name = strtoupper($name);
+        if ( isset($this->verbs[$name]) && $this->verbs[$name] ) {
+            @list($url, $request, $options) = $args;
+            return $this->request( $name, $url, $request, $options );
+        } else {
+            throw new \arc\MethodNotFound("'$name' is not a valid http client method", \arc\exceptions::OBJECT_NOT_FOUND );
+        }
     }
 
 

@@ -585,7 +585,7 @@ if (!function_exists('phpseclib_mcrypt_list_algorithms')) {
         $mode = $td->getMode();
         switch ($mode) {
             case 'cfb':
-            case 'ofb';
+            case 'ofb':
                 return 'n' . strtoupper($mode);
             case 'cfb8':
             case 'ofb8':
@@ -793,7 +793,11 @@ if (!function_exists('phpseclib_mcrypt_list_algorithms')) {
     {
         $reflectionObject = new \ReflectionObject($td);
         $reflectionProperty = $reflectionObject->getProperty('key');
-        $reflectionProperty->setAccessible(true); // can be dropped in PHP 8.1.0+
+
+        if (PHP_VERSION_ID < 80100) {
+            $reflectionProperty->setAccessible(true);
+        }
+
         if (!strlen($reflectionProperty->getValue($td))) {
             trigger_error('mcrypt_generic_deinit(): Could not terminate encryption specifier', E_USER_WARNING);
             return false;

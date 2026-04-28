@@ -23,7 +23,7 @@ class template
         if (is_object($arguments) && !($arguments instanceof \ArrayObject )) {
             $arguments = get_object_vars( $arguments );
         }
-        $regex = '\{\$(' . join( array_keys( (array) $arguments ), '|' ) . ')\}';
+        $regex = '\{\$(' . implode( '|', array_keys( (array) $arguments ) ) . ')\}';
 
         return preg_replace_callback( '/'.$regex.'/', function ($matches) use ($arguments) {
             $argument = $arguments[ $matches[1] ];
@@ -52,18 +52,18 @@ class template
 
     public static function compile($template)
     {
-        $prefix = <<<'EOFUNC'
-            extract( $arguments, EXTR_REFS );
-            ob_start();
-EOFUNC;
-        $postfix = <<<'EOFUNC'
-            $result = ob_get_contents();
-            ob_end_clean();
+        $func = <<<EOF
+return function(\$arguments) { 
+    extract( \$arguments, EXTR_REFS );
+    ob_start();
+    ?>$template<?php
+    \$result = ob_get_contents();
+    ob_end_clean();
 
-            return $result;
-EOFUNC;
-
-        return create_function( '$arguments', $prefix .' ?'.'>'. $template .'<?'.'php ' . $postfix );
+    return \$result;
+};
+EOF;
+        return eval( $func );
     }
 
     public static function compileSubstitute($template)

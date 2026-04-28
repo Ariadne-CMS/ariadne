@@ -226,7 +226,7 @@ class tree
      * @param  \arc\tree\Node   $node
      * @param  callable         $callback
      * @param  mixed            $nodeName
-     * @throws UnknownErrorDefault
+     * @throws UnknownError
      */
     public static function sort($node, $callback, $nodeName = 'nodeName')
     {
@@ -239,7 +239,7 @@ class tree
                 $node->childNodes->uasort( $callback );
             };
         } else {
-            throw new \arc\UnknownErrorDefault( 'Cannot sort this tree - no suitable sort method found',
+            throw new \arc\UnknownError( 'Cannot sort this tree - no suitable sort method found',
                 \arc\exceptions::OBJECT_NOT_FOUND);
         }
         self::map( $node, $sort, '', $nodeName );

@@ -12,15 +12,16 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4",
-		"arc/base": "~2.1",
-		"arc/web": "~2.1",
-		"arc/xml": "~2.1",
-		"arc/html": "~1.0",
-		"arc/cache": "~1.2",
-		"arc/config": "~1.2",
-		"arc/grants": "~1.2",
-		"arc/events": "~1.2",
-		"arc/prototype": "~0.9"
+		"php": ">=7.2",
+		"arc/base": "~3.0",
+		"arc/web": "~3.0",
+		"arc/xml": "~3.0",
+		"arc/html": "~3.0",
+		"arc/cache": "~3.0",
+		"arc/config": "~3.0",
+		"arc/grants": "~3.0",
+		"arc/events": "~3.0",
+		"arc/prototype": "~3.0",
+		"arc/store": "~3.0"
 	}
 }

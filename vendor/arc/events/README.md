@@ -7,8 +7,8 @@ ARC: Ariadne Component Library
 [![Latest Unstable Version](https://poser.pugx.org/arc/events/v/unstable.svg)](https://packagist.org/packages/arc/events)
 [![License](https://poser.pugx.org/arc/events/license.svg)](https://packagist.org/packages/arc/events)
 
-A flexible component library for PHP 5.4+ 
------------------------------------------ 
+A flexible component library for PHP
+------------------------------------ 
 
 The Ariadne Component Library is a spinoff from the Ariadne Web 
 Application Framework and Content Management System 
@@ -16,4 +16,17 @@ Application Framework and Content Management System
 
 arc/events contains
 ------------------
-- events: W3C style event system, with a filesystem tree as the DOM
+- [events](docs/events.md): W3C style event system, with a filesystem tree as the DOM
+
+Example code:
+
+```php
+    \arc\events::cd('/foo/')->listen( 'onbeforesave', function( $event ) {
+        return $event->preventDefault(); // don't allow saves in /foo/
+    });
+
+    $eventData = \arc\events::cd('/foo/bar/')->fire( 'onbeforesave' );
+    if ( $eventData ) {
+         // save something, but alas - it has been prevented by a listener
+    }
+```

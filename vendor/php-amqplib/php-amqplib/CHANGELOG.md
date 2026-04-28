@@ -2,9 +2,40 @@
 
 All Notable changes to `php-amqplib` will be documented in this file
 
+## 2.10.1 - 2019-10-10
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/11?closed=1
+
+## 2.10.0 - 2019-08-09
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/10?closed=1)
+
+- Heartbeats are disabled by default. This reverts the following changes: [Issue](https://github.com/php-amqplib/php-amqplib/issues/563) / [PR](https://github.com/php-amqplib/php-amqplib/pull/648)
+
+## 2.9.2 - 2019-04-24
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/9?closed=1)
+
+## 2.9.1 - 2019-03-26
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/8?closed=1)
+
+## 2.9.0 - 2019-03-23
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/7?closed=1)
+
+- heartbeats are now enabled by default [Issue](https://github.com/php-amqplib/php-amqplib/issues/563) / [PR](https://github.com/php-amqplib/php-amqplib/pull/648)
+
+## 2.8.1 - 2018-11-13
+
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/6?closed=1)
+
+- `ext-sockets` is now required: [PR](https://github.com/php-amqplib/php-amqplib/pull/610)
+- Fix `errno=11 Resource temporarily unavailable` error: [Issue](https://github.com/php-amqplib/php-amqplib/issues/613) / [PR](https://github.com/php-amqplib/php-amqplib/pull/615)
+
 ## 2.8.0 - 2018-10-23
 
-[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/3)
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/3?closed=1)
 
 - Drop testing and support for PHP 5.3
 - Use specific exceptions instead of general `AMQPRuntimeException`: [PR](https://github.com/php-amqplib/php-amqplib/pull/600)
@@ -12,7 +43,7 @@ All Notable changes to `php-amqplib` will be documented in this file
 
 ## 2.7.2 - 2018-02-11
 
-[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/5)
+[GitHub Milestone](https://github.com/php-amqplib/php-amqplib/milestone/5?closed=1)
 
 - PHP `5.3` compatibility [PR](https://github.com/php-amqplib/php-amqplib/issues/539)
 

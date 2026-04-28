@@ -10,7 +10,7 @@
  */
 
 
-class TestHTML extends PHPUnit_Framework_TestCase
+class TestHTML extends PHPUnit\Framework\TestCase
 {
 
 	var $html1 = '<html>

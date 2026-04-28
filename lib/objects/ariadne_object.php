@@ -35,6 +35,8 @@
 
 debug("pobject: Load","object");
 
+$ARTemplateCache = [];
+
 #[\AllowDynamicProperties]
 abstract class ariadne_object extends baseObject { // ariadne_object class definition
 
@@ -1563,8 +1565,14 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
-	global $AR;
+	global $AR, $ARTemplateCache;;
+		$templateCacheName = $path.":".$arCallFunction.":".$arType.":".$reqnls;
+		if ((!isset($arSuperContext) || !count($arSuperContext)) && isset($ARTemplateCache[$templateCacheName])) {
+			return $ARTemplateCache[$templateCacheName];
+		}
+
 		$originalArType = $arType;
+		$ob = false; // cache
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = array_pad(explode('.',$arType,2),2,'');
 			$local = ($path === $this->path);
@@ -1586,6 +1594,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 					}, null);
 				}
 				if ( isset($template) && !isset($arSuperContext[$path.":".$arType.":".$arCallFunction])) {
+					$ARTemplateCache[$templateCacheName] = $template;
 					return $template;
 				}
 			}
@@ -1607,13 +1616,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				$arSuper=$AR->superClass[$arType];
 			}
 			$arType=$arSuper;
-			$ob = current(ar::get($path)->call('system.get.phtml'));
-			if ($ob && $ob->type==='pshortcut' && ($ob->data->path??null) && $ob->data->path!==$path && ar::exists($ob->data->path)) {
-				return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
-			}
 		}
-                $ob = current(ar::get($path)->call('system.get.phtml'));
-                if ($ob && $ob->type==='pshortcut' && $ob->data->path && $ob->data->path!==$path && ar::exists($ob->data->path)) {
+		// template is not found on the current object
+		// only search for templates on shortcut target if it isn't overridden on the shortcut itself
+		if ($ob===false) {
+	                $ob = current(ar::get($path)->call('system.get.phtml'));
+		}
+                if ($ob && $ob->type==='pshortcut' && ($ob->data->path??null) && $ob->data->path!==$path && ar::exists($ob->data->path)) {
                         return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
                 }
 		return null;

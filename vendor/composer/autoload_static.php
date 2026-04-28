@@ -4,10 +4,11 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988
+class ComposerStaticInit74d1ebaf54b1013adcbd1edd3224fcd2
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         'e40631d46120a9c38ea139981f8dab26' => __DIR__ . '/..' . '/ircmaxell/password-compat/lib/password.php',
@@ -16,25 +17,25 @@ class ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988
     );
 
     public static $prefixLengthsPsr4 = array (
-        'p' => 
+        'p' =>
         array (
             'phpseclib3\\' => 11,
         ),
-        'a' => 
+        'a' =>
         array (
             'arc\\' => 4,
         ),
-        'P' => 
+        'P' =>
         array (
             'PhpParser\\' => 10,
             'PhpAmqpLib\\' => 11,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
-        'F' => 
+        'F' =>
         array (
             'Firebase\\JWT\\' => 13,
         ),
-        'D' => 
+        'D' =>
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
@@ -42,87 +43,88 @@ class ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988
     );
 
     public static $prefixDirsPsr4 = array (
-        'phpseclib3\\' => 
+        'phpseclib3\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
         ),
-        'arc\\' => 
+        'arc\\' =>
         array (
-            0 => __DIR__ . '/..' . '/arc/base/src',
-            1 => __DIR__ . '/..' . '/arc/xml/src',
-            2 => __DIR__ . '/..' . '/arc/web/src',
-            3 => __DIR__ . '/..' . '/arc/prototype/src',
-            4 => __DIR__ . '/..' . '/arc/html/src',
-            5 => __DIR__ . '/..' . '/arc/grants/src',
-            6 => __DIR__ . '/..' . '/arc/events/src',
-            7 => __DIR__ . '/..' . '/arc/config/src',
-            8 => __DIR__ . '/..' . '/arc/cache/src',
+            0 => __DIR__ . '/..' . '/arc/web/src',
+            1 => __DIR__ . '/..' . '/arc/store/src',
+            2 => __DIR__ . '/..' . '/arc/html/src',
+            3 => __DIR__ . '/..' . '/arc/grants/src',
+            4 => __DIR__ . '/..' . '/arc/events/src',
+            5 => __DIR__ . '/..' . '/arc/config/src',
+            6 => __DIR__ . '/..' . '/arc/cache/src',
+            7 => __DIR__ . '/..' . '/arc/xml/src',
+            8 => __DIR__ . '/..' . '/arc/base/src',
+            9 => __DIR__ . '/..' . '/arc/prototype/src',
         ),
-        'PhpParser\\' => 
+        'PhpParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
-        'PhpAmqpLib\\' => 
+        'PhpAmqpLib\\' =>
         array (
             0 => __DIR__ . '/..' . '/php-amqplib/php-amqplib/PhpAmqpLib',
         ),
-        'ParagonIE\\ConstantTime\\' => 
+        'ParagonIE\\ConstantTime\\' =>
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
         ),
-        'Firebase\\JWT\\' => 
+        'Firebase\\JWT\\' =>
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
-        'Doctrine\\Instantiator\\' => 
+        'Doctrine\\Instantiator\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
-        'DeepCopy\\' => 
+        'DeepCopy\\' =>
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'V' => 
+        'V' =>
         array (
-            'VersionControl_SVN' => 
+            'VersionControl_SVN' =>
             array (
                 0 => __DIR__ . '/..' . '/pear/versioncontrol_svn',
             ),
         ),
-        'P' => 
+        'P' =>
         array (
-            'Parsedown' => 
+            'Parsedown' =>
             array (
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
         ),
-        'J' => 
+        'J' =>
         array (
-            'JSMin\\' => 
+            'JSMin\\' =>
             array (
                 0 => __DIR__ . '/..' . '/mrclay/jsmin-php/src',
             ),
         ),
-        'I' => 
+        'I' =>
         array (
-            'ILess' => 
+            'ILess' =>
             array (
                 0 => __DIR__ . '/..' . '/mishal/iless/lib',
             ),
         ),
-        'C' => 
+        'C' =>
         array (
-            'Console' => 
+            'Console' =>
             array (
                 0 => __DIR__ . '/..' . '/pear/console_getopt',
             ),
         ),
-        'A' => 
+        'A' =>
         array (
-            'Archive_Tar' => 
+            'Archive_Tar' =>
             array (
                 0 => __DIR__ . '/..' . '/pear/archive_tar',
             ),
@@ -778,10 +780,10 @@ class ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit3ed7a9e7bf7ce5a218ab2053e3239988::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit74d1ebaf54b1013adcbd1edd3224fcd2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit74d1ebaf54b1013adcbd1edd3224fcd2::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit74d1ebaf54b1013adcbd1edd3224fcd2::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit74d1ebaf54b1013adcbd1edd3224fcd2::$classMap;
 
         }, null, ClassLoader::class);
     }

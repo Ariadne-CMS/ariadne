@@ -2,7 +2,7 @@
 	$ARCurrent->nolangcheck=true;
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$templates_info = array();
-		if( is_array($this->data->config->pinp) ) {
+		if( is_array($this->data->config->pinp ?? null) ) {
 			foreach ($this->data->config->pinp as $type => $values) {
 				foreach ($values as $function => $templatelist) {
 					foreach ($templatelist as $language => $template) {

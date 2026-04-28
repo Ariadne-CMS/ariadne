@@ -14,59 +14,17 @@ namespace arc\http;
 /**
  * Interface Client
  * @package arc\http
+ * @method string get(string $url, array|string $request = [], array $options = [] )
+ * @method string post(string $url, array|string $request = [], array $options = [] )
+ * @method string put(string $url, array|string $request = [], array $options = [] )
+ * @method string delete(string $url, array|string $request = [], array $options = [] )
+ * @method string options(string $url, array|string $request = [], array $options = [] )
+ * @method string head(string $url, array|string $request = [], array $options = [] )
+ * @method string trace(string $url, array|string $request = [], array $options = [] )
+ * @method string request(string $method, string $url, array|string $request = [], array $options = [] )
+ * @method $this headers( string|array $headers ) 
  */
 interface Client
 {
-    /**
-    * Send a HTTP GET request and return the response
-    * @param string $url The URL to request
-    * @param mixed $request The query paramaters as a string or array
-    * @param array $options Any of the HTTP stream context options, e.g. extra headers.
-    * @return string
-    */
-    public function get( $url, $request = null, $options = [] );
 
-    /**
-     * Send a HTTP POST request and return the response
-     * @param string $url The URL to request
-     * @param mixed $request The query paramaters as a string or array
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function post( $url, $request = null, $options = [] );
-
-    /**
-     * Send a HTTP PUT request and return the response
-     * @param string $url The URL to request
-     * @param mixed $request The query paramaters as a string or array
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function put( $url, $request = null, $options = [] );
-
-    /**
-     * Send a HTTP DELETE request and return the response
-     * @param string $url The URL to request
-     * @param mixed $request The query paramaters as a string or array
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function delete( $url, $request = null, $options = [] );
-
-    /**
-     * Send a HTTP request and return the response
-     * @param string $method The method to use, GET, POST, etc.
-     * @param string $url The URL to request
-     * @param mixed $request The query paramaters as a string or array
-     * @param array $options Any of the HTTP stream context options, e.g. extra headers.
-     * @return string
-     */
-    public function request( $method, $url, $request = null, $options = [] );
-
-    /**
-     * Adds headers for subsequent requests
-     * @param mixed $headers The headers to add, either as a string or an array of headers.
-     * @return $this
-     */
-    public function headers( $headers );
 }

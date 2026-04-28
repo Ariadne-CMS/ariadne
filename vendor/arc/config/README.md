@@ -7,8 +7,8 @@ ARC: Ariadne Component Library
 [![Latest Unstable Version](https://poser.pugx.org/arc/config/v/unstable.svg)](https://packagist.org/packages/arc/config)
 [![License](https://poser.pugx.org/arc/config/license.svg)](https://packagist.org/packages/arc/config)
 
-A flexible component library for PHP 5.4+ 
------------------------------------------ 
+A flexible component library for PHP
+------------------------------------ 
 
 The Ariadne Component Library is a spinoff from the Ariadne Web 
 Application Framework and Content Management System 
@@ -16,4 +16,20 @@ Application Framework and Content Management System
 
 arc/config contains
 ------------------
-- config: a generic config class.
+- [config](docs/config.md): a generic config class that allows you to override configuration properties by path.
+
+Code example:
+
+```php
+	\arc\config::configure('color', 'blue');
+	$color = \arc\config::cd('/parent/child/')->acquire('color');
+	// => 'blue'
+```
+
+And:
+
+```php
+	\arc\config::cd('/parent/')->configure('color', 'red');
+	$color = \arc\config::cd('/parent/child/')->acquire('color');
+	// => 'red'
+```

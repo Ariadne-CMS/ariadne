@@ -12,29 +12,29 @@
 namespace arc\url;
 
 /**
- *	Url parses a URL string and returns an object with the seperate parts. You can change
- *	these and when cast to a string Url will regenerate the URL string and make sure it
- *	is valid.
+ * Url parses a URL string and returns an object with the seperate parts. You can change
+ * these and when cast to a string Url will regenerate the URL string and make sure it
+ * is valid.
  *
- *	Usage:
- *		$url = new \arc\url\Url( 'http://www.ariadne-cms.org/' );
- *		$url->path = '/docs/search/';
- *		$url->query = 'a=1&a=2';
- *		echo $url; // => 'http://www.ariadne-cms.org/docs/search/?a=1&a=2'
+ * Usage:
+ *    $url = new \arc\url\Url( 'http://www.ariadne-cms.org/' );
+ *    $url->path = '/docs/search/';
+ *    $url->query = 'a=1&a=2';
+ *    echo $url; // => 'http://www.ariadne-cms.org/docs/search/?a=1&a=2'
  * @property Query $query The query arguments
  */
 class Url
 {
     /**
-     *	All parts of the URL format, as returned by parse_url.
-     *	scheme://user:pass@host:port/path?query#fragment
+     * All parts of the URL format, as returned by parse_url.
+     * scheme://user:pass@host:port/path?query#fragment
      */
     public $scheme, $user, $pass, $host, $port, $path, $fragment;
     private $query;
 
     /**
-     *	@param string $url The URL to parse, the query part will remain a string.
-     *  @param QueryInterface queryObject Optional. An object that parses the query string.
+     * @param string $url The URL to parse, the query part will remain a string.
+     * @param QueryInterface queryObject Optional. An object that parses the query string.
      */
     public function __construct($url, $queryObject = null)
     {
@@ -42,6 +42,10 @@ class Url
             'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment'
         ];
         $this->importUrlComponents( parse_url( $url ), $componentList );
+        if ($this->scheme!='ldap' && strpos($this->host, ':')) {
+            // parse_url allows ':' in host when it occurs more than once\
+            $this->host = substr($this->host, 0, strpos($this->host, ':'));
+        }
         if ( isset( $queryObject ) ) {
             $this->query = $queryObject->import( $this->query );
         }
@@ -189,7 +193,7 @@ class Url
             $path = '/' . $path;
         }
         // urlencode encodes too many characters for the path part, so we decode them back to get readable urls.
-        return str_replace( [ '%3D', '%2B', '%3A', '%40' ], [ '=', '+', ':', '@' ], join( '/', array_map( 'urlencode', explode( '/', $path ) ) ) );
+        return str_replace( [ '%3D', '%2B', '%3A', '%40', '%7E'], [ '=', '+', ':', '@', '~'], $path = join( '/', array_map( 'urlencode', explode( '/', $path ) ) ) );
     }
 
     /**

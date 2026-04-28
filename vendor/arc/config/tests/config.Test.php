@@ -10,7 +10,7 @@
      */
 
 
-    class TestConfig extends PHPUnit_Framework_TestCase
+    class TestConfig extends PHPUnit\Framework\TestCase
     {
         function testContextLessConfigureAcquire()
         {

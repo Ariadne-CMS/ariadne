@@ -1002,18 +1002,26 @@ class pinp {
 				case ($in_special === "array_push"):
 				case ($in_special === "array_shift"):
 				case ($in_special === "array_unshift"):
-				case ($in_special === "openssl_sign"):
+				case ($in_special === "openssl_sign")://FIXME: only fix second param, not first
+				case ($in_special === "shuffle"):
+				case ($in_special === "array_splice"):
+				case ($in_special === "array_multisort"):
 					// only fix the first param (everything on the outersides)
 					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
 				break;
 				case ($in_special === "list"):
 				case ($in_special === "preg_match"):
+				case ($in_special === "preg_match_all"):
+				case ($in_special === "parse_str");
+				case ($in_special === "sscanf");
 					$parsed = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
 				break;
 				case ($in_special === "array_values"):
 					// use blank array instead of null
 					$parsed = preg_replace( "/null[)][!][!][!][!]/", "[])!!!!", $parsed );
 				break;
+				case ($in_special === "sort"):
+				case ($in_special === "rsort"):
 				case ($in_special === "krsort"):
 				case ($in_special === "ksort"):
 				case ($in_special === "asort"):

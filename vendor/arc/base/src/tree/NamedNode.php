@@ -15,7 +15,7 @@ namespace arc\tree;
  * @property \arc\tree\NamedNode $parentNode
  * @property string $nodeName
  */
-class NamedNode implements \Serializable
+class NamedNode extends Node implements \Serializable
 {
     public $nodeValue = null;
     private $parentNode = null;
@@ -161,8 +161,8 @@ class NamedNode implements \Serializable
     {
         if ( isset( $this->childNodes[ $nodeName ] )) {
             $child = $this->childNodes[ $nodeName ];
-            unset( $this->childNodes[ $nodeName ] );
             $child->parentNode = null;
+            unset( $this->childNodes[ $nodeName ] );
 
             return $child;
         } else {

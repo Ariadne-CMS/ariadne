@@ -29,7 +29,7 @@
         }
     }
 
-    class TestCache extends PHPUnit_Framework_TestCase
+    class TestCache extends PHPUnit\Framework\TestCase
     {
         function testCacheCreateGet()
         {

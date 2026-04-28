@@ -27,10 +27,8 @@ class Query extends \ArrayObject implements QueryInterface
     }
 
     public function __toString()
-    {
-        return str_replace( ['%7E', '%20'], ['~', '+'], // ~ and + are often unnecesarily encoded
-            $this->compile( (array) $this )
-        );
+	{
+        return $this->compile( (array) $this );
     }
 
     /**

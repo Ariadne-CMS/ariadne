@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
+class TestHTTP_clientStream extends PHPUnit\Framework\TestCase
 {
     function testCreateInstance()
     {
@@ -56,9 +56,9 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
 
     function testBroken()
     {
+        $this->expectException(\arc\IllegalRequest::class);
         $client = new \arc\http\ClientStream();
         $page = $client->get('afeafawfafweaga');
-        $this->assertFalse($page);
     }
 
     // second request should unset old data
@@ -68,7 +68,7 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
         $res1 = $client->get('https://www.ariadne-cms.org/');
         $resHeader1 = $client->responseHeaders;
 
-        $res2 = $client->get('invalid');
+        $res2 = $client->get('https://www.muze.nl/');
         $resHeader2 = $client->responseHeaders;
         $this->assertTrue($resHeader1 !== $resHeader2);
     }
@@ -78,7 +78,7 @@ class TestHTTP_clientStream extends PHPUnit_Framework_TestCase
         $client = new \arc\http\ClientStream();
 
         // do request, any will do
-        $result = $client->get('incorrect_url');
+        $result = $client->get('http://broken/');
 
         $this->assertFalse($result);
     }

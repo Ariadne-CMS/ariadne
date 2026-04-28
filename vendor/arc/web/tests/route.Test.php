@@ -10,7 +10,7 @@
 
      */
 
-    class TestRoute extends PHPUnit_Framework_TestCase
+    class TestRoute extends PHPUnit\Framework\TestCase
     {
         function testMatch() {
             $config = [

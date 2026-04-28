@@ -9,7 +9,7 @@
 		$svn    = $fstore->connect($this->id, $this->getdata("username"), $this->getdata("password"));
 
 		$svn_info = $fstore->svn_info($svn);
-		$stored_repository = rtrim($svn_info['url'], "/") . "/";
+		$stored_repository = rtrim($svn_info['url'] ?? '', "/") . "/";
 		$revision = $this->getdata('revision');
 		$repository = $this->getdata('repository');
 

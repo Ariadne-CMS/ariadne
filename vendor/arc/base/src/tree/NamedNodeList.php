@@ -16,7 +16,7 @@ namespace arc\tree;
  * of that node
  * @property \arc\tree\NamedNode $parentNode
  */
-class NamedNodelist extends \ArrayObject
+class NamedNodeList extends \ArrayObject
 {
     private $parentNode = null;
 
@@ -52,7 +52,9 @@ class NamedNodelist extends \ArrayObject
         if (!($value instanceof \arc\tree\NamedNode)) {
             $value = new \arc\tree\NamedNode( $name, $this->parentNode, null, $value );
         }
-        $value->parentNode = $this->parentNode;
+        if ($value->parentNode != $this->parentNode) {
+            $value->parentNode = $this->parentNode;
+        }
         if ($this->offsetExists( $name )) {
             $old = $this->offsetGet( $name );
             if ($old !== $value) {
@@ -66,7 +68,9 @@ class NamedNodelist extends \ArrayObject
     {
         if ($this->offsetExists( $name )) {
             $node = $this->offsetGet( $name );
-            $node->parentNode = null;
+            if ($node->parentNode) {
+                $node->parentNode = null;
+            }
         }
         parent::offsetUnset( $name );
     }

@@ -6,8 +6,8 @@ ARC: Ariadne Component Library
 [![Latest Unstable Version](https://poser.pugx.org/arc/arc/v/unstable.svg)](https://packagist.org/packages/arc/arc)
 [![License](https://poser.pugx.org/arc/arc/license.svg)](https://packagist.org/packages/arc/arc)
 
-A flexible component library for PHP 5.4+ 
------------------------------------------ 
+A flexible component library for PHP
+------------------------------------ 
 
 ARC is a set of components, build to be as simple as possible. Each component does just one thing and has a small and 
 simple API to learn. ARC uses static factory methods to simplify the API while using Dependency Injection. ARC is not a
@@ -52,4 +52,5 @@ and a HTTP client. Also includes a simple intrustion detection component to prev
 - [`arc/html`](https://github.com/Ariadne-CMS/arc-html/): Parsing and writing HTML also made simple.
 - [`arc/grants`](https://github.com/Ariadne-CMS/arc-grants/): Access control management in a tree structure, like a 
 filesystem.
-- [`arc/prototype`](https://github.com/Ariadne-CMS/arc-prototype/): Experimental prototypical inheritance, like javascript.
+- [`arc/prototype`](https://github.com/Ariadne-CMS/arc-prototype/): Prototypical inheritance for PHP, like javascript.
+- [`arc/store`](https://github.com/Ariadne-CMS/arc-store/): Structured (hierarchical) object store, with a simple query DSL.

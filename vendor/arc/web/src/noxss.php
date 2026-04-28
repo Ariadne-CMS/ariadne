@@ -31,12 +31,12 @@ final class noxss
     /**
      * @var (array) A container for inputs potentially containing XSS attacks
      */
-    public static $xss;
+    public static $xss = [];
 
     /**
      * @var (string) buffered output caught by prevent.
      */
-    public static $output;
+    public static $output = '';
 
     /**
      * @var (string) Regular expression that matches any input containing quotes, tag start or end delimiters or &.

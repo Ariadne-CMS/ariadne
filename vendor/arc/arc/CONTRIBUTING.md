@@ -7,7 +7,7 @@ Thanks for wanting to contribute. Here's a quick guide.
 * Make sure you have a [GitHub account](https://github.com/signup/free)
 * Submit a ticket for your issue, assuming one does not already exist.
   * Clearly describe the issue including steps to reproduce when it is a bug.
-  * We're using http://waffle.io/ariadne-cms/arc-base to keep track of issues, you can too.
+  * We're using https://github.com/ariadne-cms/arc-base/issues to keep track of issues, you can too.
 * Fork the repository on GitHub
 
 ## Making Changes

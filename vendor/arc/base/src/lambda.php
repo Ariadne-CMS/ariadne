@@ -58,18 +58,6 @@ function partial(callable $callable, $partialArgs, $defaultArgs=[] ) {
 class lambda
 {
     /**
-     * Creates a new Prototype object
-     * @param $properties
-     * @return lambda\Prototype
-     */
-    public static function prototype($properties)
-    {
-        // do not ever use a single prototype for every other lambda\Prototype
-        // it will allow evil stuff with state shared across everything
-        return new lambda\Prototype( $properties );
-    }
-
-    /**
      * Returns a function with the given arguments already entered or partially applied.
      * @param callable $callable The function to curry
      * @param array $partialArgs unlimited Optional arguments to curry the function with
@@ -124,4 +112,5 @@ class lambda
     {
         return singleton($f);
     }
+
 }
