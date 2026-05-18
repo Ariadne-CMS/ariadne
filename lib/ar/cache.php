@@ -249,7 +249,7 @@
 			}
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->get( $name );
 		}
 
@@ -295,7 +295,7 @@
 			return $result;
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			return $this->set( $name, $value );
 		}
 
