@@ -293,11 +293,11 @@
 			return parent::offsetUnset( $this->getOffset( $offset ) );
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->offsetGet($name);
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			$this->offsetSet($name, $value);
 		}
 	}

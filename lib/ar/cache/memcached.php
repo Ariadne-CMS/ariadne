@@ -60,11 +60,11 @@ class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStore
 		return ($res !== null);
 	}
 
-	public function putvar( $name, $value ) {
+	public static function putvar( $name, $value ) {
 		return $this->set( $name, $value );
 	}
 
-	public function getvar( $name ) {
+	public static function getvar( $name ) {
 		return $this->get( $name );
 	}
 

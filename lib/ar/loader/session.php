@@ -37,11 +37,11 @@
 			$this->session = $session;
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->session->get( $name );
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			return $this->session->put( $name, $value );
 		}
 

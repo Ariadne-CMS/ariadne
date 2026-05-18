@@ -45,11 +45,11 @@
 			return $this->getvar( $name );
 		}
 
-		public function putvar( $name, $value ) {
+		public static function putvar( $name, $value ) {
 			$this->values[ $name ] = $value;
 		}
 
-		public function getvar( $name ) {
+		public static function getvar( $name ) {
 			return $this->values[ $name ];
 		}
 

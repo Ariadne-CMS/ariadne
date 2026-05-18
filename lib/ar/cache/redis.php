@@ -86,11 +86,11 @@ class ar_cache_redisStore implements ar_cacheStoreInterface, arKeyValueStoreInte
 		return $this->redis->delete( $this->redis->keys($name .'*'));
 	}
 
-	public function putvar( $name, $value ) {
+	public static function putvar( $name, $value ) {
 		return $this->set( $name, $value );
 	}
 
-	public function getvar( $name ) {
+	public static function getvar( $name ) {
 		return $this->get( $name );
 	}
 }
