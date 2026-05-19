@@ -198,7 +198,7 @@
 		public function getIfFresh( $name, $freshness=0 );
 	}
 
-	class ar_cacheStore implements ar_cacheStoreInterface, arKeyValueStoreInterface {
+	class ar_cacheStore implements ar_cacheStoreInterface {
 
 		protected $basePath = '';
 		protected $timeout = 7200;
@@ -249,7 +249,7 @@
 			}
 		}
 
-		public static function getvar( $name ) {
+		public function getvar( $name ) {
 			return $this->get( $name );
 		}
 
@@ -295,7 +295,7 @@
 			return $result;
 		}
 
-		public static function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			return $this->set( $name, $value );
 		}
 

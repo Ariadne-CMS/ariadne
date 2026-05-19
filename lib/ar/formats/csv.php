@@ -190,7 +190,7 @@
 
 	}
 
-	class ar_formats_csvLine extends ArrayObject implements arKeyValueStoreInterface {
+	class ar_formats_csvLine extends ArrayObject {
 
 		protected $configuration = array(
 			"delimiter"     => ",",
@@ -293,11 +293,11 @@
 			return parent::offsetUnset( $this->getOffset( $offset ) );
 		}
 
-		public static function getvar( $name ) {
+		public function getvar( $name ) {
 			return $this->offsetGet($name);
 		}
 
-		public static function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			$this->offsetSet($name, $value);
 		}
 	}

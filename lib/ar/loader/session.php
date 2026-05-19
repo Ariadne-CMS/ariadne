@@ -29,7 +29,7 @@
 
 	}
 
-	class ar_loader_sessionStore extends arBase implements arKeyValueStoreInterface {
+	class ar_loader_sessionStore extends arBase {
 
 		protected $session = null;
 
@@ -37,11 +37,11 @@
 			$this->session = $session;
 		}
 
-		public static function getvar( $name ) {
+		public function getvar( $name ) {
 			return $this->session->get( $name );
 		}
 
-		public static function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			return $this->session->put( $name, $value );
 		}
 

@@ -2,7 +2,7 @@
 
 ar_pinp::allow('ar_cache_redisStore');
 
-class ar_cache_redisStore implements ar_cacheStoreInterface, arKeyValueStoreInterface {
+class ar_cache_redisStore implements ar_cacheStoreInterface {
 	private $timeout = 7200;
 	private $redis   = null;
 
@@ -86,11 +86,11 @@ class ar_cache_redisStore implements ar_cacheStoreInterface, arKeyValueStoreInte
 		return $this->redis->delete( $this->redis->keys($name .'*'));
 	}
 
-	public static function putvar( $name, $value ) {
+	public function putvar( $name, $value ) {
 		return $this->set( $name, $value );
 	}
 
-	public static function getvar( $name ) {
+	public function getvar( $name ) {
 		return $this->get( $name );
 	}
 }

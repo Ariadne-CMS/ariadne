@@ -4,7 +4,7 @@
 	ar_pinp::allow( 'ar_urlQuery' );
 	use \arc\url;
 
-	class ar_url extends arBase implements arKeyValueStoreInterface {
+	class ar_url extends arBase {
 
 		private $url, $query;
 
@@ -61,11 +61,11 @@
 			return (string)$url;
 		}
 
-		public static function getvar( $name ) {
+		public function getvar( $name ) {
 			return $this->query->$name;
 		}
 
-		public static function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
 
@@ -75,7 +75,7 @@
 
 	}
 
-	class ar_urlQuery implements arKeyValueStoreInterface, ArrayAccess /*, ArrayAcces, IteratorAggregate, .. */ {
+	class ar_urlQuery implements ArrayAccess /*, ArrayAcces, IteratorAggregate, .. */ {
 		private $query;
 
 		public function __construct( $query ) {
@@ -113,11 +113,11 @@
 			$this->query->{$name} = $value;
 		}
 
-		public static function getvar( $name ) {
+		public function getvar( $name ) {
 			return $this->query->{$name};
 		}
 
-		public static function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
 

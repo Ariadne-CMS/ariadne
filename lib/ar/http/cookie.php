@@ -10,7 +10,7 @@
 
 	}
 
-	class ar_http_cookieStore extends arBase implements arKeyValueStoreInterface {
+	class ar_http_cookieStore extends arBase {
 
 		public $values = array();
 		protected $name = 'ARUserCookie';
@@ -45,11 +45,11 @@
 			return $this->getvar( $name );
 		}
 
-		public static function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			$this->values[ $name ] = $value;
 		}
 
-		public static function getvar( $name ) {
+		public function getvar( $name ) {
 			return $this->values[ $name ];
 		}
 

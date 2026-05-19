@@ -2,7 +2,7 @@
 
 ar_pinp::allow('ar_cache_memcachedStore');
 
-class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStoreInterface {
+class ar_cache_memcachedStore implements ar_cacheStoreInterface {
 	private $timeout = 7200;
 	private $mc = null;
 	public function __construct( $servers, $timeout = 7200,  $prefix = 'AR_') {
@@ -60,11 +60,11 @@ class ar_cache_memcachedStore implements ar_cacheStoreInterface, arKeyValueStore
 		return ($res !== null);
 	}
 
-	public static function putvar( $name, $value ) {
+	public function putvar( $name, $value ) {
 		return $this->set( $name, $value );
 	}
 
-	public static function getvar( $name ) {
+	public function getvar( $name ) {
 		return $this->get( $name );
 	}
 
