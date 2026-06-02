@@ -894,7 +894,7 @@ class mysqlstore extends store{
 					$result=false;
 				}
 			}
-			if ($needunlocking) {
+			if ($needunlocking ?? null) {
 				$query_string = "unlock tables";
 				$this->store_run_query($query_string);
 			}
