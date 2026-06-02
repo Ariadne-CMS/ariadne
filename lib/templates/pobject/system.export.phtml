@@ -171,7 +171,7 @@
 							}
 							$impObject->store = $ARCurrent->importStore;
 							$impObject->call("system.import.phtml", $arCallArgs);
-							if ($impObject->error) {
+							if (isset($impObject->error)) {
 								display("\n	ERROR (".$impObject->error.")\n");
 								$exclude_list[] = $impObject->path;
 								return;

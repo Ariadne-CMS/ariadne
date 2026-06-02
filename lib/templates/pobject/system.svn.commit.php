@@ -80,7 +80,7 @@
 					foreach ($values as $function => $templatelist) {
 						foreach ($templatelist as $language => $node) {
 							$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
-							if ($svn_status[$pinp_filename] == 'D') {
+							if (isset($svn_status[$pinp_filename]) && $svn_status[$pinp_filename] == 'D') {
 								$fileinfo[$pinp_filename] = array();
 								if (isset($this->data->config->deleted_templates[$type][$function][$language])) {
 									unset($this->data->config->deleted_templates[$type][$function][$language]);
