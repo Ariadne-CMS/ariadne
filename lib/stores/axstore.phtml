@@ -624,7 +624,7 @@ class axstore {
 
 	function load_properties($object) {
 		if ($object) {
-			$properties = $this->objects[$object]->properties;
+			$properties = $this->objects[$object]->properties ?? null;
 			if (is_array($properties)) {
 				foreach ($properties as $name => $values) {
 					if ($value=$this->load_property($name, $values)) {
