@@ -999,22 +999,23 @@ class pinp {
 				case ($in_special === "unset"):
 				case ($in_special === "isset"):
 				case ($in_special === "array_pop"):
-				case ($in_special === "array_push"):
 				case ($in_special === "array_shift"):
 				case ($in_special === "array_unshift"):
 				case ($in_special === "openssl_sign")://FIXME: only fix second param, not first
 				case ($in_special === "shuffle"):
 				case ($in_special === "array_splice"):
 				case ($in_special === "array_multisort"):
+				case ($in_special === "array_push"):
 					// only fix the first param (everything on the outersides)
-					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
+					// MISLEADING: all params are 'fixed'
+					$parsed = preg_replace( '/\((\$(.+?|\n)+) +\?\? null\)!!!!/', '\1', $parsed);
 				break;
 				case ($in_special === "list"):
 				case ($in_special === "preg_match"):
 				case ($in_special === "preg_match_all"):
 				case ($in_special === "parse_str");
 				case ($in_special === "sscanf");
-					$parsed = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
+					$parsed = preg_replace( "/\\(\\$(.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
 				break;
 				case ($in_special === "array_values"):
 					// use blank array instead of null
@@ -1026,14 +1027,14 @@ class pinp {
 				case ($in_special === "ksort"):
 				case ($in_special === "asort"):
 				case ($in_special === "arsort"):
-					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
+					$parsed = preg_replace( "/\\((\\$(.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
 					$parsed = preg_replace( "/null[)][!][!][!][!]/", "[])!!!!", $parsed );
 				break;
 				case ($in_special === "usort"):
                                         $parsed = preg_replace( "/[?][?][ ]null[)][!][!][!][!]/", ")!!!!", $parsed );
 				break;
 				case ($in_special === "compileFuncCallArgs"):
-					$parsed = preg_replace( "/\\(((.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!][ \t\n]*\$/", "\\1", $parsed );
+					$parsed = preg_replace( "/\\((\\$(.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
 				break;
 			}
 
