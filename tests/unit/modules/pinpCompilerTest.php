@@ -400,6 +400,41 @@ EOD;
 		$this->assertEquals(['frml','frml'], $ret);
 	}
 
-		
+	public function testArrayPush() {
+		$template = <<<'EOD'
+<pinp>
+	$foo = array();
+	$bar = 'bar';
+	array_push($foo, array('bar' => 'bar'.$bar));
+	return $foo;
+</pinp>
+EOD;
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		echo $res;
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertEquals([['bar' => 'barbar']], $ret);
+	}		
+
+	public function testArrayPushNormal() {
+		$template = <<<'EOD'
+<pinp>
+	$foo = array();
+	$bar = 'bar';
+	array_push(
+		$foo, 
+		$bar
+	);
+	return $foo;
+</pinp>
+EOD;
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		echo $res;
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new ar_core_pinpSandbox($this); ?'.'>'.$res);
+		$this->assertEquals(['bar'], $ret);
+	}		
 
 }
