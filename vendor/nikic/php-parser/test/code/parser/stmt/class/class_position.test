@@ -1,0 +1,94 @@
+Class position
+-----
+<?php
+
+if (1);
+
+class C {}
+-----
+!!positions
+array(
+    0: Stmt_If[3:1 - 3:7](
+        cond: Scalar_LNumber[3:5 - 3:5](
+            value: 1
+        )
+        stmts: array(
+        )
+        elseifs: array(
+        )
+        else: null
+    )
+    1: Stmt_Class[5:1 - 5:10](
+        attrGroups: array(
+        )
+        flags: 0
+        name: Identifier[5:7 - 5:7](
+            name: C
+        )
+        extends: null
+        implements: array(
+        )
+        stmts: array(
+        )
+    )
+)
+-----
+<?php
+
+if (1);
+
+trait X {}
+-----
+!!positions
+array(
+    0: Stmt_If[3:1 - 3:7](
+        cond: Scalar_LNumber[3:5 - 3:5](
+            value: 1
+        )
+        stmts: array(
+        )
+        elseifs: array(
+        )
+        else: null
+    )
+    1: Stmt_Trait[5:1 - 5:10](
+        attrGroups: array(
+        )
+        name: Identifier[5:7 - 5:7](
+            name: X
+        )
+        stmts: array(
+        )
+    )
+)
+-----
+<?php
+
+if (1);
+
+interface X {}
+-----
+!!positions
+array(
+    0: Stmt_If[3:1 - 3:7](
+        cond: Scalar_LNumber[3:5 - 3:5](
+            value: 1
+        )
+        stmts: array(
+        )
+        elseifs: array(
+        )
+        else: null
+    )
+    1: Stmt_Interface[5:1 - 5:14](
+        attrGroups: array(
+        )
+        name: Identifier[5:11 - 5:11](
+            name: X
+        )
+        extends: array(
+        )
+        stmts: array(
+        )
+    )
+)

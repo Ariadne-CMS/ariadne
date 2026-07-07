@@ -18,7 +18,7 @@ namespace arc\path;
  * another path Value, \arc\path::collapse will return that value. This means that you can use a ===
  * to compare path Value objects, as long as you only use \arc\path::collapse() to create them.
  */
-final class Value implements \JsonSerializable, \Serializable, \ArrayAccess, \Countable {
+final class Value implements \JsonSerializable, \ArrayAccess, \Countable {
 
     private $path = '';
 
@@ -50,42 +50,42 @@ final class Value implements \JsonSerializable, \Serializable, \ArrayAccess, \Co
 		return $this->path;
 	}
 
-	public function jsonSerialize()
+	public function jsonSerialize():mixed
 	{
 		return $this->path;
 	}
 
-	public function serialize()
+	public function __serialize()
 	{
 		return serialize($this->path);
 	}
 
-	public function unserialize($data)
+	public function __unserialize($data)
 	{
 		$this->path = unserialize($data);
 	}
 
-	public function count()
+	public function count():int
 	{
 		return count($this->path);
 	}
 
-	public function offsetGet($offset)
+	public function offsetGet($offset):mixed
 	{
 		return $this->path[$offset];
 	}
 
-	public function offsetSet($offset, $char)
+	public function offsetSet($offset, $char):void
 	{
 		throw new \LogicException('\arc\path\Value is immutable, cast it to a string to change it');
 	}
 
-	public function offsetUnset($offset)
+	public function offsetUnset($offset):void
 	{
 		throw new \LogicException('\arc\path\Value is immutable, cast it to a string to change it');
 	}
 
-	public function offsetExists($offset)
+	public function offsetExists($offset):bool
 	{
 		return isset($this->path[$offset]);
 	}

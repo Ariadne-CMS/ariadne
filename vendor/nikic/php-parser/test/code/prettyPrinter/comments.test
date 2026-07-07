@@ -1,0 +1,91 @@
+Comments
+-----
+<?php
+
+function justForIndentation()
+{
+    // Some text
+    # Some text
+    /* Some text */
+    /** Some text */
+    /**
+     * Some text.
+     * Some more text.
+     */
+    /*
+     * Some text.
+     * Some more text.
+     */
+    /*
+        Some text.
+        Some more text.
+    */
+    /* Some text.
+       More text. */
+    /* Some text.
+       More text.
+       Even more text. */
+    $foo;
+}
+-----
+function justForIndentation()
+{
+    // Some text
+    # Some text
+    /* Some text */
+    /** Some text */
+    /**
+     * Some text.
+     * Some more text.
+     */
+    /*
+     * Some text.
+     * Some more text.
+     */
+    /*
+        Some text.
+        Some more text.
+    */
+    /* Some text.
+       More text. */
+    /* Some text.
+       More text.
+       Even more text. */
+    $foo;
+}
+-----
+<?php
+
+function test()
+{
+    // empty
+}
+-----
+function test()
+{
+    // empty
+}
+-----
+<?php
+
+function noDuplicateComment()
+{
+    if (true):
+        // TEST 1
+    elseif (true):
+        // TEST 2
+    else:
+        // TEST 3
+    endif;
+}
+-----
+function noDuplicateComment()
+{
+    if (true) {
+        // TEST 1
+    } elseif (true) {
+        // TEST 2
+    } else {
+        // TEST 3
+    }
+}
