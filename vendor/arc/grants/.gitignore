@@ -1,6 +1,0 @@
-tests/composer.lock
-tests/vendor/
-*~
-/vendor/
-/*.lock
-/.idea/*

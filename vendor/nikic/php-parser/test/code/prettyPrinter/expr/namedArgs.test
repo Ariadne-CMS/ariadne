@@ -1,9 +1,0 @@
-Named arguments
------
-<?php
-foo(a: $b, c: $d);
-bar(class: 0);
------
-!!php7
-foo(a: $b, c: $d);
-bar(class: 0);
