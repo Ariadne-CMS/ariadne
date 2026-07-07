@@ -1,5 +1,6 @@
 {
 	"require": {
+		"ext-zip": "*",
 		"php": ">=8.3",
 		"mrclay/jsmin-php": "~2.3",
 		"arc/arc": "~3.0",

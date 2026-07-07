@@ -1,0 +1,27 @@
+{
+	"name": "arc/arc",
+	"type": "library",
+	"description": "Ariadne Component Library: All Components",
+	"keywords": ["component","components"],
+	"homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Auke van Slooten",
+			"email": "auke@muze.nl"
+		}
+	],
+	"require": {
+		"php": ">=7.2",
+		"arc/base": "~3.0",
+		"arc/web": "~3.0",
+		"arc/xml": "~3.0",
+		"arc/html": "~3.0",
+		"arc/cache": "~3.0",
+		"arc/config": "~3.0",
+		"arc/grants": "~3.0",
+		"arc/events": "~3.0",
+		"arc/prototype": "~3.0",
+		"arc/store": "~3.0"
+	}
+}

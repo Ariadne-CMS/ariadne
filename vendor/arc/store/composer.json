@@ -1,0 +1,30 @@
+{
+	"name": "arc/store",
+	"type": "library",
+	"description": "Schema free JSON store with search, hierarchical structure and indexes",
+	"keywords": ["component","components"],
+	"homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Auke van Slooten",
+			"email": "auke@muze.nl"
+		}
+	],
+	"require": {
+		"php": ">=7",
+		"arc/base": ">=3.0.3",
+		"arc/prototype": ">=3.0.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"arc\\": "src/"
+		}
+	},
+	"require-dev": {
+		"phpunit/phpunit": "7|8|~9"
+	},
+	"scripts": {
+		"test": "phpunit --testdox"
+	}
+}
