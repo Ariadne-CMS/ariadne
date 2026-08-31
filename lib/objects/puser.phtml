@@ -97,17 +97,17 @@ class puser extends pdir { // puser class definition
 				}
 				$this->GrantsCache[$this->path][$path]["grants"]=$result;
 				$this->GrantsCache[$this->path][$path]["setby"]=$newpath;
-			} 
-			if (is_array($result)) {
-				// do not reset this result list so that the while() loop
-				// will get skipped if a previous call has been working on
-				// it.
-				while (list($grant, $modifiers)=each($result)) {
-					if (is_array($modifiers)) {
-						while (list($modifier, $value)=each($modifiers)) { 
-							if (!($value & $mask)) {
-								unset($result[$grant][$modifier]);
-							}
+				}
+				if (is_array($result)) {
+					// do not reset this result list so that the while() loop
+					// will get skipped if a previous call has been working on
+					// it.
+					foreach ($result as $grant => $modifiers) {
+						if (is_array($modifiers)) {
+							foreach ($modifiers as $modifier => $value) {
+								if (!($value & $mask)) {
+									unset($result[$grant][$modifier]);
+								}
 						}
 						if (!@count($result[$grant])) {
 							unset($result[$grant]);

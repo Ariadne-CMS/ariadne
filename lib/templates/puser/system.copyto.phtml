@@ -71,7 +71,7 @@
 
 					if (is_array($groups)) {
 						reset($groups);
-						while (list($path) = each($groups)) {
+						foreach ($groups as $path => $_) {
 							$this->get($path,
 									"system.set.user.phtml",
 									array(

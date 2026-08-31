@@ -60,7 +60,7 @@
 			$this->data->scaffold = $this->getdata('scaffold','none');
 			reset($AR->nls->list);
 			$count=0;
-			while (list($key, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $key => $value) {
 
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					if ( !isset( $this->data->$key ) ) {
@@ -140,7 +140,7 @@
 				$this->call('system.copy.scaffold.php',array('scaffold' => $this->data->scaffold));
 			}
 			reset($AR->nls->list);
-			while (list($key, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $key => $value) {
 				if ($page=$this->getdata("page",$key)) {
 					$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));
 				}

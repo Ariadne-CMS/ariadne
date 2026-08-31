@@ -10,7 +10,7 @@
 					if (is_array($granttype)) {
 						$grantstring .= " $grant ( ";
 						reset($granttype);
-						while (list($class, $modifierId)=each($granttype)) {
+						foreach ($granttype as $class => $modifierId) {
 							if( $granttype > 0 ) {
 								switch($modifierId) {
 									case ARGRANTLOCAL:
@@ -198,7 +198,7 @@
 			global $AR, $ARCurrent;
 			if ($grantslist[$type] && is_array($grantslist[$type])) {
 				ksort($grantslist[$type]);
-				while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
+				foreach ($grantslist[$type] as $id => $grants) { // path was login en is weer login
 					$grant_string = "";
 					if (!$ARCurrent->donelist[$type][$id]) {
 						$ARCurrent->donelist[$type][$id]=true;

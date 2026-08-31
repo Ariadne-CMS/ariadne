@@ -22,23 +22,27 @@
 				$this->path,
 				$this->type,
 				$this->data,
-				$this->properties,
-				$this->vtype,
-				$this->priority);
+			$this->properties,
+			$this->vtype,
+			$this->priority);
+			if ($this->store->error) {
 				$this->error = $this->store->error;
+			} else {
+				unset($this->error);
+			}
 
-				if ($ARCurrent->AXAction == "import") {
-					if (is_array($this->data->groups??null)) {
-						reset($this->data->groups);
-						while (list($key, $val)=each($this->data->groups)) {
-							if ($this->exists($key)) {
-								$target = $key.substr($this->path, strlen($this->parent));
-								display("		adding (".$this->path." to $target)\n");
-								$this->get($key, "system.set.user.phtml", array("path" => $this->path, "action" => "add"));
-							}
+			if ($ARCurrent->AXAction == "import") {
+				if (is_array($this->data->groups??null)) {
+					reset($this->data->groups);
+					foreach ($this->data->groups as $key => $val) {
+						if ($this->exists($key)) {
+							$target = $key.substr($this->path, strlen($this->parent));
+							display("		adding (".$this->path." to $target)\n");
+							$this->get($key, "system.set.user.phtml", array("path" => $this->path, "action" => "add"));
 						}
 					}
 				}
+			}
 		}
 	}
 ?>

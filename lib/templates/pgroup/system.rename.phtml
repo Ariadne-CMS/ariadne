@@ -19,7 +19,7 @@
 				$users = $this->ls(".", "system.get.path.phtml");
 				if (is_array($users)) {
 					reset($users);
-					while (list($key, $path) = each($users)) {
+					foreach ($users as $key => $path) {
 						$this->get(	$path,
 									"system.set.group.phtml",
 									array(
@@ -32,7 +32,7 @@
 				$oldlogin = $this->data->login;
 				if (is_array($this->data->config->usergrants)) {
 					// remove usergrants
-					while (list($key, $value)=each($this->data->config->usergrants)) {
+					foreach ($this->data->config->usergrants as $key => $value) {
 						$this->get($key, "system.save.grants.phtml", array("delete" => true, "id" => $this->data->login, "type" => $this->type));
 					}
 				}
@@ -45,7 +45,7 @@
 					// re-add users
 					if (is_array($users)) {
 						reset($users);
-						while (list($key, $path) = each($users)) {
+						foreach ($users as $key => $path) {
 							$this->get(	$path,
 										"system.set.group.phtml",
 										array(
@@ -60,14 +60,14 @@
 					// update grants
 					if (is_array($oldusergrants)) {
 						reset($oldusergrants);
-						while (list($path, $grants) = each($oldusergrants)) {
+						foreach ($oldusergrants as $path => $grants) {
 							$grantstring = "";
 							reset($grants);
-							while (list($grant, $granttype) = each($grants)) {
+							foreach ($grants as $grant => $granttype) {
 								if (is_array($granttype)) {
 									$grantstring .= " $grant ( ";
 									reset($granttype);
-									while (list($class, $modifierId)=each($granttype)) {
+									foreach ($granttype as $class => $modifierId) {
 										switch($modifierId) {
 											case ARGRANTLOCAL:
 												$modifier = "=";

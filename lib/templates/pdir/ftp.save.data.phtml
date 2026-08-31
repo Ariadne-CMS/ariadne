@@ -5,7 +5,7 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) {
 
 		reset($ARConfig->nls->list);
-		while (list($key, $val)=each($ARConfig->nls->list)) {
+		foreach ($ARConfig->nls->list as $key => $val) {
 			$arCallArgs[$key]["name"]=$this->getdata("arNewFilename");
 		}
 

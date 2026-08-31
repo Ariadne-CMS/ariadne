@@ -179,7 +179,11 @@
 			$context = stream_context_create( array( 'http' => $options ) );
 			$result = @file_get_contents( (string) $url, false, $context );
 
-			$this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
+			if (function_exists('http_get_last_response_headers')) {
+				$this->responseHeaders = http_get_last_response_headers();
+			} else {
+				$this->responseHeaders = $http_response_header ?? array();
+			}
 			if (is_array($this->responseHeaders) && isset($this->responseHeaders[0])) {
 				$statusLine = explode(" ", $this->responseHeaders[0]);
 				$this->statusCode = $statusLine[1];

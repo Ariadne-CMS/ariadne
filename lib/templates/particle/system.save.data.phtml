@@ -75,7 +75,7 @@
 					$this->data->nls->default=$ARConfig->nls->default;
 					reset($AR->nls->list);
 					$count=0;
-					while (list($key, $value)=each($AR->nls->list)) {
+					foreach ($AR->nls->list as $key => $value) {
 						// for each language in the list, get the nls specific data
 						if ($name=$this->getdata("name",$key)) { 
 							// the name is the minimum requirement for an nls aware	object.
@@ -190,7 +190,7 @@
 
 				$i=0;
 				reset($displays);
-				while ((list($display,$val)=each($displays))) {
+				foreach ($displays as $display => $val) {
 					$scenario_start=$this->data->startdate+$this->data->starttime +($val["start"]*3600*24);
 					$scenario_end=$this->data->enddate+$this->data->endtime+($val["end"]*3600*24);
 					$this->data->sstart[$display]=$scenario_start;
@@ -210,7 +210,7 @@
 						$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold));
 					}
 					reset($AR->nls->list);
-					while (list($key, $value)=each($AR->nls->list)) {
+					foreach ($AR->nls->list as $key => $value) {
 						/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
 						global $ARBeenHere;
 						$ARBeenHere=array();

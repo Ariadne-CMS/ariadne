@@ -2,10 +2,10 @@
   if ($this->CheckSilent("read") && $this->CheckConfig()) {
 	if (is_array($this->data->nls->list)) {
 		reset($this->data->nls->list);
-		while (list($nlskey, $nlsvalue) = each($this->data->nls->list)) {
+		foreach ($this->data->nls->list as $nlskey => $nlsvalue) {
 			if (is_object($this->data->$nlskey)) {
 				reset($this->data->$nlskey);
-				while (list($key, $value) = each($this->data->$nlskey)) {
+				foreach ($this->data->$nlskey as $key => $value) {
 					$result[$nlskey][$key] = (string)$value;
 				}
 			}

@@ -4,7 +4,7 @@
 	if ($this->CheckLogin('edit') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		if (is_array($changes)) {
 //			echo "<pre>"; print_r($changes); echo "</pre>";
-			while (list($path, $fields)=each($changes)) {
+			foreach ($changes as $path => $fields) {
 				$this->get($path, 'system.save.current.phtml', $fields);
 			}
 		}

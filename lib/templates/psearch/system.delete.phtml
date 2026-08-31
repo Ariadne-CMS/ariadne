@@ -9,7 +9,7 @@
 				$authconfig = $userConfig['authentication'];
 
 				if (isset($data->config->grants) && is_array($data->config->grants)) {
-					while (list($login, $grants)=each($data->config->grants)) {
+					foreach ($data->config->grants as $login => $grants) {
 						$criteria["login"]["value"]["="]=$login;
 						foreach ($authconfig['userdirs'] as $userdirpath) {
 							$this->find($userdirpath, $criteria, "system.update.grants.phtml", array(

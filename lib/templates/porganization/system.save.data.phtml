@@ -65,7 +65,7 @@
 			$this->data->scaffold = $this->getdata('scaffold','none');
 			reset($AR->nls->list);
 			$count=0;
-			while (list($key, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $key => $value) {
 
 				if ($this->getdata("name", $key)) {
 					if ( !isset( $this->data->$key ) ) {

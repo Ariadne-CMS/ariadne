@@ -36,7 +36,7 @@
 			reset($AR->nls->list);
 			$count=0;
 			$nlslist = array();
-			while (list($key, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $key => $value) {
 				if ($this->getdata("name",$key)) {
 					array_push($nlslist, $key);
 					if ( !isset( $this->data->$key ) ) {

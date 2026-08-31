@@ -237,17 +237,22 @@ class axstore {
 				if (is_array($criteria)) {
 					$found=0;
 					$this->_load_object_data($node->object);
-					@reset($criteria);
-					while (list($criteria_table_key, $criteria_table)=each($criteria)) {
-						while (list($criteria_table_prop_key, $criteria_table_prop)=each($criteria_table)) {
-								while (list($criteria_condition , $criteria_condition_value)=each($criteria_table_prop)) {
+					foreach ($criteria as $criteria_table_key => $criteria_table) {
+						if (!is_array($criteria_table)) {
+							continue;
+						}
+						foreach ($criteria_table as $criteria_table_prop_key => $criteria_table_prop) {
+							if (!is_array($criteria_table_prop)) {
+								continue;
+							}
+							foreach ($criteria_table_prop as $criteria_condition => $criteria_condition_value) {
 									switch ($criteria_condition) {
 										case '=':
-											@reset($node->object->properties);
 											$found=false;
-											while (!$found && isset($node->object->properties[$criteria_table_key]) && (list(,$propvalue)=@each($node->object->properties[$criteria_table_key]))) {
+											foreach (($node->object->properties[$criteria_table_key] ?? array()) as $propvalue) {
 												if ($criteria_condition_value==$propvalue[$criteria_table_prop_key]) {
 													$found=true;
+													break;
 												}
 											}
 										break;
@@ -263,8 +268,10 @@ class axstore {
 			}
 		}
 		if (is_array($node->children??null)) {
-			reset($node->children);
-			while (($limit>0 || $limit < 0) && (list(,$child)=each($node->children))) {
+			foreach ($node->children as $child) {
+				if (!($limit > 0 || $limit < 0)) {
+					break;
+				}
 				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
 			}
 		}
@@ -288,8 +295,10 @@ class axstore {
 		if ($this->nodes[$path]) {
 			$id=$this->nodes[$path]->object->id;
 			$refcount=$this->objects[$id]->refcount;
-			@reset($this->nodes);
-			while ($refcount && (list($path, )=each($this->nodes))) {
+			foreach ($this->nodes as $path => $node) {
+				if (!$refcount) {
+					break;
+				}
 				if ($this->nodes[$path]->object->id==$id) {
 					$refcount--;
 					$result[]=$path;
@@ -303,8 +312,10 @@ class axstore {
 		if ($this->nodes[$path]) {
 			$id=$this->nodes[$path]->object->id;
 			$refcount=$this->objects[$id]->refcount;
-			@reset($this->nodes);
-			while ($refcount && (list($path, )=each($this->nodes))) {
+			foreach (array_keys($this->nodes) as $path) {
+				if (!$refcount) {
+					break;
+				}
 				if ($this->nodes[$path]->object->id==$id) {
 					$parent=$this->make_path($path,"..");
 					// delete parent's reference
@@ -405,8 +416,7 @@ class axstore {
 	function call($template, $args, $objects, $options = array() ) {
 		$result = Array();
 		if (is_array($objects["list"]??null)) {
-			reset($objects["list"]);
-			while (list(,$node)=each($objects["list"])) {
+			foreach ($objects["list"] as $node) {
 				$this->_load_object_data($node->object);
 				$node->object->init($this, $node->path, $node->object->data);
 				$node->object->runtime_ref = $node->object->runtime_ref ?? 0;
@@ -435,8 +445,7 @@ class axstore {
 
 	function info($objects, $options = []) {
 		if (is_array($objects["list"])) {
-			reset($objects["list"]);
-			while (list(,$node)=each($objects["list"])) {
+			foreach ($objects["list"] as $node) {
 				$this->_load_object_data($node->object);
 				$parent=$this->make_path($node->path, "..");
 				if ($parent=="/") {
@@ -601,7 +610,7 @@ class axstore {
 	// the object
 	function _set_object_properties($properties, $object) {
 		if (is_array($properties) && ($object)) {
-			while (list($property, $property_set)=each($properties)) {
+			foreach ($properties as $property => $property_set) {
 				unset($object->properties[$property]);
 				if (is_array($property_set)) {
 					foreach ($property_set as $prop_index => $record) {
@@ -642,8 +651,10 @@ class axstore {
 		if ($object) {
 			$currProp=0;
 			foreach ($property as $prop_key => $prop) {
-				reset($prop);
-				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
+				if (!is_array($prop)) {
+					continue;
+				}
+				foreach ($prop as $name => $val) {
 					if (($name!="object")&&(!is_int($name))) {
 						if (is_string($val)) {
 							if ($this->header["version"] < 1.5) {
@@ -763,12 +774,12 @@ class axstore {
 		if ($this->writeable) {
 			@ksort($this->nodes);
 			@reset($this->nodes);
-			if ($fp_objects=fopen($this->tempdir."/tempobjects.data", "wb")) {
-				if ($fp_nodes=fopen($this->tempdir."/nodes.data", "wb")) {
-					while (list($path, $node)=each($this->nodes)) {
-						if (!($node->object->written_to_file ?? null)) {
-							fseek($node->object->storage->fp, $node->object->storage->offset);
-							$temp_line=fgets($node->object->storage->fp);
+				if ($fp_objects=fopen($this->tempdir."/tempobjects.data", "wb")) {
+					if ($fp_nodes=fopen($this->tempdir."/nodes.data", "wb")) {
+						foreach ($this->nodes as $path => $node) {
+							if (!($node->object->written_to_file ?? null)) {
+								fseek($node->object->storage->fp, $node->object->storage->offset);
+								$temp_line=fgets($node->object->storage->fp);
 							$object_line=trim($temp_line);
 							$object_line.="\n";
 

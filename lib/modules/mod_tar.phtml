@@ -59,7 +59,7 @@
 				$srcdir.='/';
 			}
 			if (is_array($filelist)) {
-				while (list($key, $file) = each($filelist)) {
+				foreach ($filelist as $key => $file) {
 					$filelist[$key] = $srcdir.$file;
 				}
 			}
@@ -92,7 +92,7 @@
 						 );
 
 			$command = $this->tar_untar;
-			while (list($key, $val) = each($arguments)) {
+			foreach ($arguments as $key => $val) {
 				$command = str_replace($key, $val, $command);
 			}
 
@@ -132,7 +132,7 @@
 
 			$command = $this->tar_tar;
 
-			while (list($key, $val) = each($arguments)) {
+			foreach ($arguments as $key => $val) {
 				$command = str_replace($key, $val, $command);
 			}
 

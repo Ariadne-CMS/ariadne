@@ -54,7 +54,7 @@
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
-			while (list($key, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $key => $value) {
 				if ($summary=$this->getdata("summary", $key)) {
 					if ( !isset( $this->data->$key ) ) {
 						$newnlsdata=new baseObject;

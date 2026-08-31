@@ -122,10 +122,12 @@
 
 		if (!$this->error) {
 			$this->arIsNewObject=false;
-			reset($AR->nls->list);
 			$count=0;
 
-			while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
+			foreach ($AR->nls->list as $key => $value) {
+				if ($this->error) {
+					break;
+				}
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 
 					$urlList = $this->getData('urlList', $key);

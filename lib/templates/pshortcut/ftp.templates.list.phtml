@@ -7,11 +7,11 @@
 		}
 
 		if (($data->config->pinp) && is_array($data->config->pinp)) {
-			while (list($type, $values)=each($data->config->pinp)) {
-				while (list($function, $templatelist)=each($values)) {
+			foreach ($data->config->pinp as $type => $values) {
+				foreach ($values as $function => $templatelist) {
 							ksort($templatelist);
 							reset($templatelist);
-							while (list($language, $template)=each($templatelist)) {
+							foreach ($templatelist as $language => $template) {
 									$entry["filename"]="$type.$function.$language";
 									$entry["date"]=$this->lastchanged;
 									$entry["type"]="template";

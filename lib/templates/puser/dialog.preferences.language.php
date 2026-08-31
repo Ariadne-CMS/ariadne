@@ -19,7 +19,7 @@
 					$language=$ARCurrent->default;
 				}
 				reset($AR->nls->list);
-				while (list($key, $value)=each($AR->nls->list)) {
+				foreach ($AR->nls->list as $key => $value) {
 					if ($key==$language) {
 						echo "<option value=\"$key\" selected>$value</option>\n";
 					} else {
@@ -35,7 +35,7 @@
 			$languagelist=$this->getdata("languagelist","none");
 			reset($AR->nls->list);
 			asort($AR->nls->list);
-			while (list($arnls, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $arnls => $value) {
 				if ($languagelist[$arnls] ?? null) {
 					$image=$AR->dir->images.'nls/small/'.$arnls.'.gif';
 					$selected=" checked";

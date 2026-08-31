@@ -6,7 +6,7 @@
 				// no errors: copy files
 				$files=$this->store->get_filestore("files");
 				if ($list=$files->ls($this->id)) {
-					while (list($key, $file)=each($list)) {
+					foreach ($list as $key => $file) {
 						$files->copy($this->id, $file, $ARCurrent->newid, $file);
 					}
 				}

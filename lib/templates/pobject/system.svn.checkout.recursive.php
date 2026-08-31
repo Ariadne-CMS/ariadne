@@ -29,8 +29,8 @@
 				if ($repoPath) {
 					$repo_subpath = substr($this->path, strlen($repoPath));
 				} else {
-					// This is also the first loop!
-					ob_start(); // FIXME: the SVN library is being a cunt and echoing when it shouldn't. So we catch it and destroy it.
+					// The SVN library may echo certificate output; discard it.
+					ob_start();
 					$fstore->svn_accept_cert($svn, $repository);
 					ob_end_clean();
 					$repo_subpath = '';
@@ -55,11 +55,12 @@
 				}
 
 				if (ar_error::isError($result)) {
-					echo "ERROR: ".$result."\n"; flush();
+					echo "ERROR: ".$result."\n";
 					flush();
+					return;
 				}
 
-				if ($result) {
+				if ($result && is_array($result)) {
 					$last = array_pop($result);
 					$templates = array();
 					foreach ($result as $item) {
@@ -85,7 +86,7 @@
 						)
 					);
 				} else {
-					echo "<span class='svn_error'>Error: " . $svn['instance']->add->_stack->_errors[0]['params']['errstr'] . "</span>\n\n";
+					echo "<span class='svn_error'>Error: " . ($svn['instance']->add->_stack->_errors[0]['params']['errstr'] ?? 'SVN checkout did not return a result') . "</span>\n\n";
 				}
 				// Run checkout on the existing subdirs.
 				$arCallArgs['repoPath'] = $this->path;
@@ -96,7 +97,10 @@
 
 				// Create the dirs and checkout them if needed.
 				$dirlist = $fstore->svn_list($svn, $revision);
-				if ($dirlist) {
+				if (ar_error::isError($dirlist)) {
+					echo "ERROR: ".$dirlist."\n";
+					flush();
+				} else if ($dirlist) {
 					$arCallArgs['dirlist'] = $dirlist;
 					$arCallArgs['svn'] = $svn;
 					$arCallArgs['fstore'] = $fstore;

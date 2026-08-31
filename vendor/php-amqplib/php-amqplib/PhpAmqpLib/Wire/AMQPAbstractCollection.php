@@ -1,21 +1,19 @@
 <?php
-
 namespace PhpAmqpLib\Wire;
 
 use PhpAmqpLib\Channel\AbstractChannel;
 use PhpAmqpLib\Exception;
-use PhpAmqpLib\Wire;
+
 
 /**
  * Iterator implemented for transparent integration with AMQPWriter::write_[array|table]()
  */
 abstract class AMQPAbstractCollection implements \Iterator
 {
+
     //protocol defines available field types and their corresponding symbols
-    /** @deprecated */
-    const PROTOCOL_080 = Wire\Constants080::VERSION;
-    /** @deprecated  */
-    const PROTOCOL_091 = Wire\Constants091::VERSION;
+    const PROTOCOL_080 = AbstractChannel::PROTOCOL_080;
+    const PROTOCOL_091 = AbstractChannel::PROTOCOL_091;
     const PROTOCOL_RBT = 'rabbit'; //pseudo proto
 
     //Abstract data types
@@ -44,7 +42,7 @@ abstract class AMQPAbstractCollection implements \Iterator
     /**
      * @var string
      */
-    private static $_protocol;
+    private static $_protocol = null;
 
     /*
      * Field types messy mess http://www.rabbitmq.com/amqp-0-9-1-errata.html#section_3
@@ -226,7 +224,7 @@ abstract class AMQPAbstractCollection implements \Iterator
         } elseif (is_array($val)) {
             //AMQP specs says "Field names MUST start with a letter, '$' or '#'"
             //so beware, some servers may raise an exception with 503 code in cases when indexed array is encoded as table
-            if (self::isProtocol(Wire\Constants080::VERSION)) {
+            if (self::isProtocol(self::PROTOCOL_080)) {
                 //080 doesn't support arrays, forcing table
                 $val = array(self::T_TABLE, new AMQPTable($val));
             } elseif (empty($val) || (array_keys($val) === range(0, count($val) - 1))) {
@@ -291,7 +289,7 @@ abstract class AMQPAbstractCollection implements \Iterator
     {
         if (($val >= -2147483648) && ($val <= 2147483647)) {
             $ev = array(self::T_INT_LONG, $val);
-        } elseif (self::isProtocol(Wire\Constants080::VERSION)) {
+        } elseif (self::isProtocol(self::PROTOCOL_080)) {
             //080 doesn't support longlong
             $ev = $this->encodeString((string) $val);
         } else {
@@ -318,7 +316,7 @@ abstract class AMQPAbstractCollection implements \Iterator
     {
         $val = (bool) $val;
 
-        return self::isProtocol(Wire\Constants080::VERSION) ? array(self::T_INT_LONG, (int) $val) : array(self::T_BOOL, $val);
+        return self::isProtocol(self::PROTOCOL_080) ? array(self::T_INT_LONG, (int) $val) : array(self::T_BOOL, $val);
     }
 
     /**
@@ -326,7 +324,7 @@ abstract class AMQPAbstractCollection implements \Iterator
      */
     protected function encodeVoid()
     {
-        return self::isProtocol(Wire\Constants080::VERSION) ? $this->encodeString('') : array(self::T_VOID, null);
+        return self::isProtocol(self::PROTOCOL_080) ? $this->encodeString('') : array(self::T_VOID, null);
     }
 
     /**
@@ -358,10 +356,10 @@ abstract class AMQPAbstractCollection implements \Iterator
     final public static function getSupportedDataTypes()
     {
         switch ($proto = self::getProtocol()) {
-            case Wire\Constants080::VERSION:
+            case self::PROTOCOL_080:
                 $types = self::$_types_080;
                 break;
-            case Wire\Constants091::VERSION:
+            case self::PROTOCOL_091:
                 $types = self::$_types_091;
                 break;
             case self::PROTOCOL_RBT:

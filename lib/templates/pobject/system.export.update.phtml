@@ -24,7 +24,7 @@
 	}
 	if (is_array($ARCurrent->options["nls"])) {
 		reset($ARCurrent->options["nls"]);
-		while (list($nls) = each($ARCurrent->options["nls"])) {
+		foreach ($ARCurrent->options["nls"] as $nls => $_) {
 			if ($newObject->data->nls->list[$nls]) {
 				$this->data->nls->list[$nls] = $newObject->data->nls->list[$nls];
 				$this->data->$nls = $newObject->data->$nls;

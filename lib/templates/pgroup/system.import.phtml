@@ -14,10 +14,14 @@
 				$this->path,
 				$this->type,
 				$this->data,
-				$this->properties,
-				$this->vtype,
-				$this->priority);
+			$this->properties,
+			$this->vtype,
+			$this->priority);
+			if ($this->store->error) {
 				$this->error = $this->store->error;
+			} else {
+				unset($this->error);
+			}
 		}
 	}
 ?>

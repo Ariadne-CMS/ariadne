@@ -4,3 +4,5 @@ bin/createsymlinks.ini
 *~
 DEADJOE
 files/*
+.env
+.phpunit.result.cache

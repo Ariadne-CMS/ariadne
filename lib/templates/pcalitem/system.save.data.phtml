@@ -80,7 +80,7 @@
 			$this->data->scaffold = $this->getdata('scaffold','none');
 			reset($AR->nls->list);
 			$count=0;
-			while (list($key, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $key => $value) {
 
 				if ($name=$this->getdata("name",$key)) { 
 					if ( !isset( $this->data->$key ) ) {
@@ -221,7 +221,7 @@
 								$time_arr=getdate($time);
 								$wday=$time_arr["wday"];
 								reset($this->data->repeat_on);
-								while (list($day,$checked)=each($this->data->repeat_on)) {
+								foreach ($this->data->repeat_on as $day => $checked) {
 									if ($checked) {
 										$diff=($day-$wday) * $days;
 										if (($time+$diff)>=$this->data->starttime) { // $diff can be negative

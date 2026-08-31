@@ -120,10 +120,10 @@
 							} else if (preg_match('/(\{(.*)\})/',$firstgrant,$regs)) {
 								$cloned="";
 								if ($this->data->config->grants[$type][$regs[2]]) {
-									while (list($key, $value)=each($this->data->config->grants[$type][$regs[2]])) {
+									foreach ($this->data->config->grants[$type][$regs[2]] as $key => $value) {
 										if (is_array($value)) {
 											$cloned.="$key ( ";
-											while (list($modifier, $mod_val)=each($value)) {
+											foreach ($value as $modifier => $mod_val) {
 												$cloned.=arGetGrantType($mod_val).$modifier." ";
 											}	
 											$cloned.=" ) ";

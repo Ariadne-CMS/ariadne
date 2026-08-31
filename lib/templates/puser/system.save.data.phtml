@@ -163,7 +163,7 @@
 			$groups = array();
 			if (is_array($selected)) {
 				reset($selected);
-				while (list($key, $val)=each($selected)) {
+				foreach ($selected as $key => $val) {
 					if (substr($val, 0, 1) == "/") {
 						$groups[$val] = $val;
 					} else {
@@ -236,7 +236,7 @@
 
 				if (is_array($oldgroups)) {
 					reset($oldgroups);
-					while (list($key, $val)=each($oldgroups)) {
+					foreach ($oldgroups as $key => $val) {
 						if (!$groups[$key]) {
 							$this->get($key, "system.set.user.phtml", array(
 										"action" => "remove",
@@ -260,7 +260,7 @@
 
 				if (is_array($groups)) {
 					reset($groups);
-					while (list($key, $val)=each($groups)) {
+					foreach ($groups as $key => $val) {
 						if (!($oldgroups[$key]??null)) {
 							$this->get($key, "system.set.user.phtml", array(
 										"action" => "add",

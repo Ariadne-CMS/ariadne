@@ -61,7 +61,7 @@
 
 				reset($AR->nls->list);
 				$count=0;
-				while (list($key, $value)=each($AR->nls->list)) {
+				foreach ($AR->nls->list as $key => $value) {
 
 					if ($name=$this->getdata("name",$key)) { 
 						if (!($this->data->$key??null)) {
