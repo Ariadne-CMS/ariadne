@@ -136,15 +136,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'firebase/php-jwt' => array(
-            'pretty_version' => 'v3.0.0',
-            'version' => '3.0.0.0',
-            'reference' => 'fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../firebase/php-jwt',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'firephp/firephp-core' => array(
             'pretty_version' => 'v0.4.0',
             'version' => '0.4.0.0',
@@ -227,9 +218,9 @@
             'dev_requirement' => false,
         ),
         'pear/archive_tar' => array(
-            'pretty_version' => '1.4.3',
-            'version' => '1.4.3.0',
-            'reference' => '43455c960da70e655c6bdf8ea2bc8cc1a6034afb',
+            'pretty_version' => '1.6.1',
+            'version' => '1.6.1.0',
+            'reference' => 'a0d2c458a2ff6ee8943ac4271b7f57d613529ae0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../pear/archive_tar',
             'aliases' => array(),

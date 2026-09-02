@@ -1,13 +1,13 @@
 {
     "name": "pear/archive_tar",
-    "description": "Tar file management class",
+    "description": "Tar file management class with compression support (gzip, bzip2, lzma2)",
     "type": "library",
     "keywords": [
         "archive",
         "tar"
     ],
     "homepage": "https://github.com/pear/Archive_Tar",
-    "license": "BSD-3-Clause",
+    "license": "BSD-2-Clause",
     "authors": [
         {
             "name": "Vincent Blavet",
@@ -23,13 +23,13 @@
         }
     ],
     "require": {
-        "php": ">=5.2.0",
+        "php": ">=5.6.0",
         "pear/pear-core-minimal": "^1.10.0alpha2"
     },
     "suggest": {
         "ext-zlib": "Gzip compression support.",
-        "ext-bz2": "bz2 compression support.",
-        "ext-xz": "lzma2 compression support."
+        "ext-bz2": "Bz2 compression support.",
+        "ext-xz": "Lzma2 compression support."
     },
     "autoload": {
         "psr-0": {
@@ -48,7 +48,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.4.x-dev"
+            "dev-master": "1.6.x-dev"
         }
     }
 }

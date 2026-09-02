@@ -31,10 +31,6 @@ class ComposerStaticInitcd2d890163a65174de09c97b75f04fdf
             'PhpAmqpLib\\' => 11,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
-        'F' =>
-        array (
-            'Firebase\\JWT\\' => 13,
-        ),
         'D' =>
         array (
             'Doctrine\\Instantiator\\' => 22,
@@ -71,10 +67,6 @@ class ComposerStaticInitcd2d890163a65174de09c97b75f04fdf
         'ParagonIE\\ConstantTime\\' =>
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
-        ),
-        'Firebase\\JWT\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'Doctrine\\Instantiator\\' =>
         array (
