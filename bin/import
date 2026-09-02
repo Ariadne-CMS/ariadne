@@ -49,15 +49,21 @@
     --help                   This information.\n\n";
 
 	$arg_c=0;
+	$arg_v=array();
+	$callArgs=array();
+	if (!is_array($ARCurrent->options ?? null)) {
+		$ARCurrent->options=array();
+	}
 	$arg_v[$arg_c++]=$argv[0];
 
-	next($argv); // do not parse the filename
-	while (list(,$cmd)=each($argv)) {
+	$commands=$argv;
+	array_shift($commands); // do not parse the filename
+	foreach ($commands as $cmd) {
 		$option = ldParseOption($cmd);
 		if ($option !== false ) {
 			switch ($option['switch']) {
 				case 'with':
-					$ARCurrent->options[$option['subswitch']]=($option['value']) ? $option['value'] : true;
+					$ARCurrent->options[$option['subswitch']]=($option['value'] ?? null) ? $option['value'] : true;
 				break;
 				case 'without':
 					$ARCurrent->options["without_".$option['subswitch']]=true;
@@ -65,13 +71,18 @@
 				case 'use':
 					switch($option['subswitch']) {
 						case 'nls':
-							$ARCurrent->options["nls"][$option['value']] = $option['value'];
+							if (!is_array($ARCurrent->options["nls"] ?? null)) {
+								$ARCurrent->options["nls"]=array();
+							}
+							if (isset($option['value'])) {
+								$ARCurrent->options["nls"][$option['value']] = $option['value'];
+							}
 						break;
 					}
 				break;
 				case 'convertToUTF8':
 				case 'convert2UTF8':
-					if (!$option['value']) {
+					if (empty($option['value'])) {
 						$option['value'] = "CP1252";
 					}
 					$callArgs["convert_charsets"][$option['subswitch']] = $option['value'];
