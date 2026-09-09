@@ -11,7 +11,6 @@
 		if (!function_exists("convData2UTF8")) {
 			function convData2UTF8($data, $charset) {
 				if (is_array($data)) {
-					reset($data);
 					foreach ($data as $key => $val) {
 						$data[$key] = convData2UTF8($val, $charset);
 					}
@@ -30,7 +29,6 @@
 		}
 
 		if (is_array($convert_charsets ?? null)) {
-			reset($convert_charsets);
 			foreach ($convert_charsets as $nls => $charset) {
 				echo "converting charset ($nls, $charset)\n";
 				$this->data->$nls = convData2UTF8($this->data->$nls, $charset);

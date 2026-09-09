@@ -58,7 +58,6 @@
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			$this->data->scaffold = $this->getdata('scaffold','none');
-			reset($AR->nls->list);
 			$count=0;
 			foreach ($AR->nls->list as $key => $value) {
 
@@ -139,7 +138,6 @@
 			if ( $arIsNewObject && $this->data->scaffold ) {
 				$this->call('system.copy.scaffold.php',array('scaffold' => $this->data->scaffold));
 			}
-			reset($AR->nls->list);
 			foreach ($AR->nls->list as $key => $value) {
 				if ($page=$this->getdata("page",$key)) {
 					$this->call("system.save.page.phtml",array("ContentLanguage" => $key, "page" => $page));

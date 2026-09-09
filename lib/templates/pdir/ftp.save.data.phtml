@@ -4,7 +4,6 @@
 			$parentobj->CheckLogin("add")) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) {
 
-		reset($ARConfig->nls->list);
 		foreach ($ARConfig->nls->list as $key => $val) {
 			$arCallArgs[$key]["name"]=$this->getdata("arNewFilename");
 		}

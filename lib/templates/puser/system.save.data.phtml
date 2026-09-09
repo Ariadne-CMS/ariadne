@@ -162,7 +162,6 @@
 			$selected = $this->getdata("groups", "none");
 			$groups = array();
 			if (is_array($selected)) {
-				reset($selected);
 				foreach ($selected as $key => $val) {
 					if (substr($val, 0, 1) == "/") {
 						$groups[$val] = $val;
@@ -235,7 +234,6 @@
 
 
 				if (is_array($oldgroups)) {
-					reset($oldgroups);
 					foreach ($oldgroups as $key => $val) {
 						if (!$groups[$key]) {
 							$this->get($key, "system.set.user.phtml", array(
@@ -259,7 +257,6 @@
 				}
 
 				if (is_array($groups)) {
-					reset($groups);
 					foreach ($groups as $key => $val) {
 						if (!($oldgroups[$key]??null)) {
 							$this->get($key, "system.set.user.phtml", array(

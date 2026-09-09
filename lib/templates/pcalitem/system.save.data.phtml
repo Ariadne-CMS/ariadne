@@ -78,7 +78,6 @@
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			$this->data->scaffold = $this->getdata('scaffold','none');
-			reset($AR->nls->list);
 			$count=0;
 			foreach ($AR->nls->list as $key => $value) {
 
@@ -220,7 +219,6 @@
 							while ($time<=$this->data->repeatend) {
 								$time_arr=getdate($time);
 								$wday=$time_arr["wday"];
-								reset($this->data->repeat_on);
 								foreach ($this->data->repeat_on as $day => $checked) {
 									if ($checked) {
 										$diff=($day-$wday) * $days;

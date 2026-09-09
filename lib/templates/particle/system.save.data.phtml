@@ -73,7 +73,6 @@
 					// data for the default language has been entered, so make sure
 					// it is set as the default language for this object too.
 					$this->data->nls->default=$ARConfig->nls->default;
-					reset($AR->nls->list);
 					$count=0;
 					foreach ($AR->nls->list as $key => $value) {
 						// for each language in the list, get the nls specific data
@@ -189,7 +188,6 @@
 				}
 
 				$i=0;
-				reset($displays);
 				foreach ($displays as $display => $val) {
 					$scenario_start=$this->data->startdate+$this->data->starttime +($val["start"]*3600*24);
 					$scenario_end=$this->data->enddate+$this->data->endtime+($val["end"]*3600*24);
@@ -209,7 +207,6 @@
 					if ( !$this->error && $arIsNewObject && $this->data->scaffold) {
 						$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold));
 					}
-					reset($AR->nls->list);
 					foreach ($AR->nls->list as $key => $value) {
 						/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
 						global $ARBeenHere;

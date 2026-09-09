@@ -18,7 +18,6 @@
 				} else {
 					$language=$ARCurrent->default;
 				}
-				reset($AR->nls->list);
 				foreach ($AR->nls->list as $key => $value) {
 					if ($key==$language) {
 						echo "<option value=\"$key\" selected>$value</option>\n";
@@ -33,7 +32,6 @@
 		<input type="hidden" name="languagelist[none]" value="None">
 		<?php
 			$languagelist=$this->getdata("languagelist","none");
-			reset($AR->nls->list);
 			asort($AR->nls->list);
 			foreach ($AR->nls->list as $arnls => $value) {
 				if ($languagelist[$arnls] ?? null) {

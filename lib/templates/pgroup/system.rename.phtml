@@ -18,7 +18,6 @@
 			if (!$this->error) {
 				$users = $this->ls(".", "system.get.path.phtml");
 				if (is_array($users)) {
-					reset($users);
 					foreach ($users as $key => $path) {
 						$this->get(	$path,
 									"system.set.group.phtml",
@@ -44,7 +43,6 @@
 				if (!$this->error) {
 					// re-add users
 					if (is_array($users)) {
-						reset($users);
 						foreach ($users as $key => $path) {
 							$this->get(	$path,
 										"system.set.group.phtml",
@@ -59,14 +57,11 @@
 
 					// update grants
 					if (is_array($oldusergrants)) {
-						reset($oldusergrants);
 						foreach ($oldusergrants as $path => $grants) {
 							$grantstring = "";
-							reset($grants);
 							foreach ($grants as $grant => $granttype) {
 								if (is_array($granttype)) {
 									$grantstring .= " $grant ( ";
-									reset($granttype);
 									foreach ($granttype as $class => $modifierId) {
 										switch($modifierId) {
 											case ARGRANTLOCAL:

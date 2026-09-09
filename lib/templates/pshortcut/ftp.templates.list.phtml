@@ -10,7 +10,6 @@
 			foreach ($data->config->pinp as $type => $values) {
 				foreach ($values as $function => $templatelist) {
 							ksort($templatelist);
-							reset($templatelist);
 							foreach ($templatelist as $language => $template) {
 									$entry["filename"]="$type.$function.$language";
 									$entry["date"]=$this->lastchanged;

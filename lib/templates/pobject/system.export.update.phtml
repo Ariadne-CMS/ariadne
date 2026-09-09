@@ -23,7 +23,6 @@
 		unset($newObject->data->config->usergrants);
 	}
 	if (is_array($options["nls"] ?? null)) {
-		reset($options["nls"]);
 		foreach ($options["nls"] as $nls => $_) {
 			if (isset($newObject->data->nls->list[$nls])) {
 				$this->data->nls->list[$nls] = $newObject->data->nls->list[$nls];

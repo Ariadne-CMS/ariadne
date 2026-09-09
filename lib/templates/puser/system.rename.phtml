@@ -48,7 +48,6 @@
 				if (!$this->error) {
 					// remove groups
 					if (is_array($this->data->groups)) {
-						reset($this->data->groups);
 						foreach ($this->data->groups as $path => $_) {
 							$this->get($path,
 									"system.set.user.phtml",
@@ -76,7 +75,6 @@
 					if (!$this->error) {
 						// now update groups
 						if (is_array($this->data->groups)) {
-							reset($this->data->groups);
 							foreach ($this->data->groups as $path => $_) {
 								$this->get($path,
 										"system.set.user.phtml",
@@ -88,18 +86,15 @@
 						}
 						// update grants
 						if (is_array($oldusergrants)) {
-							reset($oldusergrants);
 							foreach ($oldusergrants as $path => $grants) {
 								if (substr($path, 0, strlen($oldpath)) == $oldpath) {
 									$path = $target.substr($path, strlen($oldpath));
 								}
 
 								$grantstring = "";
-								reset($grants);
 								foreach ($grants as $grant => $granttype) {
 									if (is_array($granttype)) {
 										$grantstring .= " $grant ( ";
-										reset($granttype);
 										foreach ($granttype as $class => $modifierId) {
 											switch($modifierId) {
 												case ARGRANTLOCAL:

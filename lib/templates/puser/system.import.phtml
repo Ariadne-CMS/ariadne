@@ -33,7 +33,6 @@
 
 			if ($ARCurrent->AXAction == "import") {
 				if (is_array($this->data->groups??null)) {
-					reset($this->data->groups);
 					foreach ($this->data->groups as $key => $val) {
 						if ($this->exists($key)) {
 							$target = $key.substr($this->path, strlen($this->parent));

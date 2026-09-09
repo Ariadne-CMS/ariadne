@@ -12,7 +12,6 @@
 
 				// change links in $nlsdata->page
 				if ( ( $search ?? null ) && ( $replace ?? null ) ) {
-					reset($AR->nls->list);
 					foreach ($AR->nls->list as $nls => $language) {
 						if (isset($targetData->$nls) && isset($targetData->$nls->page)) {
 							$targetData->$nls->page=str_replace("{arRoot}".$search, "{arRoot}".$replace, $targetData->$nls->page);

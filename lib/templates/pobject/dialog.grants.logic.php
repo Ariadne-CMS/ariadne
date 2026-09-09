@@ -9,7 +9,6 @@
 				foreach ($grants as $grant => $granttype) {
 					if (is_array($granttype)) {
 						$grantstring .= " $grant ( ";
-						reset($granttype);
 						foreach ($granttype as $class => $modifierId) {
 							if( $granttype > 0 ) {
 								switch($modifierId) {
@@ -131,7 +130,6 @@
 					}
 				}
 			}
-			reset($grants);
 			ksort($grants);
 			return $grants;
 		}

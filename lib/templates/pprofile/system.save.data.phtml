@@ -83,7 +83,6 @@
 		$this->data->groups = array();
 		$groups = $this->getdata("groups", "none");
 		if (is_array($groups)) {
-			reset($groups);
 			foreach ($groups as $key => $val) {
 				if (substr($val, 0, 1) == "/") {
 					$this->data->groups[$val] = $val;

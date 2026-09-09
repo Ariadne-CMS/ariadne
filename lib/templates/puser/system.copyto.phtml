@@ -70,7 +70,6 @@
 					$this->save($properties);
 
 					if (is_array($groups)) {
-						reset($groups);
 						foreach ($groups as $path => $_) {
 							$this->get($path,
 									"system.set.user.phtml",
