@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export URL="http:/localhost/";
+export URL="http://localhost/";
 export TMPDIR="/tmp";
 
 bash test-demosite.sh

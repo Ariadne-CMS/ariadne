@@ -11,7 +11,6 @@ class AMQPSSLConnection extends AMQPStreamConnection
      * @param string $vhost
      * @param array $ssl_options
      * @param array $options
-     * @param string $ssl_protocol
      */
     public function __construct(
         $host,
@@ -20,8 +19,7 @@ class AMQPSSLConnection extends AMQPStreamConnection
         $password,
         $vhost = '/',
         $ssl_options = array(),
-        $options = array(),
-        $ssl_protocol = 'ssl'
+        $options = array()
     ) {
         $ssl_context = empty($ssl_options) ? null : $this->create_ssl_context($ssl_options);
         parent::__construct(
@@ -35,12 +33,10 @@ class AMQPSSLConnection extends AMQPStreamConnection
             isset($options['login_response']) ? $options['login_response'] : null,
             isset($options['locale']) ? $options['locale'] : 'en_US',
             isset($options['connection_timeout']) ? $options['connection_timeout'] : 3,
-            isset($options['read_write_timeout']) ? $options['read_write_timeout'] : 130,
+            isset($options['read_write_timeout']) ? $options['read_write_timeout'] : 3,
             $ssl_context,
             isset($options['keepalive']) ? $options['keepalive'] : false,
-            isset($options['heartbeat']) ? $options['heartbeat'] : 0,
-            isset($options['channel_rpc_timeout']) ? $options['channel_rpc_timeout'] : 0.0,
-            $ssl_protocol
+            isset($options['heartbeat']) ? $options['heartbeat'] : 0
         );
     }
 

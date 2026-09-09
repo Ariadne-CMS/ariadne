@@ -3,17 +3,19 @@
 	if ($file) {
 		$arNewType="";
 		$mimetypes = $ARConfig->cache[$this->path]->mimetypes;
-		@reset($mimetypes);
-		while (!$arNewType && (list($regexp, $arType)=@each($mimetypes))) {
-			// Find a suitable delimiter
-			$delimiters = array("/", "|", "%", "#");
-			$delimiter = array_pop($delimiters);
-			while ($delimiter && (strpos($regexp, $delimiter) !== false)) {
+		if (is_array($mimetypes)) {
+			foreach ($mimetypes as $regexp => $arType) {
+				// Find a suitable delimiter
+				$delimiters = array("/", "|", "%", "#");
 				$delimiter = array_pop($delimiters);
-			}
+				while ($delimiter && (strpos($regexp, $delimiter) !== false)) {
+					$delimiter = array_pop($delimiters);
+				}
 
-			if (preg_match($delimiter . $regexp . $delimiter . "i", $file_type, $regs)) {
-				$arNewType = $arType;
+				if (preg_match($delimiter . $regexp . $delimiter . "i", $file_type, $regs)) {
+					$arNewType = $arType;
+					break;
+				}
 			}
 		}
 		if (!$arNewType) {

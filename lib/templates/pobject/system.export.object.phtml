@@ -60,9 +60,15 @@
 			unset($this->data->grants);
 		} else {
 			if ($this->data->config->grants ?? null) {
-				while (list($type, $type_val)=@each($this->data->config->grants)) {
-					while (list($user,$grants)=@each($type_val)) {
-						while (list($grant, $value)=@each($grants)) {
+				foreach ($this->data->config->grants as $type => $type_val) {
+					if (!is_array($type_val)) {
+						continue;
+					}
+					foreach ($type_val as $user => $grants) {
+						if (!is_array($grants)) {
+							continue;
+						}
+						foreach ($grants as $grant => $value) {
 							display("exporting grants [$type][$user][$this->path][$grant]\n");
 							$ARCurrent->grants_list[$type][$user][$this->path][$grant]=$value;
 						}

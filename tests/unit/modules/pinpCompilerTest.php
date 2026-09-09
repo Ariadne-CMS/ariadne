@@ -192,6 +192,82 @@ EOD;
 		$this->assertTrue((bool)$res);
 	}
 
+	public function testDoubleQuotedStringDollarAnchor() {
+		$template = <<<'EOD'
+<pinp>
+	preg_match("/member;range=(\d+)-(.+)$/", $key, $matches);
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
+		$this->assertStringContainsString('preg_match("/member;range=(\d+)-(.+)$/", $object->key, $object->matches)', $res);
+	}
+
+	public function testWritableArgumentsKeepVariablePrefix() {
+		$templates = array(
+			"unset" => '<pinp>unset($value);</pinp>',
+			"isset" => '<pinp>isset($value);</pinp>',
+			"array_pop" => '<pinp>$values = array(1); array_pop($values);</pinp>',
+			"array_shift" => '<pinp>$values = array(1); array_shift($values);</pinp>',
+			"array_unshift" => '<pinp>$values = array(); array_unshift($values, 1);</pinp>',
+			"shuffle" => '<pinp>$values = array(1); shuffle($values);</pinp>',
+			"array_splice" => '<pinp>$values = array(1); array_splice($values, 0, 1);</pinp>',
+			"array_multisort" => '<pinp>$values = array(1); array_multisort($values);</pinp>',
+			"array_push" => '<pinp>$values = array(); array_push($values, 1);</pinp>',
+			"preg_match_all" => '<pinp>preg_match_all("/member;range=(\d+)-(.+)$/", $key, $matches);</pinp>',
+			"parse_str" => '<pinp>parse_str("a=1", $output);</pinp>',
+			"sscanf" => '<pinp>sscanf("1", "%d", $output);</pinp>',
+			"sort" => '<pinp>$values = array(2, 1); sort($values);</pinp>',
+			"rsort" => '<pinp>$values = array(2, 1); rsort($values);</pinp>',
+			"ksort" => '<pinp>$values = array("b" => 2); ksort($values);</pinp>',
+			"foreach" => '<pinp>$values = array(1); foreach ($values as $value) { echo $value; }</pinp>',
+			"increments" => '<pinp>$value = 1; $value++; ++$value;</pinp>'
+		);
+
+		foreach ($templates as $name => $template) {
+			$compiler = new pinp("header", "object->", "\$object->_");
+			$res = $compiler->compile($template);
+			$this->assertNull($compiler->error, $name);
+			$this->assertTrue((bool)$res, $name);
+			$this->assertStringNotContainsString(' object->', $res, $name);
+			$this->assertStringNotContainsString('(object->', $res, $name);
+		}
+	}
+
+	public function testLegacyEachWhileCompilesToForeach() {
+		$templates = array(
+			"key-value" => array(
+				"source" => '<pinp>while (list($key, $value)=each($values)) { echo $key; }</pinp>',
+				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $object->key => $object->value)'
+			),
+			"key-only" => array(
+				"source" => '<pinp>while (list($key)=each($values)) { echo $key; }</pinp>',
+				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $object->key => $__pinp_each_value)'
+			),
+			"value-only" => array(
+				"source" => '<pinp>while (list(, $value)=each($values)) { echo $value; }</pinp>',
+				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $__pinp_each_key => $object->value)'
+			),
+			"extra-parens" => array(
+				"source" => '<pinp>while ((list($key, $value)=each($values))) { echo $value; }</pinp>',
+				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $object->key => $object->value)'
+			)
+		);
+
+		foreach ($templates as $name => $template) {
+			$compiler = new pinp("header", "object->", "\$object->_");
+			$res = $compiler->compile($template["source"]);
+			$this->assertNull($compiler->error, $name);
+			$this->assertTrue((bool)$res, $name);
+			$this->assertStringContainsString($template["expected"], $res, $name);
+			$this->assertStringNotContainsString('while (list', $res, $name);
+			$this->assertStringNotContainsString('each(', $res, $name);
+		}
+	}
+
 
 	public function testtypeCasting() {
 		$template = <<<'EOD'
@@ -212,6 +288,12 @@ EOD;
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
 		$this->assertTrue((bool)$res);
+		$this->assertStringContainsString('(bool) 1', $res);
+		$this->assertStringContainsString('(int) "3"', $res);
+		$this->assertStringContainsString('(float) "1.2"', $res);
+		$this->assertStringNotContainsString('(boolean)', $res);
+		$this->assertStringNotContainsString('(integer)', $res);
+		$this->assertStringNotContainsString('(double)', $res);
 	}
 
 	public function testObjectArrayAccess() {

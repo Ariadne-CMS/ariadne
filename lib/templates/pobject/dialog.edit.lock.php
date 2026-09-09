@@ -18,7 +18,7 @@
 	<?php
 		$locklist = $this->store->mod_lock->locklist ?? null;
 		if ($locklist) {
-			while ((list($key, $lock)=each($locklist))) {
+			foreach ($locklist as $key => $lock) {
 				echo "<tr><td>".$lock["path"]."</td>";
 				echo "<td>".$lock["identity"]."</td>";
 				echo "<td><nobr>".strftime("%d-%m %H:%M:%S",$lock["release"])."</nobr></td></tr>\n";

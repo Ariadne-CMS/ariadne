@@ -117,18 +117,4 @@ class AMQPMessage extends GenericContent
 
         return $this;
     }
-
-    /**
-     * @return int
-     *
-     * @throws \PhpAmqpLib\Exception\AMQPEmptyDeliveryTagException
-     */
-    public function getDeliveryTag()
-    {
-        if (!isset($this->delivery_info['delivery_tag'])) {
-            throw new \PhpAmqpLib\Exception\AMQPEmptyDeliveryTagException();
-        }
-
-        return (int) $this->delivery_info['delivery_tag'];
-    }
 }

@@ -741,7 +741,7 @@
 				if (file_exists($cachedheader)) {
 					$filedata = file($cachedheader);
 					if (is_array($filedata)) {
-						while (list($key, $header)=each($filedata)) {
+						foreach ($filedata as $header) {
 							ldHeader($header);
 						}
 					}
@@ -753,7 +753,7 @@
 					// Cache header file also contains information about Cache-control;
 					$filedata = file($cachedheader);
 					if (is_array($filedata)) {
-						while (list($key, $header)=each($filedata)) {
+						foreach ($filedata as $header) {
 							ldHeader($header);
 						}
 					}
@@ -1268,4 +1268,3 @@
 		$stdin = fopen("php://input", "r");
 		return new ar_content_filesFile($stdin);
 	}
-

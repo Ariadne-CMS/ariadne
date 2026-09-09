@@ -171,7 +171,7 @@
 							}
 							$impObject->store = $ARCurrent->importStore;
 							$impObject->call("system.import.phtml", $arCallArgs);
-							if (isset($impObject->error)) {
+							if (!empty($impObject->error)) {
 								display("\n	ERROR (".$impObject->error.")\n");
 								$exclude_list[] = $impObject->path;
 								return;
@@ -232,17 +232,17 @@
 		$checkedPaths = array();
 
 		if (!$destpath) {
-			if ($srcpath!="/") {
-				if (!$ARCurrent->importStore->exists("/")) {
-					$checkpaths[]="/";
-				}
-				$path_str="/";
-				$calc_path=substr($srcpath, 0, strrpos(substr($srcpath,0,-1),'/'));
-				$path_elements=explode("/", $calc_path);
-				while (list(,$element)=each($path_elements)) {
-					if ($element) {
-						$path_str.=$element."/";
-						if (!$ARCurrent->importStore->exists($path_str)) {
+				if ($srcpath!="/") {
+					if (!$ARCurrent->importStore->exists("/")) {
+						$checkpaths[]="/";
+					}
+					$path_str="/";
+					$calc_path=substr($srcpath, 0, strrpos(substr($srcpath,0,-1),'/'));
+					$path_elements=explode("/", $calc_path);
+					foreach ($path_elements as $element) {
+						if ($element) {
+							$path_str.=$element."/";
+							if (!$ARCurrent->importStore->exists($path_str)) {
 							$checkpaths[]=$path_str;
 						}
 					}
@@ -325,12 +325,14 @@
 				$userConfig = $destobj->loadUserConfig();
 				$authconfig = $userConfig['authentication'];
 
-				display("updating grants (groups)\n");
-				@reset($ARCurrent->grants_list);
-				while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
-					while (list($login, $paths)=each($type_logins)) {
-						if ($type=="pgroup") {
-							foreach ( $paths as $path => $grants ) {
+					display("updating grants (groups)\n");
+					foreach (($ARCurrent->grants_list ?? array()) as $type => $type_logins) {
+						if (!is_array($type_logins)) {
+							continue;
+						}
+						foreach ($type_logins as $login => $paths) {
+							if ($type=="pgroup") {
+								foreach ( $paths as $path => $grants ) {
 								$newpath=$destpath.substr($path, strlen($rootpath));
 								$dataobj = current($ARCurrent->importStore->call("system.get.phtml", array(),
 										$ARCurrent->importStore->get($newpath)));
@@ -371,12 +373,14 @@
 					}
 				}
 
-				display("updating grants (users)\n");
-				@reset($ARCurrent->grants_list);
-				while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
-					while (list($login, $paths )=each($type_logins)) {
-						if ($type=="puser") {
-							foreach ( $paths as $path => $grants ) {
+					display("updating grants (users)\n");
+					foreach (($ARCurrent->grants_list ?? array()) as $type => $type_logins) {
+						if (!is_array($type_logins)) {
+							continue;
+						}
+						foreach ($type_logins as $login => $paths ) {
+							if ($type=="puser") {
+								foreach ( $paths as $path => $grants ) {
 								$newpath=$destpath.substr($path, strlen($rootpath));
 								$dataobj = current($ARCurrent->importStore->call("system.get.phtml", array(),
 										$ARCurrent->importStore->get($newpath)));

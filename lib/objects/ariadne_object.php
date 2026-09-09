@@ -1878,7 +1878,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 				// a language select dialog with all available languages for this object.
 				if (isset($this->data->nls) && !isset($this->data->name)) {
 					if ((!isset($ARCurrent->forcenls) || !$ARCurrent->forcenls) 
-						&& (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls])
+						&& (!isset($this->data->nls->list[$reqnls]) || !($config->nls->list[$reqnls] ?? null))
 					) {
 						if ((!isset($ARCurrent->nolangcheck) || !$ARCurrent->nolangcheck) 
 							&& $arCallFunction != 'config.ini'

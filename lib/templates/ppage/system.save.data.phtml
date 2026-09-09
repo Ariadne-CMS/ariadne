@@ -55,9 +55,8 @@
 			}
 			$this->data->scaffold = $this->getdata('scaffold','none');
 
-			reset($AR->nls->list);
 			$count=0;
-			while (list($key, $value)=each($AR->nls->list)) {
+			foreach ($AR->nls->list as $key => $value) {
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					if ( !isset( $this->data->$key ) ) {
 						debug("$key not yet set","all");
@@ -122,14 +121,13 @@
 			if (!$this->error) {
 				if ( $arIsNewObject && $this->data->scaffold ) {
 					$this->call('system.copy.scaffold.php', array('scaffold' => $this->data->scaffold) );
-				}
-				unset($this->arIsNewObject);
-				reset($AR->nls->list);
-				$count=0;
-				while (list($key, $value)=each($AR->nls->list)) {
-					/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
-					global $ARBeenHere;
-					$ARBeenHere=array();
+			}
+			unset($this->arIsNewObject);
+			$count=0;
+			foreach ($AR->nls->list as $key => $value) {
+				/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
+				global $ARBeenHere;
+				$ARBeenHere=array();
 					                
 					$page=$this->getdata("page",$key);
 					if ($page!==false) {

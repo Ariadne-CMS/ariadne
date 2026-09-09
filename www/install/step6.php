@@ -61,6 +61,9 @@
 
 		$docroot = $_SERVER['DOCUMENT_ROOT'];
 		$ar_dir_www = preg_replace("|/install/index.php$|", '', $ar_dir_www);
+		if ($ar_dir_www === '') {
+			$ar_dir_www = '/';
+		}
 
 		if ($enable_workspaces) {
 			$database = $database . "_workspaces";

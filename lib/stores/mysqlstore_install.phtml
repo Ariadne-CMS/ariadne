@@ -54,7 +54,10 @@ CREATE TABLE ".$this->tbl_prefix."types (
 ) ENGINE " . $this->engine ;
 
 		$error = false;
-		while ((list($key, $query)=each($queries)) && (!$error)) {
+		foreach ($queries as $key => $query) {
+			if ($error) {
+				break;
+			}
 			if ($query["msg"]) {
 				echo $query["msg"]."\n";
 			}

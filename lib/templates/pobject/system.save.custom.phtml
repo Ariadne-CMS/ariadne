@@ -12,7 +12,7 @@
 			$customfields = $params[ "customfields" ];
 		}
 		if (is_array($customfields)) {
-			while (list($key, $value)=each($customfields)) {
+			foreach ($customfields as $key => $value) {
 				$this->data->config->customconfig[$value["name"]]["type"]=$value["type"];
 				$this->data->config->customconfig[$value["name"]]["inherit"]=$value["inherit"];
 				$this->data->config->customconfig[$value["name"]]["size"]=$value["size"];

@@ -434,14 +434,14 @@ class mysqlstore extends store{
 			if(!is_array($criteria)) {
 				$criteria = array();
 			}
-			while (list($property, $values)=each($criteria)) {
+			foreach ($criteria as $property => $values) {
 				$eproperty=AddSlashes($property);
 				if ($property!="object") {
 					$from.=", ".$this->tbl_prefix."prop_$eproperty";
 					$where.=" and (";
 				}
-				while (list($valuename, $compare)=each($values)) {
-					while (list($function, $value)=each($compare)) {
+				foreach ((array) $values as $valuename => $compare) {
+					foreach ((array) $compare as $function => $value) {
 						switch(strtolower($function)) {
 							case '=':
 							case '==':
@@ -1124,7 +1124,7 @@ class mysqlstore extends store{
 			if( $scope !== '%' ) {
 				$values += array( 'scope' => $scope );
 			}
-			while (list($name, $value)=each($values)) {
+			foreach ($values as $name => $value) {
 				$value = "'".addSlashes($value)."'";
 				$query_string.="AR_".AddSlashes($name)."=$value and ";
 			}
@@ -1132,8 +1132,7 @@ class mysqlstore extends store{
 			$qresult = $this->store_run_query($query_string);
 			$currProp=0;
 			while ($qresult && ($prop=@$qresult->fetch_array(MYSQLI_ASSOC))) {
-				reset($prop);
-				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
+				foreach ($prop as $name => $val) {
 					if (($name!="object")&&(!is_int($name))) {
 						$result[$currProp][substr($name,3)]=$val;
 					}
@@ -1150,12 +1149,12 @@ class mysqlstore extends store{
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		if ($object && is_array($values) && count($values) ) {
-			$values = (array) $values + array('scope' => $scope);
-			while (list($name, $value)=each($values)) {
-				if ($value!="") {
-					if (!isset($query_names)) {
-						$query_names = '';
+			if ($object && is_array($values) && count($values) ) {
+				$values = (array) $values + array('scope' => $scope);
+				foreach ($values as $name => $value) {
+					if ($value!="") {
+						if (!isset($query_names)) {
+							$query_names = '';
 					}
 					if (!isset($query_values)) {
 						$query_values = '';
@@ -1197,7 +1196,7 @@ class mysqlstore extends store{
 					$values = array();
 				}
 				$values += array( 'scope' => $scope );
-				while (list($name, $value)=each($values)) {
+				foreach ($values as $name => $value) {
 					$value = "'".addSlashes($value)."'";
 					$query_string.="AR_".AddSlashes($name)."=$value and ";
 				}

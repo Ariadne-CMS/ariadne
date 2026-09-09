@@ -23,8 +23,7 @@
 			} else {
 				$this->data->config->nlsconfig=new baseObject;
 				$this->data->config->nlsconfig->default=$default;
-				reset($available);
-				while (list($key, $lang)=each($available)) {
+				foreach ($available as $key => $lang) {
 					$this->data->config->nlsconfig->list[$lang]=$AR->nls->list[$lang];
 				}
 			}

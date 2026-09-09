@@ -10,6 +10,8 @@
 This library is a _pure PHP_ implementation of the [AMQP 0-9-1 protocol](http://www.rabbitmq.com/tutorials/amqp-concepts.html).
 It's been tested against [RabbitMQ](http://www.rabbitmq.com/).
 
+**Requirements: PHP 5.3** due to the use of `namespaces`.
+
 **Requirements: bcmath extension** This library utilizes the bcmath PHP extension. The installation steps vary per PHP version and the underlying OS. The following example shows how to add to an existing PHP installation on Ubuntu 15.10:
 
 ```bash
@@ -123,7 +125,7 @@ you can start a connection with an array of hosts. To do that you should use
 the `create_connection` static method.
 
 For example:
-```php
+```
 $connection = AMQPStreamConnection::create_connection([
     ['host' => HOST1, 'port' => PORT, 'user' => USER, 'password' => PASS, 'vhost' => VHOST],
     ['host' => HOST2, 'port' => PORT, 'user' => USER, 'password' => PASS, 'vhost' => VHOST]
@@ -166,7 +168,7 @@ You could send it every 50 messages, or every hundred. That's up to you.
 
 Another way to speed up your message publishing is by reusing the `AMQPMessage` message instances. You can create your new message like this:
 
-```php
+```
 $properties = array('content_type' => 'text/plain', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT);
 $msg = new AMQPMessage($body, $properties);
 $ch->basic_publish($msg, $exchange);
@@ -204,8 +206,7 @@ using exception handling mechanism.
 
 Exceptions which might be thrown in case of connection errors:
 
-```php
-PhpAmqpLib\Exception\AMQPConnectionClosedException
+```
 PhpAmqpLib\Exception\AMQPIOException
 \RuntimeException
 \ErrorException
@@ -217,7 +218,7 @@ before reconnecting.
 
 For example, if you want to set up a recovering connection:
 
-```php
+```
 $connection = null;
 $channel = null;
 while(true){
@@ -225,8 +226,7 @@ while(true){
         $connection = new AMQPStreamConnection(HOST, PORT, USER, PASS, VHOST);
         // Your application code goes here.
         do_something_with_connection($connection);
-    } catch(AMQPRuntimeException $e) {
-        echo $e->getMessage();
+    } catch(AMQPIOException $e) {
         cleanup_connection($connection);
         usleep(WAIT_BEFORE_RECONNECT_uS);
     } catch(\RuntimeException $e) {
@@ -253,7 +253,7 @@ multiple times.
 This was a simplest example, in a real-life application you might want to
 control retr count and maybe gracefully degrade wait time to reconnection.
 
-You can find a more excessive example in [#444](https://github.com/php-amqplib/php-amqplib/issues/444)
+You can find a more excessive example in #444
 
 
 ## UNIX Signals ##
@@ -328,7 +328,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Using AMQP 0.8 ##
 
-If you still want to use the old version of the protocol then you can do it by setting the following constant in your configuration code:
+If you still want to use the old version of the protocol then you can do it by settings the following constant in your configuration code:
 
 ```php
 define('AMQP_PROTOCOL', '0.8');

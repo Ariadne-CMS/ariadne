@@ -15,13 +15,13 @@
 				} else {
 					if (is_array($this->data->config->usergrants)) {
 						// remove usergrants
-						while (list($key, $value)=each($this->data->config->usergrants)) {
+						foreach ($this->data->config->usergrants as $key => $value) {
 							$this->get($key, "system.save.grants.phtml", array("delete" => true, "id" => $this->data->login, "type" => $this->type));
 						}
 					}
 					if (is_array($this->data->groups)) {
 						// remove user object from groups
-						while (list($key, $value)=each($this->data->groups)) {
+						foreach ($this->data->groups as $key => $value) {
 							$this->get($key, "system.set.user.phtml", array("path" => $this->path, "action" => "delete"));
 						}
 					}

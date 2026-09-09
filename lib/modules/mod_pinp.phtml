@@ -185,9 +185,9 @@ class scanner {
 			$yych = $YYBUFFER[$YYCURSOR];
 			switch ($YYSTATE) {
 				case YY_STATE_HTML:
-					if (ord($yych) == 0) {
+					if ($yych === "\0") {
 						return PT_EOF;
-					} else if (ord($yych == 12)) {
+					} else if ($yych === "\f") {
 						return PT_EOF;
 					} else {
 						$matches='';
@@ -250,6 +250,9 @@ class scanner {
 							if ($yych == '"') {
 								return PT_SUBSTRING;
 							}
+							if (!($YYCLASSES["ID_FIRST"][$yych] ?? null) && $yych != '$') {
+								return PT_SUBSTRING;
+							}
 							--$YYCURSOR;
 							return PT_VAR_REFERENCE;
 						break;
@@ -269,7 +272,7 @@ class scanner {
 							$this->error = "Unterminated double quote.";
 							return PT_ERROR;
 						break;
-						case "\n";
+							case "\n":
 							$this->YYLINE++;
 							++$YYCURSOR;
 							$result = $yych;
@@ -895,22 +898,22 @@ class pinp {
 			create lookup table for cast-types
 		*/
 		$this->language_types = Array(
-				"int"     => true,
-				"integer" => true,
-				"bool"    => true,
-				"boolean" => true,
-				"float"   => true,
-				"double"  => true,
-				"string"  => true,
-				"binary"  => true,
-				"array"   => true,
-				"object"  => true
+				"int"     => "int",
+				"integer" => "int",
+				"bool"    => "bool",
+				"boolean" => "bool",
+				"float"   => "float",
+				"double"  => "float",
+				"string"  => "string",
+				"binary"  => "binary",
+				"array"   => "array",
+				"object"  => "object"
 		);
 	}
 
 	function push_back_token() {
 		while (count($this->tokens)) {
-			list($token, $token_value) = each(array_shift($this->tokens));
+			list($token, $token_value) = $this->token_pair(array_shift($this->tokens));
 			$this->scanner->push_back($token_value);
 		}
 		$this->scanner->push_back($this->token_ahead_value);
@@ -918,6 +921,13 @@ class pinp {
 		$this->token_ahead_value = $this->token_value;
 		$this->token = null;
 		$this->token_value = "";
+	}
+
+	function token_pair($tokenInfo) {
+		foreach ($tokenInfo as $token => $token_value) {
+			return array($token, $token_value);
+		}
+		return array(null, null);
 	}
 
 	function print_current_range() {
@@ -932,13 +942,13 @@ class pinp {
 			$token = $this->scanner->scan($value);
 			if (is_array($value)) {
 				$this->tokens = $value;
-				list($token, $token_value) = each(array_shift($this->tokens));
+				list($token, $token_value) = $this->token_pair(array_shift($this->tokens));
 			} else {
 				$token = $token;
 				$token_value = $value;
 			}
 		} else {
-			list($token, $token_value) = each(array_shift($this->tokens));
+			list($token, $token_value) = $this->token_pair(array_shift($this->tokens));
 		}
 		if ($this->token_ahead ?? null) {
 			$this->token = $this->token_ahead;
@@ -1013,9 +1023,9 @@ class pinp {
 				case ($in_special === "list"):
 				case ($in_special === "preg_match"):
 				case ($in_special === "preg_match_all"):
-				case ($in_special === "parse_str");
-				case ($in_special === "sscanf");
-					$parsed = preg_replace( "/\\(\\$(.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
+					case ($in_special === "parse_str"):
+					case ($in_special === "sscanf"):
+					$parsed = preg_replace( "/\\(\\$(.+?)[ ][?][?][ ]null[)][!][!][!][!]/", '$\\1', $parsed );
 				break;
 				case ($in_special === "array_values"):
 					// use blank array instead of null
@@ -1041,6 +1051,220 @@ class pinp {
 			$result .= $parsed;
 			$i++;
 		} while (!$this->error && ($this->token_ahead == PT_COMMA));
+
+		return $result;
+	}
+
+	function split_top_level_commas($input) {
+		$result = array();
+		$current = '';
+		$depth = 0;
+		$string = false;
+		$escape = false;
+		$length = strlen($input);
+
+		for ($i = 0; $i < $length; $i++) {
+			$char = $input[$i];
+
+			if ($string) {
+				$current .= $char;
+				if ($escape) {
+					$escape = false;
+				} else if ($char === '\\') {
+					$escape = true;
+				} else if ($char === $string) {
+					$string = false;
+				}
+				continue;
+			}
+
+			if ($char === '"' || $char === "'") {
+				$string = $char;
+				$current .= $char;
+				continue;
+			}
+
+			if ($char === '(' || $char === '[' || $char === '{') {
+				$depth++;
+			} else if ($char === ')' || $char === ']' || $char === '}') {
+				$depth--;
+			}
+
+			if ($char === ',' && $depth === 0) {
+				$result[] = trim($current);
+				$current = '';
+			} else {
+				$current .= $char;
+			}
+		}
+
+		$result[] = trim($current);
+		return $result;
+	}
+
+	function skip_spaces($input, $offset) {
+		$length = strlen($input);
+		while ($offset < $length && trim($input[$offset]) === '') {
+			$offset++;
+		}
+		return $offset;
+	}
+
+	function trim_outer_parentheses($input) {
+		$input = trim($input);
+		while (strlen($input) > 1 && $input[0] === '(') {
+			$closePosition = $this->find_matching_parenthesis($input, 0);
+			if ($closePosition !== strlen($input) - 1) {
+				break;
+			}
+			$input = trim(substr($input, 1, -1));
+		}
+		return $input;
+	}
+
+	function rewrite_legacy_each_while($parsed) {
+		$matches = array();
+		if (!preg_match('/^while\s*\(/i', $parsed, $matches, PREG_OFFSET_CAPTURE)) {
+			return $parsed;
+		}
+
+		$openPosition = $matches[0][1] + strrpos($matches[0][0], '(');
+		$closePosition = $this->find_matching_parenthesis($parsed, $openPosition);
+		if ($closePosition === false || trim(substr($parsed, $closePosition + 1)) !== '') {
+			return $parsed;
+		}
+
+		$condition = substr($parsed, $openPosition + 1, $closePosition - $openPosition - 1);
+		$condition = $this->trim_outer_parentheses($condition);
+		if (!preg_match('/^list\s*\(/i', $condition, $matches, PREG_OFFSET_CAPTURE)) {
+			return $parsed;
+		}
+
+		$listOpenPosition = $matches[0][1] + strrpos($matches[0][0], '(');
+		$listClosePosition = $this->find_matching_parenthesis($condition, $listOpenPosition);
+		if ($listClosePosition === false) {
+			return $parsed;
+		}
+
+		$offset = $this->skip_spaces($condition, $listClosePosition + 1);
+		if (($condition[$offset] ?? null) !== '=') {
+			return $parsed;
+		}
+
+		$offset = $this->skip_spaces($condition, $offset + 1);
+		if (strncasecmp(substr($condition, $offset, 4), 'each', 4) !== 0) {
+			return $parsed;
+		}
+
+		$offset = $this->skip_spaces($condition, $offset + 4);
+		if (($condition[$offset] ?? null) !== '(') {
+			return $parsed;
+		}
+
+		$eachOpenPosition = $offset;
+		$eachClosePosition = $this->find_matching_parenthesis($condition, $eachOpenPosition);
+		if ($eachClosePosition === false || trim(substr($condition, $eachClosePosition + 1)) !== '') {
+			return $parsed;
+		}
+
+		$listArgs = $this->split_top_level_commas(substr($condition, $listOpenPosition + 1, $listClosePosition - $listOpenPosition - 1));
+		$arrayExpression = trim(substr($condition, $eachOpenPosition + 1, $eachClosePosition - $eachOpenPosition - 1));
+		$keyExpression = trim($listArgs[0] ?? '');
+		$valueExpression = trim($listArgs[1] ?? '');
+
+		if (!$keyExpression && !$valueExpression) {
+			return $parsed;
+		}
+
+		if (!$keyExpression) {
+			$keyExpression = '$__pinp_each_key';
+		}
+		if (!$valueExpression) {
+			$valueExpression = '$__pinp_each_value';
+		}
+
+		return 'foreach ((' . $arrayExpression . ' ?? array()) as ' . $keyExpression . ' => ' . $valueExpression . ')';
+	}
+
+	function find_matching_parenthesis($input, $openPosition) {
+		$depth = 0;
+		$string = false;
+		$escape = false;
+		$length = strlen($input);
+
+		for ($i = $openPosition; $i < $length; $i++) {
+			$char = $input[$i];
+
+			if ($string) {
+				if ($escape) {
+					$escape = false;
+				} else if ($char === '\\') {
+					$escape = true;
+				} else if ($char === $string) {
+					$string = false;
+				}
+				continue;
+			}
+
+			if ($char === '"' || $char === "'") {
+				$string = $char;
+				continue;
+			}
+
+			if ($char === '(') {
+				$depth++;
+			} else if ($char === ')') {
+				$depth--;
+				if ($depth === 0) {
+					return $i;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	function rewrite_legacy_each_while_php($php) {
+		$offset = 0;
+		while (preg_match('/\bwhile\s*\(/i', $php, $matches, PREG_OFFSET_CAPTURE, $offset)) {
+			$matchText = $matches[0][0];
+			$whilePosition = $matches[0][1];
+			$openPosition = $whilePosition + strrpos($matchText, '(');
+			$closePosition = $this->find_matching_parenthesis($php, $openPosition);
+
+			if ($closePosition === false) {
+				break;
+			}
+
+			$statement = substr($php, $whilePosition, $closePosition - $whilePosition + 1);
+			$replacement = $this->rewrite_legacy_each_while($statement);
+			if ($replacement !== $statement) {
+				$php = substr($php, 0, $whilePosition) . $replacement . substr($php, $closePosition + 1);
+				$offset = $whilePosition + strlen($replacement);
+			} else {
+				$offset = $closePosition + 1;
+			}
+		}
+
+		return $php;
+	}
+
+	function rewrite_legacy_each_while_statements($template) {
+		$parts = preg_split('/(<\?php|\?>)/', $template, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$result = '';
+		$inPhp = false;
+
+		foreach ($parts as $part) {
+			if ($part === '<?php') {
+				$inPhp = true;
+				$result .= $part;
+			} else if ($part === '?>') {
+				$inPhp = false;
+				$result .= $part;
+			} else {
+				$result .= $inPhp ? $this->rewrite_legacy_each_while_php($part) : $part;
+			}
+		}
 
 		return $result;
 	}
@@ -1341,9 +1565,10 @@ class pinp {
 				$result = $this->token_ahead_value;
 				$this->next_token();
 				// parse casting, e.g. (int) (float)
-				if ($this->token_ahead == PT_IDENT && ($this->language_types[strtolower(trim($this->token_ahead_value))]??null)) {
+				$castType = $this->language_types[strtolower(trim($this->token_ahead_value))] ?? null;
+				if ($this->token_ahead == PT_IDENT && $castType) {
 					$this->next_token();
-					$result .= $this->token_value;
+					$result .= $castType;
 					if ($this->token_ahead != PT_PAR_CLOSE) {
 						$this->error = "Expected ')' for casting to '".$this->token_value."' at line: ".$this->scanner->YYLINE;
 					} else {
@@ -1805,6 +2030,7 @@ class pinp {
 			}
 		}
 		$this->new_template = preg_replace( "/[!][!][!][!]/", "", $this->new_template );
+		$this->new_template = $this->rewrite_legacy_each_while_statements($this->new_template);
 		if (!$this->error) {
 			$this->syntax_test( $this->new_template );
 		}
@@ -1840,7 +2066,7 @@ class pinp {
 		fclose( $pipes[ 2 ] );
 		$retVal = proc_close( $proc );
 		if ( $retVal > 0 ) {
-			$this->error = $stderr ? $stderr : "Error in syntax text";
+			$this->error = $stderr ? $stderr : ($stdout ?: "Error in syntax text");
 		}
 
 //echo "tested($template)\n";
