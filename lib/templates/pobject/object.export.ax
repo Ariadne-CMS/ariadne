@@ -30,6 +30,11 @@
 			}
 			ldSetContent("application/ariadne-export", filesize($tempfile));
 			ldHeader("Content-Disposition: attachment; filename=$filename.ax");
+			// Discard template output before disabling the loader's buffer, which flushes it.
+			// Even leading whitespace would corrupt the archive download.
+			if (ob_get_level() > 0) {
+				ob_clean();
+			}
 			ldDisablePostProcessing();
 			readfile($tempfile);
 			@unlink($tempfile);
