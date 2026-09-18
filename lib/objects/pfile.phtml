@@ -150,6 +150,10 @@ class pfile extends pobject { // pfile class definition
 		if ($filename) {
 			ldHeader("Content-Disposition: inline; filename=$filename");
 		}
+		// Discard earlier template output so the response starts with the file itself.
+		if (ob_get_level() > 0) {
+			ob_clean();
+		}
 		if ($mimetype=="text/html") { // parse {arRoot}
 			// assume html files to use charset UTF-8; this will always work correctly
 			// with the MSIE html editor, and won't corrupt 'normal' html.
@@ -192,6 +196,9 @@ class pfile extends pobject { // pfile class definition
 		if (!ldHeader("Content-type: application/x-ariadne-download")) {
 			return ar_error::raiseError( sprintf( $ARnls["err:headerssentnottext"], $this->path ), 501 );
 		} else {
+			if (ob_get_level() > 0) {
+				ob_clean();
+			}
 			ldHeader("Content-Disposition: attachment; filename=\"".$filename."\"");
 			ldHeader("Content-length:".(string)$size);
 			$file->readfile();
