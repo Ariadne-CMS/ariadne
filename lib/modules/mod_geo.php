@@ -12,7 +12,11 @@
  * This is the Google Maps geo helper/getter class
  */
 class geo_gmap {
-	public $api_key;
+	protected $api_key;
+
+	public function setApiKey($api_key) {
+		$this->api_key = $api_key;
+	}
 
 	public function getRawData($address, $output='php') {
 		$address = urlencode($address);
@@ -67,7 +71,7 @@ class geo {
 				$this->output = 'php';
 			}
 			$this->getter = new geo_gmap();
-			$this->getter->api_key = $this->api_key;
+			$this->getter->setApiKey($this->api_key);
 			return true;
 		} else {
 			return ar_error::raiseError('MOD_GEO: API "'.$config['API'].'" not supported', 'geo_0');
