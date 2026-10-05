@@ -152,6 +152,11 @@ class svnTest extends AriadneBaseTest
 		$res = current(ar::get(self::$testpath)->call('system.svn.diff.php'));
 		$this->assertFalse(strpos($res,'+changed'));
 		$this->assertNotInternalType('int',strpos($res,'+changed'));
+
+		ob_start();
+		ar::get(self::$testpath)->call('test.view.html');
+		$res = ob_get_clean();
+		$this->assertEquals('template:test.view.html', $res);
 	}
 
 	/**
