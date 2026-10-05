@@ -6,6 +6,7 @@
 	filestore($name, $root)
 
     write($contents, $id, $name)
+	writeBatch($files, $id)
 
 	read($id, $name, $limit=0, $offset=0)
 
@@ -60,6 +61,7 @@
 
 		protected $root;
 		protected $name;
+		protected $lockTimeout = 5.0;
 
 
 		/* public */
@@ -98,20 +100,119 @@
 		}
 
 		public function write($contents, $id, $name) {
-			$result=false;
-			if ($name) {
-				$id = $this->addObjectToLayer( $id );
-				$path=$this->make_path($id, $name, WRITE);
-				$tempfile = tempnam($this->make_path($id),$name.'_temp_');
-				if ($fp=fopen($tempfile, "wb")) {
-					$result=fwrite($fp, $contents);
-					fclose($fp);
-					if($result !== false) {
-						rename($tempfile,$path);
+			if (!$name) {
+				return false;
+			}
+
+			$contents = (string) $contents;
+			$id = $this->addObjectToLayer($id);
+			$path = $this->make_path($id, $name, WRITE);
+			$tempfile = $this->stageFile($contents, dirname($path), $name.'_temp_');
+			if ($tempfile === false) {
+				return false;
+			}
+
+			if (!$this->replaceFile($tempfile, $path)) {
+				@unlink($tempfile);
+				return false;
+			}
+
+			$this->invalidateFileCache($path);
+			return strlen($contents);
+		}
+
+		/*
+			Write a related set of files as one operation. All contents are staged
+			before any destination is replaced, while a per-object lock prevents
+			concurrent saves from interleaving their files. Existing files are kept
+			as staged backups so a failed replacement can be rolled back.
+		*/
+		public function writeBatch($files, $id) {
+			if (!is_array($files) || !$files) {
+				return false;
+			}
+
+			$id = $this->addObjectToLayer($id);
+			$directory = $this->make_path($id, null, WRITE);
+			$lockDirectory = $this->root.'.locks';
+			if (!is_dir($lockDirectory) && !@mkdir($lockDirectory, DIRMODE, true) && !is_dir($lockDirectory)) {
+				return false;
+			}
+			@chmod($lockDirectory, DIRMODE);
+
+			// Keep the lock file itself. Removing it after unlocking could let a
+			// third process create and lock a new inode while another process is
+			// still waiting on the old one. flock() state is released with the file
+			// descriptor, including when the PHP process terminates unexpectedly.
+			$lock = $this->acquireFileLock($lockDirectory.'/'.sha1($directory).'.lock');
+			if ($lock === false) {
+				return false;
+			}
+
+			$staged = array();
+			$backups = array();
+			$replaced = array();
+			try {
+				foreach ($files as $name => $contents) {
+					if (!$name) {
+						return false;
+					}
+					$contents = (string) $contents;
+					$path = $this->make_path($id, $name);
+					$tempfile = $this->stageFile($contents, $directory, $name.'_temp_');
+					if ($tempfile === false) {
+						return false;
+					}
+					$staged[$path] = $tempfile;
+
+					if (file_exists($path)) {
+						$original = file_get_contents($path);
+						if ($original === false) {
+							return false;
+						}
+						$backup = $this->stageFile($original, $directory, $name.'_backup_');
+						if ($backup === false) {
+							return false;
+						}
+						$backups[$path] = $backup;
+					} else {
+						$backups[$path] = null;
 					}
 				}
+
+				foreach ($staged as $path => $tempfile) {
+					if (!$this->replaceFile($tempfile, $path)) {
+						foreach (array_reverse($replaced) as $replacedPath) {
+							if (isset($backups[$replacedPath])) {
+								$this->replaceFile($backups[$replacedPath], $replacedPath);
+								$backups[$replacedPath] = null;
+							} else {
+								@unlink($replacedPath);
+							}
+							$this->invalidateFileCache($replacedPath);
+						}
+						return false;
+					}
+					$staged[$path] = null;
+					$replaced[] = $path;
+					$this->invalidateFileCache($path);
+				}
+
+				return true;
+			} finally {
+				foreach ($staged as $tempfile) {
+					if ($tempfile !== null) {
+						@unlink($tempfile);
+					}
+				}
+				foreach ($backups as $backup) {
+					if ($backup !== null) {
+						@unlink($backup);
+					}
+				}
+				flock($lock, LOCK_UN);
+				fclose($lock);
 			}
-			return $result;
 		}
 
 		public function read($id, $name, $limit=0, $offset=0) {
@@ -436,6 +537,74 @@
 
 
 		/* private functions */
+		protected function acquireFileLock($path) {
+			$lock = @fopen($path, 'c');
+			if ($lock === false) {
+				return false;
+			}
+			@chmod($path, FILEMODE);
+
+			$deadline = microtime(true) + $this->lockTimeout;
+			do {
+				$wouldBlock = 0;
+				if (@flock($lock, LOCK_EX | LOCK_NB, $wouldBlock)) {
+					return $lock;
+				}
+				if (!$wouldBlock) {
+					break;
+				}
+				usleep(10000);
+			} while (microtime(true) < $deadline);
+
+			fclose($lock);
+			return false;
+		}
+
+		protected function stageFile($contents, $directory, $prefix) {
+			$tempfile = @tempnam($directory, $prefix);
+			if ($tempfile === false) {
+				return false;
+			}
+
+			$fp = @fopen($tempfile, "wb");
+			if ($fp === false) {
+				@unlink($tempfile);
+				return false;
+			}
+
+			$contents = (string) $contents;
+			$length = strlen($contents);
+			$written = 0;
+			while ($written < $length) {
+				$bytes = @fwrite($fp, substr($contents, $written));
+				if ($bytes === false || $bytes === 0) {
+					fclose($fp);
+					@unlink($tempfile);
+					return false;
+				}
+				$written += $bytes;
+			}
+
+			$flushed = @fflush($fp);
+			$closed = fclose($fp);
+			if (!$flushed || !$closed) {
+				@unlink($tempfile);
+				return false;
+			}
+
+			return $tempfile;
+		}
+
+		protected function replaceFile($source, $destination) {
+			return @rename($source, $destination);
+		}
+
+		protected function invalidateFileCache($path) {
+			clearstatcache(true, $path);
+			if (function_exists('opcache_invalidate')) {
+				@opcache_invalidate($path, true);
+			}
+		}
 
 		public function make_path($id, $name=null, $write=false) {
 			// calculate path based on $id and $name

@@ -44,72 +44,84 @@
 			if ($pinp->error) {
 				$this->error = $pinp->error;
 			} else {
-				$this->data->config->pinp[$type][$function][$language]=$this->id;
-
-				if ($private) {
-					$this->data->config->privatetemplates[$type][$function] = 1;
-				} else if (isset($private)) {
-					if (isset($this->data->config->privatetemplates[$type][$function])) {
-						unset($this->data->config->privatetemplates[$type][$function]);
-						if (count($this->data->config->privatetemplates[$type])==0) {
-							unset($this->data->config->privatetemplates[$type]);
-						}
-					}
-				}
-
-
 				$file=$type.".".$function.".".$language;
-
-				// cleanup old file format
-				$templates->remove($this->id, $file);
-
-				$templates->write($template, $this->id, $file.".pinp");
-				if (isset($mtime) && $mtime) {
-					$templates->touch($this->id, $file.".pinp", $mtime);
-				}
-				$templateCode = $templates->templateCodeFunction($compiled);
-
 				// generating optimized template code
 				$optimized = sprintf($AR->PINPtemplate, $compiled);
 
-				$templates->write($optimized, $this->id, $file.".inc");
-				if (isset($mtime) && $mtime) {
-					$templates->touch($this->id, $file.".inc", $mtime);
-				}
+				// Install the executable before the source. writeBatch() stages both
+				// files and rolls back if either replacement fails.
+				$saved = $templates->writeBatch(array(
+					$file.".inc"  => $optimized,
+					$file.".pinp" => $template
+				), $this->id);
 
-				if ($default) { // add pinp template from default templates list
-					$this->data->config->templates[$type][$function][$language]=$this->id;
-				} else { // remove pinp template from default templates list
-					if (isset($this->data->config->templates[$type][$function][$language])) {
-						unset($this->data->config->templates[$type][$function][$language]);
-						if (count($this->data->config->templates[$type][$function])==0) {
-							unset($this->data->config->templates[$type][$function]);
-							if (count($this->data->config->templates[$type])==0) {
-								unset($this->data->config->templates[$type]);
+				if (!$saved) {
+					$this->error = "Failed to write source and compiled template files for ".$function.".";
+				} else {
+					unset($ARConfig->fsFunctions[$this->id][$file]);
+					ar('template')->invalidate($this->path, $file);
+
+					// cleanup old file format
+					$templates->remove($this->id, $file);
+
+					if (isset($mtime) && $mtime) {
+						$templates->touch($this->id, $file.".pinp", $mtime);
+						$templates->touch($this->id, $file.".inc", $mtime);
+					}
+
+					$this->data->config->pinp[$type][$function][$language]=$this->id;
+
+					if ($private) {
+						$this->data->config->privatetemplates[$type][$function] = 1;
+					} else if (isset($private)) {
+						if (isset($this->data->config->privatetemplates[$type][$function])) {
+							unset($this->data->config->privatetemplates[$type][$function]);
+							if (count($this->data->config->privatetemplates[$type])==0) {
+								unset($this->data->config->privatetemplates[$type]);
 							}
 						}
 					}
-				}
 
-				// Remove this template from 'deleted templates'.
-				if ($AR->SVN->enabled) {
-					if (isset($this->data->config->deleted_templates[$type][$function][$language])) {
-						unset($this->data->config->deleted_templates[$type][$function][$language]);
-						if (count($this->data->config->deleted_templates[$type][$function])==0) {
-							unset($this->data->config->deleted_templates[$type][$function]);
-							if (count($this->data->config->deleted_templates[$type])==0) {
-								unset($this->data->config->deleted_templates[$type]);
+					if ($default) { // add pinp template from default templates list
+						$this->data->config->templates[$type][$function][$language]=$this->id;
+					} else { // remove pinp template from default templates list
+						if (isset($this->data->config->templates[$type][$function][$language])) {
+							unset($this->data->config->templates[$type][$function][$language]);
+							if (count($this->data->config->templates[$type][$function])==0) {
+								unset($this->data->config->templates[$type][$function]);
+								if (count($this->data->config->templates[$type])==0) {
+									unset($this->data->config->templates[$type]);
+								}
 							}
 						}
 					}
+
+					// Remove this template from 'deleted templates'.
+					if ($AR->SVN->enabled) {
+						if (isset($this->data->config->deleted_templates[$type][$function][$language])) {
+							unset($this->data->config->deleted_templates[$type][$function][$language]);
+							if (count($this->data->config->deleted_templates[$type][$function])==0) {
+								unset($this->data->config->deleted_templates[$type][$function]);
+								if (count($this->data->config->deleted_templates[$type])==0) {
+									unset($this->data->config->deleted_templates[$type]);
+								}
+							}
+						}
+					}
+
+					$objectSaved = $this->save();
+					if (!$objectSaved && !$this->error) {
+						$this->error = "Failed to save template configuration for ".$function.".";
+					}
+
+					if (!$this->error) {
+						$this->ClearCache($this->path, true, false);
+
+						global $cache_config;
+						$cachestore=new cache($cache_config);
+						$cachestore->onTemplateSaved($this->id, $type, $file);
+					}
 				}
-
-				$this->save();
-				$this->ClearCache($this->path, true, false);
-
-				global $cache_config;
-				$cachestore=new cache($cache_config);
-				$cachestore->onTemplateSaved($this->id, $type, $file);
 			}
 		}
 	}
