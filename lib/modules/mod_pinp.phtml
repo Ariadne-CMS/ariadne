@@ -1006,6 +1006,8 @@ class pinp {
 			$parsed = $this->parse_statement();
 			switch ( true ) {
 				case ($in_special === "ar::untaint" && in_array( $i, [ 0 ] ) ):
+				// LDAP result metadata (including paging controls) is returned by reference.
+				case ($in_special === "ldap_parse_result" && $i >= 2):
 				case ($in_special === "unset"):
 				case ($in_special === "isset"):
 				case ($in_special === "array_pop"):
