@@ -4,6 +4,24 @@ require_once(AriadneBasePath."/modules/mod_pinp.phtml");
 
 class pinpCompilerTest extends AriadneBaseTest
 {
+	public function testLdapResultOutputReferences() {
+		$compiler = new pinp("header|ldap_parse_result", "object->", "\$object->_");
+		$res = $compiler->compile('<pinp>ldap_parse_result($ldap, $result, $code, $matched, $message, $referrals, $controls);</pinp>');
+		$this->assertNull($compiler->error);
+		$this->assertStringContainsString('ldap_parse_result(', $res);
+		$parse = function ($ldap, $result, &$code, &$matched, &$message, &$referrals, &$controls) {
+			$code = 0;
+			$matched = '';
+			$message = '';
+			$referrals = array();
+			$controls = array('cookie' => 'next-page');
+		};
+		$object = new stdClass;
+		eval('?>' . str_replace('ldap_parse_result(', '$parse(', $res));
+		$this->assertSame(0, $object->code);
+		$this->assertSame(array('cookie' => 'next-page'), $object->controls);
+	}
+
 	public function testBaseCompile() {
 		$template = <<<'EOD'
 <pinp> $test = 'test'; </pinp>
