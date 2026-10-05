@@ -133,7 +133,7 @@
 	if ($svn_enabled && isset($svn_info) && isset($svn_info['revision']) && strlen( $svn_info['revision'] ) ) {
 
 		$filename = $type.".".$function.".".$language.".pinp";
-		switch($svn_status[$filename]['wc-status']['item']) {
+		switch($svn_status[$filename]['wc-status']['item'] ?? null) {
 			// Fixme: find out the codes for "locked", "read only" and add them.
 			case "conflicted":
 				$svn_img = "ConflictIcon.png";
