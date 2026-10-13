@@ -1,41 +1,36 @@
 <?php
-	if ( ( $this->CheckLogin('layout') || $this->CheckLogin('layout:read') ) && $this->CheckConfig() ) {
-        $file = "";
-        if ($this->data->config->pinp[$type][$function][$language]) {
-            $template=$type.".".$function.".".$language.".pinp";
-			$svn_enabled = $AR->SVN->enabled;
+	if (($this->CheckLogin('layout') || $this->CheckLogin('layout:read')) && $this->CheckConfig()) {
+		$filename = $type.'.'.$function.'.'.$language.'.pinp';
+		$template_list = $this->call('system.get.templates.info.php');
+		$arResult = ar::error('Template not found', 404);
 
-			if ($svn_enabled) {
-				$filestore = $this->store->get_filestore_svn("templates");
-				$svn = $filestore->connect($this->id);
-				$svn_info = $filestore->svn_info($svn);
-				if ( $svn_info['revision'] ?? null) {
-					$svn_status = $filestore->svn_status($svn);
-				} else {
-					$svn_enabled = false; // this library is not under revision control
-				}
-			} else {
-				$filestore = $this->store->get_filestore("templates");
+		foreach ($template_list['templates'] as $template_info) {
+			if ($template_info['type'] != $type
+				|| $template_info['function'] != $function
+				|| $template_info['language'] != $language) {
+				continue;
 			}
 
-            if ($filestore->exists($this->id, $template)) {
-                $arResult = array(
-					'svn'   => $svn_enabled,
-					'ctime' => $filestore->mtime($this->id, $template),
-					'mtime' => $filestore->mtime($this->id, $template),
-					'size'  => $filestore->size($this->id, $template)
-				);
-				if ( $svn_enabled ) {
-					$arResult += array(
-						'svn-info' => $svn_info,
-						'svn-status' => $svn_status[$template]
-					);
-				}
-            } else {
+			if ($template_info['mtime'] === false
+				&& $template_info['svn-status'] != 'missing'
+				&& $template_info['svn-status'] != 'deleted') {
 				$arResult = ar::error('Template not accessible', 501);
+				break;
 			}
-        } else {
-			$arResult = ar::error('Template not found', 404);
+
+			$arResult = array(
+				'svn' => $template_info['svn'],
+				'ctime' => $template_info['mtime'],
+				'mtime' => $template_info['mtime'],
+				'size' => $template_info['size']
+			);
+			if ($template_info['svn']) {
+				$arResult += array(
+					'svn-info' => $template_list['svn-info'],
+					'svn-status' => $template_list['svn-status'][$filename] ?? null
+				);
+			}
+			break;
 		}
 	}
 ?>
