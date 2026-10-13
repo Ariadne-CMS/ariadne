@@ -1,6 +1,8 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$this->resetloopcheck();
+		$this->error = null;
+		$updateErrors = array();
 
 		$fstore   = $this->store->get_filestore_svn("templates");
 		$svn      = $fstore->connect($this->id, $this->getdata("username"), $this->getdata("password"));
@@ -20,7 +22,8 @@
 		$revision   = $this->getdata("revision");
 
 		if (!isset($repository) || $repository == '') {
-			echo $ARnls['err:svn:enterURL'];
+			$this->error = $ARnls['err:svn:enterURL'];
+			echo $this->error;
 			flush();
 			return;
 		} else {
@@ -40,16 +43,19 @@
 
 			$result = $fstore->svn_update($svn, $filename, $revision);
 			if ($result === false || ar_error::isError($result)) {
-				echo "Update failed.\n";
+				$updateErrors[] = "SVN update failed.";
+				echo "SVN update failed.\n";
 				echo $result."\n";
-				if ($result->previous) {
+				if (is_object($result) && ($result->previous ?? null)) {
 					echo $result->previous."\n";
 				}
 				if (count($errs = $fstore->svnstack->getErrors())) {
 					foreach ($errs as $err) {
+						$updateErrors[] = $err['message'];
 						echo $err['message']."\n";
 					}
 				}
+				$this->error = implode("\n", $updateErrors);
 			} else if ($result) {
 				$revisionentry = array_pop($result);
 				$updated_templates = array();
@@ -69,15 +75,19 @@
 						case "E":
 							// existing template, no need for recompile
 							break;
-						case "Skipped":
 						case "C":
-							break; // Don't try to recompile conflicted templates
+							$updateErrors[] = "SVN conflict in ".$this->path.$item['name']."; the template was not compiled.";
+							break; // Don't try to compile conflicted templates
+						case "Skipped":
+							$updateErrors[] = "SVN skipped ".$this->path.$item['name']."; the template was not compiled.";
+							break;
 						default:
 							$updated_templates[] = $item['name'];
 							break;
 					}
 					$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
 					if( ar_error::isError($props)) {
+						$updateErrors[] = $props->getMessage();
 						echo "<span>Error: ".$props->getMessage()."</span>";
 					} else if( $item["filestate"]  == "A" ) {
 						echo "<span class='svn_addtemplateline'>Added ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
@@ -88,7 +98,7 @@
 					} elseif( $item["filestate"] == "E" ) {
 						echo "<span class='svn_revisionline'>Existing ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
 					} elseif( $item["filestate"] == "C" ) {
-						echo "<span class='svn_revisionline'>Conflict ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
+						echo "<span class='svn_error'>Conflict ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."; template not compiled</span>\n";
 					} elseif( $item["filestate"] == "D" ) {
 						// system.svn.delete.templates.php will report that this template has been deleted
 						//echo "<span class='svn_deletetemplateline'>Deleting ".$item["name"]."</span>\n"; // we don't know the props since it's deleted.
@@ -106,7 +116,11 @@
 						'svn'       => $svn
 					)
 				);
+				if ($this->error) {
+					$updateErrors[] = (string) $this->error;
+				}
 
+				$this->error = null;
 				$this->call(
 					"system.svn.delete.templates.php",
 					array(
@@ -115,7 +129,11 @@
 						'svn'       => $svn
 					)
 				);
+				if ($this->error) {
+					$updateErrors[] = (string) $this->error;
+				}
 
+				$this->error = $updateErrors ? implode("\n", array_unique($updateErrors)) : null;
 			}
 		}
 	}

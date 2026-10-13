@@ -35,6 +35,15 @@
 			return $this->compiledCache[$path][$name];
 		}
 
+		public function invalidate($path, $name = null) {
+			if (isset($name)) {
+				unset($this->compiledCache[$path][$name]);
+			} else {
+				unset($this->compiledCache[$path]);
+			}
+			unset($this->cache[$path]);
+		}
+
 		public function save($path, $name, $template, $local=null, $private=null) {
 			return self::getStorageLayer($path)->save($path, $name, $template, $local, $private);
 		}

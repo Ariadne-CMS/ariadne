@@ -1,6 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$compileErrors = array();
 
 		if (is_array($templates)) {
 			foreach ($templates as $filename) {
@@ -45,10 +46,13 @@
 							));
 
 				if ($this->error) {
-					echo "\nError compiling ".$this->path.$meta['ar:function']." (".$meta['ar:type'].") [".$meta['ar:language']."] ".($meta['ar:default'] == '1' ? $ARnls['default'] : "")."\n";
-					echo $this->error."\n\n";
+					$error = "Error saving ".$this->path.$meta['ar:function']." (".$meta['ar:type'].") [".$meta['ar:language']."] ".($meta['ar:default'] == '1' ? $ARnls['default'] : "").": ".$this->error;
+					$compileErrors[] = $error;
+					echo "\n".$error."\n\n";
 				}
 			}
 		}
+
+		$this->error = $compileErrors ? implode("\n", $compileErrors) : null;
 	}
 ?>
