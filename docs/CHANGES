@@ -2,6 +2,16 @@
 Changes Ariadne 9.7
 ===================
 
+Changes
+- Made Helene the preferred template editor when it is installed. Its template
+  overview now shows modification time, size, and SVN status, includes the
+  current object's templates first, and exposes the existing template SVN
+  workflows. Templates can be sorted by name, date, or SVN status. The
+  overview remains compatible with installations where Helene is upgraded
+  before the corresponding Ariadne core metadata endpoint. Opening a template
+  or overview that is already open now focuses its existing Helene tab, even
+  when it was opened from an independent browser tab.
+
 Bug fixes
 - Fixed bug when locking passwords, now correctly stores '!' as the hashed
   password. This means that user cannot login anymore.
