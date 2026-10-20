@@ -79,7 +79,7 @@
 			'label' => $ARnls['ariadne:settings'],
 			'tasks' => $settings
 		);
-		$section = $this->call('explore.sidebar.tasks.extra.html', array("section" => $section, "images" => $AR->dir->images));
+		$section = $this->call('explore.sidebar.settings.extra.html', array("section" => $section, "images" => $AR->dir->images));
 		if (count($section['tasks'])) {
 			if (!$ARCurrent->arTypeTree) {
 				$this->call('typetree.ini');
