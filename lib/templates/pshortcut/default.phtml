@@ -36,6 +36,7 @@
 		if ( $this->data->path ?? null ) {
 			unset($ARConfig->cache[$this->data->path]->templates_path);
 		}
+		$ARBeenHere[$arCallFunction][$path]-=1;
 	} else {
 		error( sprintf($ARnls["err:shortcutloopexceed"],$data->path, $arCallFunction,$MAXLOOPCOUNT,$this->path) );
 	}
