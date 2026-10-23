@@ -43,6 +43,21 @@
 			parent::__construct( $soapClient );
 		}
 
+		public function __get( $name ) {
+			// Keep trace properties readable through SoapClient's public getters.
+			switch ( $name ) {
+				case '__last_response':
+					return $this->_getLastResponse();
+				case '__last_response_headers':
+					return $this->_getLastResponseHeaders();
+				case '__last_request':
+					return $this->_getLastRequest();
+				case '__last_request_headers':
+					return $this->_getLastRequestHeaders();
+			}
+			return parent::__get( $name );
+		}
+
 		public function _soapCall( $name, $arguments, $options = array(), $inputHeaders = array(), &$outputHeaders = array() ) {
 			try {
 				$result = $this->wrapped->__soapCall( $name, $arguments, $options, $inputHeaders, $outputHeaders );

@@ -45,11 +45,6 @@ class HelenePackageTest extends TestCase
 		$this->assertStringContainsString("localStorage.setItem(prefix + 'request'", $sidebar);
 		$this->assertStringContainsString('muze.include(helper)', $sidebar);
 
-		$shortcutSidebar = $this->getTemplate('explore.sidebar.tasks.extra.html', 'any', 'pshortcut');
-		$this->assertStringContainsString("['target'] = '_blank'", $shortcutSidebar);
-		$this->assertStringContainsString("heleneWindows.focus('overview', id)", $shortcutSidebar);
-		$this->assertStringContainsString("muze.ariadne.explore.arshow('_blank', url)", $shortcutSidebar);
-
 		$header = $this->getTemplate('helene.header.html');
 		$this->assertStringContainsString(
 			'class="helene-toggle-option active" data-helene-toggle="viewtype" data-helene-option="helene-detailview"',
@@ -99,12 +94,27 @@ class HelenePackageTest extends TestCase
 
 		$list = $this->getTemplate('helene.get.templates');
 		$this->assertStringContainsString('system.get.templates.info.php', $list);
+		$this->assertStringContainsString("'pobject::system.get.templates.info.php'", $list);
+		$this->assertStringContainsString("\$templatesOb->implements('pshortcut')", $list);
 		$this->assertStringContainsString("array_key_exists('templates', \$templateSet)", $list);
 		$this->assertStringContainsString('system.get.template.info.php', $list);
 		$this->assertStringContainsString('$templatesOb->data->config->pinp', $list);
 
 		$byPath = $this->getTemplate('helene.get.templates.bypath');
-		$this->assertStringContainsString("array(\$path => '')", $byPath);
+		$this->assertStringContainsString("ar::getvar('heleneTemplatesRootPath') ?: \$path", $byPath);
+		$this->assertStringContainsString('ar::parents($templatesRootPath)', $byPath);
+		$this->assertStringContainsString("array(\$templatesRootPath => '')", $byPath);
+		$this->assertStringContainsString("makePath(\$templatesRootPath.'../')", $byPath);
+		$this->assertStringContainsString("if ( \$parentPath == '/' )", $byPath);
+		$this->assertSame(2, substr_count($byPath, "ar::call('current:helene.get.templates'"));
+		$this->assertStringContainsString("ar::call( 'current:helene.get.libraries'", $byPath);
+		$this->assertStringNotContainsString("ar::call('helene.get.templates'", $byPath);
+
+		$overview = $this->getTemplate('helene.html');
+		$this->assertStringContainsString(
+			"ar::putvar('heleneTemplatesRootPath', ar::getvar('arShortCut') ?: \$path)",
+			$overview
+		);
 
 		$block = $this->getTemplate('helene.show.template-block.html');
 		$this->assertStringContainsString('helene-template-metadata', $block);
@@ -164,13 +174,9 @@ class HelenePackageTest extends TestCase
 		$compiler = new pinp('header', 'object->', '$object->_');
 		$compiler->compile(str_replace("\r", '', $this->getTemplate('helene.nls', 'nl')));
 		$this->assertNull($compiler->error, 'helene.nls.nl: '.(string) $compiler->error);
-
-		$compiler = new pinp('header', 'object->', '$object->_');
-		$compiler->compile(str_replace("\r", '', $this->getTemplate('explore.sidebar.tasks.extra.html', 'any', 'pshortcut')));
-		$this->assertNull($compiler->error, 'pshortcut explore.sidebar.tasks.extra.html: '.(string) $compiler->error);
 	}
 
-	public function testSidebarOverridesDoNotRequireCoreTemplateChanges()
+	public function testSidebarSettingsUseGenericExtensionHook()
 	{
 		$pobject = file_get_contents(AriadneBasePath.'/templates/pobject/explore.sidebar.settings.php');
 		$this->assertStringNotContainsString('helene.html', $pobject);
@@ -178,14 +184,18 @@ class HelenePackageTest extends TestCase
 
 		$shortcut = file_get_contents(AriadneBasePath.'/templates/pshortcut/explore.sidebar.settings.php');
 		$this->assertStringNotContainsString('helene.html', $shortcut);
-		$this->assertStringContainsString("'explore.sidebar.tasks.extra.html'", $shortcut);
-		$this->assertStringContainsString("heleneWindows.focus('overview'", $this->getTemplate('explore.sidebar.tasks.extra.html', 'any', 'pshortcut'));
+		$this->assertStringContainsString("'explore.sidebar.settings.extra.html'", $shortcut);
+		$this->assertStringNotContainsString("'explore.sidebar.tasks.extra.html'", $shortcut);
+
+		$shortcutDefault = file_get_contents(AriadneBasePath.'/templates/pshortcut/default.phtml');
+		$this->assertStringContainsString('$ARBeenHere[$arCallFunction][$path]-=1;', $shortcutDefault);
 	}
 
 	public function testClosingPinpTagIsTheLastContentByte()
 	{
 		$templates = array(
 			'explore.sidebar.settings.extra.html',
+			'helene.html',
 			'helene.get.templates',
 			'helene.get.templates.bypath',
 			'helene.nls',
@@ -196,11 +206,6 @@ class HelenePackageTest extends TestCase
 		foreach ($templates as $name) {
 			$this->assertSame('</pinp>', substr($this->getTemplate($name), -7), $name);
 		}
-		$this->assertSame(
-			'</pinp>',
-			substr($this->getTemplate('explore.sidebar.tasks.extra.html', 'any', 'pshortcut'), -7),
-			'explore.sidebar.tasks.extra.html'
-		);
 		$this->assertSame('</pinp>', substr($this->getTemplate('helene.nls', 'nl'), -7), 'helene.nls.nl');
 	}
 }
