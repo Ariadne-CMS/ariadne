@@ -1005,6 +1005,10 @@ class pinp {
 			}
 			$parsed = $this->parse_statement();
 			switch ( true ) {
+				case ($in_special === "SoapClient::__soapCall" && $i === 4):
+					// Output headers must remain a writable variable, not a ?? expression.
+					$parsed = preg_replace('/^(\s*)\((\$[\s\S]+) \?\? null\)!!!!(\s*)$/', '$1$2$3', $parsed);
+				break;
 				case ($in_special === "ar::untaint" && in_array( $i, [ 0 ] ) ):
 				// LDAP result metadata (including paging controls) is returned by reference.
 				case ($in_special === "ldap_parse_result" && $i >= 2):
@@ -1271,7 +1275,7 @@ class pinp {
 		return $result;
 	}
 
-	function parse_var_index($var_prefix, $func_prefix, $inDQString = false) {
+	function parse_var_index($var_prefix, $func_prefix, $inDQString = false, $objectMethod = false) {
 		$result = "";
 		$noise = "";
 		if ($this->token_ahead == PT_IDENT) {
@@ -1286,7 +1290,9 @@ class pinp {
 					$this->error = "Can't call functions from an array at line: ".$this->scanner->YYLINE;
 					return false;
 				}
-				$call_args = $this->parse_func_call_args();
+				$special = $objectMethod && strtolower(ltrim($ident, '_')) === 'soapcall'
+					? 'SoapClient::__soapCall' : '';
+				$call_args = $this->parse_func_call_args($special);
 				if ($this->error) {
 					return false;
 				}
@@ -1401,7 +1407,7 @@ class pinp {
 		while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
 			$this->next_token();
 			$result = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!]/", "\\1", $result );
-			$result .= $this->token_value.$this->parse_var_index("", "_", $inDQString);
+			$result .= $this->token_value.$this->parse_var_index("", "_", $inDQString, true);
 			if ($this->token == PT_PAR_CLOSE) {
 				break;
 			}
