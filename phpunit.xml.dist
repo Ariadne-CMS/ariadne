@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit backupGlobals="false" bootstrap="tests/bootstrap.php"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+backupGlobals="false" bootstrap="tests/bootstrap.php"
 verbose="true" timeoutForSmallTests="10">
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory>lib</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">./vendor</directory>
+    </exclude>
+  </coverage>
   <testsuites>
     <testsuite name="Automated testing">
       <directory suffix="Test.php">tests/unit/</directory>
@@ -11,12 +21,4 @@ verbose="true" timeoutForSmallTests="10">
     <!-- svnrepo is removed because that url does not work -->
     <!-- env name="svnrepo" value="https://svn.muze.nl/svn/test/" /-->
   </php>
-  <filter>
-    <whitelist addUncoveredFilesFromWhitelist="true">
-      <directory>lib</directory>
-      <exclude>
-        <directory suffix=".php">./vendor</directory>
-      </exclude>
-    </whitelist>
-  </filter>
 </phpunit>

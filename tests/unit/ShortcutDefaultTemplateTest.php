@@ -44,6 +44,28 @@ class ShortcutDefaultObjectStub
 
 class ShortcutDefaultTemplateTest extends TestCase
 {
+	private $savedGlobals = array();
+
+	protected function setUp(): void
+	{
+		foreach (array('ARBeenHere', 'ARConfig', 'ARCurrent') as $name) {
+			if (array_key_exists($name, $GLOBALS)) {
+				$this->savedGlobals[$name] = $GLOBALS[$name];
+			}
+		}
+	}
+
+	protected function tearDown(): void
+	{
+		foreach (array('ARBeenHere', 'ARConfig', 'ARCurrent') as $name) {
+			if (array_key_exists($name, $this->savedGlobals)) {
+				$GLOBALS[$name] = $this->savedGlobals[$name];
+			} else {
+				unset($GLOBALS[$name]);
+			}
+		}
+	}
+
 	public function testSequentialCallsDoNotTriggerTheRecursionGuard()
 	{
 		global $ARBeenHere, $ARConfig, $ARCurrent;

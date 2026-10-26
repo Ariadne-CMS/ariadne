@@ -147,6 +147,21 @@ class PinpReferenceArgumentsTest extends TestCase
 		}
 	}
 
+	public function testLoaderErrorParameterRemainsWritable()
+	{
+		$compiler = new pinp('', 'object->', '$object->');
+		$compiled = $compiler->compile('<pinp>ldRegisterFile($field, $error);</pinp>');
+		$this->assertNull($compiler->error);
+		$this->assertStringContainsString('($object->field ?? null)', $compiled);
+
+		$register = function ($field, &$error) {
+			$error = 'Upload failed';
+		};
+		$object = new stdClass();
+		eval('?>'.str_ireplace('ldRegisterFile(', '$register(', $compiled));
+		$this->assertSame('Upload failed', $object->error);
+	}
+
 	public function testBinaryCastUsesCanonicalSpelling()
 	{
 		$object = $this->runTemplate('$result = (binary) 42;');
