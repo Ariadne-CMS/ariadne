@@ -305,7 +305,7 @@
 	}
 
 	function ldGetCookieSession() {
-		return $_COOKIE['ARCurrentSession'];
+		return $_COOKIE['ARCurrentSession'] ?? null;
 	}
 
 	function ldSetCache($file, $time, $image, $headers) {
@@ -408,7 +408,7 @@
 				$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
 			}
 		} else {
-			debug("ldSetUserCookie: no consent. (".$ARUserCookie.")","object");
+			debug("ldSetUserCookie: no consent.","object");
 		}
 		return $result;
 	}
@@ -431,7 +431,7 @@
 			if($replace){
 				$ARCurrent->ldHeaders[strtolower($key)]=$header;
 			} else {
-				$ARCurrent->ldHeaders[strtolower($key)].=$header;
+				$ARCurrent->ldHeaders[strtolower($key)] = ($ARCurrent->ldHeaders[strtolower($key)] ?? '').$header;
 			}
 		}
 		return $result;
@@ -634,13 +634,13 @@
 		} elseif ($AR->hideSessionIDfromURL) {
 			$cookies = (array) ldGetCredentials();
 			$current = ldGetCookieSession();
-			if ( array_key_exists( $current, $cookies ) ) {
+			if ( $current !== null && array_key_exists( $current, $cookies ) ) {
 				$session_id = $current;
 			}
 		} elseif (isset($_SERVER['PHP_AUTH_USER'])) {
 			$cookies = (array) ldGetCredentials();
 			$current = ldGetCookieSession();
-			if ( array_key_exists( $current, $cookies ) ) {
+			if ( $current !== null && array_key_exists( $current, $cookies ) ) {
 				$session_id = $current;
 			}
 		}

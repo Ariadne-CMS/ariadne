@@ -121,6 +121,9 @@
 
 	function ldDecodeCookie($cookie) {
 		global $AR;
+		if ($cookie === null || $cookie === '') {
+			return null;
+		}
 		$data = json_decode($cookie,true);
 		if(is_null($data)){
 			if(isset($AR->sessionCryptoKey)) {
