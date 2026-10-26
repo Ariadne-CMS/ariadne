@@ -193,10 +193,13 @@
 		case "9.7":
 		case "9.8":
 		case "10-rc1":
+		case "12-rc1":
+		case "12":
+		case "12.0":
 				array_push($todo, array(
 							"description" => "Recompiling all PINP templates.",
 							"operation" => "all/upgrade.templates.php",
-							"newversion" => "12-rc1"
+							"newversion" => "12.1"
 						));
 
 	}
