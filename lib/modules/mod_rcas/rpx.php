@@ -115,7 +115,8 @@
 			curl_setopt( $getInfoRequest, CURLOPT_POST, true);
 			curl_setopt( $getInfoRequest, CURLOPT_POSTFIELDS, $post_data);
 			curl_setopt( $getInfoRequest, CURLOPT_HEADER, false);
-			curl_setopt( $getInfoRequest, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt( $getInfoRequest, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt( $getInfoRequest, CURLOPT_SSL_VERIFYHOST, 2);
 			$response = curl_exec($getInfoRequest);
 			if (curl_errno($getInfoRequest)) {
 				$this->error = curl_error($getInfoRequest);
@@ -144,7 +145,8 @@
 			curl_setopt( $mapUserRequest, CURLOPT_POST, true);
 			curl_setopt( $mapUserRequest, CURLOPT_POSTFIELDS, $post_data);
 			curl_setopt( $mapUserRequest, CURLOPT_HEADER, false);
-			curl_setopt( $mapUserRequest, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt( $mapUserRequest, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt( $mapUserRequest, CURLOPT_SSL_VERIFYHOST, 2);
 			$response = curl_exec($mapUserRequest);
 			if (curl_errno($mapUserRequest)) {
 				$this->error = curl_error($mapUserRequest);
