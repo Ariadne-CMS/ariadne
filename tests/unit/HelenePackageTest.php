@@ -208,4 +208,75 @@ class HelenePackageTest extends TestCase
 		}
 		$this->assertSame('</pinp>', substr($this->getTemplate('helene.nls', 'nl'), -7), 'helene.nls.nl');
 	}
+
+	public function testRuntimeAssetsAreLocalAndRegistered()
+	{
+		$source = $this->getTemplate('helene.assets.json');
+		$manifest = json_decode(substr($source, strpos($source, '</pinp>') + 7), true, 512, JSON_THROW_ON_ERROR);
+		$objects = $this->archive->extractInString('./objects.data');
+		$object = null;
+		foreach (explode("\n", $objects) as $line) {
+			$fields = explode('&', $line);
+			if ($fields[0] === '33') {
+				$object = unserialize(base64_decode($fields[5]), array('allowed_classes' => array('stdClass')));
+				break;
+			}
+		}
+		$this->assertNotNull($object);
+		foreach ($manifest['templates'] as $name) {
+			$template = $this->getTemplate($name);
+			$this->assertSame(33, $object->config->pinp['pobject'][$name]['any'], $name);
+			$this->assertSame(33, $object->config->templates['pobject'][$name]['any'], $name);
+			$this->assertDoesNotMatchRegularExpression('/(?<!\r)\n/', $template, $name.' must use CRLF');
+			$compiler = new pinp('', 'object->', '$object->_');
+			$compiled = $compiler->compile(str_replace("\r", '', $template));
+			$this->assertNull($compiler->error, $name.': '.(string)$compiler->error);
+			token_get_all($compiled, TOKEN_PARSE);
+
+			if (substr($name, -4) === '.css') {
+				preg_match_all('/url\(([^)]+)\)/', $template, $urls);
+				foreach ($urls[1] as $url) {
+					$url = trim($url, "\"' \t\r\n");
+					if (strpos($url, 'data:') === 0) continue;
+					$this->assertStringStartsWith('helene.', $url, $name.' has a non-local dependency');
+					$target = preg_split('/[?#]/', $url)[0];
+					$this->assertArrayHasKey($target, $manifest['assets'], $name.' has an unbundled dependency');
+				}
+			}
+		}
+		foreach (array('helene.head.html', 'helene.template.head.html', 'helene.template.merge.html') as $name) {
+			$template = $this->getTemplate($name);
+			$this->assertDoesNotMatchRegularExpression('/(?:src|href)=["\'](?:https?:)?\/\//i', $template, $name);
+			$this->assertStringContainsString('helene.bootstrap.min.css', $template);
+			$this->assertStringContainsString('helene.font-awesome.css', $template);
+			if ($name !== 'helene.head.html') {
+				$this->assertStringContainsString('helene.jquery.js', $template);
+				$this->assertStringContainsString('helene.bootstrap.js', $template);
+			}
+		}
+		$this->assertStringContainsString('@import url(helene.lato.css)', $this->getTemplate('helene.layout.css'));
+	}
+
+	public function testBundledFontsEmitTheirExactOriginalBytes()
+	{
+		$source = $this->getTemplate('helene.assets.json');
+		$manifest = json_decode(substr($source, strpos($source, '</pinp>') + 7), true, 512, JSON_THROW_ON_ERROR);
+		foreach ($manifest['assets'] as $name => $asset) {
+			if (preg_match('/\.(css|js)$/', $name)) continue;
+			$template = $this->getTemplate($name);
+			$this->assertSame('</pinp>', substr($template, -7), $name);
+			$this->assertStringContainsString("ldSetContent('".$asset['mime']."')", $template);
+			$compiler = new pinp('', 'object->', '$object->_');
+			$compiled = $compiler->compile(str_replace("\r", '', $template));
+			$this->assertNull($compiler->error, $name);
+			ob_start();
+			try {
+				eval('?>'.$compiled);
+				$bytes = ob_get_contents();
+			} finally {
+				ob_end_clean();
+			}
+			$this->assertSame($asset['sha256'], hash('sha256', $bytes), $name);
+		}
+	}
 }
