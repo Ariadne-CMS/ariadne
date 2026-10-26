@@ -3,6 +3,10 @@ Changes Ariadne 9.7
 ===================
 
 Changes
+- Removed server-side LESS compilation, including ar('formats/less'),
+  <compile:lessc> blocks, and the mishal/iless and leafo/lessphp dependencies.
+  Existing LESS compile blocks now report an unsupported compiler error.
+  Compile any remaining LESS stylesheets to CSS before using them in templates.
 - Made Helene the preferred template editor when it is installed. Its template
   overview now shows modification time, size, and SVN status, includes the
   current object's templates first, and exposes the existing template SVN

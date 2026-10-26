@@ -481,8 +481,13 @@ class  Ripcord_Transport_Stream implements Ripcord_Transport
 			)
 		);
 		$context = stream_context_create( $options );
+		if (function_exists('http_clear_last_response_headers')) {
+			http_clear_last_response_headers();
+		}
 		$result  = @file_get_contents( $url, false, $context );
-		$this->responseHeaders = $http_response_header;
+		$this->responseHeaders = function_exists('http_get_last_response_headers')
+			? (http_get_last_response_headers() ?? array())
+			: ($http_response_header ?? array());
 		if ( !$result )
 		{
 			throw new Ripcord_TransportException( 'Could not access ' . $url,
@@ -525,7 +530,7 @@ class Ripcord_Transport_CURL implements Ripcord_Transport
 		}
 		$version = explode('.', phpversion() );
 		if ( ( (0 + $version[0]) == 5) && ( 0 + $version[1]) < 3 ) { // previousException supported in php >= 5.3
-			$this->_skipPreviousException = true;
+			$this->skipPreviousException = true;
 		}
 	}
 
@@ -556,9 +561,9 @@ class Ripcord_Transport_CURL implements Ripcord_Transport
 		{
 			$errorNumber = curl_errno( $curl );
 			$errorMessage = curl_error( $curl );
-			curl_close( $curl );
+			unset($curl);
 			$version = explode('.', phpversion() );
-			if (!$this->_skipPreviousException) { // previousException supported in php >= 5.3
+			if (!$this->skipPreviousException) { // previousException supported in php >= 5.3
 				$exception = new Ripcord_TransportException( 'Could not access ' . $url
 					, ripcord::cannotAccessURL
 					, new Exception( $errorMessage, $errorNumber )
@@ -571,7 +576,7 @@ class Ripcord_Transport_CURL implements Ripcord_Transport
 			}
 			throw $exception;
 		}
-		curl_close($curl);
+		unset($curl);
 		return $contents;
 	}
 }

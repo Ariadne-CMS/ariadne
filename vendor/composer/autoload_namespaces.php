@@ -9,7 +9,6 @@ return array(
     'VersionControl_SVN' => array($vendorDir . '/pear/versioncontrol_svn'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'JSMin\\' => array($vendorDir . '/mrclay/jsmin-php/src'),
-    'ILess' => array($vendorDir . '/mishal/iless/lib'),
     'Console' => array($vendorDir . '/pear/console_getopt'),
     'Archive_Tar' => array($vendorDir . '/pear/archive_tar'),
 );

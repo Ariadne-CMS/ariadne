@@ -133,6 +133,9 @@ class _DiffOp_Change extends _DiffOp {
  * @subpackage DifferenceEngine
  */
 class _DiffEngine {
+  var $xchanged, $ychanged, $xv, $yv, $xind, $yind;
+  var $seq, $in_seq, $lcs;
+
   function MAX_XREF_LENGTH() {
     return 10000;
   }
@@ -944,6 +947,8 @@ define('NBSP', '&#160;');      // iso-8859-x non-breaking space.
  * @subpackage DifferenceEngine
  */
 class _HWLDF_WordAccumulator {
+  var $_lines, $_line, $_group, $_tag;
+
   function __construct() {
     $this->_lines = array();
     $this->_line = '';

@@ -3,7 +3,6 @@
 
 	interface ar_core_sessionInterface {
 		public function __construct($options = null);
-		public function parse( $pathInfo );
 		public function start( $id = 0 );
 	}
 

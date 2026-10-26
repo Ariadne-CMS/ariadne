@@ -242,7 +242,7 @@ class Ripcord_Documentor implements Ripcord_Documentor_Interface
 			case 'simple':
 				echo 'This server implements the <a href="http://sites.google.com/a/simplerpc.org/simplerpc/Home/simplerpc-specification-v09">SimpleRPC 1.0 specification</a>';
 			break;
-			case 'auto';
+			case 'auto':
 				echo 'This server implements the <a href="http://www.w3.org/TR/2000/NOTE-SOAP-20000508/">SOAP 1.1</a>, <a href="http://www.xmlrpc.com/spec">XML-RPC</a> and <a href="http://sites.google.com/a/simplerpc.org/simplerpc/Home/simplerpc-specification-v09">SimpleRPC 1.0</a> specification.';
 				$showWSDL = true;
 			break;

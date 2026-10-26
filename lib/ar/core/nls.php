@@ -2,7 +2,6 @@
 
 	interface ar_core_nlsInterface {
 		public function __construct($options = null);
-		public function parse($pathInfo);
 	}
 
 	class ar_core_nls implements ar_core_nlsInterface {
@@ -19,7 +18,7 @@
 					$this->default = $options->default;
 				}
 				if (isset($options->list)) {
-					$this->list = $options->list;
+					$this->available = $options->list;
 				}
 				if (isset($options->root)) {
 					$this->root = $options->root;
