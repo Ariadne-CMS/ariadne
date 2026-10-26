@@ -163,9 +163,7 @@ class scanner {
 	}
 
 	function ext_compile($engine, $string) {
-		if ($engine == "lessc") { // FIXME: Define an API for compiler classes so that no specific configuration is needed here.
-			return ar('formats/less')->compile($string);
-		} else if ($engine == "jsmin") {
+		if ($engine == "jsmin") {
 			return ar('beta/jsmin')->compile($string);
 		} else if ($engine == "test") {
 			return "[[ TEST ]] $string [[ /TEST ]]";
@@ -742,6 +740,10 @@ class scanner {
 										if (preg_match('|^compile:([a-z]+)|i', $tag_element, $matches)) {
 											$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR -$YYCURSOR_START - (strlen($tag_element) + 3) );
 											$result = $this->ext_compile($matches[1], $result);
+											if ($result === false) {
+												$this->error = "Compiler '".$matches[1]."' is not supported (started at line $startLine)";
+												return PT_ERROR;
+											}
 											if ( ! ar_error::isError($result) ){
 
 												$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
@@ -905,7 +907,7 @@ class pinp {
 				"float"   => "float",
 				"double"  => "float",
 				"string"  => "string",
-				"binary"  => "binary",
+				"binary"  => "string",
 				"array"   => "array",
 				"object"  => "object"
 		);
@@ -991,6 +993,49 @@ class pinp {
 		return $result;
 	}
 
+	function is_reference_argument($function, $position) {
+		// Zero-based positions, independent of the extensions installed at compile time.
+		static $references = array(
+			'array_pop' => [0], 'array_shift' => [0], 'array_unshift' => [0],
+			'array_push' => [0], 'array_splice' => [0], 'shuffle' => [0],
+			'sort' => [0], 'rsort' => [0], 'ksort' => [0], 'krsort' => [0],
+			'asort' => [0], 'arsort' => [0], 'natsort' => [0], 'natcasesort' => [0],
+			'usort' => [0], 'uasort' => [0], 'uksort' => [0],
+			'array_walk' => [0], 'array_walk_recursive' => [0],
+			'reset' => [0], 'next' => [0], 'prev' => [0], 'end' => [0],
+			'extract' => [0], 'each' => [0], 'settype' => [0],
+			'ar::untaint' => [0],
+			'ldregisterfile' => [1],
+			'preg_match' => [2], 'preg_match_all' => [2], 'preg_filter' => [4],
+			'parse_str' => [1], 'str_replace' => [3], 'str_ireplace' => [3],
+			'similar_text' => [2], 'is_callable' => [2], 'headers_sent' => [0, 1],
+			'getmxrr' => [1, 2], 'dns_get_mx' => [1, 2], 'dns_get_record' => [2, 3],
+			'xml_parse_into_struct' => [2, 3],
+			'imap_savebody' => [1],
+			'mb_ereg' => [2], 'mb_eregi' => [2], 'mb_parse_str' => [1],
+			'openssl_sign' => [1], 'openssl_random_pseudo_bytes' => [1],
+			'ldap_parse_result' => [2, 3, 4, 5, 6],
+			'soapclient::__soapcall' => [4],
+			'pdostatement::bindparam' => [1], 'pdostatement::bindcolumn' => [1]
+		);
+		$function = strtolower($function);
+		return in_array($position, $references[$function] ?? [], true)
+			|| $function === 'array_multisort'
+			|| ($function === 'sscanf' && $position >= 2)
+			|| ($function === 'mb_convert_variables' && $position >= 2);
+	}
+
+	function preserve_reference_argument($parsed) {
+		$argument = trim($parsed);
+		// Only unwrap the argument itself. Index expressions still need their guards.
+		if (preg_match('/^\((\$[\s\S]+) \?\? null\)!!!!$/', $argument, $matches)
+			&& $this->find_matching_parenthesis($argument, 0) === strlen($argument) - 5) {
+			return substr($parsed, 0, strlen($parsed) - strlen(ltrim($parsed)))
+				. $matches[1] . substr($parsed, strlen(rtrim($parsed)));
+		}
+		return $parsed;
+	}
+
 	function parse_func_call_args( $in_special = "" ) {
 		$result = '';
 		$i = 0;
@@ -1005,49 +1050,19 @@ class pinp {
 			}
 			$parsed = $this->parse_statement();
 			switch ( true ) {
-				case ($in_special === "SoapClient::__soapCall" && $i === 4):
-					// Output headers must remain a writable variable, not a ?? expression.
-					$parsed = preg_replace('/^(\s*)\((\$[\s\S]+) \?\? null\)!!!!(\s*)$/', '$1$2$3', $parsed);
+				case ($this->is_reference_argument($in_special, $i)):
+					$parsed = $this->preserve_reference_argument($parsed);
 				break;
-				case ($in_special === "ar::untaint" && in_array( $i, [ 0 ] ) ):
-				// LDAP result metadata (including paging controls) is returned by reference.
-				case ($in_special === "ldap_parse_result" && $i >= 2):
 				case ($in_special === "unset"):
 				case ($in_special === "isset"):
-				case ($in_special === "array_pop"):
-				case ($in_special === "array_shift"):
-				case ($in_special === "array_unshift"):
-				case ($in_special === "openssl_sign")://FIXME: only fix second param, not first
-				case ($in_special === "shuffle"):
-				case ($in_special === "array_splice"):
-				case ($in_special === "array_multisort"):
-				case ($in_special === "array_push"):
-					// only fix the first param (everything on the outersides)
-					// MISLEADING: all params are 'fixed'
 					$parsed = preg_replace( '/\((\$(.+?|\n)+) +\?\? null\)!!!!/', '\1', $parsed);
 				break;
 				case ($in_special === "list"):
-				case ($in_special === "preg_match"):
-				case ($in_special === "preg_match_all"):
-					case ($in_special === "parse_str"):
-					case ($in_special === "sscanf"):
 					$parsed = preg_replace( "/\\(\\$(.+?)[ ][?][?][ ]null[)][!][!][!][!]/", '$\\1', $parsed );
 				break;
 				case ($in_special === "array_values"):
 					// use blank array instead of null
 					$parsed = preg_replace( "/null[)][!][!][!][!]/", "[])!!!!", $parsed );
-				break;
-				case ($in_special === "sort"):
-				case ($in_special === "rsort"):
-				case ($in_special === "krsort"):
-				case ($in_special === "ksort"):
-				case ($in_special === "asort"):
-				case ($in_special === "arsort"):
-					$parsed = preg_replace( "/\\((\\$(.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
-					$parsed = preg_replace( "/null[)][!][!][!][!]/", "[])!!!!", $parsed );
-				break;
-				case ($in_special === "usort"):
-                                        $parsed = preg_replace( "/[?][?][ ]null[)][!][!][!][!]/", ")!!!!", $parsed );
 				break;
 				case ($in_special === "compileFuncCallArgs"):
 					$parsed = preg_replace( "/\\((\\$(.+?|[\n])+)[ ]+[?][?][ ]null[)][!][!][!][!]/", "\\1", $parsed );
@@ -1290,8 +1305,12 @@ class pinp {
 					$this->error = "Can't call functions from an array at line: ".$this->scanner->YYLINE;
 					return false;
 				}
-				$special = $objectMethod && strtolower(ltrim($ident, '_')) === 'soapcall'
-					? 'SoapClient::__soapCall' : '';
+				$referenceMethods = array(
+					'soapcall' => 'SoapClient::__soapCall',
+					'bindparam' => 'PDOStatement::bindParam',
+					'bindcolumn' => 'PDOStatement::bindColumn'
+				);
+				$special = $objectMethod ? ($referenceMethods[strtolower(ltrim($ident, '_'))] ?? '') : '';
 				$call_args = $this->parse_func_call_args($special);
 				if ($this->error) {
 					return false;

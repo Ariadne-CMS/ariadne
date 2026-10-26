@@ -221,7 +221,7 @@ EOD;
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
 		$this->assertTrue((bool)$res);
-		$this->assertStringContainsString('preg_match("/member;range=(\d+)-(.+)$/", $object->key, $object->matches)', $res);
+		$this->assertStringContainsString('preg_match("/member;range=(\d+)-(.+)$/", ($object->key ?? null), $object->matches)', $res);
 	}
 
 	public function testWritableArgumentsKeepVariablePrefix() {
@@ -259,19 +259,19 @@ EOD;
 		$templates = array(
 			"key-value" => array(
 				"source" => '<pinp>while (list($key, $value)=each($values)) { echo $key; }</pinp>',
-				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $object->key => $object->value)'
+				"expected" => 'foreach (($object->values ?? array()) as $object->key => $object->value)'
 			),
 			"key-only" => array(
 				"source" => '<pinp>while (list($key)=each($values)) { echo $key; }</pinp>',
-				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $object->key => $__pinp_each_value)'
+				"expected" => 'foreach (($object->values ?? array()) as $object->key => $__pinp_each_value)'
 			),
 			"value-only" => array(
 				"source" => '<pinp>while (list(, $value)=each($values)) { echo $value; }</pinp>',
-				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $__pinp_each_key => $object->value)'
+				"expected" => 'foreach (($object->values ?? array()) as $__pinp_each_key => $object->value)'
 			),
 			"extra-parens" => array(
 				"source" => '<pinp>while ((list($key, $value)=each($values))) { echo $value; }</pinp>',
-				"expected" => 'foreach ((($object->values ?? null) ?? array()) as $object->key => $object->value)'
+				"expected" => 'foreach (($object->values ?? array()) as $object->key => $object->value)'
 			)
 		);
 

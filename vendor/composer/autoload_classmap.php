@@ -644,9 +644,4 @@ return array(
     'TheSeer\\Tokenizer\\TokenCollectionException' => $vendorDir . '/theseer/tokenizer/src/TokenCollectionException.php',
     'TheSeer\\Tokenizer\\Tokenizer' => $vendorDir . '/theseer/tokenizer/src/Tokenizer.php',
     'TheSeer\\Tokenizer\\XMLSerializer' => $vendorDir . '/theseer/tokenizer/src/XMLSerializer.php',
-    'lessc' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
-    'lessc_formatter_classic' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
-    'lessc_formatter_compressed' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
-    'lessc_formatter_lessjs' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
-    'lessc_parser' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
 );

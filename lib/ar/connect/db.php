@@ -23,6 +23,8 @@ class ar_connect_db extends arBase {
 // FIXME: define an interface
 
 class ar_connect_dbClient extends arWrapper implements Iterator {
+	public $row = null;
+	public $cursor = 0;
 
 	public function __construct( $wrapped ) {
 		parent::__construct($wrapped);
@@ -36,15 +38,40 @@ class ar_connect_dbClient extends arWrapper implements Iterator {
 		$this->cursor = 0;
 	}
 
-	public function current() {
+	// Magic __call() receives values, so reference parameters need real methods.
+	public function bindParam($param, &$var, $type = PDO::PARAM_STR, $maxLength = 0, $driverOptions = null) {
+		try {
+			return $this->wrapped->bindParam($param, $var, $type, $maxLength, $driverOptions);
+		} catch (Exception $e) {
+			return ar::error($e->getMessage(), $e->getCode());
+		}
+	}
+
+	public function _bindParam($param, &$var, $type = PDO::PARAM_STR, $maxLength = 0, $driverOptions = null) {
+		return $this->bindParam($param, $var, $type, $maxLength, $driverOptions);
+	}
+
+	public function bindColumn($column, &$var, $type = PDO::PARAM_STR, $maxLength = 0, $driverOptions = null) {
+		try {
+			return $this->wrapped->bindColumn($column, $var, $type, $maxLength, $driverOptions);
+		} catch (Exception $e) {
+			return ar::error($e->getMessage(), $e->getCode());
+		}
+	}
+
+	public function _bindColumn($column, &$var, $type = PDO::PARAM_STR, $maxLength = 0, $driverOptions = null) {
+		return $this->bindColumn($column, $var, $type, $maxLength, $driverOptions);
+	}
+
+	public function current(): mixed {
 		return $this->row;
 	}
 
-	public function key() {
+	public function key(): mixed {
 		return $this->cursor;
 	}
 
-	public function next() {
+	public function next(): void {
 		if ($this->wrapped instanceof PDOStatement) {
 			$this->row = $this->wrapped->fetch();
 		}
@@ -54,7 +81,7 @@ class ar_connect_dbClient extends arWrapper implements Iterator {
 		$this->cursor++;
 	}
 
-	public function rewind() {
+	public function rewind(): void {
 		if ($this->wrapped instanceof PDOStatement) {
 			$this->wrapped->execute();
 			$this->row = $this->wrapped->fetch();
@@ -65,7 +92,7 @@ class ar_connect_dbClient extends arWrapper implements Iterator {
 		$this->cursor = 0;
 	}
 
-	public function valid() {
+	public function valid(): bool {
 		// note: somehow isset() returns false here, so use is_array instead.
 		return is_array($this->row);
 	}

@@ -100,13 +100,6 @@ class ComposerStaticInitcd2d890163a65174de09c97b75f04fdf
                 0 => __DIR__ . '/..' . '/mrclay/jsmin-php/src',
             ),
         ),
-        'I' =>
-        array (
-            'ILess' =>
-            array (
-                0 => __DIR__ . '/..' . '/mishal/iless/lib',
-            ),
-        ),
         'C' =>
         array (
             'Console' =>
@@ -762,11 +755,6 @@ class ComposerStaticInitcd2d890163a65174de09c97b75f04fdf
         'TheSeer\\Tokenizer\\TokenCollectionException' => __DIR__ . '/..' . '/theseer/tokenizer/src/TokenCollectionException.php',
         'TheSeer\\Tokenizer\\Tokenizer' => __DIR__ . '/..' . '/theseer/tokenizer/src/Tokenizer.php',
         'TheSeer\\Tokenizer\\XMLSerializer' => __DIR__ . '/..' . '/theseer/tokenizer/src/XMLSerializer.php',
-        'lessc' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
-        'lessc_formatter_classic' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
-        'lessc_formatter_compressed' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
-        'lessc_formatter_lessjs' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
-        'lessc_parser' => __DIR__ . '/..' . '/leafo/lessphp/lessc.inc.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

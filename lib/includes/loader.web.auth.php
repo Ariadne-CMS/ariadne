@@ -68,8 +68,8 @@
 
 		// Keep a maximum of 15 session cookies for one client
 		if (sizeof($currentCookies) > 15) {
-			sort($currentCookies);
-			$removed = array_slice(array_keys($input), 15); // grab the session ids for all the older sessions
+			arsort($currentCookies, SORT_NUMERIC);
+			$removed = array_slice(array_keys($currentCookies), 15); // grab the session ids for all the older sessions
 			foreach ($removed as $sessionid) {
 				// and kill those sessions
 				unset($cookies[$sessionid]);

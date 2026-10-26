@@ -1,7 +1,7 @@
 <?php
 
 	interface ar_core_ariadne_interface {
-		public function __construct( $ariadneOptions, $storeConfig = null, $arStore = null, $auth = null );
+		public function __construct( $ariadneOptions, $store = null, $auth = null );
 		public function findNearestPath( $path );
 		public function handleRequest( $request );
 	}
@@ -14,7 +14,6 @@
 		private $auth        = null;
 
 		public function __construct($ariadneOptions, $store = null, $auth = null) {
-			require_once($storeOptions['code'].'stores/'.$store_config['dbms'].'store.phtml');
 			$this->options = $ariadneOptions;
 			$this->store   = $store;
 			$this->auth    = $auth;

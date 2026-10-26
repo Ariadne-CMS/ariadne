@@ -259,7 +259,7 @@
 
 		$cookie = false;
 
-		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
+		if( ($_COOKIE[$cookiename] ?? null) && !($cookiename == "ARCookie")) {
 			$ARUserCookie = $_COOKIE[$cookiename];
 
 			debug("ldGetUserCookie() = $ARUserCookie","object");
@@ -271,14 +271,14 @@
 		return $cookie;
 	}
 
-	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
+	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=0, $path="/", $domain="", $secure=0) {
 
 		$result = false;
 
 		if( $cookiename != "ARCookie") {
 			$ARUserCookie=json_encode($cookie);
 			debug("ldSetUserCookie(".$ARUserCookie.")","object");
-			$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
+			$result = setcookie($cookiename,$ARUserCookie, $expire ?? 0, $path, $domain, $secure);
 		}
 
 		return $result;

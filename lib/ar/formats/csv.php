@@ -47,7 +47,7 @@
 		}
 
 		protected static function prepareData( $data, $configuration ) {
-			$configuration = $configuration + self::$configuration;
+			$configuration = ($configuration ?? array()) + self::$configuration;
 			if ( ! ( $data instanceof ar_formats_csvFeedInterface ) ) {
 				$data = new ar_formats_csvData( (array) $data, $configuration );
 			}
@@ -89,7 +89,7 @@
 		protected $current = 0;
 
 		public function __construct( $text, $configuration = array() ) {
-			if( $configuration['delimiter'] == '') {
+			if( ($configuration['delimiter'] ?? '') == '') {
 				unset($configuration['delimiter']);
 			}
 			$this->configuration = $configuration + $this->configuration;
@@ -112,7 +112,7 @@
 			if ( $this->configuration['headers'] === true ) { // first line contains the header information
 				$this->configuration['headers'] = (array) new ar_formats_csvLine( array_shift( $lines ), $this->configuration );
 			} else if ( is_array( $this->configuration['headers'] ) ) {
-				$this->configuration['headers'] = (array) new ar_formats_csvLine( $this->configuration['headers'], $this->configuration );
+				$this->configuration['headers'] = array_values($this->configuration['headers']);
 			}
 			$parsedLines = array();
 			foreach ( $lines as $key => $line ) {
@@ -196,6 +196,7 @@
 			"delimiter"     => ",",
 			"enclosure"     => '"',
 			"escape"        => '"',
+			"lineEnd"       => "\n",
 			"forceEnclosure"=> false,
 			"headers"       => array()
 		);
@@ -277,20 +278,20 @@
 			}
 			return (string) $offset;
 		}
-		public function offsetGet( $offset ) {
+		public function offsetGet( $offset ): mixed {
 			return parent::offsetGet( $this->getOffset( $offset ) );
 		}
 
-		public function offsetSet( $offset, $value ) {
-			return parent::offsetSet( $this->getOffset( $offset ), $value );
+		public function offsetSet( $offset, $value ): void {
+			parent::offsetSet( $this->getOffset( $offset ), $value );
 		}
 
-		public function offsetExists( $offset ) {
+		public function offsetExists( $offset ): bool {
 			return parent::offsetExists( $this->getOffset( $offset ) );
 		}
 
-		public function offsetUnset( $offset ) {
-			return parent::offsetUnset( $this->getOffset( $offset ) );
+		public function offsetUnset( $offset ): void {
+			parent::offsetUnset( $this->getOffset( $offset ) );
 		}
 
 		public function getvar( $name ) {
@@ -327,7 +328,7 @@
 				$this->configuration['headers'] = (array) $this->getLine();
 				$this->fileContainsHeaders = true;
 			} else if ( is_array( $this->configuration['headers'] ) ) {
-				$this->configuration['headers'] = (array) new ar_formats_csvLine( $this->configuration['headers'], $this->configuration );
+				$this->configuration['headers'] = array_values($this->configuration['headers']);
 				$this->fileContainsHeaders = false;
 			}
 		}
@@ -381,29 +382,29 @@
 			return $line;
 		}
 
-		public function current() {
+		public function current(): mixed {
 			if ( !$this->currentLine ) {
 				$this->currentLine = $this->getLine( $this->file );
 			}
 			return $this->currentLine;
 		}
 
-		public function key() {
+		public function key(): mixed {
 			return $this->currentIndex;
 		}
 
-		public function next() {
+		public function next(): void {
 			$this->currentIndex++;
 			$this->currentLine = $this->getLine( $this->file );
 		}
 
-		public function rewind() {
+		public function rewind(): void {
 			$this->currentIndex = 0;
 			$this->file->rewind();
 			$this->currentLine = $this->getLine( $this->file );
 		}
 
-		public function valid() {
+		public function valid(): bool {
 			return isset( $this->currentLine );
 		}
 

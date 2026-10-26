@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c74cfdfee0ee787e11d4f4ddc2f48f97",
+    "content-hash": "aab34c712229c97a5aab763aa0f45bbe",
     "packages": [
         {
             "name": "arc/arc",
@@ -692,106 +692,6 @@
                 "source": "https://github.com/ircmaxell/password_compat/tree/v1.0"
             },
             "time": "2014-11-20T16:49:30+00:00"
-        },
-        {
-            "name": "leafo/lessphp",
-            "version": "v0.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/leafo/lessphp.git",
-                "reference": "51f3f06f0fe78a722dabfd14578444bdd078d9de"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/leafo/lessphp/zipball/51f3f06f0fe78a722dabfd14578444bdd078d9de",
-                "reference": "51f3f06f0fe78a722dabfd14578444bdd078d9de",
-                "shasum": ""
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.3-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "lessc.inc.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT",
-                "GPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Leaf Corcoran",
-                    "email": "leafot@gmail.com",
-                    "homepage": "http://leafo.net"
-                }
-            ],
-            "description": "lessphp is a compiler for LESS written in PHP.",
-            "homepage": "http://leafo.net/lessphp/",
-            "support": {
-                "issues": "https://github.com/leafo/lessphp/issues",
-                "source": "https://github.com/leafo/lessphp/tree/master"
-            },
-            "time": "2013-08-09T17:09:19+00:00"
-        },
-        {
-            "name": "mishal/iless",
-            "version": "1.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mishal/iless.git",
-                "reference": "c7855265f00567098e9af5b347bac5753019ab5b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mishal/iless/zipball/c7855265f00567098e9af5b347bac5753019ab5b",
-                "reference": "c7855265f00567098e9af5b347bac5753019ab5b",
-                "shasum": ""
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "php": ">=5.2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "ILess": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "ILess contributors",
-                    "homepage": "https://github.com/mishal/iless/wiki/Contributors"
-                }
-            ],
-            "description": "Less parser and compiler written for Php",
-            "homepage": "http://github.com/mishal/iless",
-            "keywords": [
-                "compiler",
-                "less",
-                "lesscss",
-                "parser",
-                "php",
-                "processor"
-            ],
-            "support": {
-                "issues": "https://github.com/mishal/iless/issues",
-                "source": "https://github.com/mishal/iless/tree/master"
-            },
-            "time": "2015-05-11T07:13:30+00:00"
         },
         {
             "name": "mrclay/jsmin-php",
