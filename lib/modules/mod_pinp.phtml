@@ -355,8 +355,14 @@ class scanner {
 							}
 						break;
 
-						case '%':
 						case '?':
+							if (substr($YYBUFFER, $YYCURSOR, 3) === '??=') {
+								$YYCURSOR += 3;
+								$result = '??=';
+								return PT_ASSIGN_OP;
+							}
+							// Otherwise keep the existing question-mark / PHP-tag handling.
+						case '%':
 							$result = $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
 							if ($yych == '>') {
@@ -411,8 +417,13 @@ class scanner {
 							return $token;
 						break;
 
-						case '+':
 						case '*':
+							if (substr($YYBUFFER, $YYCURSOR, 3) === '**=') {
+								$YYCURSOR += 3;
+								$result = '**=';
+								return PT_ASSIGN_OP;
+							}
+						case '+':
 						case '|':
 							$token  = PT_UNPARSED;
 							$result = $yych;
@@ -1108,6 +1119,9 @@ class pinp {
 				// next statement
 				$result['parsed'] .= ', ';
 				$this->next_token();
+				if ($this->token_ahead == PT_PAR_CLOSE && count($result['arguments'])) {
+					break;
+				}
 			}
 			// parse variable
 			if($this->token_ahead == PT_VAR_REFERENCE ) {
@@ -1622,26 +1636,26 @@ class pinp {
 		$result .= $this->token_ahead_value;
 
 		$this->next_token();
-		while ($this->token_ahead == PT_IDENT) {
+		while ($this->token_ahead == PT_IDENT || $this->token_ahead == PT_NAMESPACE_SEPERATOR
+			|| ($this->token_ahead == PT_UNPARSED &&
+				(in_array(trim($this->token_ahead_value), array('', '|', '\\'), true)
+					|| preg_match('!^\s*(/\*|//)!', $this->token_ahead_value)))) {
 			$result .= $this->token_ahead_value;
 			$this->next_token();
 		}
-		if ($this->token_ahead != PT_VAR_REFERENCE) {
-			$this->error = "Expected variable within catch() case at line ".$this->scanner->YYLINE;
-			return false;
-		}
-		$result .= $this->token_ahead_value;
-		$this->next_token();
+		$varName = null;
+		if ($this->token_ahead == PT_VAR_REFERENCE) {
+			$result .= $this->token_ahead_value;
+			$this->next_token();
 
-		if ($this->token_ahead != PT_IDENT) {
-			$this->error = "Expected variable name within catch() case at line ".$this->scanner->YYLINE;
-			return false;
+			if ($this->token_ahead != PT_IDENT) {
+				$this->error = "Expected variable name within catch() case at line ".$this->scanner->YYLINE;
+				return false;
+			}
+			$varName = $this->token_ahead_value;
+			$result .= 'pinp_exception_var';
+			$this->next_token();
 		}
-		$varName = $this->token_ahead_value;
-		$result .= 'pinp_exception_var';
-		$this->next_token();
-
-		$varNameClean = trim($varName);
 
 		if ($this->token_ahead != PT_PAR_CLOSE) {
 			$this->error = "Expected ')' to follow 'catch' statement at line ".$this->scanner->YYLINE;
@@ -1656,7 +1670,9 @@ class pinp {
 			return false;
 		}
 		$result .= $this->token_ahead_value;
-		$result .= $this->var_prefix.$varName.'='.'$pinp_exception_var;';
+		if ($varName !== null) {
+			$result .= $this->var_prefix.$varName.'='.'$pinp_exception_var;';
+		}
 
 		$this->next_token();
 
@@ -2246,7 +2262,8 @@ class pinp {
 			$phpBinary = "/usr/bin/php";
 		}
 
-		$proc = proc_open( "$phpBinary -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
+		// Syntax errors are returned to the editor via the pipes, not runtime errors.
+		$proc = proc_open( "$phpBinary -d log_errors=0 -l", [ [ "pipe", "r" ], [ "pipe", "w" ], [ "pipe", "w" ] ], $pipes );
 		if ( !is_resource( $proc ) ) {
 			die( "Could not open php!\n" );
 		}

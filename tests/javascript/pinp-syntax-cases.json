@@ -168,5 +168,35 @@
     "name": "constant_dereference",
     "code": "return \"abc\"[0];",
     "php": 80000
+  },
+  {
+    "name": "coalescing_assignment",
+    "code": "$value ??= \"fallback\"; return $value;",
+    "php": 80000
+  },
+  {
+    "name": "power_assignment",
+    "code": "$value = 2; $value **= 3; return $value;",
+    "php": 80000
+  },
+  {
+    "name": "catch_without_variable",
+    "code": "try { $value = 1; } catch (Exception) { $value = 2; } return $value;",
+    "php": 80000
+  },
+  {
+    "name": "union_catch",
+    "code": "try { $value = 1; } catch (Exception | Error $e) { $value = 2; } return $value;",
+    "php": 80000
+  },
+  {
+    "name": "union_catch_without_variable",
+    "code": "try { $value = 1; } catch (Exception | Error) { $value = 2; } return $value;",
+    "php": 80000
+  },
+  {
+    "name": "closure_parameter_trailing_comma",
+    "code": "$f = function ($x,) { return $x; }; return $f(1);",
+    "php": 80000
   }
 ]
