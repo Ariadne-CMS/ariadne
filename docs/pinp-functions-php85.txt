@@ -1,0 +1,143 @@
+PINP function permissions: PHP 8.5 review
+
+The default native-function list in lib/modules/mod_pinp.phtml was compared
+with the global function declarations shipped in PHP 8.5.10, not just the
+extensions installed on the development machine. The accompanying JSON file
+records native, guarded, and excluded functions by extension. It is an audit
+snapshot, not a configuration file. PHP methods and third-party PECL APIs are
+outside that inventory. The existing IMAP compatibility entries were also
+restricted to message parsing/encoding/composition.
+
+Sources:
+  https://github.com/php/php-src/tree/php-8.5.10
+  https://www.php.net/manual/en/migration85.new-functions.php
+  https://www.php.net/manual/en/indexes.functions.php
+  https://www.php.net/manual/en/function.mail.php
+  https://www.php.net/manual/en/function.unserialize.php
+  https://www.php.net/manual/en/filter.constants.php
+  https://www.php.net/manual/en/function.stream-notification-callback.php
+  https://www.php.net/manual/en/function.openssl-pkey-get-private.php
+
+Policy
+
+Permit computation on template-provided values, ordinary response output,
+and non-sensitive runtime metadata. Do not permit arbitrary file/stream
+access, database operations, network requests, process execution, loading
+code, changing interpreter security settings, access to environment/config
+secrets, or access to compiler-local variables and privileged callbacks.
+Using built-in timezone, locale, Unicode, or random-number facilities is not
+treated as permission to access caller-selected files.
+
+Use explicit names. A function introduced by a future PHP/extension release
+is NOT implicitly allowed. The former gmp_[a-z_]+ entry was a literal key,
+not a working wildcard; GMP functions now have individual entries. New
+functions still require the corresponding PHP version/extension at runtime.
+
+Native additions include recent array/string/JSON functions, password and
+hash APIs, BCMath/GMP/calendar operations, Intl formatting and Unicode
+operations, sodium, in-memory compression, XML parsing without handler
+registration, in-memory GD operations, and LDAP result decoding/cleanup.
+LDAP connection, search, mutation, option and rebind APIs remain excluded
+from the default native list. ldap_free_result remains allowed.
+
+Guarded calls
+
+Callback functions stay out of the native list and run through
+ar_core_pinpSandbox. Array callbacks and regex callbacks accept closures,
+not arbitrary function strings, class-method arrays, or invokable objects.
+array_map/array_filter retain their native null-callback behavior. PHP 8.4
+array_find/array_find_key/array_any/array_all and mb_ereg_replace_callback
+use the same checks. preg_replace_callback[_array] preserve the output
+count parameter. The existing ob_start wrapper suppresses callbacks.
+
+filter_var/filter_var_array allow FILTER_CALLBACK only with a closure,
+including per-field array filter specifications. filter_input[_array] also
+restrict input to GET, POST and COOKIE; ENV and SERVER can expose secrets.
+Stream-context construction and parameter updates similarly check the
+notification callback. Creating a context does not grant I/O permission.
+
+mail() is available through a sandbox wrapper. Ordinary recipient, subject,
+body and string/array headers are forwarded unchanged to PHP's configured
+mail transport. A fifth argument is accepted only when it is an empty string
+or null; any other value returns false without sending. The transport is
+always called with four arguments, so templates cannot supply mailer command-
+line options. Transport success/failure is returned unchanged. Administrator-
+configured PHP mail settings still apply.
+
+Class/type inspection uses already-loaded classes and never autoloads them,
+even when a caller requests autoloading. is_callable reports only closures
+as callable in PINP. get_class_vars is excluded because public static
+defaults can expose application state outside the template's scope.
+
+Compatibility changes and exclusions
+
+These formerly native operations are now excluded or guarded:
+  - unserialize: can instantiate executable classes and autoload enums;
+    allowed_classes does not restrict enums. Use JSON for plain data.
+  - extract/compact/func_get_arg/func_get_args: expose or overwrite variables
+    in the PHP closure implementing the sandbox rather than PINP variables.
+  - mail: now guarded as described above, preserving ordinary mail calls.
+  - mb_send_mail, get_headers, DNS lookups, IMAP connection/mailbox operations:
+    perform external I/O; some also invoke processes or files.
+  - OpenSSL key loading and signing: key arguments can be file:// paths.
+    Symmetric encryption, hashing and operations accepting only existing
+    key objects remain available. Export-to-file and certificate/key APIs
+    with path-capable inputs remain excluded.
+  - Pspell construction/personal dictionaries/save operations: dictionary
+    and replacement file paths require a separate, restricted API.
+  - set_time_limit: changes execution limits outside ordinary computation.
+  - functions removed from PHP and obsolete regex-like whitelist entries.
+    each is retained solely for PINP's legacy while/list/each rewrite.
+
+Other excluded APIs include SimpleXML loaders (class names/entity loading),
+libxml loader registration, XML callbacks, Intl resource-bundle file
+loading, GD image/font file loaders and output APIs with file destinations,
+file-backed XML writers, Tidy parsers accepting configuration paths,
+parse_ini_string (environment/constant interpolation), and error/exception
+handler getters (can disclose privileged closures). These need purpose-built
+wrappers before they can be enabled safely; a name containing "string" or
+"memory" is not sufficient evidence of safety.
+
+Deployment and limits
+
+$AR->PINP_Functions remains an explicit TRUSTED ADMINISTRATOR override.
+It can opt into otherwise excluded native functions and bypass the guards;
+it must not be populated from template/user input. Existing site overrides
+were not rewritten. For example, historical site configuration may explicitly
+allow set_time_limit or LDAP operations. Review those separately.
+
+Resave/recompile existing PINP templates after deploying this change. Already
+compiled PHP retains its previous native calls; changing the list alone
+does not retroactively restrict them. Review uses of the excluded functions
+before recompiling an existing installation. Imported/new templates use the
+new defaults immediately. This review does not establish that arbitrary
+Ariadne object methods, native objects returned by trusted application APIs,
+or administrator-added functions form a secure isolation boundary. It also
+does not impose CPU/memory limits on templates.
+
+Validation
+
+Tests execute compiled templates for recent functions, reject named
+callbacks, verify no class autoloading or deserialization hooks run, check
+reference outputs for regex/OpenSSL/sodium operations, and assert that
+dangerous functions are not emitted as native calls. The existing reflection
+test checks by-reference arguments for every installed allowed function;
+reference signatures were also checked against the PHP source declarations
+for optional extensions, including Intl. The full suite covers the legacy
+each rewrite and existing template/library compilation.
+
+Local compatibility scan (2026-10-26)
+
+A read-only scan of installed compiled templates found mail() in 14 templates,
+openssl_pkey_get_private() in 2, openssl_sign() in 2, and set_time_limit() in
+96. The local site explicitly overrides the two OpenSSL functions and
+set_time_limit, but not mail. The new mail wrapper preserves ordinary calls
+without adding a native-function override. Calls supplying non-empty mailer
+options return false and require migration. Mail regression tests use a
+mocked transport; no email is sent by those tests.
+
+After adding the mail wrapper, all 14 local templates were checked: their
+18 mail calls use four arguments. Only those compiled templates were rebuilt
+and verified to call the wrapper; their PINP sources were left byte-for-byte
+unchanged. Original compiled files were backed up before replacement. No
+templates were executed and no email was sent during recompilation.

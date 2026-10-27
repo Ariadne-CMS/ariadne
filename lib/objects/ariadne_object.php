@@ -3576,12 +3576,19 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 			'%Z' => 'T',	// Timezone abbreviation (e.g., UTC)
 		];
 
-		// Replace all strftime format characters with DateTime format characters
-		$dateTimeFormat = strtr($format, $formatMapping);
 		if ($date===null) {
 			$date = time();
 		}
-		return DateTimeImmutable::createFromFormat('U', $date)->format($dateTimeFormat);
+		$dateTime = DateTimeImmutable::createFromFormat('U', $date);
+		// Format only percent directives: literal text may contain DateTime codes.
+		return preg_replace_callback('/%[%a-zA-Z]/', function ($match) use ($dateTime, $formatMapping) {
+			if ($match[0] === '%%') {
+				return '%';
+			}
+			return isset($formatMapping[$match[0]])
+				? $dateTime->format($formatMapping[$match[0]])
+				: $match[0];
+		}, $format);
 	}
 
 	public function __call($name,$arguments) {
