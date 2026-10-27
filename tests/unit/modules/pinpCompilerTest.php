@@ -4,6 +4,13 @@ require_once(AriadneBasePath."/modules/mod_pinp.phtml");
 
 class pinpCompilerTest extends AriadneBaseTest
 {
+	public function testLdapFreeResultIsAllowedByDefault() {
+		$compiler = new pinp('', 'object->', '$object->_');
+		$res = $compiler->compile('<pinp>ldap_free_result($result);</pinp>');
+		$this->assertNull($compiler->error);
+		$this->assertSame('<?php ldap_free_result(($object->result ?? null)); ?>', $res);
+	}
+
 	public function testLdapResultOutputReferences() {
 		$compiler = new pinp("header|ldap_parse_result", "object->", "\$object->_");
 		$res = $compiler->compile('<pinp>ldap_parse_result($ldap, $result, $code, $matched, $message, $referrals, $controls);</pinp>');
