@@ -1,0 +1,172 @@
+[
+  {
+    "name": "named_simple",
+    "code": "return strlen(string: \"abc\");",
+    "php": 80000
+  },
+  {
+    "name": "named_multi",
+    "code": "return str_pad(string: \"a\", length: 3);",
+    "php": 80000
+  },
+  {
+    "name": "closure_static",
+    "code": "$f = static function ($x) { return $x; }; return $f(1);",
+    "php": 80000
+  },
+  {
+    "name": "list_trailing_comma",
+    "code": "list($a,) = [1]; return $a;",
+    "php": 80000
+  },
+  {
+    "name": "nullsafe_chain",
+    "code": "return $a?->child?->name;",
+    "php": 80000
+  },
+  {
+    "name": "closure_in_call",
+    "code": "return array_map(function ($x) { return $x + 1; }, [1,2]);",
+    "php": 80000
+  },
+  {
+    "name": "argument_named_unpack",
+    "code": "return strlen(...[\"string\" => \"abc\"]);",
+    "php": 80000
+  },
+  {
+    "name": "call_named_after_unpack",
+    "code": "return str_pad(...[\"a\"], length: 3);",
+    "php": 80000
+  },
+  {
+    "name": "array_string_unpack",
+    "code": "return [...[\"a\" => 1], \"b\" => 2];",
+    "php": 80000
+  },
+  {
+    "name": "baseline",
+    "code": "$a = array(1, 2); return $a;",
+    "php": 80000
+  },
+  {
+    "name": "coalesce",
+    "code": "return $a ?? \"default\";",
+    "php": 80000
+  },
+  {
+    "name": "nullsafe_property",
+    "code": "return $a?->name;",
+    "php": 80000
+  },
+  {
+    "name": "spaceship",
+    "code": "return 1 <=> 2;",
+    "php": 80000
+  },
+  {
+    "name": "power",
+    "code": "return 2 ** 3;",
+    "php": 80000
+  },
+  {
+    "name": "short_array",
+    "code": "return [1, 2];",
+    "php": 80000
+  },
+  {
+    "name": "array_unpack",
+    "code": "$a = [1]; return [...$a, 2];",
+    "php": 80000
+  },
+  {
+    "name": "argument_unpack",
+    "code": "$a = [1, 2]; return max(...$a);",
+    "php": 80000
+  },
+  {
+    "name": "callable",
+    "code": "$f = strlen(...); return $f(\"abc\");",
+    "php": 80000
+  },
+  {
+    "name": "call_trailing_comma",
+    "code": "return strlen(\"abc\",);",
+    "php": 80000
+  },
+  {
+    "name": "destructure_keyed_list",
+    "code": "list(\"a\" => $a) = [\"a\" => 1]; return $a;",
+    "php": 80000
+  },
+  {
+    "name": "foreach_destructure",
+    "code": "foreach ([[1,2]] as [$a, $b]) { } return $b;",
+    "php": 80000
+  },
+  {
+    "name": "foreach_list",
+    "code": "foreach ([[1,2]] as list($a, $b)) { } return $b;",
+    "php": 80000
+  },
+  {
+    "name": "numeric_separator",
+    "code": "return 1_000;",
+    "php": 80000
+  },
+  {
+    "name": "octal_prefix",
+    "code": "return 0o17;",
+    "php": 80000
+  },
+  {
+    "name": "binary_literal",
+    "code": "return 0b101;",
+    "php": 80000
+  },
+  {
+    "name": "unicode_escape",
+    "code": "return \"\\u{1F600}\";",
+    "php": 80000
+  },
+  {
+    "name": "finally",
+    "code": "try { $a = 1; } finally { $a = 2; } return $a;",
+    "php": 80000
+  },
+  {
+    "name": "yield",
+    "code": "$f = function () { yield 1; }; return $f;",
+    "php": 80000
+  },
+  {
+    "name": "yield_from",
+    "code": "$f = function () { yield from [1, 2]; }; return $f;",
+    "php": 80000
+  },
+  {
+    "name": "pipe",
+    "code": "return \"abc\" |> strlen(...);",
+    "php": 80500
+  },
+  {
+    "name": "closure",
+    "code": "$f = function ($x) { return $x; }; return $f(1);",
+    "php": 80000
+  },
+  {
+    "name": "array_dereference",
+    "code": "return [1,2][0];",
+    "php": 80000
+  },
+  {
+    "name": "empty_expression",
+    "code": "return empty(1 + 2);",
+    "php": 80000
+  },
+  {
+    "name": "constant_dereference",
+    "code": "return \"abc\"[0];",
+    "php": 80000
+  }
+]

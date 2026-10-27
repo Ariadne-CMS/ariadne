@@ -1318,4885 +1318,11594 @@ var Mirror = exports.Mirror = function(sender) {
 
 });
 
-ace.define("ace/mode/php/php",["require","exports","module"], function(require, exports, module) {
-
-var PHP = {Constants:{}};
-
-
-
-
-PHP.Constants.T_INCLUDE = 262;
-PHP.Constants.T_INCLUDE_ONCE = 261;
-PHP.Constants.T_EVAL = 260;
-PHP.Constants.T_REQUIRE = 259;
-PHP.Constants.T_REQUIRE_ONCE = 258;
-PHP.Constants.T_LOGICAL_OR = 263;
-PHP.Constants.T_LOGICAL_XOR = 264;
-PHP.Constants.T_LOGICAL_AND = 265;
-PHP.Constants.T_PRINT = 266;
-PHP.Constants.T_PLUS_EQUAL = 277;
-PHP.Constants.T_MINUS_EQUAL = 276;
-PHP.Constants.T_MUL_EQUAL = 275;
-PHP.Constants.T_DIV_EQUAL = 274;
-PHP.Constants.T_CONCAT_EQUAL = 273;
-PHP.Constants.T_MOD_EQUAL = 272;
-PHP.Constants.T_AND_EQUAL = 271;
-PHP.Constants.T_OR_EQUAL = 270;
-PHP.Constants.T_XOR_EQUAL = 269;
-PHP.Constants.T_SL_EQUAL = 268;
-PHP.Constants.T_SR_EQUAL = 267;
-PHP.Constants.T_BOOLEAN_OR = 278;
-PHP.Constants.T_BOOLEAN_AND = 279;
-PHP.Constants.T_IS_EQUAL = 283;
-PHP.Constants.T_IS_NOT_EQUAL = 282;
-PHP.Constants.T_IS_IDENTICAL = 281;
-PHP.Constants.T_IS_NOT_IDENTICAL = 280;
-PHP.Constants.T_IS_SMALLER_OR_EQUAL = 285;
-PHP.Constants.T_IS_GREATER_OR_EQUAL = 284;
-PHP.Constants.T_SL = 287;
-PHP.Constants.T_SR = 286;
-PHP.Constants.T_INSTANCEOF = 288;
-PHP.Constants.T_INC = 297;
-PHP.Constants.T_DEC = 296;
-PHP.Constants.T_INT_CAST = 295;
-PHP.Constants.T_DOUBLE_CAST = 294;
-PHP.Constants.T_STRING_CAST = 293;
-PHP.Constants.T_ARRAY_CAST = 292;
-PHP.Constants.T_OBJECT_CAST = 291;
-PHP.Constants.T_BOOL_CAST = 290;
-PHP.Constants.T_UNSET_CAST = 289;
-PHP.Constants.T_NEW = 299;
-PHP.Constants.T_CLONE = 298;
-PHP.Constants.T_EXIT = 300;
-PHP.Constants.T_IF = 301;
-PHP.Constants.T_ELSEIF = 302;
-PHP.Constants.T_ELSE = 303;
-PHP.Constants.T_ENDIF = 304;
-PHP.Constants.T_LNUMBER = 305;
-PHP.Constants.T_DNUMBER = 306;
-PHP.Constants.T_STRING = 307;
-PHP.Constants.T_STRING_VARNAME = 308;
-PHP.Constants.T_VARIABLE = 309;
-PHP.Constants.T_NUM_STRING = 310;
-PHP.Constants.T_INLINE_HTML = 311;
-PHP.Constants.T_CHARACTER = 312;
-PHP.Constants.T_BAD_CHARACTER = 313;
-PHP.Constants.T_ENCAPSED_AND_WHITESPACE = 314;
-PHP.Constants.T_CONSTANT_ENCAPSED_STRING = 315;
-PHP.Constants.T_ECHO = 316;
-PHP.Constants.T_DO = 317;
-PHP.Constants.T_WHILE = 318;
-PHP.Constants.T_ENDWHILE = 319;
-PHP.Constants.T_FOR = 320;
-PHP.Constants.T_ENDFOR = 321;
-PHP.Constants.T_FOREACH = 322;
-PHP.Constants.T_ENDFOREACH = 323;
-PHP.Constants.T_DECLARE = 324;
-PHP.Constants.T_ENDDECLARE = 325;
-PHP.Constants.T_AS = 326;
-PHP.Constants.T_SWITCH = 327;
-PHP.Constants.T_ENDSWITCH = 328;
-PHP.Constants.T_CASE = 329;
-PHP.Constants.T_DEFAULT = 330;
-PHP.Constants.T_BREAK = 331;
-PHP.Constants.T_CONTINUE = 332;
-PHP.Constants.T_GOTO = 333;
-PHP.Constants.T_FUNCTION = 334;
-PHP.Constants.T_CONST = 335;
-PHP.Constants.T_RETURN = 336;
-PHP.Constants.T_TRY = 337;
-PHP.Constants.T_CATCH = 338;
-PHP.Constants.T_THROW = 339;
-PHP.Constants.T_USE = 340;
-PHP.Constants.T_GLOBAL = 341;
-PHP.Constants.T_STATIC = 347;
-PHP.Constants.T_ABSTRACT = 346;
-PHP.Constants.T_FINAL = 345;
-PHP.Constants.T_PRIVATE = 344;
-PHP.Constants.T_PROTECTED = 343;
-PHP.Constants.T_PUBLIC = 342;
-PHP.Constants.T_VAR = 348;
-PHP.Constants.T_UNSET = 349;
-PHP.Constants.T_ISSET = 350;
-PHP.Constants.T_EMPTY = 351;
-PHP.Constants.T_HALT_COMPILER = 352;
-PHP.Constants.T_CLASS = 353;
-PHP.Constants.T_TRAIT = 382;
-PHP.Constants.T_INTERFACE = 354;
-PHP.Constants.T_EXTENDS = 355;
-PHP.Constants.T_IMPLEMENTS = 356;
-PHP.Constants.T_OBJECT_OPERATOR = 357;
-PHP.Constants.T_DOUBLE_ARROW = 358;
-PHP.Constants.T_LIST = 359;
-PHP.Constants.T_ARRAY = 360;
-PHP.Constants.T_CLASS_C = 361;
-PHP.Constants.T_TRAIT_C = 381;
-PHP.Constants.T_METHOD_C = 362;
-PHP.Constants.T_FUNC_C = 363;
-PHP.Constants.T_LINE = 364;
-PHP.Constants.T_FILE = 365;
-PHP.Constants.T_COMMENT = 366;
-PHP.Constants.T_DOC_COMMENT = 367;
-PHP.Constants.T_OPEN_TAG = 368;
-PHP.Constants.T_OPEN_TAG_WITH_ECHO = 369;
-PHP.Constants.T_CLOSE_TAG = 370;
-PHP.Constants.T_WHITESPACE = 371;
-PHP.Constants.T_START_HEREDOC = 372;
-PHP.Constants.T_END_HEREDOC = 373;
-PHP.Constants.T_DOLLAR_OPEN_CURLY_BRACES = 374;
-PHP.Constants.T_CURLY_OPEN = 375;
-PHP.Constants.T_PAAMAYIM_NEKUDOTAYIM = 376;
-PHP.Constants.T_DOUBLE_COLON = 376;
-PHP.Constants.T_NAMESPACE = 377;
-PHP.Constants.T_NS_C = 378;
-PHP.Constants.T_DIR = 379;
-PHP.Constants.T_NS_SEPARATOR = 380;
-PHP.Lexer = function( src, ini ) {
-
-
-    var heredoc,
-    lineBreaker = function( result ) {
-        if (result.match(/\n/) !== null) {
-            var quote = result.substring(0, 1);
-            result = '[' + result.split(/\n/).join( quote + "," + quote ) + '].join("\\n")';
-
-        }
-
-        return result;
-    },
-    prev,
-
-    openTag = (ini === undefined || (/^(on|true|1)$/i.test(ini.short_open_tag) ) ? /(\<pinp\>|\<\?php\s|\<\?|\<\%|\<script language\=('|")?php('|")?\>)/i : /(\<pinp\>|\<\?php\s|<\?=|\<script language\=('|")?php('|")?\>)/i),
-        openTagStart = (ini === undefined || (/^(on|true|1)$/i.test(ini.short_open_tag)) ? /^(\<pinp\>|\<\?php\s|\<\?|\<\%|\<script language\=('|")?php('|")?\>)/i : /^(\<pinp\>|\<\?php\s|<\?=|\<script language\=('|")?php('|")?\>)/i),
-            tokens = [
-            {
-                value: PHP.Constants.T_NAMESPACE,
-                re: /^namespace(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_USE,
-                re: /^use(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_ABSTRACT,
-                re: /^abstract(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_IMPLEMENTS,
-                re: /^implements(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_INTERFACE,
-                re: /^interface(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_CONST,
-                re: /^const(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_STATIC,
-                re: /^static(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_FINAL,
-                re: /^final(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_VAR,
-                re: /^var(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_GLOBAL,
-                re: /^global(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_CLONE,
-                re: /^clone(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_THROW,
-                re: /^throw(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_EXTENDS,
-                re: /^extends(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_AND_EQUAL,
-                re: /^&=/
-            },
-            {
-                value: PHP.Constants.T_AS,
-                re: /^as(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_ARRAY_CAST,
-                re: /^\(array\)/i
-            },
-            {
-                value: PHP.Constants.T_BOOL_CAST,
-                re: /^\((bool|boolean)\)/i
-            },
-            {
-                value: PHP.Constants.T_DOUBLE_CAST,
-                re: /^\((real|float|double)\)/i
-            },
-            {
-                value: PHP.Constants.T_INT_CAST,
-                re: /^\((int|integer)\)/i
-            },
-            {
-                value: PHP.Constants.T_OBJECT_CAST,
-                re: /^\(object\)/i
-            },
-            {
-                value: PHP.Constants.T_STRING_CAST,
-                re: /^\(string\)/i
-            },
-            {
-                value: PHP.Constants.T_UNSET_CAST,
-                re: /^\(unset\)/i
-            },
-            {
-                value: PHP.Constants.T_TRY,
-                re: /^try(?=\s*{)/i
-            },
-            {
-                value: PHP.Constants.T_CATCH,
-                re: /^catch(?=\s*\()/i
-            },
-            {
-                value: PHP.Constants.T_INSTANCEOF,
-                re: /^instanceof(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_LOGICAL_OR,
-                re: /^or(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_LOGICAL_AND,
-                re: /^and(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_LOGICAL_XOR,
-                re: /^xor(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_BOOLEAN_AND,
-                re: /^&&/
-            },
-            {
-                value: PHP.Constants.T_BOOLEAN_OR,
-                re: /^\|\|/
-            },
-            {
-                value: PHP.Constants.T_CONTINUE,
-                re: /^continue(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_BREAK,
-                re: /^break(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_ENDDECLARE,
-                re: /^enddeclare(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_ENDFOR,
-                re: /^endfor(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_ENDFOREACH,
-                re: /^endforeach(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_ENDIF,
-                re: /^endif(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_ENDSWITCH,
-                re: /^endswitch(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_ENDWHILE,
-                re: /^endwhile(?=\s|;)/i
-            },
-            {
-                value: PHP.Constants.T_CASE,
-                re: /^case(?=\s)/i
-            },
-            {
-                value: PHP.Constants.T_DEFAULT,
-                re: /^default(?=\s|:)/i
-            },
-            {
-                value: PHP.Constants.T_SWITCH,
-                re: /^switch(?=[ (])/i
-            },
-            {
-                value: PHP.Constants.T_EXIT,
-                re: /^(exit|die)(?=[ \(;])/i
-            },
-            {
-                value: PHP.Constants.T_CLOSE_TAG,
-                re: /^(\?\>|\%\>|\<\/script\>|\<\/pinp\>)\s?\s?/i,
-                func: function( result ) {
-                    insidePHP = false;
-                    return result;
-                }
-            },
-            {
-                value: PHP.Constants.T_DOUBLE_ARROW,
-                re: /^\=\>/
-            },
-            {
-                value: PHP.Constants.T_DOUBLE_COLON,
-                re: /^\:\:/
-            },
-            {
-                value: PHP.Constants.T_METHOD_C,
-                re: /^__METHOD__/
-            },
-            {
-                value: PHP.Constants.T_LINE,
-                re: /^__LINE__/
-            },
-            {
-                value: PHP.Constants.T_FILE,
-                re: /^__FILE__/
-            },
-            {
-                value: PHP.Constants.T_FUNC_C,
-                re: /^__FUNCTION__/
-            },
-            {
-                value: PHP.Constants.T_NS_C,
-                re: /^__NAMESPACE__/
-            },
-            {
-                value: PHP.Constants.T_TRAIT_C,
-                re: /^__TRAIT__/
-            },
-            {
-                value: PHP.Constants.T_DIR,
-                re: /^__DIR__/
-            },
-            {
-                value: PHP.Constants.T_CLASS_C,
-                re: /^__CLASS__/
-            },
-            {
-                value: PHP.Constants.T_INC,
-                re: /^\+\+/
-            },
-            {
-                value: PHP.Constants.T_DEC,
-                re: /^\-\-/
-            },
-            {
-                value: PHP.Constants.T_CONCAT_EQUAL,
-                re: /^\.\=/
-            },
-            {
-                value: PHP.Constants.T_DIV_EQUAL,
-                re: /^\/\=/
-            },
-            {
-                value: PHP.Constants.T_XOR_EQUAL,
-                re: /^\^\=/
-            },
-            {
-                value: PHP.Constants.T_MUL_EQUAL,
-                re: /^\*\=/
-            },
-            {
-                value: PHP.Constants.T_MOD_EQUAL,
-                re: /^\%\=/
-            },
-            {
-                value: PHP.Constants.T_SL_EQUAL,
-                re: /^<<=/
-            },
-            {
-                value: PHP.Constants.T_START_HEREDOC,
-                re: /^<<<[A-Z_0-9]+\s/i,
-                func: function( result ){
-                    heredoc = result.substring(3, result.length - 1);
-                    return result;
-                }
-            },
-            {
-                value: PHP.Constants.T_SL,
-                re: /^<</
-            },
-            {
-                value: PHP.Constants.T_IS_SMALLER_OR_EQUAL,
-                re: /^<=/
-            },
-            {
-                value: PHP.Constants.T_SR_EQUAL,
-                re: /^>>=/
-            },
-            {
-                value: PHP.Constants.T_SR,
-                re: /^>>/
-            },
-            {
-                value: PHP.Constants.T_IS_GREATER_OR_EQUAL,
-                re: /^>=/
-            },
-            {
-                value: PHP.Constants.T_OR_EQUAL,
-                re: /^\|\=/
-            },
-            {
-                value: PHP.Constants.T_PLUS_EQUAL,
-                re: /^\+\=/
-            },
-            {
-                value: PHP.Constants.T_MINUS_EQUAL,
-                re: /^-\=/
-            },
-            {
-                value: PHP.Constants.T_OBJECT_OPERATOR,
-                re: /^\-\>/i
-            },
-            {
-                value: PHP.Constants.T_CLASS,
-                re: /^class(?=[\s\{])/i,
-                afterWhitespace: true
-            },
-            {
-                value: PHP.Constants.T_TRAIT,
-                re: /^trait(?=[\s]+[A-Za-z])/i,
-            },
-            {
-                value: PHP.Constants.T_PUBLIC,
-                re: /^public(?=[\s])/i
-            },
-            {
-                value: PHP.Constants.T_PRIVATE,
-                re: /^private(?=[\s])/i
-            },
-            {
-                value: PHP.Constants.T_PROTECTED,
-                re: /^protected(?=[\s])/i
-            },
-            {
-                value: PHP.Constants.T_ARRAY,
-                re: /^array(?=\s*?\()/i
-            },
-            {
-                value: PHP.Constants.T_EMPTY,
-                re: /^empty(?=[ \(])/i
-            },
-            {
-                value: PHP.Constants.T_ISSET,
-                re: /^isset(?=[ \(])/i
-            },
-            {
-                value: PHP.Constants.T_UNSET,
-                re: /^unset(?=[ \(])/i
-            },
-            {
-                value: PHP.Constants.T_RETURN,
-                re: /^return(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_FUNCTION,
-                re: /^function(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_ECHO,
-                re: /^echo(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_LIST,
-                re: /^list(?=\s*?\()/i
-            },
-            {
-                value: PHP.Constants.T_PRINT,
-                re: /^print(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_INCLUDE,
-                re: /^include(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_INCLUDE_ONCE,
-                re: /^include_once(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_REQUIRE,
-                re: /^require(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_REQUIRE_ONCE,
-                re: /^require_once(?=[ "'(;])/i
-            },
-            {
-                value: PHP.Constants.T_NEW,
-                re: /^new(?=[ ])/i
-            },
-            {
-                value: PHP.Constants.T_COMMENT,
-                re: /^\/\*([\S\s]*?)(?:\*\/|$)/
-            },
-            {
-                value: PHP.Constants.T_COMMENT,
-                re: /^\/\/.*(\s)?/
-            },
-            {
-                value: PHP.Constants.T_COMMENT,
-                re: /^\#.*(\s)?/
-            },
-            {
-                value: PHP.Constants.T_ELSEIF,
-                re: /^elseif(?=[\s(])/i
-            },
-            {
-                value: PHP.Constants.T_GOTO,
-                re: /^goto(?=[\s(])/i
-            },
-            {
-                value: PHP.Constants.T_ELSE,
-                re: /^else(?=[\s{:])/i
-            },
-            {
-                value: PHP.Constants.T_IF,
-                re: /^if(?=[\s(])/i
-            },
-            {
-                value: PHP.Constants.T_DO,
-                re: /^do(?=[ {])/i
-            },
-            {
-                value: PHP.Constants.T_WHILE,
-                re: /^while(?=[ (])/i
-            },
-            {
-                value: PHP.Constants.T_FOREACH,
-                re: /^foreach(?=[ (])/i
-            },
-            {
-                value: PHP.Constants.T_ISSET,
-                re: /^isset(?=[ (])/i
-            },
-            {
-                value: PHP.Constants.T_IS_IDENTICAL,
-                re: /^===/
-            },
-            {
-                value: PHP.Constants.T_IS_EQUAL,
-                re: /^==/
-            },
-            {
-                value: PHP.Constants.T_IS_NOT_IDENTICAL,
-                re: /^\!==/
-            },
-            {
-                value: PHP.Constants.T_IS_NOT_EQUAL,
-                re: /^(\!=|\<\>)/
-            },
-            {
-                value: PHP.Constants.T_FOR,
-                re: /^for(?=[ (])/i
-            },
-
-            {
-                value: PHP.Constants.T_DNUMBER,
-                re: /^[0-9]*\.[0-9]+([eE][-]?[0-9]*)?/
-
-            },
-            {
-                value: PHP.Constants.T_LNUMBER,
-                re: /^(0x[0-9A-F]+|[0-9]+)/i
-            },
-            {
-                value: PHP.Constants.T_OPEN_TAG_WITH_ECHO,
-                re: /^(\<\?=|\<\%=)/i
-            },
-            {
-                value: PHP.Constants.T_OPEN_TAG,
-                re: openTagStart
-            },
-            {
-                value: PHP.Constants.T_VARIABLE,
-                re: /^\$[a-zA-Z_\x7f-\uffff][a-zA-Z0-9_\x7f-\uffff]*/
-            },
-            {
-                value: PHP.Constants.T_WHITESPACE,
-                re: /^\s+/
-            },
-            {
-                value: PHP.Constants.T_CONSTANT_ENCAPSED_STRING,
-                re: /^("(?:[^"\\]|\\[\s\S])*"|'(?:[^'\\]|\\[\s\S])*')/,
-                func: function( result, token ) {
-
-                    var curlyOpen = 0,
-                    len,
-                    bracketOpen = 0;
-
-                    if (result.substring( 0,1 ) === "'") {
-                        return result;
-                    }
-
-                    var match = result.match( /(?:[^\\]|\\.)*[^\\]\$[a-zA-Z_\x7f-\uffff][a-zA-Z0-9_\x7f-\uffff]*/g );
-                    if ( match !== null ) {
-
-                        while( result.length > 0 ) {
-                            len = result.length;
-                            match = result.match( /^[\[\]\;\:\?\(\)\!\.\,\>\<\=\+\-\/\*\|\&\@\^\%\"\'\{\}]/ );
-
-                            if ( match !== null ) {
-
-                                results.push( match[ 0 ] );
-                                result = result.substring( 1 );
-
-                                if ( curlyOpen > 0 && match[ 0 ] === "}") {
-                                    curlyOpen--;
-                                }
-
-                                if ( match[ 0 ] === "[" ) {
-                                    bracketOpen++;
-                                }
-
-                                if ( match[ 0 ] === "]" ) {
-                                    bracketOpen--;
-                                }
-
-                            }
-
-                            match = result.match(/^\$[a-zA-Z_\x7f-\uffff][a-zA-Z0-9_\x7f-\uffff]*/);
-
-
-
-                            if ( match !== null ) {
-
-                                results.push([
-                                    parseInt(PHP.Constants.T_VARIABLE, 10),
-                                    match[ 0 ],
-                                    line
-                                    ]);
-
-                                result = result.substring( match[ 0 ].length );
-
-                                match = result.match(/^(\-\>)\s*([a-zA-Z_\x7f-\uffff][a-zA-Z0-9_\x7f-\uffff]*)\s*(\()/);
-
-                                if ( match !== null ) {
-
-                                    results.push([
-                                        parseInt(PHP.Constants.T_OBJECT_OPERATOR, 10),
-                                        match[ 1 ],
-                                        line
-                                        ]);
-                                    results.push([
-                                        parseInt(PHP.Constants.T_STRING, 10),
-                                        match[ 2 ],
-                                        line
-                                        ]);
-                                    if (match[3]) {
-                                        results.push(match[3]);
-                                    }
-                                    result = result.substring( match[ 0 ].length );
-                                }
-
-
-                                if ( result.match( /^\[/g ) !== null ) {
-                                    continue;
-                                }
-                            }
-
-                            var re;
-                            if ( curlyOpen > 0) {
-                                re = /^([^\\\$"{}\]\(\)\->]|\\.)+/g;
-                            } else {
-                                re = /^([^\\\$"{]|\\.|{[^\$]|\$(?=[^a-zA-Z_\x7f-\uffff]))+/g;;
-                            }
-
-                            var type, match2;
-                            while(( match = result.match( re )) !== null ) {
-                                if (result.length === 1) {
-                                    throw new Error(match);
-                                }
-                                
-                                type = 0;
-
-                                if( curlyOpen > 0 ){
-                                    if( match2 = match[0].match(/^[\[\]\;\:\?\(\)\!\.\,\>\<\=\+\-\/\*\|\&\{\}\@\^\%\$\~]/) ){
-                                        results.push(match2[0]);
-                                    }else{                                    
-                                        type = PHP.Constants.T_STRING;    
-                                    }
-                                }else{
-                                    type = PHP.Constants.T_ENCAPSED_AND_WHITESPACE;
-                                }
-                                
-                                if( type ){
-                                    results.push([
-                                        parseInt(type, 10),
-                                        match[ 0 ].replace(/\n/g,"\\n").replace(/\r/g,""),
-                                        line
-                                        ]);
-                                }
-
-                                line += match[ 0 ].split('\n').length - 1;
-
-                                result = result.substring( match[ 0 ].length );
-                            }
-
-                            if( curlyOpen > 0 && result.match(/^\->/) !== null ) {
-                                results.push([
-                                    parseInt(PHP.Constants.T_OBJECT_OPERATOR, 10),
-                                    '->',
-                                    line
-                                    ]);
-                                result = result.substring( 2 );
-                            }
-
-                            if( result.match(/^{\$/) !== null ) {
-                                results.push([
-                                    parseInt(PHP.Constants.T_CURLY_OPEN, 10),
-                                    "{",
-                                    line
-                                    ]);
-                                result = result.substring( 1 );
-                                curlyOpen++;
-                            }
-
-                            if (len === result.length) {
-                                if ((match =  result.match( /^(([^\\]|\\.)*?[^\\]\$[a-zA-Z_\x7f-\uffff][a-zA-Z0-9_\x7f-\uffff]*)/g )) !== null) {
-                                    return;
-                                }
-                            }
-
-                        }
-
-                        return undefined;
-
-                    } else {
-                        result = result.replace(/\r/g,"");
-                    }
-                    return result;
-                }
-            },
-            {
-                value: PHP.Constants.T_NS_SEPARATOR,
-                re: /^\\(?=[a-zA-Z_])/
-            },
-            {
-                value: PHP.Constants.T_STRING,
-                re: /^[a-zA-Z_\x7f-\uffff][a-zA-Z0-9_\x7f-\uffff]*/
-            },
-            {
-                value: -1,
-                re: /^[\[\]\;\:\?\(\)\!\.\,\>\<\=\+\-\/\*\|\&\{\}\@\^\%\"\'\$\~]/
-            }];
-
-
-
-
-
-            var results = [],
-            line = 1,
-            insidePHP = false,
-            cancel = true;
-
-            if ( src === null ) {
-                return results;
-            }
-
-            if ( typeof src !== "string" ) {
-                src = src.toString();
-            }
-
-
-
-            while (src.length > 0 && cancel === true) {
-
-                if ( insidePHP === true ) {
-
-                    if ( heredoc !== undefined ) {
-
-                        var regexp = new RegExp('([\\S\\s]*?)(\\r\\n|\\n|\\r)(' + heredoc + ')(;|\\r\\n|\\n)',"i");
-
-
-
-                        var result = src.match( regexp );
-                        if ( result !== null ) {
-
-                            results.push([
-                                parseInt(PHP.Constants.T_ENCAPSED_AND_WHITESPACE, 10),
-                                result[ 1 ].replace(/^\n/g,"").replace(/\\\$/g,"$") + "\n",
-                                line
-                                ]);
-                            line += result[ 1 ].split('\n').length;
-                            results.push([
-                                parseInt(PHP.Constants.T_END_HEREDOC, 10),
-                                result[ 3 ],
-                                line
-                                ]);
-
-                            src = src.substring( result[1].length + result[2].length + result[3].length );
-                            heredoc = undefined;
-                        }
-
-                        if (result === null) {
-                            throw Error("sup");
-                        }
-
-
-                    } else {
-                        cancel =  tokens.some(function( token ){
-                            if ( token.afterWhitespace === true ) {
-                                var last = results[ results.length - 1 ];
-                                if ( !Array.isArray( last ) || (last[ 0 ] !== PHP.Constants.T_WHITESPACE && last[ 0 ] !== PHP.Constants.T_OPEN_TAG  && last[ 0 ] !== PHP.Constants.T_COMMENT)) {
-                                    return false;
-                                }
-                            }
-                            var result = src.match( token.re );
-
-                            if ( result !== null ) {
-                                if ( token.value !== -1) {
-                                    var resultString = result[ 0 ];
-
-
-
-                                    if (token.func !== undefined ) {
-                                        resultString = token.func( resultString, token );
-                                    }
-                                    if (resultString !== undefined ) {
-
-                                        results.push([
-                                            parseInt(token.value, 10),
-                                            resultString,
-                                            line
-                                            ]);
-                                        line += resultString.split('\n').length - 1;
-                                    }
-
-                                } else {
-                                    results.push( result[ 0 ] );
-                                }
-
-                                src = src.substring(result[ 0 ].length);
-
-                                return true;
-                            }
-                            return false;
-
-
-                        });
-                    }
-
-                } else {
-
-                    var result = openTag.exec( src );
-
-
-                    if ( result !== null ) {
-                        if ( result.index > 0 ) {
-                            var resultString = src.substring(0, result.index);
-                            results.push ([
-                                parseInt(PHP.Constants.T_INLINE_HTML, 10),
-                                resultString,
-                                line
-                                ]);
-
-                            line += resultString.split('\n').length - 1;
-
-                            src = src.substring( result.index );
-                        }
-
-                        insidePHP = true;
-                    } else {
-
-                        results.push ([
-                            parseInt(PHP.Constants.T_INLINE_HTML, 10),
-                            src.replace(/^\n/, ""),
-                            line
-                            ]);
-                        return results;
-                    }
-
-                }
-
-
-
-            }
-
-
-
-            return results;
-
-
-
-        };
-
-
-PHP.Parser = function ( preprocessedTokens, eval ) {
-
-    var yybase = this.yybase,
-    yydefault = this.yydefault,
-    yycheck = this.yycheck,
-    yyaction = this.yyaction,
-    yylen = this.yylen,
-    yygbase = this.yygbase,
-    yygcheck = this.yygcheck,
-    yyp = this.yyp,
-    yygoto = this.yygoto,
-    yylhs = this.yylhs,
-    terminals = this.terminals,
-    translate = this.translate,
-    yygdefault = this.yygdefault;
-
-
-    this.pos = -1;
-    this.line = 1;
-
-    this.tokenMap = this.createTokenMap( );
-
-    this.dropTokens = {};
-    this.dropTokens[ PHP.Constants.T_WHITESPACE ] = 1;
-    this.dropTokens[ PHP.Constants.T_OPEN_TAG ] = 1;
-    var tokens = [];
-    preprocessedTokens.forEach( function( token, index ) {
-        if ( typeof token === "object" && token[ 0 ] === PHP.Constants.T_OPEN_TAG_WITH_ECHO) {
-            tokens.push([
-                PHP.Constants.T_OPEN_TAG,
-                token[ 1 ],
-                token[ 2 ]
-                ]);
-            tokens.push([
-                PHP.Constants.T_ECHO,
-                token[ 1 ],
-                token[ 2 ]
-                ]);
-        } else {
-            tokens.push( token );
-        }
-    });
-    this.tokens = tokens;
-    var tokenId = this.TOKEN_NONE;
-    this.startAttributes = {
-        'startLine': 1
-    };
-
-    this.endAttributes = {};
-    var attributeStack = [ this.startAttributes ];
-    var state = 0;
-    var stateStack = [ state ];
-    this.yyastk = [];
-    this.stackPos  = 0;
-
-    var yyn;
-
-    var origTokenId;
-
-
-    for (;;) {
-
-        if ( yybase[ state ] === 0 ) {
-            yyn = yydefault[ state ];
-        } else {
-            if (tokenId === this.TOKEN_NONE ) {
-                origTokenId = this.getNextToken( );
-                tokenId = (origTokenId >= 0 && origTokenId < this.TOKEN_MAP_SIZE) ? translate[ origTokenId ] : this.TOKEN_INVALID;
-
-                attributeStack[ this.stackPos ] = this.startAttributes;
-            }
-
-            if (((yyn = yybase[ state ] + tokenId) >= 0
-                && yyn < this.YYLAST && yycheck[ yyn ] === tokenId
-                || (state < this.YY2TBLSTATE
-                    && (yyn = yybase[state + this.YYNLSTATES] + tokenId) >= 0
-                    && yyn < this.YYLAST
-                    && yycheck[ yyn ] === tokenId))
-            && (yyn = yyaction[ yyn ]) !== this.YYDEFAULT ) {
-                if (yyn > 0) {
-                    ++this.stackPos;
-
-                    stateStack[ this.stackPos ] = state = yyn;
-                    this.yyastk[ this.stackPos ] = this.tokenValue;
-                    attributeStack[ this.stackPos ] = this.startAttributes;
-                    tokenId = this.TOKEN_NONE;
-
-                    if (yyn < this.YYNLSTATES)
-                        continue;
-                    yyn -= this.YYNLSTATES;
-                } else {
-                    yyn = -yyn;
-                }
-            } else {
-                yyn = yydefault[ state ];
-            }
-        }
-
-        for (;;) {
-
-            if ( yyn === 0 ) {
-                return this.yyval;
-            } else if (yyn !== this.YYUNEXPECTED ) {
-                for (var attr in this.endAttributes) {
-                    attributeStack[ this.stackPos - yylen[ yyn ] ][ attr ] = this.endAttributes[ attr ];
-                }
-                try {
-                    this['yyn' + yyn](attributeStack[ this.stackPos - yylen[ yyn ] ]);
-                } catch (e) {
-                    throw e;
-                }
-                this.stackPos -= yylen[ yyn ];
-                yyn = yylhs[ yyn ];
-                if ((yyp = yygbase[ yyn ] + stateStack[ this.stackPos ]) >= 0
-                    && yyp < this.YYGLAST
-                    && yygcheck[ yyp ] === yyn) {
-                    state = yygoto[ yyp ];
-                } else {
-                    state = yygdefault[ yyn ];
-                }
-
-                ++this.stackPos;
-
-                stateStack[ this.stackPos ] = state;
-                this.yyastk[ this.stackPos ] = this.yyval;
-                attributeStack[ this.stackPos ] = this.startAttributes;
-            } else {
-                if (eval !== true) {
-
-                    var expected = [];
-
-                    for (var i = 0; i < this.TOKEN_MAP_SIZE; ++i) {
-                        if ((yyn = yybase[ state ] + i) >= 0 && yyn < this.YYLAST && yycheck[ yyn ] == i
-                         || state < this.YY2TBLSTATE
-                            && (yyn = yybase[ state + this.YYNLSTATES] + i)
-                            && yyn < this.YYLAST && yycheck[ yyn ] == i
-                        ) {
-                            if (yyaction[ yyn ] != this.YYUNEXPECTED) {
-                                if (expected.length == 4) {
-                                    expected = [];
-                                    break;
-                                }
-
-                                expected.push( this.terminals[ i ] );
-                            }
-                        }
-                    }
-
-                    var expectedString = '';
-                    if (expected.length) {
-                        expectedString = ', expecting ' + expected.join(' or ');
-                    }
-                    throw new PHP.ParseError('syntax error, unexpected ' + terminals[ tokenId ] + expectedString, this.startAttributes['startLine']);
-                } else {
-                    return this.startAttributes['startLine'];
-                }
-
-            }
-
-            if (state < this.YYNLSTATES)
-                break;
-            yyn = state - this.YYNLSTATES;
-        }
-    }
-};
-
-PHP.ParseError = function( msg, line ) {
-    this.message = msg;
-    this.line = line;
-};
-
-PHP.Parser.prototype.MODIFIER_PUBLIC    =  1;
-PHP.Parser.prototype.MODIFIER_PROTECTED =  2;
-PHP.Parser.prototype.MODIFIER_PRIVATE   =  4;
-PHP.Parser.prototype.MODIFIER_STATIC    =  8;
-PHP.Parser.prototype.MODIFIER_ABSTRACT  = 16;
-PHP.Parser.prototype.MODIFIER_FINAL     = 32;
-
-PHP.Parser.prototype.getNextToken = function( ) {
-
-    this.startAttributes = {};
-    this.endAttributes = {};
-
-    var token,
-    tmp;
-
-    while (this.tokens[++this.pos] !== undefined) {
-        token = this.tokens[this.pos];
-
-        if (typeof token === "string") {
-            this.startAttributes['startLine'] = this.line;
-            this.endAttributes['endLine'] = this.line;
-            if ('b"' === token) {
-                this.tokenValue = 'b"';
-                return '"'.charCodeAt(0);
-            } else {
-                this.tokenValue = token;
-                return token.charCodeAt(0);
-            }
-        } else {
-
-
-
-            this.line += ((tmp = token[ 1 ].match(/\n/g)) === null) ? 0 : tmp.length;
-
-            if (PHP.Constants.T_COMMENT === token[0]) {
-
-                if (!Array.isArray(this.startAttributes['comments'])) {
-                    this.startAttributes['comments'] = [];
-                }
-
-                this.startAttributes['comments'].push( {
-                    type: "comment",
-                    comment: token[1],
-                    line: token[2]
-                });
-
-            } else if (PHP.Constants.T_DOC_COMMENT === token[0]) {
-                this.startAttributes['comments'].push( new PHPParser_Comment_Doc(token[1], token[2]) );
-            } else if (this.dropTokens[token[0]] === undefined) {
-                this.tokenValue = token[1];
-                this.startAttributes['startLine'] = token[2];
-                this.endAttributes['endLine'] = this.line;
-
-                return this.tokenMap[token[0]];
-            }
-        }
-    }
-
-    this.startAttributes['startLine'] = this.line;
-    return 0;
-};
-
-PHP.Parser.prototype.tokenName = function( token ) {
-    var constants = ["T_INCLUDE","T_INCLUDE_ONCE","T_EVAL","T_REQUIRE","T_REQUIRE_ONCE","T_LOGICAL_OR","T_LOGICAL_XOR","T_LOGICAL_AND","T_PRINT","T_PLUS_EQUAL","T_MINUS_EQUAL","T_MUL_EQUAL","T_DIV_EQUAL","T_CONCAT_EQUAL","T_MOD_EQUAL","T_AND_EQUAL","T_OR_EQUAL","T_XOR_EQUAL","T_SL_EQUAL","T_SR_EQUAL","T_BOOLEAN_OR","T_BOOLEAN_AND","T_IS_EQUAL","T_IS_NOT_EQUAL","T_IS_IDENTICAL","T_IS_NOT_IDENTICAL","T_IS_SMALLER_OR_EQUAL","T_IS_GREATER_OR_EQUAL","T_SL","T_SR","T_INSTANCEOF","T_INC","T_DEC","T_INT_CAST","T_DOUBLE_CAST","T_STRING_CAST","T_ARRAY_CAST","T_OBJECT_CAST","T_BOOL_CAST","T_UNSET_CAST","T_NEW","T_CLONE","T_EXIT","T_IF","T_ELSEIF","T_ELSE","T_ENDIF","T_LNUMBER","T_DNUMBER","T_STRING","T_STRING_VARNAME","T_VARIABLE","T_NUM_STRING","T_INLINE_HTML","T_CHARACTER","T_BAD_CHARACTER","T_ENCAPSED_AND_WHITESPACE","T_CONSTANT_ENCAPSED_STRING","T_ECHO","T_DO","T_WHILE","T_ENDWHILE","T_FOR","T_ENDFOR","T_FOREACH","T_ENDFOREACH","T_DECLARE","T_ENDDECLARE","T_AS","T_SWITCH","T_ENDSWITCH","T_CASE","T_DEFAULT","T_BREAK","T_CONTINUE","T_GOTO","T_FUNCTION","T_CONST","T_RETURN","T_TRY","T_CATCH","T_THROW","T_USE","T_INSTEADOF","T_GLOBAL","T_STATIC","T_ABSTRACT","T_FINAL","T_PRIVATE","T_PROTECTED","T_PUBLIC","T_VAR","T_UNSET","T_ISSET","T_EMPTY","T_HALT_COMPILER","T_CLASS","T_TRAIT","T_INTERFACE","T_EXTENDS","T_IMPLEMENTS","T_OBJECT_OPERATOR","T_DOUBLE_ARROW","T_LIST","T_ARRAY","T_CALLABLE","T_CLASS_C","T_TRAIT_C","T_METHOD_C","T_FUNC_C","T_LINE","T_FILE","T_COMMENT","T_DOC_COMMENT","T_OPEN_TAG","T_OPEN_TAG_WITH_ECHO","T_CLOSE_TAG","T_WHITESPACE","T_START_HEREDOC","T_END_HEREDOC","T_DOLLAR_OPEN_CURLY_BRACES","T_CURLY_OPEN","T_PAAMAYIM_NEKUDOTAYIM","T_DOUBLE_COLON","T_NAMESPACE","T_NS_C","T_DIR","T_NS_SEPARATOR"];
-    var current = "UNKNOWN";
-    constants.some(function( constant ) {
-        if (PHP.Constants[ constant ] === token) {
-            current = constant;
-            return true;
-        } else {
-            return false;
-        }
-    });
-
-    return current;
-};
-
-PHP.Parser.prototype.createTokenMap = function() {
-    var tokenMap = {},
-    name,
-    i;
-    var T_DOUBLE_COLON = PHP.Constants.T_PAAMAYIM_NEKUDOTAYIM;
-    for ( i = 256; i < 1000; ++i ) {
-        if ( T_DOUBLE_COLON === i ) {
-            tokenMap[ i ] = this.T_PAAMAYIM_NEKUDOTAYIM;
-        } else if( PHP.Constants.T_OPEN_TAG_WITH_ECHO === i ) {
-            tokenMap[ i ] = PHP.Constants.T_ECHO;
-        } else if( PHP.Constants.T_CLOSE_TAG === i ) {
-            tokenMap[ i ] = 59;
-        } else if ( 'UNKNOWN' !== (name = this.tokenName( i ) ) ) { 
-            tokenMap[ i ] =  this[name];
-        }
-    }
-    return tokenMap;
-};
-
-var yynStandard = function () {
-    this.yyval =  this.yyastk[ this.stackPos-(1-1) ];
-};
-
-PHP.Parser.prototype.MakeArray = function( arr ) {
-    return Array.isArray( arr ) ? arr : [ arr ];
-}
-
-
-PHP.Parser.prototype.parseString = function( str ) {
-    var bLength = 0;
-    if ('b' === str[0]) {
-        bLength = 1;
-    }
-
-    if ('\'' === str[ bLength ]) {
-        str = str.replace(
-            ['\\\\', '\\\''],
-            [  '\\',   '\'']);
-    } else {
-
-        str = this.parseEscapeSequences( str, '"');
-
-    }
-
-    return str;
-
-};
-
-PHP.Parser.prototype.parseEscapeSequences = function( str, quote ) {
-
-
-
-    if (undefined !== quote) {
-        str = str.replace(new RegExp('\\' + quote, "g"), quote);
-    }
-
-    var replacements = {
-        '\\': '\\',
-        '$':  '$',
-        'n': "\n",
-        'r': "\r",
-        't': "\t",
-        'f': "\f",
-        'v': "\v",
-        'e': "\x1B"
-    };
-
-    return str.replace(
-        /~\\\\([\\\\$nrtfve]|[xX][0-9a-fA-F]{1,2}|[0-7]{1,3})~/g,
-        function ( matches ){
-            var str = matches[1];
-
-            if ( replacements[ str ] !== undefined ) {
-                return replacements[ str ];
-            } else if ('x' === str[ 0 ] || 'X' === str[ 0 ]) {
-                return chr(hexdec(str));
-            } else {
-                return chr(octdec(str));
-            }
-        }
-        );
-
-    return str;
-};
-
-PHP.Parser.prototype.TOKEN_NONE    = -1;
-PHP.Parser.prototype.TOKEN_INVALID = 149;
-
-PHP.Parser.prototype.TOKEN_MAP_SIZE = 384;
-
-PHP.Parser.prototype.YYLAST       = 913;
-PHP.Parser.prototype.YY2TBLSTATE  = 328;
-PHP.Parser.prototype.YYGLAST      = 415;
-PHP.Parser.prototype.YYNLSTATES   = 544;
-PHP.Parser.prototype.YYUNEXPECTED = 32767;
-PHP.Parser.prototype.YYDEFAULT    = -32766;
-PHP.Parser.prototype.YYERRTOK = 256;
-PHP.Parser.prototype.T_INCLUDE = 257;
-PHP.Parser.prototype.T_INCLUDE_ONCE = 258;
-PHP.Parser.prototype.T_EVAL = 259;
-PHP.Parser.prototype.T_REQUIRE = 260;
-PHP.Parser.prototype.T_REQUIRE_ONCE = 261;
-PHP.Parser.prototype.T_LOGICAL_OR = 262;
-PHP.Parser.prototype.T_LOGICAL_XOR = 263;
-PHP.Parser.prototype.T_LOGICAL_AND = 264;
-PHP.Parser.prototype.T_PRINT = 265;
-PHP.Parser.prototype.T_PLUS_EQUAL = 266;
-PHP.Parser.prototype.T_MINUS_EQUAL = 267;
-PHP.Parser.prototype.T_MUL_EQUAL = 268;
-PHP.Parser.prototype.T_DIV_EQUAL = 269;
-PHP.Parser.prototype.T_CONCAT_EQUAL = 270;
-PHP.Parser.prototype.T_MOD_EQUAL = 271;
-PHP.Parser.prototype.T_AND_EQUAL = 272;
-PHP.Parser.prototype.T_OR_EQUAL = 273;
-PHP.Parser.prototype.T_XOR_EQUAL = 274;
-PHP.Parser.prototype.T_SL_EQUAL = 275;
-PHP.Parser.prototype.T_SR_EQUAL = 276;
-PHP.Parser.prototype.T_BOOLEAN_OR = 277;
-PHP.Parser.prototype.T_BOOLEAN_AND = 278;
-PHP.Parser.prototype.T_IS_EQUAL = 279;
-PHP.Parser.prototype.T_IS_NOT_EQUAL = 280;
-PHP.Parser.prototype.T_IS_IDENTICAL = 281;
-PHP.Parser.prototype.T_IS_NOT_IDENTICAL = 282;
-PHP.Parser.prototype.T_IS_SMALLER_OR_EQUAL = 283;
-PHP.Parser.prototype.T_IS_GREATER_OR_EQUAL = 284;
-PHP.Parser.prototype.T_SL = 285;
-PHP.Parser.prototype.T_SR = 286;
-PHP.Parser.prototype.T_INSTANCEOF = 287;
-PHP.Parser.prototype.T_INC = 288;
-PHP.Parser.prototype.T_DEC = 289;
-PHP.Parser.prototype.T_INT_CAST = 290;
-PHP.Parser.prototype.T_DOUBLE_CAST = 291;
-PHP.Parser.prototype.T_STRING_CAST = 292;
-PHP.Parser.prototype.T_ARRAY_CAST = 293;
-PHP.Parser.prototype.T_OBJECT_CAST = 294;
-PHP.Parser.prototype.T_BOOL_CAST = 295;
-PHP.Parser.prototype.T_UNSET_CAST = 296;
-PHP.Parser.prototype.T_NEW = 297;
-PHP.Parser.prototype.T_CLONE = 298;
-PHP.Parser.prototype.T_EXIT = 299;
-PHP.Parser.prototype.T_IF = 300;
-PHP.Parser.prototype.T_ELSEIF = 301;
-PHP.Parser.prototype.T_ELSE = 302;
-PHP.Parser.prototype.T_ENDIF = 303;
-PHP.Parser.prototype.T_LNUMBER = 304;
-PHP.Parser.prototype.T_DNUMBER = 305;
-PHP.Parser.prototype.T_STRING = 306;
-PHP.Parser.prototype.T_STRING_VARNAME = 307;
-PHP.Parser.prototype.T_VARIABLE = 308;
-PHP.Parser.prototype.T_NUM_STRING = 309;
-PHP.Parser.prototype.T_INLINE_HTML = 310;
-PHP.Parser.prototype.T_CHARACTER = 311;
-PHP.Parser.prototype.T_BAD_CHARACTER = 312;
-PHP.Parser.prototype.T_ENCAPSED_AND_WHITESPACE = 313;
-PHP.Parser.prototype.T_CONSTANT_ENCAPSED_STRING = 314;
-PHP.Parser.prototype.T_ECHO = 315;
-PHP.Parser.prototype.T_DO = 316;
-PHP.Parser.prototype.T_WHILE = 317;
-PHP.Parser.prototype.T_ENDWHILE = 318;
-PHP.Parser.prototype.T_FOR = 319;
-PHP.Parser.prototype.T_ENDFOR = 320;
-PHP.Parser.prototype.T_FOREACH = 321;
-PHP.Parser.prototype.T_ENDFOREACH = 322;
-PHP.Parser.prototype.T_DECLARE = 323;
-PHP.Parser.prototype.T_ENDDECLARE = 324;
-PHP.Parser.prototype.T_AS = 325;
-PHP.Parser.prototype.T_SWITCH = 326;
-PHP.Parser.prototype.T_ENDSWITCH = 327;
-PHP.Parser.prototype.T_CASE = 328;
-PHP.Parser.prototype.T_DEFAULT = 329;
-PHP.Parser.prototype.T_BREAK = 330;
-PHP.Parser.prototype.T_CONTINUE = 331;
-PHP.Parser.prototype.T_GOTO = 332;
-PHP.Parser.prototype.T_FUNCTION = 333;
-PHP.Parser.prototype.T_CONST = 334;
-PHP.Parser.prototype.T_RETURN = 335;
-PHP.Parser.prototype.T_TRY = 336;
-PHP.Parser.prototype.T_CATCH = 337;
-PHP.Parser.prototype.T_THROW = 338;
-PHP.Parser.prototype.T_USE = 339;
-PHP.Parser.prototype.T_INSTEADOF = 340;
-PHP.Parser.prototype.T_GLOBAL = 341;
-PHP.Parser.prototype.T_STATIC = 342;
-PHP.Parser.prototype.T_ABSTRACT = 343;
-PHP.Parser.prototype.T_FINAL = 344;
-PHP.Parser.prototype.T_PRIVATE = 345;
-PHP.Parser.prototype.T_PROTECTED = 346;
-PHP.Parser.prototype.T_PUBLIC = 347;
-PHP.Parser.prototype.T_VAR = 348;
-PHP.Parser.prototype.T_UNSET = 349;
-PHP.Parser.prototype.T_ISSET = 350;
-PHP.Parser.prototype.T_EMPTY = 351;
-PHP.Parser.prototype.T_HALT_COMPILER = 352;
-PHP.Parser.prototype.T_CLASS = 353;
-PHP.Parser.prototype.T_TRAIT = 354;
-PHP.Parser.prototype.T_INTERFACE = 355;
-PHP.Parser.prototype.T_EXTENDS = 356;
-PHP.Parser.prototype.T_IMPLEMENTS = 357;
-PHP.Parser.prototype.T_OBJECT_OPERATOR = 358;
-PHP.Parser.prototype.T_DOUBLE_ARROW = 359;
-PHP.Parser.prototype.T_LIST = 360;
-PHP.Parser.prototype.T_ARRAY = 361;
-PHP.Parser.prototype.T_CALLABLE = 362;
-PHP.Parser.prototype.T_CLASS_C = 363;
-PHP.Parser.prototype.T_TRAIT_C = 364;
-PHP.Parser.prototype.T_METHOD_C = 365;
-PHP.Parser.prototype.T_FUNC_C = 366;
-PHP.Parser.prototype.T_LINE = 367;
-PHP.Parser.prototype.T_FILE = 368;
-PHP.Parser.prototype.T_COMMENT = 369;
-PHP.Parser.prototype.T_DOC_COMMENT = 370;
-PHP.Parser.prototype.T_OPEN_TAG = 371;
-PHP.Parser.prototype.T_OPEN_TAG_WITH_ECHO = 372;
-PHP.Parser.prototype.T_CLOSE_TAG = 373;
-PHP.Parser.prototype.T_WHITESPACE = 374;
-PHP.Parser.prototype.T_START_HEREDOC = 375;
-PHP.Parser.prototype.T_END_HEREDOC = 376;
-PHP.Parser.prototype.T_DOLLAR_OPEN_CURLY_BRACES = 377;
-PHP.Parser.prototype.T_CURLY_OPEN = 378;
-PHP.Parser.prototype.T_PAAMAYIM_NEKUDOTAYIM = 379;
-PHP.Parser.prototype.T_NAMESPACE = 380;
-PHP.Parser.prototype.T_NS_C = 381;
-PHP.Parser.prototype.T_DIR = 382;
-PHP.Parser.prototype.T_NS_SEPARATOR = 383;
-PHP.Parser.prototype.terminals = [
-    "$EOF",
-    "error",
-    "T_INCLUDE",
-    "T_INCLUDE_ONCE",
-    "T_EVAL",
-    "T_REQUIRE",
-    "T_REQUIRE_ONCE",
-    "','",
-    "T_LOGICAL_OR",
-    "T_LOGICAL_XOR",
-    "T_LOGICAL_AND",
-    "T_PRINT",
-    "'='",
-    "T_PLUS_EQUAL",
-    "T_MINUS_EQUAL",
-    "T_MUL_EQUAL",
-    "T_DIV_EQUAL",
-    "T_CONCAT_EQUAL",
-    "T_MOD_EQUAL",
-    "T_AND_EQUAL",
-    "T_OR_EQUAL",
-    "T_XOR_EQUAL",
-    "T_SL_EQUAL",
-    "T_SR_EQUAL",
-    "'?'",
-    "':'",
-    "T_BOOLEAN_OR",
-    "T_BOOLEAN_AND",
-    "'|'",
-    "'^'",
-    "'&'",
-    "T_IS_EQUAL",
-    "T_IS_NOT_EQUAL",
-    "T_IS_IDENTICAL",
-    "T_IS_NOT_IDENTICAL",
-    "'<'",
-    "T_IS_SMALLER_OR_EQUAL",
-    "'>'",
-    "T_IS_GREATER_OR_EQUAL",
-    "T_SL",
-    "T_SR",
-    "'+'",
-    "'-'",
-    "'.'",
-    "'*'",
-    "'/'",
-    "'%'",
-    "'!'",
-    "T_INSTANCEOF",
-    "'~'",
-    "T_INC",
-    "T_DEC",
-    "T_INT_CAST",
-    "T_DOUBLE_CAST",
-    "T_STRING_CAST",
-    "T_ARRAY_CAST",
-    "T_OBJECT_CAST",
-    "T_BOOL_CAST",
-    "T_UNSET_CAST",
-    "'@'",
-    "'['",
-    "T_NEW",
-    "T_CLONE",
-    "T_EXIT",
-    "T_IF",
-    "T_ELSEIF",
-    "T_ELSE",
-    "T_ENDIF",
-    "T_LNUMBER",
-    "T_DNUMBER",
-    "T_STRING",
-    "T_STRING_VARNAME",
-    "T_VARIABLE",
-    "T_NUM_STRING",
-    "T_INLINE_HTML",
-    "T_ENCAPSED_AND_WHITESPACE",
-    "T_CONSTANT_ENCAPSED_STRING",
-    "T_ECHO",
-    "T_DO",
-    "T_WHILE",
-    "T_ENDWHILE",
-    "T_FOR",
-    "T_ENDFOR",
-    "T_FOREACH",
-    "T_ENDFOREACH",
-    "T_DECLARE",
-    "T_ENDDECLARE",
-    "T_AS",
-    "T_SWITCH",
-    "T_ENDSWITCH",
-    "T_CASE",
-    "T_DEFAULT",
-    "T_BREAK",
-    "T_CONTINUE",
-    "T_GOTO",
-    "T_FUNCTION",
-    "T_CONST",
-    "T_RETURN",
-    "T_TRY",
-    "T_CATCH",
-    "T_THROW",
-    "T_USE",
-    "T_INSTEADOF",
-    "T_GLOBAL",
-    "T_STATIC",
-    "T_ABSTRACT",
-    "T_FINAL",
-    "T_PRIVATE",
-    "T_PROTECTED",
-    "T_PUBLIC",
-    "T_VAR",
-    "T_UNSET",
-    "T_ISSET",
-    "T_EMPTY",
-    "T_HALT_COMPILER",
-    "T_CLASS",
-    "T_TRAIT",
-    "T_INTERFACE",
-    "T_EXTENDS",
-    "T_IMPLEMENTS",
-    "T_OBJECT_OPERATOR",
-    "T_DOUBLE_ARROW",
-    "T_LIST",
-    "T_ARRAY",
-    "T_CALLABLE",
-    "T_CLASS_C",
-    "T_TRAIT_C",
-    "T_METHOD_C",
-    "T_FUNC_C",
-    "T_LINE",
-    "T_FILE",
-    "T_START_HEREDOC",
-    "T_END_HEREDOC",
-    "T_DOLLAR_OPEN_CURLY_BRACES",
-    "T_CURLY_OPEN",
-    "T_PAAMAYIM_NEKUDOTAYIM",
-    "T_NAMESPACE",
-    "T_NS_C",
-    "T_DIR",
-    "T_NS_SEPARATOR",
-    "';'",
-    "'{'",
-    "'}'",
-    "'('",
-    "')'",
-    "'$'",
-    "']'",
-    "'`'",
-    "'\"'"
-    , "???"
-];
-PHP.Parser.prototype.translate = [
-        0,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,   47,  148,  149,  145,   46,   30,  149,
-      143,  144,   44,   41,    7,   42,   43,   45,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,   25,  140,
-       35,   12,   37,   24,   59,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,   60,  149,  146,   29,  149,  147,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  141,   28,  142,   49,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  149,    1,    2,    3,    4,
-        5,    6,    8,    9,   10,   11,   13,   14,   15,   16,
-       17,   18,   19,   20,   21,   22,   23,   26,   27,   31,
-       32,   33,   34,   36,   38,   39,   40,   48,   50,   51,
-       52,   53,   54,   55,   56,   57,   58,   61,   62,   63,
-       64,   65,   66,   67,   68,   69,   70,   71,   72,   73,
-       74,  149,  149,   75,   76,   77,   78,   79,   80,   81,
-       82,   83,   84,   85,   86,   87,   88,   89,   90,   91,
-       92,   93,   94,   95,   96,   97,   98,   99,  100,  101,
-      102,  103,  104,  105,  106,  107,  108,  109,  110,  111,
-      112,  113,  114,  115,  116,  117,  118,  119,  120,  121,
-      122,  123,  124,  125,  126,  127,  128,  129,  130,  149,
-      149,  149,  149,  149,  149,  131,  132,  133,  134,  135,
-      136,  137,  138,  139
-];
-
-PHP.Parser.prototype.yyaction = [
-       61,   62,  363,   63,   64,-32766,-32766,-32766,  509,   65,
-      708,  709,  710,  707,  706,  705,-32766,-32766,-32766,-32766,
-    -32766,-32766,  132,-32766,-32766,-32766,-32766,-32766,-32767,-32767,
-    -32767,-32767,-32766,  335,-32766,-32766,-32766,-32766,-32766,   66,
-       67,  351,  663,  664,   40,   68,  548,   69,  232,  233,
-       70,   71,   72,   73,   74,   75,   76,   77,   30,  246,
-       78,  336,  364, -112,    0,  469,  833,  834,  365,  641,
-      890,  436,  590,   41,  835,   53,   27,  366,  294,  367,
-      687,  368,  921,  369,  923,  922,  370,-32766,-32766,-32766,
-       42,   43,  371,  339,  126,   44,  372,  337,   79,  297,
-      349,  292,  293,-32766,  918,-32766,-32766,  373,  374,  375,
-      376,  377,  391,  199,  361,  338,  573,  613,  378,  379,
-      380,  381,  845,  839,  840,  841,  842,  836,  837,  253,
-    -32766,   87,   88,   89,  391,  843,  838,  338,  597,  519,
-      128,   80,  129,  273,  332,  257,  261,   47,  673,   90,
-       91,   92,   93,   94,   95,   96,   97,   98,   99,  100,
-      101,  102,  103,  104,  105,  106,  107,  108,  109,  110,
-      799,  247,  884,  108,  109,  110,  226,  247,   21,-32766,
-      310,-32766,-32766,-32766,  642,  548,-32766,-32766,-32766,-32766,
-       56,  353,-32766,-32766,-32766,   55,-32766,-32766,-32766,-32766,
-    -32766,   58,-32766,-32766,-32766,-32766,-32766,-32766,-32766,-32766,
-    -32766,  557,-32766,-32766,  518,-32766,  548,  890,-32766,  390,
-    -32766,  228,  252,-32766,-32766,-32766,-32766,-32766,  275,-32766,
-      234,-32766,  587,  588,-32766,-32766,-32766,-32766,-32766,-32766,
-    -32766,   46,  236,-32766,-32766,  281,-32766,  682,  348,-32766,
-      390,-32766,  346,  333,  521,-32766,-32766,-32766,  271,  911,
-      262,  237,  446,  911,-32766,  894,   59,  700,  358,  135,
-      548,  123,  538,   35,-32766,  333,  122,-32766,-32766,-32766,
-      271,-32766,  124,-32766,  692,-32766,-32766,-32766,-32766,  700,
-      273,   22,-32766,-32766,-32766,-32766,  239,-32766,-32766,  612,
-    -32766,  548,  134,-32766,  390,-32766,  462,  354,-32766,-32766,
-    -32766,-32766,-32766,  227,-32766,  238,-32766,  845,  542,-32766,
-      856,  611,  200,-32766,-32766,-32766,  259,  280,-32766,-32766,
-      201,-32766,  855,  129,-32766,  390,  130,  202,  333,  206,
-    -32766,-32766,-32766,  271,-32766,-32766,-32766,  125,  601,-32766,
-      136,  299,  700,  489,   28,  548,  105,  106,  107,-32766,
-      498,  499,-32766,-32766,-32766,  207,-32766,  133,-32766,  525,
-    -32766,-32766,-32766,-32766,  663,  664,  527,-32766,-32766,-32766,
-    -32766,  528,-32766,-32766,  610,-32766,  548,  427,-32766,  390,
-    -32766,  532,  539,-32766,-32766,-32766,-32766,-32766,  240,-32766,
-      247,-32766,  697,  543,-32766,  554,  523,  608,-32766,-32766,
-    -32766,  686,  535,-32766,-32766,   54,-32766,   57,   60,-32766,
-      390,  246, -155,  278,  345,-32766,-32766,-32766,  506,  347,
-     -152,  471,  402,  403,-32766,  405,  404,  272,  493,  416,
-      548,  318,  417,  505,-32766,  517,  548,-32766,-32766,-32766,
-      549,-32766,  562,-32766,  916,-32766,-32766,-32766,-32766,  564,
-      826,  848,-32766,-32766,-32766,-32766,  694,-32766,-32766,  485,
-    -32766,  548,  487,-32766,  390,-32766,  504,  802,-32766,-32766,
-    -32766,-32766,-32766,  279,-32766,  911,-32766,  502,  492,-32766,
-      413,  483,  269,-32766,-32766,-32766,  243,  337,-32766,-32766,
-      418,-32766,  454,  229,-32766,  390,  274,  373,  374,  344,
-    -32766,-32766,-32766,  360,  614,-32766,  573,  613,  378,  379,
-     -274,  548,  615, -332,  844,-32766,  258,   51,-32766,-32766,
-    -32766,  270,-32766,  346,-32766,   52,-32766,  260,    0,-32766,
-     -333,-32766,-32766,-32766,-32766,-32766,-32766,  205,-32766,-32766,
-       49,-32766,  548,  424,-32766,  390,-32766, -266,  264,-32766,
-    -32766,-32766,-32766,-32766,  409,-32766,  343,-32766,  265,  312,
-    -32766,  470,  513, -275,-32766,-32766,-32766,  920,  337,-32766,
-    -32766,  530,-32766,  531,  600,-32766,  390,  592,  373,  374,
-      578,  581,-32766,-32766,  644,  629,-32766,  573,  613,  378,
-      379,  635,  548,  636,  576,  627,-32766,  625,  693,-32766,
-    -32766,-32766,  691,-32766,  591,-32766,  582,-32766,  203,  204,
-    -32766,  584,  583,-32766,-32766,-32766,-32766,  586,  599,-32766,
-    -32766,  589,-32766,  690,  558,-32766,  390,  197,  683,  919,
-       86,  520,  522,-32766,  524,  833,  834,  529,  533,-32766,
-      534,  537,  541,  835,   48,  111,  112,  113,  114,  115,
-      116,  117,  118,  119,  120,  121,  127,   31,  633,  337,
-      330,  634,  585,-32766,   32,  291,  337,  330,  478,  373,
-      374,  917,  291,  891,  889,  875,  373,  374,  553,  613,
-      378,  379,  737,  739,  887,  553,  613,  378,  379,  824,
-      451,  675,  839,  840,  841,  842,  836,  837,  320,  895,
-      277,  885,   23,   33,  843,  838,  556,  277,  337,  330,
-    -32766,   34,-32766,  555,  291,   36,   37,   38,  373,  374,
-       39,   45,   50,   81,   82,   83,   84,  553,  613,  378,
-      379,-32767,-32767,-32767,-32767,  103,  104,  105,  106,  107,
-      337,   85,  131,  137,  337,  138,  198,  224,  225,  277,
-      373,  374, -332,  230,  373,  374,   24,  337,  231,  573,
-      613,  378,  379,  573,  613,  378,  379,  373,  374,  235,
-      248,  249,  250,  337,  251,    0,  573,  613,  378,  379,
-      276,  329,  331,  373,  374,-32766,  337,  574,  490,  792,
-      337,  609,  573,  613,  378,  379,  373,  374,   25,  300,
-      373,  374,  319,  337,  795,  573,  613,  378,  379,  573,
-      613,  378,  379,  373,  374,  516,  355,  359,  445,  482,
-      796,  507,  573,  613,  378,  379,  508,  548,  337,  890,
-      775,  791,  337,  604,  803,  808,  806,  698,  373,  374,
-      888,  807,  373,  374,-32766,-32766,-32766,  573,  613,  378,
-      379,  573,  613,  378,  379,  873,  832,  804,  872,  851,
-    -32766,  809,-32766,-32766,-32766,-32766,  805,   20,   26,   29,
-      298,  480,  515,  770,  778,  827,  457,    0,  900,  455,
-      774,    0,    0,    0,  874,  870,  886,  823,  915,  852,
-      869,  488,    0,  391,  793,    0,  338,    0,    0,    0,
-      340,    0,  273
-];
-
-PHP.Parser.prototype.yycheck = [
-        2,    3,    4,    5,    6,    8,    9,   10,   70,   11,
-      104,  105,  106,  107,  108,  109,    8,    9,   10,    8,
-        9,   24,   60,   26,   27,   28,   29,   30,   31,   32,
-       33,   34,   24,    7,   26,   27,   28,   29,   30,   41,
-       42,    7,  123,  124,    7,   47,   70,   49,   50,   51,
-       52,   53,   54,   55,   56,   57,   58,   59,   60,   61,
-       62,   63,   64,  144,    0,   75,   68,   69,   70,   25,
-       72,   70,   74,    7,   76,   77,   78,   79,    7,   81,
-      142,   83,   70,   85,   72,   73,   88,    8,    9,   10,
-       92,   93,   94,   95,    7,   97,   98,   95,  100,    7,
-        7,  103,  104,   24,  142,   26,   27,  105,  106,  111,
-      112,  113,  136,    7,    7,  139,  114,  115,  116,  117,
-      122,  123,  132,  125,  126,  127,  128,  129,  130,  131,
-        8,    8,    9,   10,  136,  137,  138,  139,  140,  141,
-       25,  143,  141,  145,  142,  147,  148,   24,   72,   26,
-       27,   28,   29,   30,   31,   32,   33,   34,   35,   36,
-       37,   38,   39,   40,   41,   42,   43,   44,   45,   46,
-      144,   48,   72,   44,   45,   46,   30,   48,  144,   64,
-       72,    8,    9,   10,  140,   70,    8,    9,   10,   74,
-       60,   25,   77,   78,   79,   60,   81,   24,   83,   26,
-       85,   60,   24,   88,   26,   27,   28,   92,   93,   94,
-       64,  140,   97,   98,   70,  100,   70,   72,  103,  104,
-       74,  145,    7,   77,   78,   79,  111,   81,    7,   83,
-       30,   85,  140,  140,   88,    8,    9,   10,   92,   93,
-       94,  133,  134,   97,   98,  145,  100,  140,    7,  103,
-      104,   24,  139,   96,  141,  140,  141,  111,  101,   75,
-       75,   30,   70,   75,   64,   70,   60,  110,  121,   12,
-       70,  141,   25,  143,   74,   96,  141,   77,   78,   79,
-      101,   81,  141,   83,  140,   85,  140,  141,   88,  110,
-      145,  144,   92,   93,   94,   64,    7,   97,   98,  142,
-      100,   70,  141,  103,  104,   74,  145,  141,   77,   78,
-       79,  111,   81,    7,   83,   30,   85,  132,   25,   88,
-      132,  142,   12,   92,   93,   94,  120,   60,   97,   98,
-       12,  100,  148,  141,  103,  104,  141,   12,   96,   12,
-      140,  141,  111,  101,    8,    9,   10,  141,   25,   64,
-       90,   91,  110,   65,   66,   70,   41,   42,   43,   74,
-       65,   66,   77,   78,   79,   12,   81,   25,   83,   25,
-       85,  140,  141,   88,  123,  124,   25,   92,   93,   94,
-       64,   25,   97,   98,  142,  100,   70,  120,  103,  104,
-       74,   25,   25,   77,   78,   79,  111,   81,   30,   83,
-       48,   85,  140,  141,   88,  140,  141,   30,   92,   93,
-       94,  140,  141,   97,   98,   60,  100,   60,   60,  103,
-      104,   61,   72,   75,   70,  140,  141,  111,   67,   70,
-       87,   99,   70,   70,   64,   70,   72,  102,   89,   70,
-       70,   71,   70,   70,   74,   70,   70,   77,   78,   79,
-       70,   81,   70,   83,   70,   85,  140,  141,   88,   70,
-      144,   70,   92,   93,   94,   64,   70,   97,   98,   72,
-      100,   70,   72,  103,  104,   74,   72,   72,   77,   78,
-       79,  111,   81,   75,   83,   75,   85,   89,   86,   88,
-       79,  101,  118,   92,   93,   94,   87,   95,   97,   98,
-       87,  100,   87,   87,  103,  104,  118,  105,  106,   95,
-      140,  141,  111,   95,  115,   64,  114,  115,  116,  117,
-      135,   70,  115,  120,  132,   74,  120,  140,   77,   78,
-       79,  119,   81,  139,   83,  140,   85,  120,   -1,   88,
-      120,  140,  141,   92,   93,   94,   64,  121,   97,   98,
-      121,  100,   70,  122,  103,  104,   74,  135,  135,   77,
-       78,   79,  111,   81,  139,   83,  139,   85,  135,  135,
-       88,  135,  135,  135,   92,   93,   94,  142,   95,   97,
-       98,  140,  100,  140,  140,  103,  104,  140,  105,  106,
-      140,  140,  141,  111,  140,  140,   64,  114,  115,  116,
-      117,  140,   70,  140,  140,  140,   74,  140,  140,   77,
-       78,   79,  140,   81,  140,   83,  140,   85,   41,   42,
-       88,  140,  140,  141,   92,   93,   94,  140,  140,   97,
-       98,  140,  100,  140,  140,  103,  104,   60,  140,  142,
-      141,  141,  141,  111,  141,   68,   69,  141,  141,   72,
-      141,  141,  141,   76,   12,   13,   14,   15,   16,   17,
-       18,   19,   20,   21,   22,   23,  141,  143,  142,   95,
-       96,  142,  140,  141,  143,  101,   95,   96,  142,  105,
-      106,  142,  101,  142,  142,  142,  105,  106,  114,  115,
-      116,  117,   50,   51,  142,  114,  115,  116,  117,  142,
-      123,  142,  125,  126,  127,  128,  129,  130,  131,  142,
-      136,  142,  144,  143,  137,  138,  142,  136,   95,   96,
-      143,  143,  145,  142,  101,  143,  143,  143,  105,  106,
-      143,  143,  143,  143,  143,  143,  143,  114,  115,  116,
-      117,   35,   36,   37,   38,   39,   40,   41,   42,   43,
-       95,  143,  143,  143,   95,  143,  143,  143,  143,  136,
-      105,  106,  120,  143,  105,  106,  144,   95,  143,  114,
-      115,  116,  117,  114,  115,  116,  117,  105,  106,  143,
-      143,  143,  143,   95,  143,   -1,  114,  115,  116,  117,
-      143,  143,  143,  105,  106,  143,   95,  142,   80,  146,
-       95,  142,  114,  115,  116,  117,  105,  106,  144,  144,
-      105,  106,  144,   95,  142,  114,  115,  116,  117,  114,
-      115,  116,  117,  105,  106,   82,  144,  144,  144,  144,
-      142,   84,  114,  115,  116,  117,  144,   70,   95,   72,
-      144,  144,   95,  142,  144,  146,  144,  142,  105,  106,
-      146,  144,  105,  106,    8,    9,   10,  114,  115,  116,
-      117,  114,  115,  116,  117,  144,  144,  144,  144,  144,
-       24,  104,   26,   27,   28,   29,  144,  144,  144,  144,
-      144,  144,  144,  144,  144,  144,  144,   -1,  144,  144,
-      144,   -1,   -1,   -1,  146,  146,  146,  146,  146,  146,
-      146,  146,   -1,  136,  147,   -1,  139,   -1,   -1,   -1,
-      143,   -1,  145
-];
-
-PHP.Parser.prototype.yybase = [
-        0,  574,  581,  623,  655,    2,  718,  402,  747,  659,
-      672,  688,  743,  701,  705,  483,  483,  483,  483,  483,
-      351,  356,  366,  366,  367,  366,  344,   -2,   -2,   -2,
-      200,  200,  231,  231,  231,  231,  231,  231,  231,  231,
-      200,  231,  451,  482,  532,  316,  370,  115,  146,  285,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,  401,
-      401,  401,  401,  401,  401,  401,  401,  401,  401,   44,
-      474,  429,  476,  481,  487,  488,  739,  740,  741,  734,
-      733,  416,  736,  539,  541,  342,  542,  543,  552,  557,
-      559,  536,  567,  737,  755,  569,  735,  738,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  122,   11,  336,
-      336,  336,  336,  336,  336,  336,  336,  336,  336,  336,
-      336,  336,  336,  336,  227,  227,  173,  577,  577,  577,
-      577,  577,  577,  577,  577,  577,  577,  577,   79,  178,
-      846,    8,   -3,   -3,   -3,   -3,  642,  706,  706,  706,
-      706,  157,  179,  242,  431,  431,  360,  431,  525,  368,
-      767,  767,  767,  767,  767,  767,  767,  767,  767,  767,
-      767,  767,  350,  375,  315,  315,  652,  652,  -81,  -81,
-      -81,  -81,  251,  185,  188,  184,  -62,  348,  195,  195,
-      195,  408,  392,  410,    1,  192,  129,  129,  129,  -24,
-      -24,  -24,  -24,  499,  -24,  -24,  -24,  113,  108,  108,
-       12,  161,  349,  526,  271,  398,  529,  438,  130,  206,
-      265,  427,   76,  414,  427,  288,  295,   76,  166,   44,
-      262,  422,  141,  491,  372,  494,  413,   71,   92,   93,
-      267,  135,  100,   34,  415,  745,  746,  742,  -38,  420,
-      -10,  135,  147,  744,  498,  107,   26,  493,  144,  377,
-      363,  369,  332,  363,  400,  377,  588,  377,  376,  377,
-      360,   37,  582,  376,  377,  374,  376,  388,  363,  364,
-      412,  369,  377,  441,  443,  390,  106,  332,  377,  390,
-      377,  400,   64,  590,  591,  323,  592,  589,  593,  649,
-      608,  362,  500,  399,  407,  620,  625,  636,  365,  354,
-      614,  524,  425,  359,  355,  423,  570,  578,  357,  406,
-      414,  394,  352,  403,  531,  433,  403,  653,  434,  385,
-      417,  411,  444,  310,  318,  501,  425,  668,  757,  380,
-      637,  684,  403,  609,  387,   87,  325,  638,  382,  403,
-      639,  403,  696,  503,  615,  403,  697,  384,  435,  425,
-      352,  352,  352,  700,   66,  699,  583,  702,  707,  704,
-      748,  721,  749,  584,  750,  358,  583,  722,  751,  682,
-      215,  613,  422,  436,  389,  447,  221,  257,  752,  403,
-      403,  506,  499,  403,  395,  685,  397,  426,  753,  392,
-      391,  647,  683,  403,  418,  754,  221,  723,  587,  724,
-      450,  568,  507,  648,  509,  327,  725,  353,  497,  610,
-      454,  622,  455,  461,  404,  510,  373,  732,  612,  247,
-      361,  664,  463,  405,  692,  641,  464,  465,  511,  343,
-      437,  335,  409,  396,  665,  293,  467,  468,  472,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,    0,    0,    0,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-       -2,   -2,   -2,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  123,  123,  123,  123,  123,  123,  123,  123,  123,
-      123,  767,  767,  767,  767,  767,  767,  767,  767,  767,
-      767,  767,  123,  123,  123,  123,  123,  123,  123,  123,
-        0,  129,  129,  129,  129,  -94,  -94,  -94,  767,  767,
-      767,  767,  767,  767,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,  -94,  -94,  129,  129,
-      767,  767,  -24,  -24,  -24,  -24,  -24,  108,  108,  108,
-      -24,  108,  145,  145,  145,  108,  108,  108,  100,  100,
-        0,    0,    0,    0,    0,    0,    0,  145,    0,    0,
-        0,  376,    0,    0,    0,  145,  260,  260,  221,  260,
-      260,  135,    0,    0,  425,  376,    0,  364,  376,    0,
-        0,    0,    0,    0,    0,  531,    0,   87,  637,  241,
-      425,    0,    0,    0,    0,    0,    0,    0,  425,  289,
-      289,  306,    0,  358,    0,    0,    0,  306,  241,    0,
-        0,  221
-];
-
-PHP.Parser.prototype.yydefault = [
-        3,32767,32767,    1,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,  104,   96,  110,   95,  106,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-      358,  358,  122,  122,  122,  122,  122,  122,  122,  122,
-      316,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-      173,  173,  173,32767,  348,  348,  348,  348,  348,  348,
-      348,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,  363,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,  232,  233,
-      235,  236,  172,  125,  349,  362,  171,  199,  201,  250,
-      200,  177,  182,  183,  184,  185,  186,  187,  188,  189,
-      190,  191,  192,  176,  229,  228,  197,  313,  313,  316,
-    32767,32767,32767,32767,32767,32767,32767,32767,  198,  202,
-      204,  203,  219,  220,  217,  218,  175,  221,  222,  223,
-      224,  157,  157,  157,  357,  357,32767,  357,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,  158,32767,  211,  212,  276,  276,  117,  117,
-      117,  117,  117,32767,32767,32767,32767,  284,32767,32767,
-    32767,32767,32767,  286,32767,32767,  206,  207,  205,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,  285,32767,
-    32767,32767,32767,32767,32767,32767,32767,  334,  321,  272,
-    32767,32767,32767,  265,32767,  107,  109,32767,32767,32767,
-    32767,  302,  339,32767,32767,32767,   17,32767,32767,32767,
-      370,  334,32767,32767,   19,32767,32767,32767,32767,  227,
-    32767,  338,  332,32767,32767,32767,32767,32767,32767,   63,
-    32767,32767,32767,32767,32767,   63,  281,   63,32767,   63,
-    32767,  315,  287,32767,   63,   74,32767,   72,32767,32767,
-       76,32767,   63,   93,   93,  254,  315,   54,   63,  254,
-       63,32767,32767,32767,32767,    4,32767,32767,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,32767,  267,32767,  323,32767,  337,  336,  324,32767,
-      265,32767,  215,  194,  266,32767,  196,32767,32767,  270,
-      273,32767,32767,32767,  134,32767,  268,  180,32767,32767,
-    32767,32767,  365,32767,32767,  174,32767,32767,32767,  130,
-    32767,   61,  332,32767,32767,  355,32767,32767,  332,  269,
-      208,  209,  210,32767,  121,32767,  310,32767,32767,32767,
-    32767,32767,32767,  327,32767,  333,32767,32767,32767,32767,
-      111,32767,  302,32767,32767,32767,   75,32767,32767,  178,
-      126,32767,32767,  364,32767,32767,32767,  320,32767,32767,
-    32767,32767,32767,   62,32767,32767,   77,32767,32767,32767,
-    32767,  332,32767,32767,32767,  115,32767,  169,32767,32767,
-    32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-    32767,  332,32767,32767,32767,32767,32767,32767,32767,    4,
-    32767,  151,32767,32767,32767,32767,32767,32767,32767,   25,
-       25,    3,  137,    3,  137,   25,  101,   25,   25,  137,
-       93,   93,   25,   25,   25,  144,   25,   25,   25,   25,
-       25,   25,   25,   25
-];
-
-PHP.Parser.prototype.yygoto = [
-      141,  141,  173,  173,  173,  173,  173,  173,  173,  173,
-      141,  173,  142,  143,  144,  148,  153,  155,  181,  175,
-      172,  172,  172,  172,  174,  174,  174,  174,  174,  174,
-      174,  168,  169,  170,  171,  179,  757,  758,  392,  760,
-      781,  782,  783,  784,  785,  786,  787,  789,  725,  145,
-      146,  147,  149,  150,  151,  152,  154,  177,  178,  180,
-      196,  208,  209,  210,  211,  212,  213,  214,  215,  217,
-      218,  219,  220,  244,  245,  266,  267,  268,  430,  431,
-      432,  182,  183,  184,  185,  186,  187,  188,  189,  190,
-      191,  192,  156,  157,  158,  159,  176,  160,  194,  161,
-      162,  163,  164,  195,  165,  193,  139,  166,  167,  452,
-      452,  452,  452,  452,  452,  452,  452,  452,  452,  452,
-      453,  453,  453,  453,  453,  453,  453,  453,  453,  453,
-      453,  551,  551,  551,  464,  491,  394,  394,  394,  394,
-      394,  394,  394,  394,  394,  394,  394,  394,  394,  394,
-      394,  394,  394,  394,  407,  552,  552,  552,  810,  810,
-      662,  662,  662,  662,  662,  594,  283,  595,  510,  399,
-      399,  567,  679,  632,  849,  850,  863,  660,  714,  426,
-      222,  622,  622,  622,  622,  223,  617,  623,  494,  395,
-      395,  395,  395,  395,  395,  395,  395,  395,  395,  395,
-      395,  395,  395,  395,  395,  395,  395,  465,  472,  514,
-      904,  398,  398,  425,  425,  459,  425,  419,  322,  421,
-      421,  393,  396,  412,  422,  428,  460,  463,  473,  481,
-      501,    5,  476,  284,  327,    1,   15,    2,    6,    7,
-      550,  550,  550,    8,    9,   10,  668,   16,   11,   17,
-       12,   18,   13,   19,   14,  704,  328,  881,  881,  643,
-      628,  626,  626,  624,  626,  526,  401,  652,  647,  847,
-      847,  847,  847,  847,  847,  847,  847,  847,  847,  847,
-      437,  438,  441,  447,  477,  479,  497,  290,  910,  910,
-      400,  400,  486,  880,  880,  263,  913,  910,  303,  255,
-      723,  306,  822,  821,  306,  896,  896,  896,  861,  304,
-      323,  410,  913,  913,  897,  316,  420,  769,  658,  559,
-      879,  671,  536,  324,  466,  565,  311,  311,  311,  801,
-      241,  676,  496,  439,  440,  442,  444,  448,  475,  631,
-      858,  311,  285,  286,  603,  495,  712,    0,  406,  321,
-        0,    0,    0,  314,    0,    0,  429,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,  411
-];
-
-PHP.Parser.prototype.yygcheck = [
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   35,
-       35,   35,   35,   35,   35,   35,   35,   35,   35,   35,
-       86,   86,   86,   86,   86,   86,   86,   86,   86,   86,
-       86,    6,    6,    6,   21,   21,   35,   35,   35,   35,
-       35,   35,   35,   35,   35,   35,   35,   35,   35,   35,
-       35,   35,   35,   35,   71,    7,    7,    7,   35,   35,
-       35,   35,   35,   35,   35,   29,   44,   29,   35,   86,
-       86,   12,   12,   12,   12,   12,   12,   12,   12,   75,
-       40,   35,   35,   35,   35,   40,   35,   35,   35,   82,
-       82,   82,   82,   82,   82,   82,   82,   82,   82,   82,
-       82,   82,   82,   82,   82,   82,   82,   36,   36,   36,
-      104,   82,   82,   28,   28,   28,   28,   28,   28,   28,
-       28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-       28,   13,   42,   42,   42,    2,   13,    2,   13,   13,
-        5,    5,    5,   13,   13,   13,   54,   13,   13,   13,
-       13,   13,   13,   13,   13,   67,   67,   83,   83,    5,
-        5,    5,    5,    5,    5,    5,    5,    5,    5,   93,
-       93,   93,   93,   93,   93,   93,   93,   93,   93,   93,
-       52,   52,   52,   52,   52,   52,   52,    4,  105,  105,
-       89,   89,   94,   84,   84,   92,  105,  105,   26,   92,
-       71,    4,   91,   91,    4,   84,   84,   84,   97,   30,
-       70,   30,  105,  105,  102,   27,   30,   72,   50,   10,
-       84,   55,   46,    9,   30,   11,   90,   90,   90,   80,
-       30,   56,   30,   85,   85,   85,   85,   85,   85,   43,
-       96,   90,   44,   44,   34,   77,   69,   -1,    4,   90,
-       -1,   -1,   -1,    4,   -1,   -1,    4,   -1,   -1,   -1,
-       -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-       -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-       -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-       -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-       -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-       -1,   -1,   -1,   -1,   71
-];
-
-PHP.Parser.prototype.yygbase = [
-        0,    0, -286,    0,   10,  239,  130,  154,    0,  -10,
-       25,  -23,  -29, -289,    0,  -30,    0,    0,    0,    0,
-        0,   83,    0,    0,    0,    0,  245,   84,  -11,  142,
-      -28,    0,    0,    0,  -13,  -88,  -42,    0,    0,    0,
-     -344,    0,  -38,  -12, -188,    0,   23,    0,    0,    0,
-       66,    0,  247,    0,  205,   24,  -18,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,   13,    0,  -15,
-       85,   74,   70,    0,    0,  148,    0,  -14,    0,    0,
-       -6,    0,  -35,   11,   47,  278,  -77,    0,    0,   44,
-       68,   43,   38,   72,   94,    0,  -16,  109,    0,    0,
-        0,    0,   87,    0,  170,   34,    0
-];
-
-PHP.Parser.prototype.yygdefault = [
-    -32768,  362,    3,  546,  382,  570,  571,  572,  307,  305,
-      560,  566,  467,    4,  568,  140,  295,  575,  296,  500,
-      577,  414,  579,  580,  308,  309,  415,  315,  216,  593,
-      503,  313,  596,  357,  602,  301,  449,  383,  350,  461,
-      221,  423,  456,  630,  282,  638,  540,  646,  649,  450,
-      657,  352,  433,  434,  667,  672,  677,  680,  334,  325,
-      474,  684,  685,  256,  689,  511,  512,  703,  242,  711,
-      317,  724,  342,  788,  790,  397,  408,  484,  797,  326,
-      800,  384,  385,  386,  387,  435,  818,  815,  289,  866,
-      287,  443,  254,  853,  468,  356,  903,  862,  288,  388,
-      389,  302,  898,  341,  905,  912,  458
-];
-
-PHP.Parser.prototype.yylhs = [
-        0,    1,    2,    2,    4,    4,    3,    3,    3,    3,
-        3,    3,    3,    3,    3,    8,    8,   10,   10,   10,
-       10,    9,    9,   11,   13,   13,   14,   14,   14,   14,
-        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    5,   33,   33,
-       34,   27,   27,   30,   30,    6,    7,    7,    7,   37,
-       37,   37,   38,   38,   41,   41,   39,   39,   42,   42,
-       22,   22,   29,   29,   32,   32,   31,   31,   43,   23,
-       23,   23,   23,   44,   44,   45,   45,   46,   46,   20,
-       20,   16,   16,   47,   18,   18,   48,   17,   17,   19,
-       19,   36,   36,   49,   49,   50,   50,   51,   51,   51,
-       51,   52,   52,   53,   53,   54,   54,   24,   24,   55,
-       55,   55,   25,   25,   56,   56,   40,   40,   57,   57,
-       57,   57,   62,   62,   63,   63,   64,   64,   64,   64,
-       65,   66,   66,   61,   61,   58,   58,   60,   60,   68,
-       68,   67,   67,   67,   67,   67,   67,   59,   59,   69,
-       69,   26,   26,   21,   21,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   15,   15,   15,   15,   15,   15,   15,
-       15,   15,   15,   71,   77,   77,   79,   79,   80,   81,
-       81,   81,   81,   81,   81,   86,   86,   35,   35,   35,
-       72,   72,   87,   87,   82,   82,   88,   88,   88,   88,
-       88,   73,   73,   73,   76,   76,   76,   78,   78,   93,
-       93,   93,   93,   93,   93,   93,   93,   93,   93,   93,
-       93,   93,   93,   12,   12,   12,   12,   12,   12,   74,
-       74,   74,   74,   94,   94,   96,   96,   95,   95,   97,
-       97,   28,   28,   28,   28,   99,   99,   98,   98,   98,
-       98,   98,  100,  100,   84,   84,   89,   89,   83,   83,
-      101,  101,  101,  101,   90,   90,   90,   90,   85,   85,
-       91,   91,   91,   70,   70,  102,  102,  102,   75,   75,
-      103,  103,  104,  104,  104,  104,   92,   92,   92,   92,
-      105,  105,  105,  105,  105,  105,  105,  106,  106,  106
-];
-
-PHP.Parser.prototype.yylen = [
-        1,    1,    2,    0,    1,    3,    1,    1,    1,    1,
-        3,    5,    4,    3,    3,    3,    1,    1,    3,    2,
-        4,    3,    1,    3,    2,    0,    1,    1,    1,    1,
-        3,    7,   10,    5,    7,    9,    5,    2,    3,    2,
-        3,    2,    3,    3,    3,    3,    1,    2,    5,    7,
-        8,   10,    5,    1,    5,    3,    3,    2,    1,    2,
-        8,    1,    3,    0,    1,    9,    7,    6,    5,    1,
-        2,    2,    0,    2,    0,    2,    0,    2,    1,    3,
-        1,    4,    1,    4,    1,    4,    1,    3,    3,    3,
-        4,    4,    5,    0,    2,    4,    3,    1,    1,    1,
-        4,    0,    2,    5,    0,    2,    6,    0,    2,    0,
-        3,    1,    0,    1,    3,    3,    5,    0,    1,    1,
-        1,    1,    0,    1,    3,    1,    2,    3,    1,    1,
-        2,    4,    3,    1,    1,    3,    2,    0,    3,    3,
-        8,    3,    1,    3,    0,    2,    4,    5,    4,    4,
-        3,    1,    1,    1,    3,    1,    1,    0,    1,    1,
-        2,    1,    1,    1,    1,    1,    1,    1,    3,    1,
-        3,    3,    1,    0,    1,    1,    6,    3,    4,    4,
-        1,    2,    3,    3,    3,    3,    3,    3,    3,    3,
-        3,    3,    3,    2,    2,    2,    2,    3,    3,    3,
-        3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
-        3,    3,    3,    2,    2,    2,    2,    3,    3,    3,
-        3,    3,    3,    3,    3,    3,    3,    3,    5,    4,
-        4,    4,    2,    2,    4,    2,    2,    2,    2,    2,
-        2,    2,    2,    2,    2,    2,    1,    4,    3,    3,
-        2,    9,   10,    3,    0,    4,    1,    3,    2,    4,
-        6,    8,    4,    4,    4,    1,    1,    1,    2,    3,
-        1,    1,    1,    1,    1,    1,    0,    3,    3,    4,
-        4,    0,    2,    3,    0,    1,    1,    0,    3,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        3,    2,    1,    1,    3,    2,    2,    4,    3,    1,
-        3,    3,    3,    0,    2,    0,    1,    3,    1,    3,
-        1,    1,    1,    1,    1,    6,    4,    3,    6,    4,
-        4,    4,    1,    3,    1,    2,    1,    1,    4,    1,
-        3,    6,    4,    4,    4,    4,    1,    4,    0,    1,
-        1,    3,    1,    3,    1,    1,    4,    0,    0,    2,
-        3,    1,    3,    1,    4,    2,    2,    2,    1,    2,
-        1,    4,    3,    3,    3,    6,    3,    1,    1,    1
-];
-
-
-
-
-
-
-
-PHP.Parser.prototype.yyn0 = function () {
-    this.yyval = this.yyastk[ this.stackPos ];
-};
-
-PHP.Parser.prototype.yyn1 = function ( attributes ) {
-     this.yyval = this.Stmt_Namespace_postprocess(this.yyastk[ this.stackPos-(1-1) ]); 
-};
-
-PHP.Parser.prototype.yyn2 = function ( attributes ) {
-     if (Array.isArray(this.yyastk[ this.stackPos-(2-2) ])) { this.yyval = this.yyastk[ this.stackPos-(2-1) ].concat( this.yyastk[ this.stackPos-(2-2) ]); } else { this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; }; 
-};
-
-PHP.Parser.prototype.yyn3 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn4 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn5 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn6 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn7 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn8 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn9 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_HaltCompiler(attributes); 
-};
-
-PHP.Parser.prototype.yyn10 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Namespace(this.Node_Name(this.yyastk[ this.stackPos-(3-2) ], attributes), null, attributes); 
-};
-
-PHP.Parser.prototype.yyn11 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Namespace(this.Node_Name(this.yyastk[ this.stackPos-(5-2) ], attributes), this.yyastk[ this.stackPos-(5-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn12 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Namespace(null, this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn13 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Use(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn14 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Const(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn15 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn16 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn17 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_UseUse(this.Node_Name(this.yyastk[ this.stackPos-(1-1) ], attributes), null, attributes); 
-};
-
-PHP.Parser.prototype.yyn18 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_UseUse(this.Node_Name(this.yyastk[ this.stackPos-(3-1) ], attributes), this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn19 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_UseUse(this.Node_Name(this.yyastk[ this.stackPos-(2-2) ], attributes), null, attributes); 
-};
-
-PHP.Parser.prototype.yyn20 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_UseUse(this.Node_Name(this.yyastk[ this.stackPos-(4-2) ], attributes), this.yyastk[ this.stackPos-(4-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn21 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn22 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn23 = function ( attributes ) {
-     this.yyval = this.Node_Const(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn24 = function ( attributes ) {
-     if (Array.isArray(this.yyastk[ this.stackPos-(2-2) ])) { this.yyval = this.yyastk[ this.stackPos-(2-1) ].concat( this.yyastk[ this.stackPos-(2-2) ]); } else { this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; }; 
-};
-
-PHP.Parser.prototype.yyn25 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn26 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn27 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn28 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn29 = function ( attributes ) {
-     throw new Error('__halt_compiler() can only be used from the outermost scope'); 
-};
-
-PHP.Parser.prototype.yyn30 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn31 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_If(this.yyastk[ this.stackPos-(7-3) ], {'stmts':  Array.isArray(this.yyastk[ this.stackPos-(7-5) ]) ? this.yyastk[ this.stackPos-(7-5) ] : [this.yyastk[ this.stackPos-(7-5) ]], 'elseifs':  this.yyastk[ this.stackPos-(7-6) ], 'Else':  this.yyastk[ this.stackPos-(7-7) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn32 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_If(this.yyastk[ this.stackPos-(10-3) ], {'stmts':  this.yyastk[ this.stackPos-(10-6) ], 'elseifs':  this.yyastk[ this.stackPos-(10-7) ], 'else':  this.yyastk[ this.stackPos-(10-8) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn33 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_While(this.yyastk[ this.stackPos-(5-3) ], this.yyastk[ this.stackPos-(5-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn34 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Do(this.yyastk[ this.stackPos-(7-5) ], Array.isArray(this.yyastk[ this.stackPos-(7-2) ]) ? this.yyastk[ this.stackPos-(7-2) ] : [this.yyastk[ this.stackPos-(7-2) ]], attributes); 
-};
-
-PHP.Parser.prototype.yyn35 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_For({'init':  this.yyastk[ this.stackPos-(9-3) ], 'cond':  this.yyastk[ this.stackPos-(9-5) ], 'loop':  this.yyastk[ this.stackPos-(9-7) ], 'stmts':  this.yyastk[ this.stackPos-(9-9) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn36 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Switch(this.yyastk[ this.stackPos-(5-3) ], this.yyastk[ this.stackPos-(5-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn37 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Break(null, attributes); 
-};
-
-PHP.Parser.prototype.yyn38 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Break(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn39 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Continue(null, attributes); 
-};
-
-PHP.Parser.prototype.yyn40 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Continue(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn41 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Return(null, attributes); 
-};
-
-PHP.Parser.prototype.yyn42 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Return(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn43 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Global(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn44 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Static(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn45 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Echo(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn46 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_InlineHTML(this.yyastk[ this.stackPos-(1-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn47 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn48 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Unset(this.yyastk[ this.stackPos-(5-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn49 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Foreach(this.yyastk[ this.stackPos-(7-3) ], this.yyastk[ this.stackPos-(7-5) ], {'keyVar':  null, 'byRef':  false, 'stmts':  this.yyastk[ this.stackPos-(7-7) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn50 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Foreach(this.yyastk[ this.stackPos-(8-3) ], this.yyastk[ this.stackPos-(8-6) ], {'keyVar':  null, 'byRef':  true, 'stmts':  this.yyastk[ this.stackPos-(8-8) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn51 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Foreach(this.yyastk[ this.stackPos-(10-3) ], this.yyastk[ this.stackPos-(10-8) ], {'keyVar':  this.yyastk[ this.stackPos-(10-5) ], 'byRef':  this.yyastk[ this.stackPos-(10-7) ], 'stmts':  this.yyastk[ this.stackPos-(10-10) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn52 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Declare(this.yyastk[ this.stackPos-(5-3) ], this.yyastk[ this.stackPos-(5-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn53 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn54 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_TryCatch(this.yyastk[ this.stackPos-(5-3) ], this.yyastk[ this.stackPos-(5-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn55 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Throw(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn56 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Goto(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn57 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Label(this.yyastk[ this.stackPos-(2-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn58 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn59 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn60 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Catch(this.yyastk[ this.stackPos-(8-3) ], this.yyastk[ this.stackPos-(8-4) ].substring( 1 ), this.yyastk[ this.stackPos-(8-7) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn61 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn62 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn63 = function ( attributes ) {
-     this.yyval = false; 
-};
-
-PHP.Parser.prototype.yyn64 = function ( attributes ) {
-     this.yyval = true; 
-};
-
-PHP.Parser.prototype.yyn65 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Function(this.yyastk[ this.stackPos-(9-3) ], {'byRef':  this.yyastk[ this.stackPos-(9-2) ], 'params':  this.yyastk[ this.stackPos-(9-5) ], 'stmts':  this.yyastk[ this.stackPos-(9-8) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn66 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Class(this.yyastk[ this.stackPos-(7-2) ], {'type':  this.yyastk[ this.stackPos-(7-1) ], 'Extends':  this.yyastk[ this.stackPos-(7-3) ], 'Implements':  this.yyastk[ this.stackPos-(7-4) ], 'stmts':  this.yyastk[ this.stackPos-(7-6) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn67 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Interface(this.yyastk[ this.stackPos-(6-2) ], {'Extends':  this.yyastk[ this.stackPos-(6-3) ], 'stmts':  this.yyastk[ this.stackPos-(6-5) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn68 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Trait(this.yyastk[ this.stackPos-(5-2) ], this.yyastk[ this.stackPos-(5-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn69 = function ( attributes ) {
-     this.yyval = 0; 
-};
-
-PHP.Parser.prototype.yyn70 = function ( attributes ) {
-     this.yyval = this.MODIFIER_ABSTRACT; 
-};
-
-PHP.Parser.prototype.yyn71 = function ( attributes ) {
-     this.yyval = this.MODIFIER_FINAL; 
-};
-
-PHP.Parser.prototype.yyn72 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn73 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(2-2) ]; 
-};
-
-PHP.Parser.prototype.yyn74 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn75 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(2-2) ]; 
-};
-
-PHP.Parser.prototype.yyn76 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn77 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(2-2) ]; 
-};
-
-PHP.Parser.prototype.yyn78 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn79 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn80 = function ( attributes ) {
-     this.yyval = Array.isArray(this.yyastk[ this.stackPos-(1-1) ]) ? this.yyastk[ this.stackPos-(1-1) ] : [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn81 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-2) ]; 
-};
-
-PHP.Parser.prototype.yyn82 = function ( attributes ) {
-     this.yyval = Array.isArray(this.yyastk[ this.stackPos-(1-1) ]) ? this.yyastk[ this.stackPos-(1-1) ] : [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn83 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-2) ]; 
-};
-
-PHP.Parser.prototype.yyn84 = function ( attributes ) {
-     this.yyval = Array.isArray(this.yyastk[ this.stackPos-(1-1) ]) ? this.yyastk[ this.stackPos-(1-1) ] : [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn85 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-2) ]; 
-};
-
-PHP.Parser.prototype.yyn86 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn87 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn88 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_DeclareDeclare(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn89 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn90 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-3) ]; 
-};
-
-PHP.Parser.prototype.yyn91 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-2) ]; 
-};
-
-PHP.Parser.prototype.yyn92 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(5-3) ]; 
-};
-
-PHP.Parser.prototype.yyn93 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn94 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn95 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Case(this.yyastk[ this.stackPos-(4-2) ], this.yyastk[ this.stackPos-(4-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn96 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Case(null, this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn97 = function () {
-    this.yyval = this.yyastk[ this.stackPos ];
-};
-
-PHP.Parser.prototype.yyn98 = function () {
-    this.yyval = this.yyastk[ this.stackPos ];
-};
-
-PHP.Parser.prototype.yyn99 = function ( attributes ) {
-     this.yyval = Array.isArray(this.yyastk[ this.stackPos-(1-1) ]) ? this.yyastk[ this.stackPos-(1-1) ] : [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn100 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-2) ]; 
-};
-
-PHP.Parser.prototype.yyn101 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn102 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn103 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_ElseIf(this.yyastk[ this.stackPos-(5-3) ], Array.isArray(this.yyastk[ this.stackPos-(5-5) ]) ? this.yyastk[ this.stackPos-(5-5) ] : [this.yyastk[ this.stackPos-(5-5) ]], attributes); 
-};
-
-PHP.Parser.prototype.yyn104 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn105 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn106 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_ElseIf(this.yyastk[ this.stackPos-(6-3) ], this.yyastk[ this.stackPos-(6-6) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn107 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn108 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Else(Array.isArray(this.yyastk[ this.stackPos-(2-2) ]) ? this.yyastk[ this.stackPos-(2-2) ] : [this.yyastk[ this.stackPos-(2-2) ]], attributes); 
-};
-
-PHP.Parser.prototype.yyn109 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn110 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Else(this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn111 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn112 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn113 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn114 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn115 = function ( attributes ) {
-     this.yyval = this.Node_Param(this.yyastk[ this.stackPos-(3-3) ].substring( 1 ), null, this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn116 = function ( attributes ) {
-     this.yyval = this.Node_Param(this.yyastk[ this.stackPos-(5-3) ].substring( 1 ), this.yyastk[ this.stackPos-(5-5) ], this.yyastk[ this.stackPos-(5-1) ], this.yyastk[ this.stackPos-(5-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn117 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn118 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn119 = function ( attributes ) {
-     this.yyval = 'array'; 
-};
-
-PHP.Parser.prototype.yyn120 = function ( attributes ) {
-     this.yyval = 'callable'; 
-};
-
-PHP.Parser.prototype.yyn121 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn122 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn123 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn124 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn125 = function ( attributes ) {
-     this.yyval = this.Node_Arg(this.yyastk[ this.stackPos-(1-1) ], false, attributes); 
-};
-
-PHP.Parser.prototype.yyn126 = function ( attributes ) {
-     this.yyval = this.Node_Arg(this.yyastk[ this.stackPos-(2-2) ], true, attributes); 
-};
-
-PHP.Parser.prototype.yyn127 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn128 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn129 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(1-1) ].substring( 1 ), attributes); 
-};
-
-PHP.Parser.prototype.yyn130 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn131 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn132 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn133 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn134 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_StaticVar(this.yyastk[ this.stackPos-(1-1) ].substring( 1 ), null, attributes); 
-};
-
-PHP.Parser.prototype.yyn135 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_StaticVar(this.yyastk[ this.stackPos-(3-1) ].substring( 1 ), this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn136 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn137 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn138 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_Property(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn139 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_ClassConst(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn140 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_ClassMethod(this.yyastk[ this.stackPos-(8-4) ], {'type':  this.yyastk[ this.stackPos-(8-1) ], 'byRef':  this.yyastk[ this.stackPos-(8-3) ], 'params':  this.yyastk[ this.stackPos-(8-6) ], 'stmts':  this.yyastk[ this.stackPos-(8-8) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn141 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_TraitUse(this.yyastk[ this.stackPos-(3-2) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn142 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn143 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn144 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn145 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn146 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_TraitUseAdaptation_Precedence(this.yyastk[ this.stackPos-(4-1) ][0], this.yyastk[ this.stackPos-(4-1) ][1], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn147 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_TraitUseAdaptation_Alias(this.yyastk[ this.stackPos-(5-1) ][0], this.yyastk[ this.stackPos-(5-1) ][1], this.yyastk[ this.stackPos-(5-3) ], this.yyastk[ this.stackPos-(5-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn148 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_TraitUseAdaptation_Alias(this.yyastk[ this.stackPos-(4-1) ][0], this.yyastk[ this.stackPos-(4-1) ][1], this.yyastk[ this.stackPos-(4-3) ], null, attributes); 
-};
-
-PHP.Parser.prototype.yyn149 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_TraitUseAdaptation_Alias(this.yyastk[ this.stackPos-(4-1) ][0], this.yyastk[ this.stackPos-(4-1) ][1], null, this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn150 = function ( attributes ) {
-     this.yyval = array(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ]); 
-};
-
-PHP.Parser.prototype.yyn151 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn152 = function ( attributes ) {
-     this.yyval = array(null, this.yyastk[ this.stackPos-(1-1) ]); 
-};
-
-PHP.Parser.prototype.yyn153 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn154 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn155 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn156 = function ( attributes ) {
-     this.yyval = this.MODIFIER_PUBLIC; 
-};
-
-PHP.Parser.prototype.yyn157 = function ( attributes ) {
-     this.yyval = this.MODIFIER_PUBLIC; 
-};
-
-PHP.Parser.prototype.yyn158 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn159 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn160 = function ( attributes ) {
-     this.Stmt_Class_verifyModifier(this.yyastk[ this.stackPos-(2-1) ], this.yyastk[ this.stackPos-(2-2) ]); this.yyval = this.yyastk[ this.stackPos-(2-1) ] | this.yyastk[ this.stackPos-(2-2) ]; 
-};
-
-PHP.Parser.prototype.yyn161 = function ( attributes ) {
-     this.yyval = this.MODIFIER_PUBLIC; 
-};
-
-PHP.Parser.prototype.yyn162 = function ( attributes ) {
-     this.yyval = this.MODIFIER_PROTECTED; 
-};
-
-PHP.Parser.prototype.yyn163 = function ( attributes ) {
-     this.yyval = this.MODIFIER_PRIVATE; 
-};
-
-PHP.Parser.prototype.yyn164 = function ( attributes ) {
-     this.yyval = this.MODIFIER_STATIC; 
-};
-
-PHP.Parser.prototype.yyn165 = function ( attributes ) {
-     this.yyval = this.MODIFIER_ABSTRACT; 
-};
-
-PHP.Parser.prototype.yyn166 = function ( attributes ) {
-     this.yyval = this.MODIFIER_FINAL; 
-};
-
-PHP.Parser.prototype.yyn167 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn168 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn169 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_PropertyProperty(this.yyastk[ this.stackPos-(1-1) ].substring( 1 ), null, attributes); 
-};
-
-PHP.Parser.prototype.yyn170 = function ( attributes ) {
-     this.yyval = this.Node_Stmt_PropertyProperty(this.yyastk[ this.stackPos-(3-1) ].substring( 1 ), this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn171 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn172 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn173 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn174 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn175 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn176 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignList(this.yyastk[ this.stackPos-(6-3) ], this.yyastk[ this.stackPos-(6-6) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn177 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Assign(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn178 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignRef(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn179 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignRef(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn180 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn181 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Clone(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn182 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignPlus(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn183 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignMinus(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn184 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignMul(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn185 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignDiv(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn186 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignConcat(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn187 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignMod(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn188 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignBitwiseAnd(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn189 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignBitwiseOr(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn190 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignBitwiseXor(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn191 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignShiftLeft(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn192 = function ( attributes ) {
-     this.yyval = this.Node_Expr_AssignShiftRight(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn193 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PostInc(this.yyastk[ this.stackPos-(2-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn194 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PreInc(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn195 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PostDec(this.yyastk[ this.stackPos-(2-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn196 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PreDec(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn197 = function ( attributes ) {
-     this.yyval = this.Node_Expr_BooleanOr(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn198 = function ( attributes ) {
-     this.yyval = this.Node_Expr_BooleanAnd(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn199 = function ( attributes ) {
-     this.yyval = this.Node_Expr_LogicalOr(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn200 = function ( attributes ) {
-     this.yyval = this.Node_Expr_LogicalAnd(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn201 = function ( attributes ) {
-     this.yyval = this.Node_Expr_LogicalXor(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn202 = function ( attributes ) {
-     this.yyval = this.Node_Expr_BitwiseOr(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn203 = function ( attributes ) {
-     this.yyval = this.Node_Expr_BitwiseAnd(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn204 = function ( attributes ) {
-     this.yyval = this.Node_Expr_BitwiseXor(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn205 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Concat(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn206 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Plus(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn207 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Minus(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn208 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Mul(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn209 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Div(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn210 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Mod(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn211 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ShiftLeft(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn212 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ShiftRight(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn213 = function ( attributes ) {
-     this.yyval = this.Node_Expr_UnaryPlus(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn214 = function ( attributes ) {
-     this.yyval = this.Node_Expr_UnaryMinus(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn215 = function ( attributes ) {
-     this.yyval = this.Node_Expr_BooleanNot(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn216 = function ( attributes ) {
-     this.yyval = this.Node_Expr_BitwiseNot(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn217 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Identical(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn218 = function ( attributes ) {
-     this.yyval = this.Node_Expr_NotIdentical(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn219 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Equal(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn220 = function ( attributes ) {
-     this.yyval = this.Node_Expr_NotEqual(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn221 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Smaller(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn222 = function ( attributes ) {
-     this.yyval = this.Node_Expr_SmallerOrEqual(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn223 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Greater(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn224 = function ( attributes ) {
-     this.yyval = this.Node_Expr_GreaterOrEqual(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn225 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Instanceof(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn226 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn227 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn228 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Ternary(this.yyastk[ this.stackPos-(5-1) ], this.yyastk[ this.stackPos-(5-3) ], this.yyastk[ this.stackPos-(5-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn229 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Ternary(this.yyastk[ this.stackPos-(4-1) ], null, this.yyastk[ this.stackPos-(4-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn230 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Isset(this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn231 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Empty(this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn232 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Include(this.yyastk[ this.stackPos-(2-2) ], "Node_Expr_Include", attributes); 
-};
-
-PHP.Parser.prototype.yyn233 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Include(this.yyastk[ this.stackPos-(2-2) ], "Node_Expr_IncludeOnce", attributes); 
-};
-
-PHP.Parser.prototype.yyn234 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Eval(this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn235 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Include(this.yyastk[ this.stackPos-(2-2) ], "Node_Expr_Require", attributes); 
-};
-
-PHP.Parser.prototype.yyn236 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Include(this.yyastk[ this.stackPos-(2-2) ], "Node_Expr_RequireOnce", attributes); 
-};
-
-PHP.Parser.prototype.yyn237 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Cast_Int(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn238 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Cast_Double(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn239 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Cast_String(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn240 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Cast_Array(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn241 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Cast_Object(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn242 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Cast_Bool(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn243 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Cast_Unset(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn244 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Exit(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn245 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ErrorSuppress(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn246 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn247 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Array(this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn248 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Array(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn249 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ShellExec(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn250 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Print(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn251 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Closure({'static':  false, 'byRef':  this.yyastk[ this.stackPos-(9-2) ], 'params':  this.yyastk[ this.stackPos-(9-4) ], 'uses':  this.yyastk[ this.stackPos-(9-6) ], 'stmts':  this.yyastk[ this.stackPos-(9-8) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn252 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Closure({'static':  true, 'byRef':  this.yyastk[ this.stackPos-(10-3) ], 'params':  this.yyastk[ this.stackPos-(10-5) ], 'uses':  this.yyastk[ this.stackPos-(10-7) ], 'stmts':  this.yyastk[ this.stackPos-(10-9) ]}, attributes); 
-};
-
-PHP.Parser.prototype.yyn253 = function ( attributes ) {
-     this.yyval = this.Node_Expr_New(this.yyastk[ this.stackPos-(3-2) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn254 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn255 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-3) ]; 
-};
-
-PHP.Parser.prototype.yyn256 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn257 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn258 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ClosureUse(this.yyastk[ this.stackPos-(2-2) ].substring( 1 ), this.yyastk[ this.stackPos-(2-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn259 = function ( attributes ) {
-     this.yyval = this.Node_Expr_FuncCall(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn260 = function ( attributes ) {
-     this.yyval = this.Node_Expr_StaticCall(this.yyastk[ this.stackPos-(6-1) ], this.yyastk[ this.stackPos-(6-3) ], this.yyastk[ this.stackPos-(6-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn261 = function ( attributes ) {
-     this.yyval = this.Node_Expr_StaticCall(this.yyastk[ this.stackPos-(8-1) ], this.yyastk[ this.stackPos-(8-4) ], this.yyastk[ this.stackPos-(8-7) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn262 = function ( attributes ) {
-    
-            if (this.yyastk[ this.stackPos-(4-1) ].type === "Node_Expr_StaticPropertyFetch") {
-                this.yyval = this.Node_Expr_StaticCall(this.yyastk[ this.stackPos-(4-1) ].Class, this.Node_Expr_Variable(this.yyastk[ this.stackPos-(4-1) ].name, attributes), this.yyastk[ this.stackPos-(4-3) ], attributes);
-            } else if (this.yyastk[ this.stackPos-(4-1) ].type === "Node_Expr_ArrayDimFetch") {
-                var tmp = this.yyastk[ this.stackPos-(4-1) ];
-                while (tmp.variable.type === "Node_Expr_ArrayDimFetch") {
-                    tmp = tmp.variable;
-                }
-
-                this.yyval = this.Node_Expr_StaticCall(tmp.variable.Class, this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes);
-                tmp.variable = this.Node_Expr_Variable(tmp.variable.name, attributes);
-            } else {
-                throw new Exception;
-            }
-          
-};
-
-PHP.Parser.prototype.yyn263 = function ( attributes ) {
-     this.yyval = this.Node_Expr_FuncCall(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn264 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn265 = function ( attributes ) {
-     this.yyval = this.Node_Name('static', attributes); 
-};
-
-PHP.Parser.prototype.yyn266 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn267 = function ( attributes ) {
-     this.yyval = this.Node_Name(this.yyastk[ this.stackPos-(1-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn268 = function ( attributes ) {
-     this.yyval = this.Node_Name_FullyQualified(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn269 = function ( attributes ) {
-     this.yyval = this.Node_Name_Relative(this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn270 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn271 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn272 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn273 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn274 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn275 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn276 = function () {
-    this.yyval = this.yyastk[ this.stackPos ];
-};
-
-PHP.Parser.prototype.yyn277 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PropertyFetch(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn278 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PropertyFetch(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn279 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn280 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn281 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn282 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn283 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn284 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn285 = function ( attributes ) {
-     this.yyval = [this.Scalar_String_parseEscapeSequences(this.yyastk[ this.stackPos-(1-1) ], '`')]; 
-};
-
-PHP.Parser.prototype.yyn286 = function ( attributes ) {
-     ; this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn287 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn288 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn289 = function ( attributes ) {
-     this.yyval = this.Node_Scalar_LNumber(this.Scalar_LNumber_parse(this.yyastk[ this.stackPos-(1-1) ]), attributes); 
-};
-
-PHP.Parser.prototype.yyn290 = function ( attributes ) {
-     this.yyval = this.Node_Scalar_DNumber(this.Scalar_DNumber_parse(this.yyastk[ this.stackPos-(1-1) ]), attributes); 
-};
-
-PHP.Parser.prototype.yyn291 = function ( attributes ) {
-     this.yyval = this.Scalar_String_create(this.yyastk[ this.stackPos-(1-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn292 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_LineConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn293 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_FileConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn294 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_DirConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn295 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_ClassConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn296 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_TraitConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn297 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_MethodConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn298 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_FuncConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn299 = function ( attributes ) {
-     this.yyval = {type: "Node_Scalar_NSConst", attributes: attributes}; 
-};
-
-PHP.Parser.prototype.yyn300 = function ( attributes ) {
-     this.yyval = this.Node_Scalar_String(this.Scalar_String_parseDocString(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-2) ]), attributes); 
-};
-
-PHP.Parser.prototype.yyn301 = function ( attributes ) {
-     this.yyval = this.Node_Scalar_String('', attributes); 
-};
-
-PHP.Parser.prototype.yyn302 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ConstFetch(this.yyastk[ this.stackPos-(1-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn303 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn304 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ClassConstFetch(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn305 = function ( attributes ) {
-     this.yyval = this.Node_Expr_UnaryPlus(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn306 = function ( attributes ) {
-     this.yyval = this.Node_Expr_UnaryMinus(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn307 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Array(this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn308 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Array(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn309 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn310 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ClassConstFetch(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn311 = function ( attributes ) {
-     ; this.yyval = this.Node_Scalar_Encapsed(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn312 = function ( attributes ) {
-     ; this.yyval = this.Node_Scalar_Encapsed(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn313 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn314 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn315 = function () {
-    this.yyval = this.yyastk[ this.stackPos ];
-};
-
-PHP.Parser.prototype.yyn316 = function () {
-    this.yyval = this.yyastk[ this.stackPos ];
-};
-
-PHP.Parser.prototype.yyn317 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn318 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn319 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayItem(this.yyastk[ this.stackPos-(3-3) ], this.yyastk[ this.stackPos-(3-1) ], false, attributes); 
-};
-
-PHP.Parser.prototype.yyn320 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayItem(this.yyastk[ this.stackPos-(1-1) ], null, false, attributes); 
-};
-
-PHP.Parser.prototype.yyn321 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn322 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn323 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn324 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn325 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(6-2) ], this.yyastk[ this.stackPos-(6-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn326 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn327 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PropertyFetch(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn328 = function ( attributes ) {
-     this.yyval = this.Node_Expr_MethodCall(this.yyastk[ this.stackPos-(6-1) ], this.yyastk[ this.stackPos-(6-3) ], this.yyastk[ this.stackPos-(6-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn329 = function ( attributes ) {
-     this.yyval = this.Node_Expr_FuncCall(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn330 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn331 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn332 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn333 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn334 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn335 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(2-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn336 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn337 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn338 = function ( attributes ) {
-     this.yyval = this.Node_Expr_StaticPropertyFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn339 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn340 = function ( attributes ) {
-     this.yyval = this.Node_Expr_StaticPropertyFetch(this.yyastk[ this.stackPos-(3-1) ], this.yyastk[ this.stackPos-(3-3) ].substring( 1 ), attributes); 
-};
-
-PHP.Parser.prototype.yyn341 = function ( attributes ) {
-     this.yyval = this.Node_Expr_StaticPropertyFetch(this.yyastk[ this.stackPos-(6-1) ], this.yyastk[ this.stackPos-(6-5) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn342 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn343 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn344 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn345 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.yyastk[ this.stackPos-(4-1) ], this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn346 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(1-1) ].substring( 1 ), attributes); 
-};
-
-PHP.Parser.prototype.yyn347 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn348 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn349 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn350 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn351 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn352 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn353 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn354 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn355 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(1-1) ]; 
-};
-
-PHP.Parser.prototype.yyn356 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(4-3) ]; 
-};
-
-PHP.Parser.prototype.yyn357 = function ( attributes ) {
-     this.yyval = null; 
-};
-
-PHP.Parser.prototype.yyn358 = function ( attributes ) {
-     this.yyval = []; 
-};
-
-PHP.Parser.prototype.yyn359 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn360 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(3-1) ].push( this.yyastk[ this.stackPos-(3-3) ] ); this.yyval = this.yyastk[ this.stackPos-(3-1) ]; 
-};
-
-PHP.Parser.prototype.yyn361 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn362 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayItem(this.yyastk[ this.stackPos-(3-3) ], this.yyastk[ this.stackPos-(3-1) ], false, attributes); 
-};
-
-PHP.Parser.prototype.yyn363 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayItem(this.yyastk[ this.stackPos-(1-1) ], null, false, attributes); 
-};
-
-PHP.Parser.prototype.yyn364 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayItem(this.yyastk[ this.stackPos-(4-4) ], this.yyastk[ this.stackPos-(4-1) ], true, attributes); 
-};
-
-PHP.Parser.prototype.yyn365 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayItem(this.yyastk[ this.stackPos-(2-2) ], null, true, attributes); 
-};
-
-PHP.Parser.prototype.yyn366 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn367 = function ( attributes ) {
-     this.yyastk[ this.stackPos-(2-1) ].push( this.yyastk[ this.stackPos-(2-2) ] ); this.yyval = this.yyastk[ this.stackPos-(2-1) ]; 
-};
-
-PHP.Parser.prototype.yyn368 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(1-1) ]]; 
-};
-
-PHP.Parser.prototype.yyn369 = function ( attributes ) {
-     this.yyval = [this.yyastk[ this.stackPos-(2-1) ], this.yyastk[ this.stackPos-(2-2) ]]; 
-};
-
-PHP.Parser.prototype.yyn370 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(1-1) ].substring( 1 ), attributes); 
-};
-
-PHP.Parser.prototype.yyn371 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.Node_Expr_Variable(this.yyastk[ this.stackPos-(4-1) ].substring( 1 ), attributes), this.yyastk[ this.stackPos-(4-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn372 = function ( attributes ) {
-     this.yyval = this.Node_Expr_PropertyFetch(this.Node_Expr_Variable(this.yyastk[ this.stackPos-(3-1) ].substring( 1 ), attributes), this.yyastk[ this.stackPos-(3-3) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn373 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn374 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(3-2) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn375 = function ( attributes ) {
-     this.yyval = this.Node_Expr_ArrayDimFetch(this.Node_Expr_Variable(this.yyastk[ this.stackPos-(6-2) ], attributes), this.yyastk[ this.stackPos-(6-4) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn376 = function ( attributes ) {
-     this.yyval = this.yyastk[ this.stackPos-(3-2) ]; 
-};
-
-PHP.Parser.prototype.yyn377 = function ( attributes ) {
-     this.yyval = this.Node_Scalar_String(this.yyastk[ this.stackPos-(1-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn378 = function ( attributes ) {
-     this.yyval = this.Node_Scalar_String(this.yyastk[ this.stackPos-(1-1) ], attributes); 
-};
-
-PHP.Parser.prototype.yyn379 = function ( attributes ) {
-     this.yyval = this.Node_Expr_Variable(this.yyastk[ this.stackPos-(1-1) ].substring( 1 ), attributes); 
-};
-
-
-PHP.Parser.prototype.Stmt_Namespace_postprocess = function( a ) {
-  return a;  
-};
-
-
-PHP.Parser.prototype.Node_Stmt_Echo = function() {
-    return {
-        type: "Node_Stmt_Echo",
-        exprs: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_If = function() {
-    return {
-        type: "Node_Stmt_If",
-        cond: arguments[ 0 ],
-        stmts: arguments[ 1 ].stmts,
-        elseifs: arguments[ 1 ].elseifs,
-        Else: arguments[ 1 ].Else || null,
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_For = function() {
-    
-    return {
-        type: "Node_Stmt_For",
-        init: arguments[ 0 ].init,
-        cond: arguments[ 0 ].cond,
-        loop: arguments[ 0 ].loop,
-        stmts: arguments[ 0 ].stmts,
-        attributes: arguments[ 1 ]
-    };   
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Function = function() {
-    return {
-        type: "Node_Stmt_Function",
-        name: arguments[ 0 ],
-        byRef: arguments[ 1 ].byRef,
-        params: arguments[ 1 ].params,
-        stmts: arguments[ 1 ].stmts,
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Stmt_Class_verifyModifier = function() {
-  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Namespace = function() {
-    return {
-        type: "Node_Stmt_Namespace",
-        name: arguments[ 0 ],
-        attributes: arguments[ 2 ]
-    };  
-};
-
-PHP.Parser.prototype.Node_Stmt_Use = function() {
-    return {
-        type: "Node_Stmt_Use",
-        name: arguments[ 0 ],
-        attributes: arguments[ 2 ]
-    };  
-};
-
-PHP.Parser.prototype.Node_Stmt_UseUse = function() {
-    return {
-        type: "Node_Stmt_UseUse",
-        name: arguments[ 0 ],
-        as: arguments[1],
-        attributes: arguments[ 2 ]
-    };  
-};
-
-PHP.Parser.prototype.Node_Stmt_TraitUseAdaptation_Precedence = function() {
-    return {
-        type: "Node_Stmt_TraitUseAdaptation_Precedence",
-        name: arguments[ 0 ],
-        attributes: arguments[ 2 ]
-    };  
-};
-
-PHP.Parser.prototype.Node_Stmt_TraitUseAdaptation_Alias = function() {
-    return {
-        type: "Node_Stmt_TraitUseAdaptation_Alias",
-        name: arguments[ 0 ],
-        attributes: arguments[ 2 ]
-    };  
-};
-
-PHP.Parser.prototype.Node_Stmt_Trait = function() {
-    return {
-        type: "Node_Stmt_Trait",
-        name: arguments[ 0 ],
-        attributes: arguments[ 2 ]
-    };  
-};
-
-PHP.Parser.prototype.Node_Stmt_TraitUse = function() {
-    return {
-        type: "Node_Stmt_TraitUse",
-        name: arguments[ 0 ],
-        attributes: arguments[ 2 ]
-    };  
-};
-
-PHP.Parser.prototype.Node_Stmt_Class = function() {
-    return {
-        type: "Node_Stmt_Class",
-        name: arguments[ 0 ],
-        Type: arguments[ 1 ].type,
-        Extends: arguments[ 1 ].Extends,
-        Implements: arguments[ 1 ].Implements,
-        stmts: arguments[ 1 ].stmts,
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_ClassMethod = function() {
-    return {
-        type: "Node_Stmt_ClassMethod",
-        name: arguments[ 0 ],
-        Type: arguments[ 1 ].type,
-        byRef: arguments[ 1 ].byRef,
-        params: arguments[ 1 ].params,
-        stmts: arguments[ 1 ].stmts,
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_ClassConst = function() {
-    return {
-        type: "Node_Stmt_ClassConst",
-        consts: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Interface = function() {
-    return {
-        type: "Node_Stmt_Interface",
-        name: arguments[ 0 ],
-        Extends: arguments[ 1 ].Extends,
-        stmts: arguments[ 1 ].stmts,
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Throw = function() {
-    return {
-        type: "Node_Stmt_Throw",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Catch = function() {
-    return {
-        type: "Node_Stmt_Catch",
-        Type: arguments[ 0 ],
-        variable: arguments[ 1 ],
-        stmts: arguments[ 2 ],
-        attributes: arguments[ 3 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_TryCatch = function() {
-    return {
-        type: "Node_Stmt_TryCatch",
-        stmts: arguments[ 0 ],
-        catches: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_Foreach = function() {
-    return {
-        type: "Node_Stmt_Foreach",
-        expr: arguments[ 0 ],
-        valueVar: arguments[ 1 ],
-        keyVar: arguments[ 2 ].keyVar,
-        byRef: arguments[ 2 ].byRef,
-        stmts: arguments[ 2 ].stmts,
-        attributes: arguments[ 3 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_While = function() {
-    return {
-        type: "Node_Stmt_While",
-        cond: arguments[ 0 ],
-        stmts: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Do = function() {
-    return {
-        type: "Node_Stmt_Do",
-        cond: arguments[ 0 ],
-        stmts: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Break = function() {
-    return {
-        type: "Node_Stmt_Break",
-        num: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Continue = function() {
-    return {
-        type: "Node_Stmt_Continue",
-        num: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Return = function() {
-    return {
-        type: "Node_Stmt_Return",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Case = function() {
-    return {
-        type: "Node_Stmt_Case",
-        cond: arguments[ 0 ],
-        stmts: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Switch = function() {
-    return {
-        type: "Node_Stmt_Switch",
-        cond: arguments[ 0 ],
-        cases: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Else = function() {
-   
-    return {
-        type: "Node_Stmt_Else",
-        stmts: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_ElseIf = function() {
-    return {
-        type: "Node_Stmt_ElseIf",
-        cond: arguments[ 0 ],
-        stmts: arguments[ 1 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_InlineHTML = function() {
-    return {
-        type: "Node_Stmt_InlineHTML",
-        value: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_StaticVar = function() {
-    return {
-        type: "Node_Stmt_StaticVar",
-        name: arguments[ 0 ],
-        def: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_Static = function() {
-    return {
-        type: "Node_Stmt_Static",
-        vars: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Global = function() {
-    return {
-        type: "Node_Stmt_Global",
-        vars: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_PropertyProperty = function() {
-    return {
-        type: "Node_Stmt_PropertyProperty",
-        name: arguments[ 0 ],
-        def: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Stmt_Property = function() {
-    return {
-        type: "Node_Stmt_Property",
-        Type: arguments[ 0 ],
-        props: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Stmt_Unset = function() {
-    return {
-        type: "Node_Stmt_Unset",
-        variables: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Variable = function( a ) {
-    return {
-        type: "Node_Expr_Variable",
-        name: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-};
-
-PHP.Parser.prototype.Node_Expr_FuncCall = function() {
-
-    return {
-        type: "Node_Expr_FuncCall",
-        func: arguments[ 0 ],
-        args: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_MethodCall = function() {
-
-    return {
-        type: "Node_Expr_MethodCall",
-        variable: arguments[ 0 ],
-        name: arguments[ 1 ],
-        args: arguments[ 2 ],
-        attributes: arguments[ 3 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_StaticCall = function() {
-
-    return {
-        type: "Node_Expr_StaticCall",
-        Class: arguments[ 0 ],
-        func: arguments[ 1 ],
-        args: arguments[ 2 ],
-        attributes: arguments[ 3 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Ternary = function() {
-
-    return {
-        type: "Node_Expr_Ternary",
-        cond: arguments[ 0 ],
-        If: arguments[ 1 ],
-        Else: arguments[ 2 ],
-        attributes: arguments[ 3 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignList = function() {
-
-    return {
-        type: "Node_Expr_AssignList",
-        assignList: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Assign = function() {
-
-    return {
-        type: "Node_Expr_Assign",
-        variable: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignConcat = function() {
-
-    return {
-        type: "Node_Expr_AssignConcat",
-        variable: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignMinus = function() {
-
-    return {
-        type: "Node_Expr_AssignMinus",
-        variable: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignPlus = function() {
-
-    return {
-        type: "Node_Expr_AssignPlus",
-        variable: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignDiv = function() {
-
-    return {
-        type: "Node_Expr_AssignDiv",
-        variable: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignRef = function() {
-
-    return {
-        type: "Node_Expr_AssignRef",
-        variable: arguments[ 0 ],
-        refVar: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignMul = function() {
-
-    return {
-        type: "Node_Expr_AssignMul",
-        variable: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_AssignMod = function() {
-
-    return {
-        type: "Node_Expr_AssignMod",
-        variable: arguments[ 0 ],
-        expr: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Plus = function() {
-
-    return {
-        type: "Node_Expr_Plus",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Minus = function() {
-
-    return {
-        type: "Node_Expr_Minus",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Mul = function() {
-
-    return {
-        type: "Node_Expr_Mul",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Div = function() {
-
-    return {
-        type: "Node_Expr_Div",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Mod = function() {
-
-    return {
-        type: "Node_Expr_Mod",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Greater = function() {
-
-    return {
-        type: "Node_Expr_Greater",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Equal = function() {
-
-    return {
-        type: "Node_Expr_Equal",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_NotEqual = function() {
-
-    return {
-        type: "Node_Expr_NotEqual",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Identical = function() {
-
-    return {
-        type: "Node_Expr_Identical",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_NotIdentical = function() {
-
-    return {
-        type: "Node_Expr_NotIdentical",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_GreaterOrEqual = function() {
-
-    return {
-        type: "Node_Expr_GreaterOrEqual",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_SmallerOrEqual = function() {
-
-    return {
-        type: "Node_Expr_SmallerOrEqual",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Concat = function() {
-
-    return {
-        type: "Node_Expr_Concat",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Smaller = function() {
-
-    return {
-        type: "Node_Expr_Smaller",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_PostInc = function() {
-
-    return {
-        type: "Node_Expr_PostInc",
-        variable: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_PostDec = function() {
-
-    return {
-        type: "Node_Expr_PostDec",
-        variable: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_PreInc = function() {
-
-    return {
-        type: "Node_Expr_PreInc",
-        variable: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_PreDec = function() {
-
-    return {
-        type: "Node_Expr_PreDec",
-        variable: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Include = function() {
-    return {
-        expr: arguments[ 0 ],
-        type: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-};
-
-PHP.Parser.prototype.Node_Expr_ArrayDimFetch = function() {
-
-    return {
-        type: "Node_Expr_ArrayDimFetch",
-        variable: arguments[ 0 ],
-        dim: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_StaticPropertyFetch = function() {
-
-    return {
-        type: "Node_Expr_StaticPropertyFetch",
-        Class: arguments[ 0 ],
-        name: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_ClassConstFetch = function() {
-
-    return {
-        type: "Node_Expr_ClassConstFetch",
-        Class: arguments[ 0 ],
-        name: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_StaticPropertyFetch = function() {
-
-    return {
-        type: "Node_Expr_StaticPropertyFetch",
-        Class: arguments[ 0 ],
-        name: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_ConstFetch = function() {
-
-    return {
-        type: "Node_Expr_ConstFetch",
-        name: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_ArrayItem = function() {
-
-    return {
-        type: "Node_Expr_ArrayItem",
-        value: arguments[ 0 ],
-        key: arguments[ 1 ],
-        byRef: arguments[ 2 ],
-        attributes: arguments[ 3 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Array = function() {
-
-    return {
-        type: "Node_Expr_Array",
-        items: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_PropertyFetch = function() {
-
-    return {
-        type: "Node_Expr_PropertyFetch",
-        variable: arguments[ 0 ],
-        name: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_New = function() {
-
-    return {
-        type: "Node_Expr_New",
-        Class: arguments[ 0 ],
-        args: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Print = function() {
-    return {
-        type: "Node_Expr_Print",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Exit = function() {
-    return {
-        type: "Node_Expr_Exit",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Cast_Bool = function() {
-    return {
-        type: "Node_Expr_Cast_Bool",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Cast_Int = function() {
-    return {
-        type: "Node_Expr_Cast_Int",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Cast_String = function() {
-    return {
-        type: "Node_Expr_Cast_String",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Cast_Double = function() {
-    return {
-        type: "Node_Expr_Cast_Double",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Cast_Array = function() {
-    return {
-        type: "Node_Expr_Cast_Array",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Cast_Object = function() {
-    return {
-        type: "Node_Expr_Cast_Object",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_ErrorSuppress = function() {
-    return {
-        type: "Node_Expr_ErrorSuppress",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_Isset = function() {
-    return {
-        type: "Node_Expr_Isset",
-        variables: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-
-
-
-PHP.Parser.prototype.Node_Expr_UnaryMinus = function() {
-    return {
-        type: "Node_Expr_UnaryMinus",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_UnaryPlus = function() {
-    return {
-        type: "Node_Expr_UnaryPlus",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Empty = function() {
-    return {
-        type: "Node_Expr_Empty",
-        variable: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_BooleanOr = function() {
-    return {
-        type: "Node_Expr_BooleanOr",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_LogicalOr = function() {
-    return {
-        type: "Node_Expr_LogicalOr",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_LogicalAnd = function() {
-    return {
-        type: "Node_Expr_LogicalAnd",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-
-PHP.Parser.prototype.Node_Expr_LogicalXor = function() {
-    return {
-        type: "Node_Expr_LogicalXor",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_BitwiseAnd = function() {
-    return {
-        type: "Node_Expr_BitwiseAnd",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_BitwiseOr = function() {
-    return {
-        type: "Node_Expr_BitwiseOr",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_BitwiseXor = function() {
-    return {
-        type: "Node_Expr_BitwiseXor",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_BitwiseNot = function() {
-    return {
-        type: "Node_Expr_BitwiseNot",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_BooleanNot = function() {
-    return {
-        type: "Node_Expr_BooleanNot",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_BooleanAnd = function() {
-    return {
-        type: "Node_Expr_BooleanAnd",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Instanceof = function() {
-
-    return {
-        type: "Node_Expr_Instanceof",
-        left: arguments[ 0 ],
-        right: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };
-
-};
-
-PHP.Parser.prototype.Node_Expr_Clone = function() {
-
-    return {
-        type: "Node_Expr_Clone",
-        expr: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };
-
-};
-
-
-
-PHP.Parser.prototype.Scalar_LNumber_parse = function( a ) {
-   
-    return a;  
-};
-
-PHP.Parser.prototype.Scalar_DNumber_parse = function( a ) {
-   
-    return a;  
-};
-
-PHP.Parser.prototype.Scalar_String_parseDocString = function() {
-    
-    return '"' + arguments[ 1 ].replace(/([^"\\]*(?:\\.[^"\\]*)*)"/g, '$1\\"') + '"';
-};
-
-
-PHP.Parser.prototype.Node_Scalar_String = function( ) {
-   
-    return {
-        type: "Node_Scalar_String",
-        value: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Scalar_String_create = function( ) {
-    return {
-        type: "Node_Scalar_String",
-        value: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-
-};
-
-PHP.Parser.prototype.Node_Scalar_LNumber = function() {
-   
-    return {
-        type: "Node_Scalar_LNumber",
-        value: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-  
-};
-
-
-PHP.Parser.prototype.Node_Scalar_DNumber = function() {
-   
-    return {
-        type: "Node_Scalar_DNumber",
-        value: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-  
-};
-
-
-PHP.Parser.prototype.Node_Scalar_Encapsed = function() {
-   
-    return {
-        type: "Node_Scalar_Encapsed",
-        parts: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-  
-};
-
-PHP.Parser.prototype.Node_Name = function() {
-   
-    return {
-        type: "Node_Name",
-        parts: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-  
-};
-
-PHP.Parser.prototype.Node_Name_FullyQualified = function() {
-   
-    return {
-        type: "Node_Name_FullyQualified",
-        parts: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-  
-};
-
-PHP.Parser.prototype.Node_Name_Relative = function() {
-   
-    return {
-        type: "Node_Name_Relative",
-        parts: arguments[ 0 ],
-        attributes: arguments[ 1 ]
-    };  
-  
-};
-
-PHP.Parser.prototype.Node_Param = function() {
-   
-    return {
-        type: "Node_Param",
-        name: arguments[ 0 ],
-        def: arguments[ 1 ],
-        Type: arguments[ 2 ],
-        byRef: arguments[ 3 ],
-        attributes: arguments[ 4 ]
-    };  
-  
-};
-
-PHP.Parser.prototype.Node_Arg = function() {
-   
-    return {
-        type: "Node_Name",
-        value: arguments[ 0 ],
-        byRef: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-  
-};
-
-PHP.Parser.prototype.Node_Const = function() {
-   
-    return {
-        type: "Node_Const",
-        name: arguments[ 0 ],
-        value: arguments[ 1 ],
-        attributes: arguments[ 2 ]
-    };  
-  
-};
-
-
-exports.PHP = PHP;
+// BEGIN vendored php-parser 3.7.0 (readable distribution; trailing whitespace trimmed).
+// See php-parser.LICENSE and README.pinp.md.
+ace.define("ace/mode/php/parser",["require","exports","module"], function(require, exports, module) {
+// The browser build probes process.arch when sizing integer literals.
+var process = {arch: "x64"};
+/*!
+ *
+ *   Package: php-parser
+ *   Parse PHP code from JS and returns its AST
+ *   Build: aad3e9e78d4989c75970 - 6/10/2026
+ *   Copyright (C) 2021 Glayzzle (BSD-3-Clause)
+ *   @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ *   @url http://glayzzle.com
+ *
+ */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["PhpParser"] = factory();
+	else
+		root["PhpParser"] = factory();
+})(self, () => {
+return /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 8938
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Location = __webpack_require__(4778);
+var Position = __webpack_require__(8822);
+
+/**
+ * ## Class hierarchy
+ *
+ * - [Location](#location)
+ * - [Position](#position)
+ * - [Node](#node)
+ *   - [Noop](#noop)
+ *   - [NullKeyword](#nullkeyword)
+ *   - [StaticVariable](#staticvariable)
+ *   - [EncapsedPart](#encapsedpart)
+ *   - [Constant](#constant)
+ *   - [Identifier](#identifier)
+ *   - [Reference](#reference)
+ *     - [TypeReference](#typereference)
+ *     - [ParentReference](#parentreference)
+ *     - [StaticReference](#staticreference)
+ *     - [SelfReference](#selfreference)
+ *     - [Name](#name)
+ *   - [TraitUse](#traituse)
+ *   - [TraitAlias](#traitalias)
+ *   - [TraitPrecedence](#traitprecedence)
+ *   - [Comment](#comment)
+ *     - [CommentLine](#commentline)
+ *     - [CommentBlock](#commentblock)
+ *   - [Error](#error)
+ *   - [Expression](#expression)
+ *     - [Entry](#entry)
+ *     - [ArrowFunc](#arrowfunc)
+ *     - [Closure](#closure)
+ *     - [ByRef](#byref)
+ *     - [Silent](#silent)
+ *     - [RetIf](#retif)
+ *     - [New](#new)
+ *     - [Include](#include)
+ *     - [Call](#call)
+ *     - [Eval](#eval)
+ *     - [Exit](#exit)
+ *     - [Clone](#clone)
+ *     - [Assign](#assign)
+ *     - [AssignRef](#assignref)
+ *     - [Array](#array)
+ *     - [List](#list)
+ *     - [Variable](#variable)
+ *     - [Variadic](#variadic)
+ *     - [Yield](#yield)
+ *     - [YieldFrom](#yieldfrom)
+ *     - [Print](#print)
+ *     - [Isset](#isset)
+ *     - [Empty](#empty)
+ *     - [Lookup](#lookup)
+ *       - [PropertyLookup](#propertylookup)
+ *       - [StaticLookup](#staticlookup)
+ *       - [OffsetLookup](#offsetlookup)
+ *     - [Operation](#operation)
+ *       - [Pre](#pre)
+ *       - [Post](#post)
+ *       - [Bin](#bin)
+ *       - [Unary](#unary)
+ *       - [Cast](#cast)
+ *     - [Literal](#literal)
+ *       - [Boolean](#boolean)
+ *       - [String](#string)
+ *       - [Number](#number)
+ *       - [Inline](#inline)
+ *       - [Magic](#magic)
+ *       - [Nowdoc](#nowdoc)
+ *       - [Encapsed](#encapsed)
+ *   - [Statement](#statement)
+ *     - [ConstantStatement](#constantstatement)
+ *       - [ClassConstant](#classconstant)
+ *     - [Return](#return)
+ *     - [Label](#label)
+ *     - [Continue](#continue)
+ *     - [Case](#case)
+ *     - [Break](#break)
+ *     - [Echo](#echo)
+ *     - [Unset](#unset)
+ *     - [Halt](#halt)
+ *     - [Declare](#declare)
+ *     - [Global](#global)
+ *     - [Static](#static)
+ *     - [If](#if)
+ *     - [Do](#do)
+ *     - [While](#while)
+ *     - [For](#for)
+ *     - [Foreach](#foreach)
+ *     - [Switch](#switch)
+ *     - [Goto](#goto)
+ *     - [Try](#try)
+ *     - [Catch](#catch)
+ *     - [Throw](#throw)
+ *     - [UseGroup](#usegroup)
+ *     - [UseItem](#useitem)
+ *     - [Block](#block)
+ *       - [Program](#program)
+ *       - [Namespace](#namespace)
+ *     - [PropertyStatement](#propertystatement)
+ *     - [Property](#property)
+ *       - [PropertyHook](#propertyhook)
+ *     - [Declaration](#declaration)
+ *       - [Class](#class)
+ *       - [Interface](#interface)
+ *       - [Trait](#trait)
+ *       - [Function](#function)
+ *         - [Method](#method)
+ *       - [Parameter](#parameter)
+ * ---
+ */
+
+/**
+ * The AST builder class
+ * @constructor AST
+ * @memberOf module:php-parser
+ * @tutorial AST
+ * @property {Boolean} withPositions - Should locate any node (by default false)
+ * @property {Boolean} withSource - Should extract the node original code (by default false)
+ */
+var AST = function AST(withPositions, withSource) {
+  this.withPositions = withPositions;
+  this.withSource = withSource;
+};
+
+// operators in ascending order of precedence
+AST.precedence = {};
+[["or"], ["xor"], ["and"], ["="], ["?"], ["??"], ["||"], ["&&"], ["|"], ["^"], ["&"], ["==", "!=", "===", "!==", /* '<>', */"<=>"], ["<", "<=", ">", ">="], ["<<", ">>"], ["+", "-", "."], ["*", "/", "%"], ["!"], ["instanceof"], ["u-", "u+", "u~"], ["cast", "silent"], ["**"]
+// TODO: [ (array)
+// TODO: new
+].forEach(function (list, index) {
+  list.forEach(function (operator) {
+    AST.precedence[operator] = index + 1;
+  });
 });
 
-ace.define("ace/mode/php_worker",["require","exports","module","ace/lib/oop","ace/worker/mirror","ace/mode/php/php"], function(require, exports, module) {
+/**
+ * @private
+ * @function AST#isRightAssociative
+ * @memberOf module:php-parser
+ * @param operator
+ * @return {boolean}
+ */
+AST.prototype.isRightAssociative = function (operator) {
+  return operator === "**" || operator === "??";
+};
+
+/**
+ * Change parent node informations after swapping childs
+ * @private
+ * @function AST#swapLocations
+ * @memberOf module:php-parser
+ */
+AST.prototype.swapLocations = function (target, first, last, parser) {
+  if (this.withPositions) {
+    if (!target || !target.loc || !first || !first.loc || !last || !last.loc) {
+      return;
+    }
+    target.loc.start = first.loc.start;
+    target.loc.end = last.loc.end;
+    if (this.withSource) {
+      target.loc.source = parser.lexer._input.substring(target.loc.start.offset, target.loc.end.offset);
+    }
+  }
+};
+
+/**
+ * Includes locations from first & last into the target
+ * @private
+ * @function AST#resolveLocations
+ * @memberOf module:php-parser
+ */
+AST.prototype.resolveLocations = function (target, first, last, parser) {
+  if (this.withPositions) {
+    if (!target || !target.loc || !first || !first.loc || !last || !last.loc) {
+      return;
+    }
+    if (target.loc.start.offset > first.loc.start.offset) {
+      target.loc.start = first.loc.start;
+    }
+    /* istanbul ignore next */
+    if (target.loc.end.offset < last.loc.end.offset) {
+      target.loc.end = last.loc.end;
+    }
+    if (this.withSource) {
+      target.loc.source = parser.lexer._input.substring(target.loc.start.offset, target.loc.end.offset);
+    }
+  }
+};
+
+/**
+ * Check and fix precence, by default using right
+ * @private
+ * @function AST#resolvePrecedence
+ * @memberOf module:php-parser
+ */
+AST.prototype.resolvePrecedence = function (result, parser) {
+  var buffer, lLevel, rLevel;
+  // handling precendence
+  if (result.kind === "call") {
+    // including what argument into location
+    this.resolveLocations(result, result.what, result, parser);
+  } else if (result.kind === "propertylookup" || result.kind === "nullsafepropertylookup" || result.kind === "staticlookup" || result.kind === "offsetlookup" && result.offset) {
+    // including what argument into location
+    this.resolveLocations(result, result.what, result.offset, parser);
+  } else if (result.kind === "bin") {
+    if (result.right && !result.right.parenthesizedExpression) {
+      if (result.right.kind === "bin") {
+        lLevel = AST.precedence[result.type];
+        rLevel = AST.precedence[result.right.type];
+        if (lLevel && rLevel && rLevel <= lLevel && (result.type !== result.right.type || !this.isRightAssociative(result.type))) {
+          // https://github.com/glayzzle/php-parser/issues/79
+          // shift precedence
+          buffer = result.right;
+          result.right = result.right.left;
+          this.swapLocations(result, result.left, result.right, parser);
+          buffer.left = this.resolvePrecedence(result, parser);
+          this.swapLocations(buffer, buffer.left, buffer.right, parser);
+          result = buffer;
+        }
+      } else if (result.right.kind === "retif") {
+        lLevel = AST.precedence[result.type];
+        rLevel = AST.precedence["?"];
+        if (lLevel && rLevel && rLevel <= lLevel) {
+          buffer = result.right;
+          result.right = result.right.test;
+          this.swapLocations(result, result.left, result.right, parser);
+          buffer.test = this.resolvePrecedence(result, parser);
+          this.swapLocations(buffer, buffer.test, buffer.falseExpr, parser);
+          result = buffer;
+        }
+      }
+    }
+  } else if ((result.kind === "silent" || result.kind === "cast") && result.expr && !result.expr.parenthesizedExpression) {
+    // https://github.com/glayzzle/php-parser/issues/172
+    if (result.expr.kind === "bin") {
+      buffer = result.expr;
+      result.expr = result.expr.left;
+      this.swapLocations(result, result, result.expr, parser);
+      buffer.left = this.resolvePrecedence(result, parser);
+      this.swapLocations(buffer, buffer.left, buffer.right, parser);
+      result = buffer;
+    } else if (result.expr.kind === "retif") {
+      buffer = result.expr;
+      result.expr = result.expr.test;
+      this.swapLocations(result, result, result.expr, parser);
+      buffer.test = this.resolvePrecedence(result, parser);
+      this.swapLocations(buffer, buffer.test, buffer.falseExpr, parser);
+      result = buffer;
+    }
+  } else if (result.kind === "unary") {
+    // https://github.com/glayzzle/php-parser/issues/75
+    if (result.what && !result.what.parenthesizedExpression) {
+      if (result.what.kind === "bin") {
+        // use the unary-specific precedence (u-, u+, u~) which is higher than binary - and +
+        lLevel = AST.precedence["u" + result.type] || AST.precedence[result.type];
+        rLevel = AST.precedence[result.what.type];
+        if (lLevel && rLevel && rLevel < lLevel) {
+          buffer = result.what;
+          result.what = result.what.left;
+          this.swapLocations(result, result, result.what, parser);
+          buffer.left = this.resolvePrecedence(result, parser);
+          this.swapLocations(buffer, buffer.left, buffer.right, parser);
+          result = buffer;
+        }
+      } else if (result.what.kind === "retif") {
+        buffer = result.what;
+        result.what = result.what.test;
+        this.swapLocations(result, result, result.what, parser);
+        buffer.test = this.resolvePrecedence(result, parser);
+        this.swapLocations(buffer, buffer.test, buffer.falseExpr, parser);
+        result = buffer;
+      }
+    }
+  } else if (result.kind === "retif") {
+    // https://github.com/glayzzle/php-parser/issues/77
+    if (result.falseExpr && result.falseExpr.kind === "retif" && !result.falseExpr.parenthesizedExpression) {
+      buffer = result.falseExpr;
+      result.falseExpr = buffer.test;
+      this.swapLocations(result, result.test, result.falseExpr, parser);
+      buffer.test = this.resolvePrecedence(result, parser);
+      this.swapLocations(buffer, buffer.test, buffer.falseExpr, parser);
+      result = buffer;
+    }
+  } else if (result.kind === "assign") {
+    // https://github.com/glayzzle/php-parser/issues/81
+    if (result.right && result.right.kind === "bin" && !result.right.parenthesizedExpression) {
+      lLevel = AST.precedence["="];
+      rLevel = AST.precedence[result.right.type];
+      // only shifts with and, xor, or
+      if (lLevel && rLevel && rLevel < lLevel) {
+        buffer = result.right;
+        result.right = result.right.left;
+        buffer.left = result;
+        this.swapLocations(buffer, buffer.left, result.right, parser);
+        result = buffer;
+      }
+    }
+  } else if (result.kind === "expressionstatement") {
+    this.swapLocations(result, result.expression, result, parser);
+  }
+  return result;
+};
+
+/**
+ * Prepares an AST node
+ * @private
+ * @function AST#prepare
+ * @memberOf module:php-parser
+ * @param {String|null} kind - Defines the node type
+ * @param {*} docs - (if null, the kind must be passed at the function call)
+ * @param {Parser} parser - The parser instance (use for extracting locations)
+ * @return {Function}
+ */
+AST.prototype.prepare = function (kind, docs, parser) {
+  var start = null;
+  if (this.withPositions || this.withSource) {
+    start = parser.position();
+  }
+  var self = this;
+  // returns the node
+  var _result = function result() {
+    var args = Array.prototype.slice.call(arguments);
+    args.push(docs);
+    if (self.withPositions || self.withSource) {
+      var nodeStart = start;
+      var nodeEnd = new Position(parser.prev[0], parser.prev[1], parser.prev[2]);
+      // Fix swapped positions when no tokens are consumed between node() and ()
+      // (e.g. noop node in an empty block that contains only comments)
+      if (nodeStart.offset > nodeEnd.offset) {
+        var tmp = nodeStart;
+        nodeStart = nodeEnd;
+        nodeEnd = tmp;
+      }
+      var src = null;
+      if (self.withSource) {
+        src = parser.lexer._input.substring(nodeStart.offset, nodeEnd.offset);
+      }
+      // if with source, need location on swapLocations function
+      var location = new Location(src, nodeStart, nodeEnd);
+      // last argument is always the location
+      args.push(location);
+    }
+    // handle lazy kind definitions
+    if (!kind) {
+      kind = args.shift();
+    }
+    // build the object
+    var node = self[kind];
+    if (typeof node !== "function") {
+      throw new Error('Undefined node "' + kind + '"');
+    }
+    var astNode = Object.create(node.prototype);
+    node.apply(astNode, args);
+    _result.instance = astNode;
+    /* istanbul ignore next */
+    if (_result.trailingComments) {
+      // buffer of trailingComments
+      astNode.trailingComments = _result.trailingComments;
+    }
+    if (typeof _result.postBuild === "function") {
+      _result.postBuild(astNode);
+    }
+    if (parser.debug) {
+      delete self.stack[_result.stackUid];
+    }
+    return self.resolvePrecedence(astNode, parser);
+  };
+  if (parser.debug) {
+    if (!this.stack) {
+      this.stack = {};
+      this.stackUid = 1;
+    }
+    this.stack[++this.stackUid] = {
+      position: start,
+      stack: new Error().stack.split("\n").slice(3, 5)
+    };
+    _result.stackUid = this.stackUid;
+  }
+
+  /**
+   * Sets a list of trailing comments
+   * @private
+   * @param {*} docs
+   */
+  _result.setTrailingComments = function (docs) {
+    if (_result.instance) {
+      // already created
+      _result.instance.setTrailingComments(docs);
+    } else {
+      _result.trailingComments = docs;
+    }
+  };
+
+  /**
+   * Release a node without using it on the AST
+   * @private
+   * @param {*} target
+   */
+  _result.destroy = function (target) {
+    if (docs) {
+      // release current docs stack
+      if (target) {
+        if (!target.leadingComments) {
+          target.leadingComments = docs;
+        } else {
+          target.leadingComments = docs.concat(target.leadingComments);
+        }
+      } else {
+        parser._docIndex = parser._docs.length - docs.length;
+      }
+    }
+    if (parser.debug) {
+      delete self.stack[_result.stackUid];
+    }
+  };
+  return _result;
+};
+AST.prototype.checkNodes = function () {
+  var errors = [];
+  for (var k in this.stack) {
+    if (Object.prototype.hasOwnProperty.call(this.stack, k)) {
+      this.stack[k].key = k;
+      errors.push(this.stack[k]);
+    }
+  }
+  this.stack = {};
+  return errors;
+};
+
+// Define all AST nodes
+[__webpack_require__(3160), __webpack_require__(1654), __webpack_require__(1240), __webpack_require__(3979), __webpack_require__(5553), __webpack_require__(2207), __webpack_require__(2916), __webpack_require__(4628), __webpack_require__(7509), __webpack_require__(2906), __webpack_require__(5723), __webpack_require__(7561), __webpack_require__(6473), __webpack_require__(9626), __webpack_require__(4782), __webpack_require__(8477), __webpack_require__(5045), __webpack_require__(900), __webpack_require__(4824), __webpack_require__(1020), __webpack_require__(9847), __webpack_require__(2790), __webpack_require__(1333), __webpack_require__(2112), __webpack_require__(9960), __webpack_require__(8533), __webpack_require__(5947), __webpack_require__(7786), __webpack_require__(5436), __webpack_require__(1136), __webpack_require__(380), __webpack_require__(6129), __webpack_require__(9723), __webpack_require__(5125), __webpack_require__(9632), __webpack_require__(4300), __webpack_require__(1515), __webpack_require__(3411), __webpack_require__(9781), __webpack_require__(839), __webpack_require__(8374), __webpack_require__(9754), __webpack_require__(4251), __webpack_require__(6553), __webpack_require__(8630), __webpack_require__(9786), __webpack_require__(9742), __webpack_require__(1234), __webpack_require__(6), __webpack_require__(8861), __webpack_require__(7860), __webpack_require__(9834), __webpack_require__(2724), __webpack_require__(6025), __webpack_require__(2687), __webpack_require__(7633), __webpack_require__(5514), __webpack_require__(7427), __webpack_require__(1122), __webpack_require__(7256), __webpack_require__(7416), __webpack_require__(8140), __webpack_require__(6258), __webpack_require__(9474), __webpack_require__(6827), __webpack_require__(4427), __webpack_require__(4065), __webpack_require__(4297), __webpack_require__(5859), __webpack_require__(6985), __webpack_require__(9302), __webpack_require__(8212), __webpack_require__(864), __webpack_require__(8268), __webpack_require__(7190), __webpack_require__(8519), __webpack_require__(4835), __webpack_require__(2056), __webpack_require__(4838), __webpack_require__(7869), __webpack_require__(1908), __webpack_require__(4863), __webpack_require__(170), __webpack_require__(1091), __webpack_require__(8276), __webpack_require__(1842), __webpack_require__(5739), __webpack_require__(1274), __webpack_require__(4352), __webpack_require__(9672), __webpack_require__(711), __webpack_require__(1231), __webpack_require__(1865), __webpack_require__(1102), __webpack_require__(7472), __webpack_require__(6133), __webpack_require__(1197), __webpack_require__(6649), __webpack_require__(1837), __webpack_require__(2277), __webpack_require__(8010), __webpack_require__(7579), __webpack_require__(3460), __webpack_require__(2702), __webpack_require__(514), __webpack_require__(5684), __webpack_require__(8019), __webpack_require__(7721), __webpack_require__(4369), __webpack_require__(40), __webpack_require__(4919), __webpack_require__(7676), __webpack_require__(2596), __webpack_require__(6744)].forEach(function (ctor) {
+  AST.prototype[ctor.kind] = ctor;
+});
+module.exports = AST;
+
+/***/ },
+
+/***/ 3160
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expr = __webpack_require__(839);
+var KIND = "array";
+
+/**
+ * Defines an array structure
+ * @constructor Array
+ * @memberOf module:php-parser
+ * @example
+ * // PHP code :
+ * [1, 'foo' => 'bar', 3]
+ *
+ * // AST structure :
+ * {
+ *  "kind": "array",
+ *  "shortForm": true
+ *  "items": [
+ *    {"kind": "number", "value": "1"},
+ *    {
+ *      "kind": "entry",
+ *      "key": {"kind": "string", "value": "foo", "isDoubleQuote": false},
+ *      "value": {"kind": "string", "value": "bar", "isDoubleQuote": false}
+ *    },
+ *    {"kind": "number", "value": "3"}
+ *  ]
+ * }
+ * @extends {Expression}
+ * @property {Array<Entry|Expression|Variable>} items List of array items
+ * @property {boolean} shortForm Indicate if the short array syntax is used, ex `[]` instead `array()`
+ */
+module.exports = Expr["extends"](KIND, function Array(shortForm, items, docs, location) {
+  Expr.apply(this, [KIND, docs, location]);
+  this.items = items;
+  this.shortForm = shortForm;
+});
+
+/***/ },
+
+/***/ 1654
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "arrowfunc";
+
+/**
+ * Defines an arrow function (it's like a closure)
+ * @constructor ArrowFunc
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Parameter[]} arguments
+ * @property {Identifier} type
+ * @property {Expression} body
+ * @property {boolean} byref
+ * @property {boolean} nullable
+ * @property {boolean} isStatic
+ */
+module.exports = Expression["extends"](KIND, function Closure(args, byref, body, type, nullable, isStatic, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.arguments = args;
+  this.byref = byref;
+  this.body = body;
+  this.type = type;
+  this.nullable = nullable;
+  this.isStatic = isStatic || false;
+});
+
+/***/ },
+
+/***/ 1240
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "assign";
+
+/**
+ * Assigns a value to the specified target
+ * @constructor Assign
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} left
+ * @property {Expression} right
+ * @property {String} operator
+ */
+module.exports = Expression["extends"](KIND, function Assign(left, right, operator, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.left = left;
+  this.right = right;
+  this.operator = operator;
+});
+
+/***/ },
+
+/***/ 3979
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "assignref";
+
+/**
+ * Assigns a value to the specified target
+ * @constructor AssignRef
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} left
+ * @property {Expression} right
+ */
+module.exports = Expression["extends"](KIND, function AssignRef(left, right, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.left = left;
+  this.right = right;
+});
+
+/***/ },
+
+/***/ 2207
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "attrgroup";
+
+/**
+ * Attribute group
+ * @memberOf module:php-parser
+ * @constructor AttrGroup
+ * @extends {Node}
+ * @property {Attribute[]} attrs
+ */
+module.exports = Node["extends"](KIND, function AttrGroup(attrs, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.attrs = attrs || [];
+});
+
+/***/ },
+
+/***/ 5553
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "attribute";
+
+/**
+ * Attribute Value
+ * @memberOf module:php-parser
+ * @constructor Attribute
+ * @extends {Node}
+ * @property {String} name
+ * @property {Parameter[]} args
+ */
+module.exports = Node["extends"](KIND, function Attribute(name, args, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.args = args;
+});
+
+/***/ },
+
+/***/ 2916
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Operation = __webpack_require__(8268);
+var KIND = "bin";
+/**
+ * Binary operations
+ * @constructor Bin
+ * @memberOf module:php-parser
+ * @extends {Operation}
+ * @property {String} type
+ * @property {Expression} left
+ * @property {Expression} right
+ */
+module.exports = Operation["extends"](KIND, function Bin(type, left, right, docs, location) {
+  Operation.apply(this, [KIND, docs, location]);
+  this.type = type;
+  this.left = left;
+  this.right = right;
+});
+
+/***/ },
+
+/***/ 4628
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "block";
+
+/**
+ * A block statement, i.e., a sequence of statements surrounded by braces.
+ * @constructor Block
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Node[]} children
+ */
+module.exports = Statement["extends"](KIND, function Block(kind, children, docs, location) {
+  Statement.apply(this, [kind || KIND, docs, location]);
+  this.children = children.filter(Boolean);
+});
+
+/***/ },
+
+/***/ 7509
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Literal = __webpack_require__(5514);
+var KIND = "boolean";
+
+/**
+ * Defines a boolean value (true/false)
+ * @constructor Boolean
+ * @memberOf module:php-parser
+ * @extends {Literal}
+ * @property {boolean} value
+ */
+module.exports = Literal["extends"](KIND, function Boolean(value, raw, docs, location) {
+  Literal.apply(this, [KIND, value, raw, docs, location]);
+});
+
+/***/ },
+
+/***/ 2906
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "break";
+
+/**
+ * A break statement
+ * @constructor Break
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Number|Null} level
+ */
+module.exports = Statement["extends"](KIND, function Break(level, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.level = level;
+});
+
+/***/ },
+
+/***/ 5723
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "byref";
+
+/**
+ * Passing by Reference - so the function can modify the variable
+ * @constructor ByRef
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {ExpressionStatement} what
+ */
+module.exports = Expression["extends"](KIND, function ByRef(what, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.what = what;
+});
+
+/***/ },
+
+/***/ 7561
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "call";
+
+/**
+ * Executes a call statement
+ * @constructor Call
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Identifier|Variable} what
+ * @property {Expression[]} arguments
+ */
+module.exports = Expression["extends"](KIND, function Call(what, args, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.what = what;
+  this.arguments = args;
+});
+
+/***/ },
+
+/***/ 6473
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "case";
+
+/**
+ * A switch case statement
+ * @constructor Case
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression|null} test - if null, means that the default case
+ * @property {Block|null} body
+ */
+module.exports = Statement["extends"](KIND, function Case(test, body, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.test = test;
+  this.body = body;
+});
+
+/***/ },
+
+/***/ 9626
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Operation = __webpack_require__(8268);
+var KIND = "cast";
+
+/**
+ * Binary operations
+ * @constructor Cast
+ * @memberOf module:php-parser
+ * @extends {Operation}
+ * @property {String} type
+ * @property {String} raw
+ * @property {Expression} expr
+ */
+module.exports = Operation["extends"](KIND, function Cast(type, raw, expr, docs, location) {
+  Operation.apply(this, [KIND, docs, location]);
+  this.type = type;
+  this.raw = raw;
+  this.expr = expr;
+});
+
+/***/ },
+
+/***/ 4782
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "catch";
+
+/**
+ * Defines a catch statement
+ * @constructor Catch
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Name[]} what
+ * @property {Variable} variable
+ * @property {Block} body
+ * @see http://php.net/manual/en/language.exceptions.php
+ */
+module.exports = Statement["extends"](KIND, function Catch(body, what, variable, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.body = body;
+  this.what = what;
+  this.variable = variable;
+});
+
+/***/ },
+
+/***/ 8477
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "class";
+
+/**
+ * A class definition
+ * @constructor Class
+ * @memberOf module:php-parser
+ * @extends {Declaration}
+ * @property {Identifier|null} extends
+ * @property {Identifier[]|null} implements
+ * @property {Declaration[]} body
+ * @property {boolean} isAnonymous
+ * @property {boolean} isAbstract
+ * @property {boolean} isFinal
+ * @property {boolean} isReadonly
+ * @property {AttrGroup[]} attrGroups
+ */
+module.exports = Declaration["extends"](KIND, function Class(name, ext, impl, body, flags, docs, location) {
+  Declaration.apply(this, [KIND, name, docs, location]);
+  this.isAnonymous = name ? false : true;
+  this["extends"] = ext;
+  this["implements"] = impl;
+  this.body = body;
+  this.attrGroups = [];
+  this.parseFlags(flags);
+});
+
+/***/ },
+
+/***/ 5045
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var ConstantStatement = __webpack_require__(2112);
+var KIND = "classconstant";
+var IS_UNDEFINED = "";
+var IS_PUBLIC = "public";
+var IS_PROTECTED = "protected";
+var IS_PRIVATE = "private";
+
+/**
+ * Defines a class/interface/trait constant
+ * @constructor ClassConstant
+ * @memberOf module:php-parser
+ * @extends {ConstantStatement}
+ * @property {string} visibility
+ * @property {boolean} final
+ * @property {boolean} nullable
+ * @property {TypeReference|IntersectionType|UnionType|null} type
+ * @property {AttrGroup[]} attrGroups
+ */
+var ClassConstant = ConstantStatement["extends"](KIND, function ClassConstant(kind, constants, flags, nullable, type, attrGroups, docs, location) {
+  ConstantStatement.apply(this, [kind || KIND, constants, docs, location]);
+  this.parseFlags(flags);
+  this.nullable = nullable;
+  this.type = type;
+  this.attrGroups = attrGroups;
+});
+
+/**
+ * Generic flags parser
+ * @function
+ * @name ClassConstant#parseFlags
+ * @memberOf module:php-parser
+ * @param {Array<number|null>} flags
+ * @return {void}
+ */
+ClassConstant.prototype.parseFlags = function (flags) {
+  var getVis = flags[0][0];
+  if (getVis === -1) {
+    this.visibility = IS_UNDEFINED;
+  } else if (getVis === null) {
+    /* istanbul ignore next */
+    this.visibility = null;
+  } else if (getVis === 0) {
+    this.visibility = IS_PUBLIC;
+  } else if (getVis === 1) {
+    this.visibility = IS_PROTECTED;
+  } else if (getVis === 2) {
+    this.visibility = IS_PRIVATE;
+  }
+  this["final"] = flags[2] === 2;
+};
+module.exports = ClassConstant;
+
+/***/ },
+
+/***/ 900
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "clone";
+
+/**
+ * Defines a clone call
+ * @constructor Clone
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} what
+ * @property {Expression|null} properties
+ */
+module.exports = Expression["extends"](KIND, function Clone(what, properties, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.what = what;
+  if (properties) {
+    this.properties = properties;
+  }
+});
+
+/***/ },
+
+/***/ 4824
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "closure";
+
+/**
+ * Defines a closure
+ * @constructor Closure
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Parameter[]} arguments
+ * @property {Variable[]} uses
+ * @property {Identifier} type
+ * @property {Boolean} byref
+ * @property {boolean} nullable
+ * @property {Block|null} body
+ * @property {boolean} isStatic
+ * @property {AttrGroup[]} attrGroups
+ */
+module.exports = Expression["extends"](KIND, function Closure(args, byref, uses, type, nullable, isStatic, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.uses = uses;
+  this.arguments = args;
+  this.byref = byref;
+  this.type = type;
+  this.nullable = nullable;
+  this.isStatic = isStatic || false;
+  this.body = null;
+  this.attrGroups = [];
+});
+
+/***/ },
+
+/***/ 1020
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+
+/**
+ * Abstract documentation node (ComentLine or CommentBlock)
+ * @constructor Comment
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {String} value
+ */
+module.exports = Node["extends"]("comment", function Comment(kind, value, docs, location) {
+  Node.apply(this, [kind, docs, location]);
+  this.value = value;
+});
+
+/***/ },
+
+/***/ 9847
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Comment = __webpack_require__(1020);
+var KIND = "commentblock";
+
+/**
+ * A comment block (multiline)
+ * @constructor CommentBlock
+ * @memberOf module:php-parser
+ * @extends {Comment}
+ */
+module.exports = Comment["extends"](KIND, function CommentBlock(value, docs, location) {
+  Comment.apply(this, [KIND, value, docs, location]);
+});
+
+/***/ },
+
+/***/ 2790
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Comment = __webpack_require__(1020);
+var KIND = "commentline";
+
+/**
+ * A single line comment
+ * @constructor CommentLine
+ * @memberOf module:php-parser
+ * @extends {Comment}
+ */
+module.exports = Comment["extends"](KIND, function CommentLine(value, docs, location) {
+  Comment.apply(this, [KIND, value, docs, location]);
+});
+
+/***/ },
+
+/***/ 1333
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "constant";
+
+/**
+ * Defines a constant
+ * @constructor Constant
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {string} name
+ * @property {Node|string|number|boolean|null} value
+ */
+module.exports = Node["extends"](KIND, function Constant(name, value, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.value = value;
+});
+
+/***/ },
+
+/***/ 2112
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "constantstatement";
+
+/**
+ * Declares a constants into the current scope
+ * @constructor ConstantStatement
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Constant[]} constants
+ */
+module.exports = Statement["extends"](KIND, function ConstantStatement(kind, constants, docs, location) {
+  Statement.apply(this, [kind || KIND, docs, location]);
+  this.constants = constants;
+});
+
+/***/ },
+
+/***/ 9960
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "continue";
+
+/**
+ * A continue statement
+ * @constructor Continue
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {number|null} level
+ */
+module.exports = Statement["extends"](KIND, function Continue(level, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.level = level;
+});
+
+/***/ },
+
+/***/ 8533
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var Statement = __webpack_require__(9672);
+var KIND = "declaration";
+var IS_UNDEFINED = "";
+var IS_PUBLIC = "public";
+var IS_PROTECTED = "protected";
+var IS_PRIVATE = "private";
+var VISIBILITY_MAP = [IS_PUBLIC, IS_PROTECTED, IS_PRIVATE];
+
+/**
+ * A declaration statement (function, class, interface...)
+ * @constructor Declaration
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Identifier|string} name
+ * @property {string|null} visibilitySet
+ */
+var Declaration = Statement["extends"](KIND, function Declaration(kind, name, docs, location) {
+  Statement.apply(this, [kind || KIND, docs, location]);
+  this.name = name;
+});
+
+/**
+ * Generic flags parser
+ * @function
+ * @name Declaration#parseFlags
+ * @memberOf module:php-parser
+ * @param {Array<number|null>} flags
+ * @return {void}
+ */
+Declaration.prototype.parseFlags = function (flags) {
+  this.isAbstract = flags[2] === 1;
+  this.isFinal = flags[2] === 2;
+  this.isReadonly = flags[3] === 1;
+  if (this.kind !== "class") {
+    var _flags$ = _slicedToArray(flags[0], 2),
+      getVis = _flags$[0],
+      setVis = _flags$[1];
+    if (getVis === -1) {
+      this.visibility = IS_UNDEFINED;
+    } else if (getVis === null) {
+      /* istanbul ignore next */
+      this.visibility = null;
+    } else {
+      this.visibility = VISIBILITY_MAP[getVis];
+    }
+    this.isStatic = flags[1] === 1;
+    this.visibilitySet = setVis !== -1 ? VISIBILITY_MAP[setVis] : null;
+  }
+};
+module.exports = Declaration;
+
+/***/ },
+
+/***/ 5947
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Block = __webpack_require__(4628);
+var KIND = "declare";
+
+/**
+ * The declare construct is used to set execution directives for a block of code
+ * @constructor Declare
+ * @memberOf module:php-parser
+ * @extends {Block}
+ * @property {DeclareDirective[]} directives
+ * @property {string} mode
+ * @see http://php.net/manual/en/control-structures.declare.php
+ */
+var Declare = Block["extends"](KIND, function Declare(directives, body, mode, docs, location) {
+  Block.apply(this, [KIND, body, docs, location]);
+  this.directives = directives;
+  this.mode = mode;
+});
+
+/**
+ * The node is declared as a short tag syntax :
+ * ```php
+ * <?php
+ * declare(ticks=1):
+ * // some statements
+ * enddeclare;
+ * ```
+ * @constant {String} Declare#MODE_SHORT
+ * @memberOf module:php-parser
+ */
+Declare.MODE_SHORT = "short";
+
+/**
+ * The node is declared bracket enclosed code :
+ * ```php
+ * <?php
+ * declare(ticks=1) {
+ * // some statements
+ * }
+ * ```
+ * @constant {String} Declare#MODE_BLOCK
+ * @memberOf module:php-parser
+ */
+Declare.MODE_BLOCK = "block";
+
+/**
+ * The node is declared as a simple statement. In order to make things simpler
+ * children of the node are automatically collected until the next
+ * declare statement.
+ * ```php
+ * <?php
+ * declare(ticks=1);
+ * // some statements
+ * declare(ticks=2);
+ * // some statements
+ * ```
+ * @constant {String} Declare#MODE_NONE
+ * @memberOf module:php-parser
+ */
+Declare.MODE_NONE = "none";
+module.exports = Declare;
+
+/***/ },
+
+/***/ 7786
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "declaredirective";
+
+/**
+ * Defines a constant
+ * @constructor DeclareDirective
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {Identifier} key
+ * @property {Node|string|number|boolean|null} value
+ */
+module.exports = Node["extends"](KIND, function DeclareDirective(key, value, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.key = key;
+  this.value = value;
+});
+
+/***/ },
+
+/***/ 5436
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "do";
+
+/**
+ * Defines a do/while statement
+ * @constructor Do
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression} test
+ * @property {Block | null} body
+ */
+module.exports = Statement["extends"](KIND, function Do(test, body, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.test = test;
+  this.body = body;
+});
+
+/***/ },
+
+/***/ 1136
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "echo";
+
+/**
+ * Defines system based call
+ * @constructor Echo
+ * @memberOf module:php-parser
+ * @property {boolean} shortForm
+ * @property {Expression[]} expressions
+ * @extends {Statement}
+ */
+module.exports = Statement["extends"](KIND, function Echo(expressions, shortForm, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.shortForm = shortForm;
+  this.expressions = expressions;
+});
+
+/***/ },
+
+/***/ 380
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "empty";
+
+/**
+ * Defines an empty check call
+ * @constructor Empty
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} expression
+ */
+module.exports = Expression["extends"](KIND, function Empty(expression, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.expression = expression;
+});
+
+/***/ },
+
+/***/ 6129
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Literal = __webpack_require__(5514);
+var KIND = "encapsed";
+
+/**
+ * Defines an encapsed string (contains expressions)
+ * @constructor Encapsed
+ * @memberOf module:php-parser
+ * @extends {Literal}
+ * @property {String} type - Defines the type of encapsed string (shell, heredoc, string)
+ * @property {String|Null} label - The heredoc label, defined only when the type is heredoc
+ * @property {EncapsedPart[]} value
+ */
+var Encapsed = Literal["extends"](KIND, function Encapsed(value, raw, type, docs, location) {
+  Literal.apply(this, [KIND, value, raw, docs, location]);
+  this.type = type;
+});
+
+/**
+ * The node is a double quote string :
+ * ```php
+ * <?php
+ * echo "hello $world";
+ * ```
+ * @constant {String} Encapsed#TYPE_STRING - `string`
+ * @memberOf module:php-parser
+ */
+Encapsed.TYPE_STRING = "string";
+
+/**
+ * The node is a shell execute string :
+ * ```php
+ * <?php
+ * echo `ls -larth $path`;
+ * ```
+ * @constant {String} Encapsed#TYPE_SHELL - `shell`
+ * @memberOf module:php-parser
+ */
+Encapsed.TYPE_SHELL = "shell";
+
+/**
+ * The node is a shell execute string :
+ * ```php
+ * <?php
+ * echo <<<STR
+ *  Hello $world
+ * STR
+ * ;
+ * ```
+ * @constant {String} Encapsed#TYPE_HEREDOC - `heredoc`
+ * @memberOf module:php-parser
+ */
+Encapsed.TYPE_HEREDOC = "heredoc";
+
+/**
+ * The node contains a list of constref / variables / expr :
+ * ```php
+ * <?php
+ * echo $foo->bar_$baz;
+ * ```
+ * @constant {String} Encapsed#TYPE_OFFSET - `offset`
+ * @memberOf module:php-parser
+ */
+Encapsed.TYPE_OFFSET = "offset";
+module.exports = Encapsed;
+
+/***/ },
+
+/***/ 9723
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "encapsedpart";
+
+/**
+ * Part of `Encapsed` node
+ * @constructor EncapsedPart
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} expression
+ * @property {String} syntax
+ * @property {Boolean} curly
+ */
+module.exports = Expression["extends"](KIND, function EncapsedPart(expression, syntax, curly, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.expression = expression;
+  this.syntax = syntax;
+  this.curly = curly;
+});
+
+/***/ },
+
+/***/ 5125
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "entry";
+
+/**
+ * An array entry - see [Array](#array)
+ * @memberOf module:php-parser
+ * @constructor Entry
+ * @extends {Expression}
+ * @property {Node|null} key The entry key/offset
+ * @property {Node} value The entry value
+ * @property {Boolean} byRef By reference
+ * @property {Boolean} unpack Argument unpacking
+ */
+module.exports = Expression["extends"](KIND, function Entry(key, value, byRef, unpack, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.key = key;
+  this.value = value;
+  this.byRef = byRef;
+  this.unpack = unpack;
+});
+
+/***/ },
+
+/***/ 9632
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "enum";
+
+/**
+ * A enum definition
+ * @constructor Enum
+ * @memberOf module:php-parser
+ * @extends {Declaration}
+ * @property {Identifier|null} valueType
+ * @property {Identifier[]} implements
+ * @property {Declaration[]} body
+ * @property {AttrGroup[]} attrGroups
+ */
+module.exports = Declaration["extends"](KIND, function Enum(name, valueType, impl, body, docs, location) {
+  Declaration.apply(this, [KIND, name, docs, location]);
+  this.valueType = valueType;
+  this["implements"] = impl;
+  this.body = body;
+  this.attrGroups = [];
+});
+
+/***/ },
+
+/***/ 4300
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "enumcase";
+
+/**
+ * Declares a cases into the current scope
+ * @constructor EnumCase
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {string} name
+ * @property {string|number|null} value
+ */
+module.exports = Node["extends"](KIND, function EnumCase(name, value, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.value = value;
+});
+
+/***/ },
+
+/***/ 1515
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "error";
+
+/**
+ * Defines an error node (used only on silentMode)
+ * @constructor Error
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {string} message
+ * @property {number} line
+ * @property {number|string} token
+ * @property {string|array} expected
+ */
+module.exports = Node["extends"](KIND, function Error(message, token, line, expected, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.message = message;
+  this.token = token;
+  this.line = line;
+  this.expected = expected;
+});
+
+/***/ },
+
+/***/ 3411
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "eval";
+
+/**
+ * Defines an eval statement
+ * @constructor Eval
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Node} source
+ */
+module.exports = Expression["extends"](KIND, function Eval(source, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.source = source;
+});
+
+/***/ },
+
+/***/ 9781
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "exit";
+
+/**
+ * Defines an exit / die call
+ * @constructor Exit
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Node|null} expression
+ * @property {boolean} useDie
+ */
+module.exports = Expression["extends"](KIND, function Exit(expression, useDie, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.expression = expression;
+  this.useDie = useDie;
+});
+
+/***/ },
+
+/***/ 839
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "expression";
+
+/**
+ * Any expression node. Since the left-hand side of an assignment may
+ * be any expression in general, an expression can also be a pattern.
+ * @constructor Expression
+ * @memberOf module:php-parser
+ * @extends {Node}
+ */
+module.exports = Node["extends"](KIND, function Expression(kind, docs, location) {
+  Node.apply(this, [kind || KIND, docs, location]);
+});
+
+/***/ },
+
+/***/ 8374
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "expressionstatement";
+
+/**
+ * Defines an expression based statement
+ * @constructor ExpressionStatement
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression} expression
+ */
+module.exports = Statement["extends"](KIND, function ExpressionStatement(expr, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.expression = expr;
+});
+
+/***/ },
+
+/***/ 9754
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "for";
+
+/**
+ * Defines a for iterator
+ * @constructor For
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression[]} init
+ * @property {Expression[]} test
+ * @property {Expression[]} increment
+ * @property {Block | null} body
+ * @property {boolean} shortForm
+ * @see http://php.net/manual/en/control-structures.for.php
+ */
+module.exports = Statement["extends"](KIND, function For(init, test, increment, body, shortForm, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.init = init;
+  this.test = test;
+  this.increment = increment;
+  this.shortForm = shortForm;
+  this.body = body;
+});
+
+/***/ },
+
+/***/ 4251
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "foreach";
+
+/**
+ * Defines a foreach iterator
+ * @constructor Foreach
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression} source
+ * @property {Expression|null} key
+ * @property {Expression} value
+ * @property {Block | null} body
+ * @property {boolean} shortForm
+ * @see http://php.net/manual/en/control-structures.foreach.php
+ */
+module.exports = Statement["extends"](KIND, function Foreach(source, key, value, body, shortForm, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.source = source;
+  this.key = key;
+  this.value = value;
+  this.shortForm = shortForm;
+  this.body = body;
+});
+
+/***/ },
+
+/***/ 6553
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "function";
+
+/**
+ * Defines a classic function
+ * @constructor Function
+ * @memberOf module:php-parser
+ * @extends {Declaration}
+ * @property {Parameter[]} arguments
+ * @property {Identifier} type
+ * @property {boolean} byref
+ * @property {boolean} nullable
+ * @property {Block|null} body
+ * @property {AttrGroup[]} attrGroups
+ */
+module.exports = Declaration["extends"](KIND, function _Function(name, args, byref, type, nullable, docs, location) {
+  Declaration.apply(this, [KIND, name, docs, location]);
+  this.arguments = args;
+  this.byref = byref;
+  this.type = type;
+  this.nullable = nullable;
+  this.body = null;
+  this.attrGroups = [];
+});
+
+/***/ },
+
+/***/ 8630
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "global";
+
+/**
+ * Imports a variable from the global scope
+ * @constructor Global
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Variable[]} items
+ */
+module.exports = Statement["extends"](KIND, function Global(items, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.items = items;
+});
+
+/***/ },
+
+/***/ 9786
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "goto";
+
+/**
+ * Defines goto statement
+ * @constructor Goto
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {string} label
+ * @see {Label}
+ */
+module.exports = Statement["extends"](KIND, function Goto(label, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.label = label;
+});
+
+/***/ },
+
+/***/ 9742
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "halt";
+
+/**
+ * Halts the compiler execution
+ * @constructor Halt
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {String} after - String after the halt statement
+ * @see http://php.net/manual/en/function.halt-compiler.php
+ */
+module.exports = Statement["extends"](KIND, function Halt(after, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.after = after;
+});
+
+/***/ },
+
+/***/ 1234
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "identifier";
+
+/**
+ * Defines an identifier node
+ * @constructor Identifier
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {string} name
+ */
+var Identifier = Node["extends"](KIND, function Identifier(name, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.name = name;
+});
+module.exports = Identifier;
+
+/***/ },
+
+/***/ 6
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "if";
+
+/**
+ * Defines a if statement
+ * @constructor If
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression} test
+ * @property {Block} body
+ * @property {Block|If|null} alternate
+ * @property {boolean} shortForm
+ */
+module.exports = Statement["extends"](KIND, function If(test, body, alternate, shortForm, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.test = test;
+  this.body = body;
+  this.alternate = alternate;
+  this.shortForm = shortForm;
+});
+
+/***/ },
+
+/***/ 8861
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "include";
+
+/**
+ * Defines system include call
+ * @constructor Include
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Node} target
+ * @property {boolean} once
+ * @property {boolean} require
+ */
+module.exports = Expression["extends"](KIND, function Include(once, require, target, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.once = once;
+  this.require = require;
+  this.target = target;
+});
+
+/***/ },
+
+/***/ 7860
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Literal = __webpack_require__(5514);
+var KIND = "inline";
+
+/**
+ * Defines inline html output (treated as echo output)
+ * @constructor Inline
+ * @memberOf module:php-parser
+ * @extends {Literal}
+ * @property {string} value
+ */
+module.exports = Literal["extends"](KIND, function Inline(value, raw, docs, location) {
+  Literal.apply(this, [KIND, value, raw, docs, location]);
+});
+
+/***/ },
+
+/***/ 9834
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "interface";
+
+/**
+ * An interface definition
+ * @constructor Interface
+ * @memberOf module:php-parser
+ * @extends {Declaration}
+ * @property {Identifier[]} extends
+ * @property {Declaration[]} body
+ * @property {AttrGroup[]} attrGroups
+ */
+module.exports = Declaration["extends"](KIND, function Interface(name, ext, body, attrGroups, docs, location) {
+  Declaration.apply(this, [KIND, name, docs, location]);
+  this["extends"] = ext;
+  this.body = body;
+  this.attrGroups = attrGroups;
+});
+
+/***/ },
+
+/***/ 2724
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "intersectiontype";
+
+/**
+ * A union of types
+ * @memberOf module:php-parser
+ * @constructor IntersectionType
+ * @extends {Declaration}
+ * @property {TypeReference[]} types
+ */
+module.exports = Declaration["extends"](KIND, function IntersectionType(types, docs, location) {
+  Declaration.apply(this, [KIND, null, docs, location]);
+  this.types = types;
+});
+
+/***/ },
+
+/***/ 6025
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "isset";
+
+/**
+ * Defines an isset call
+ * @constructor Isset
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression[]} variables
+ */
+module.exports = Expression["extends"](KIND, function Isset(variables, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.variables = variables;
+});
+
+/***/ },
+
+/***/ 2687
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "label";
+
+/**
+ * A label statement (referenced by goto)
+ * @constructor Label
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {String} name
+ */
+module.exports = Statement["extends"](KIND, function Label(name, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.name = name;
+});
+
+/***/ },
+
+/***/ 7633
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "list";
+
+/**
+ * Defines list assignment
+ * @constructor List
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {boolean} shortForm
+ * @property {Entry[]} items
+ */
+module.exports = Expression["extends"](KIND, function List(items, shortForm, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.items = items;
+  this.shortForm = shortForm;
+});
+
+/***/ },
+
+/***/ 5514
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "literal";
+
+/**
+ * Defines an array structure
+ * @constructor Literal
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {string} raw
+ * @property {EncapsedPart[]|Node|string|number|boolean|null} value
+ */
+module.exports = Expression["extends"](KIND, function Literal(kind, value, raw, docs, location) {
+  Expression.apply(this, [kind || KIND, docs, location]);
+  this.value = value;
+  if (raw) {
+    this.raw = raw;
+  }
+});
+
+/***/ },
+
+/***/ 4778
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+/**
+ * Defines the location of the node (with it's source contents as string)
+ * @constructor Location
+ * @memberOf module:php-parser
+ * @property {string|null} source
+ * @property {Position} start
+ * @property {Position} end
+ */
+var Location = function Location(source, start, end) {
+  this.source = source;
+  this.start = start;
+  this.end = end;
+};
+module.exports = Location;
+
+/***/ },
+
+/***/ 7427
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expr = __webpack_require__(839);
+var KIND = "lookup";
+
+/**
+ * Lookup on an offset in the specified object
+ * @constructor Lookup
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} what
+ * @property {Expression} offset
+ */
+module.exports = Expr["extends"](KIND, function Lookup(kind, what, offset, docs, location) {
+  Expr.apply(this, [kind || KIND, docs, location]);
+  this.what = what;
+  this.offset = offset;
+});
+
+/***/ },
+
+/***/ 1122
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Literal = __webpack_require__(5514);
+var KIND = "magic";
+
+/**
+ * Defines magic constant
+ * @constructor Magic
+ * @memberOf module:php-parser
+ * @extends {Literal}
+ */
+module.exports = Literal["extends"](KIND, function Magic(value, raw, docs, location) {
+  Literal.apply(this, [KIND, value, raw, docs, location]);
+});
+
+/***/ },
+
+/***/ 7256
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "match";
+
+/**
+ * Defines a match expression
+ * @memberOf module:php-parser
+ * @constructor Match
+ * @extends {Expression}
+ * @property {Expression} cond Condition expression to match against
+ * @property {MatchArm[]} arms Arms for comparison
+ */
+module.exports = Expression["extends"](KIND, function Match(cond, arms, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.cond = cond;
+  this.arms = arms;
+});
+
+/***/ },
+
+/***/ 7416
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "matcharm";
+
+/**
+ * An array entry - see [Array](#array)
+ * @memberOf module:php-parser
+ * @constructor MatchArm
+ * @extends {Expression}
+ * @property {Expression[]|null} conds The match condition expression list - null indicates default arm
+ * @property {Expression} body The return value expression
+ */
+module.exports = Expression["extends"](KIND, function MatchArm(conds, body, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.conds = conds;
+  this.body = body;
+});
+
+/***/ },
+
+/***/ 8140
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Function_ = __webpack_require__(6553);
+var KIND = "method";
+
+/**
+ * Defines a class/interface/trait method
+ * @constructor Method
+ * @memberOf module:php-parser
+ * @extends {Function}
+ * @property {boolean} isAbstract
+ * @property {boolean} isFinal
+ * @property {boolean} isStatic
+ * @property {string} visibility
+ */
+module.exports = Function_["extends"](KIND, function Method() {
+  Function_.apply(this, arguments);
+  this.kind = KIND;
+});
+
+/***/ },
+
+/***/ 6258
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Reference = __webpack_require__(8276);
+var KIND = "name";
+
+/**
+ * Defines a class reference node
+ * @constructor Name
+ * @memberOf module:php-parser
+ * @extends {Reference}
+ * @property {string} name
+ * @property {string} resolution
+ */
+var Name = Reference["extends"](KIND, function Name(name, resolution, docs, location) {
+  Reference.apply(this, [KIND, docs, location]);
+  this.name = name.replace(/\\$/, "");
+  this.resolution = resolution;
+});
+
+/**
+ * This is an identifier without a namespace separator, such as Foo
+ * @constant {String} Name#UNQUALIFIED_NAME
+ * @memberOf module:php-parser
+ */
+Name.UNQUALIFIED_NAME = "uqn";
+/**
+ * This is an identifier with a namespace separator, such as Foo\Bar
+ * @constant {String} Name#QUALIFIED_NAME
+ * @memberOf module:php-parser
+ */
+Name.QUALIFIED_NAME = "qn";
+/**
+ * This is an identifier with a namespace separator that begins with
+ * a namespace separator, such as \Foo\Bar. The namespace \Foo is also
+ * a fully qualified name.
+ * @constant {String} Name#FULL_QUALIFIED_NAME
+ * @memberOf module:php-parser
+ */
+Name.FULL_QUALIFIED_NAME = "fqn";
+/**
+ * This is an identifier starting with namespace, such as namespace\Foo\Bar.
+ * @constant {String} Name#RELATIVE_NAME
+ * @memberOf module:php-parser
+ */
+Name.RELATIVE_NAME = "rn";
+module.exports = Name;
+
+/***/ },
+
+/***/ 6827
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "namedargument";
+
+/**
+ * Named arguments.
+ * @memberOf module:php-parser
+ * @constructor namedargument
+ * @extends {Expression}
+ * @property {String} name
+ * @property {Expression} value
+ * @see https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments
+ */
+module.exports = Expression["extends"](KIND, function namedargument(name, value, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.value = value;
+});
+
+/***/ },
+
+/***/ 9474
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Block = __webpack_require__(4628);
+var KIND = "namespace";
+
+/**
+ * The main program node
+ * @constructor Namespace
+ * @memberOf module:php-parser
+ * @extends {Block}
+ * @property {string} name
+ * @property {boolean} withBrackets
+ */
+module.exports = Block["extends"](KIND, function Namespace(name, children, withBrackets, docs, location) {
+  Block.apply(this, [KIND, children, docs, location]);
+  this.name = name;
+  this.withBrackets = withBrackets || false;
+});
+
+/***/ },
+
+/***/ 4427
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "new";
+
+/**
+ * Creates a new instance of the specified class
+ * @constructor New
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Identifier|Variable|Class} what
+ * @property {Variable[]} arguments
+ */
+module.exports = Expression["extends"](KIND, function New(what, args, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.what = what;
+  this.arguments = args;
+});
+
+/***/ },
+
+/***/ 4065
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+/**
+ * A generic AST node
+ * @constructor Node
+ * @memberOf module:php-parser
+ * @property {Location|null} loc
+ * @property {CommentBlock[]|Comment[]|null} leadingComments
+ * @property {CommentBlock[]|Comment[]|null} trailingComments
+ * @property {string} kind
+ */
+var Node = function Node(kind, docs, location) {
+  this.kind = kind;
+  if (docs) {
+    this.leadingComments = docs;
+  }
+  if (location) {
+    this.loc = location;
+  }
+};
+
+/**
+ * Attach comments to current node
+ * @function Node#setTrailingComments
+ * @memberOf module:php-parser
+ * @param {*} docs
+ */
+Node.prototype.setTrailingComments = function (docs) {
+  this.trailingComments = docs;
+};
+
+/**
+ * Destroying an unused node
+ * @function Node#destroy
+ * @memberOf module:php-parser
+ */
+Node.prototype.destroy = function (node) {
+  if (!node) {
+    /* istanbul ignore next */
+    throw new Error("Node already initialized, you must swap with another node");
+  }
+  if (this.leadingComments) {
+    if (node.leadingComments) {
+      node.leadingComments = Array.concat(this.leadingComments, node.leadingComments);
+    } else {
+      node.leadingComments = this.leadingComments;
+    }
+  }
+  if (this.trailingComments) {
+    if (node.trailingComments) {
+      node.trailingComments = Array.concat(this.trailingComments, node.trailingComments);
+    } else {
+      node.trailingComments = this.trailingComments;
+    }
+  }
+  return node;
+};
+
+/**
+ * Includes current token position of the parser
+ * @function Node#includeToken
+ * @memberOf module:php-parser
+ * @param {*} parser
+ */
+Node.prototype.includeToken = function (parser) {
+  if (this.loc) {
+    if (this.loc.end) {
+      this.loc.end.line = parser.lexer.yylloc.last_line;
+      this.loc.end.column = parser.lexer.yylloc.last_column;
+      this.loc.end.offset = parser.lexer.offset;
+    }
+    if (parser.ast.withSource) {
+      this.loc.source = parser.lexer._input.substring(this.loc.start.offset, parser.lexer.offset);
+    }
+  }
+  return this;
+};
+
+/**
+ * Helper for extending the Node class
+ * @function Node.extends
+ * @memberOf module:php-parser
+ * @param {string} type
+ * @param {Function} constructor
+ * @return {Function}
+ */
+Node["extends"] = function (type, constructor) {
+  constructor.prototype = Object.create(this.prototype);
+  constructor["extends"] = this["extends"];
+  constructor.prototype.constructor = constructor;
+  constructor.kind = type;
+  return constructor;
+};
+module.exports = Node;
+
+/***/ },
+
+/***/ 4297
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "noop";
+
+/**
+ * Ignore this node, it implies a no operation block, for example :
+ * [$foo, $bar, /* here a noop node * /]
+ * @constructor Noop
+ * @memberOf module:php-parser
+ * @extends {Node}
+ */
+module.exports = Node["extends"](KIND, function Noop(docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+});
+
+/***/ },
+
+/***/ 5859
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Literal = __webpack_require__(5514);
+var KIND = "nowdoc";
+
+/**
+ * Defines a nowdoc string
+ * @constructor NowDoc
+ * @memberOf module:php-parser
+ * @extends {Literal}
+ * @property {string} label
+ * @property {string} raw
+ * @property {string} value
+ */
+module.exports = Literal["extends"](KIND, function Nowdoc(value, raw, label, docs, location) {
+  Literal.apply(this, [KIND, value, raw, docs, location]);
+  this.label = label;
+});
+
+/***/ },
+
+/***/ 6985
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "nullkeyword";
+
+/**
+ * Represents the null keyword
+ * @constructor NullKeyword
+ * @memberOf module:php-parser
+ * @extends {Node}
+ */
+module.exports = Node["extends"](KIND, function NullKeyword(raw, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.raw = raw;
+});
+
+/***/ },
+
+/***/ 9302
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Lookup = __webpack_require__(7427);
+var KIND = "nullsafepropertylookup";
+
+/**
+ * Lookup to an object property
+ * @memberOf module:php-parser
+ * @constructor NullSafePropertyLookup
+ * @extends {Lookup}
+ */
+module.exports = Lookup["extends"](KIND, function NullSafePropertyLookup(what, offset, docs, location) {
+  Lookup.apply(this, [KIND, what, offset, docs, location]);
+});
+
+/***/ },
+
+/***/ 8212
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Literal = __webpack_require__(5514);
+var KIND = "number";
+
+/**
+ * Defines a numeric value
+ * @constructor Number
+ * @memberOf module:php-parser
+ * @extends {Literal}
+ * @property {number} value
+ */
+module.exports = Literal["extends"](KIND, function Number(value, raw, docs, location) {
+  Literal.apply(this, [KIND, value, raw, docs, location]);
+});
+
+/***/ },
+
+/***/ 864
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Lookup = __webpack_require__(7427);
+var KIND = "offsetlookup";
+
+/**
+ * Lookup on an offset in an array
+ * @constructor OffsetLookup
+ * @memberOf module:php-parser
+ * @extends {Lookup}
+ */
+module.exports = Lookup["extends"](KIND, function OffsetLookup(what, offset, docs, location) {
+  Lookup.apply(this, [KIND, what, offset, docs, location]);
+});
+
+/***/ },
+
+/***/ 8268
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expr = __webpack_require__(839);
+var KIND = "operation";
+
+/**
+ * Defines binary operations
+ * @constructor Operation
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ */
+module.exports = Expr["extends"](KIND, function Operation(kind, docs, location) {
+  Expr.apply(this, [kind || KIND, docs, location]);
+});
+
+/***/ },
+
+/***/ 7190
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "parameter";
+
+/**
+ * @memberOf module:php-parser
+ * @typedef {1} MODIFIER_PUBLIC
+ **/
+/**
+ * @memberOf module:php-parser
+ * @typedef {2} MODIFIER_PROTECTED
+ **/
+/**
+ * @memberOf module:php-parser
+ * @typedef {4} MODIFIER_PRIVATE
+ **/
+/**
+ * Defines a function parameter
+ * @constructor Parameter
+ * @memberOf module:php-parser
+ * @extends {Declaration}
+ * @property {Identifier|null} type
+ * @property {Node|null} value
+ * @property {boolean} byref
+ * @property {boolean} variadic
+ * @property {boolean} readonly
+ * @property {boolean} nullable
+ * @property {AttrGroup[]} attrGroups
+ * @property {MODIFIER_PUBLIC|MODIFIER_PROTECTED|MODIFIER_PRIVATE} flags
+ * @property {PropertyHook[]} hooks
+ * @property {MODIFIER_PUBLIC|MODIFIER_PROTECTED|MODIFIER_PRIVATE} flagsSet
+ */
+module.exports = Declaration["extends"](KIND, function Parameter(name, type, value, isRef, isVariadic, readonly, nullable, flags, hooks, flagsSet, docs, location) {
+  Declaration.apply(this, [KIND, name, docs, location]);
+  this.value = value;
+  this.type = type;
+  this.byref = isRef;
+  this.variadic = isVariadic;
+  this.readonly = readonly;
+  this.nullable = nullable;
+  this.flags = flags || 0;
+  this.hooks = hooks || [];
+  this.flagsSet = flagsSet || 0;
+  this.attrGroups = [];
+});
+
+/***/ },
+
+/***/ 8519
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Reference = __webpack_require__(8276);
+var KIND = "parentreference";
+
+/**
+ * Defines a class reference node
+ * @constructor ParentReference
+ * @memberOf module:php-parser
+ * @extends {Reference}
+ */
+var ParentReference = Reference["extends"](KIND, function ParentReference(raw, docs, location) {
+  Reference.apply(this, [KIND, docs, location]);
+  this.raw = raw;
+});
+module.exports = ParentReference;
+
+/***/ },
+
+/***/ 8822
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+/**
+ * Each Position object consists of a line number (1-indexed) and a column number (0-indexed):
+ * @constructor Position
+ * @memberOf module:php-parser
+ * @property {number} line
+ * @property {number} column
+ * @property {number} offset
+ */
+var Position = function Position(line, column, offset) {
+  this.line = line;
+  this.column = column;
+  this.offset = offset;
+};
+module.exports = Position;
+
+/***/ },
+
+/***/ 4835
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Operation = __webpack_require__(8268);
+var KIND = "post";
+
+/**
+ * Defines a post operation `$i++` or `$i--`
+ * @constructor Post
+ * @memberOf module:php-parser
+ * @extends {Operation}
+ * @property {String} type
+ * @property {Variable} what
+ */
+module.exports = Operation["extends"](KIND, function Post(type, what, docs, location) {
+  Operation.apply(this, [KIND, docs, location]);
+  this.type = type;
+  this.what = what;
+});
+
+/***/ },
+
+/***/ 2056
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Operation = __webpack_require__(8268);
+var KIND = "pre";
+
+/**
+ * Defines a pre operation `++$i` or `--$i`
+ * @constructor Pre
+ * @memberOf module:php-parser
+ * @extends {Operation}
+ * @property {String} type
+ * @property {Variable} what
+ */
+module.exports = Operation["extends"](KIND, function Pre(type, what, docs, location) {
+  Operation.apply(this, [KIND, docs, location]);
+  this.type = type;
+  this.what = what;
+});
+
+/***/ },
+
+/***/ 4838
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "print";
+
+/**
+ * Outputs
+ * @constructor Print
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} expression
+ */
+module.exports = Expression["extends"](KIND, function Print(expression, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.expression = expression;
+});
+
+/***/ },
+
+/***/ 7869
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Block = __webpack_require__(4628);
+var KIND = "program";
+
+/**
+ * The main program node
+ * @constructor Program
+ * @memberOf module:php-parser
+ * @extends {Block}
+ * @property {Error[]} errors
+ * @property {Comment[]|null} comments
+ * @property {String[]|null} tokens
+ */
+module.exports = Block["extends"](KIND, function Program(children, errors, comments, tokens, docs, location) {
+  Block.apply(this, [KIND, children, docs, location]);
+  this.errors = errors;
+  if (comments) {
+    this.comments = comments;
+  }
+  if (tokens) {
+    this.tokens = tokens;
+  }
+});
+
+/***/ },
+
+/***/ 1908
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "property";
+
+/**
+ * Defines a class property
+ * @constructor Property
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {string} name
+ * @property {Node|null} value
+ * @property {boolean} readonly
+ * @property {boolean} nullable
+ * @property {Identifier|Array<Identifier>|null} type
+ * @property {AttrGroup[]} attrGroups
+ * @property {PropertyHook[]} hooks
+ */
+module.exports = Statement["extends"](KIND, function Property(name, value, readonly, nullable, type, attrGroups, hooks, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.value = value;
+  this.readonly = readonly;
+  this.nullable = nullable;
+  this.type = type;
+  this.attrGroups = attrGroups;
+  this.hooks = hooks || [];
+});
+
+/***/ },
+
+/***/ 4863
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2024 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "propertyhook";
+
+/**
+ * Defines a class property hook getter & setter
+ *
+ * @constructor PropertyHook
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {string} name
+ * @property {Boolean} isFinal
+ * @property {Boolean} byref
+ * @property {Parameter|null} parameter
+ * @property {Block|Expression|null} body
+ * @property {AttrGroup[]} attrGroups
+ */
+module.exports = Node["extends"](KIND, function PropertyHook(name, isFinal, byref, parameter, body, attrGroups, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.isFinal = isFinal;
+  this.byref = byref;
+  this.parameter = parameter;
+  this.body = body;
+  this.attrGroups = attrGroups || [];
+});
+
+/***/ },
+
+/***/ 170
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Lookup = __webpack_require__(7427);
+var KIND = "propertylookup";
+
+/**
+ * Lookup to an object property
+ * @memberOf module:php-parser
+ * @constructor PropertyLookup
+ * @extends {Lookup}
+ */
+module.exports = Lookup["extends"](KIND, function PropertyLookup(what, offset, docs, location) {
+  Lookup.apply(this, [KIND, what, offset, docs, location]);
+});
+
+/***/ },
+
+/***/ 1091
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var Statement = __webpack_require__(9672);
+var KIND = "propertystatement";
+var IS_UNDEFINED = "";
+var IS_PUBLIC = "public";
+var IS_PROTECTED = "protected";
+var IS_PRIVATE = "private";
+var VISIBILITY_MAP = [IS_PUBLIC, IS_PROTECTED, IS_PRIVATE];
+
+/**
+ * Declares a properties into the current scope
+ * @constructor PropertyStatement
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Property[]} properties
+ * @property {string|null} visibility
+ * @property {string|null} visibilitySet
+ * @property {boolean} isStatic
+ * @property {boolean} isAbstract
+ * @property {boolean} isFinal
+ */
+var PropertyStatement = Statement["extends"](KIND, function PropertyStatement(kind, properties, flags, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.properties = properties;
+  this.parseFlags(flags);
+});
+
+/**
+ * Generic flags parser
+ * @function PropertyStatement#parseFlags
+ * @memberOf module:php-parser
+ * @param {Array<number|null>} flags
+ * @return {void}
+ */
+PropertyStatement.prototype.parseFlags = function (flags) {
+  var _flags$ = _slicedToArray(flags[0], 2),
+    getVis = _flags$[0],
+    setVis = _flags$[1];
+  if (getVis === -1) {
+    this.visibility = IS_UNDEFINED;
+  } else if (getVis === null) {
+    this.visibility = null;
+  } else {
+    this.visibility = VISIBILITY_MAP[getVis];
+  }
+  this.isStatic = flags[1] === 1;
+  this.isAbstract = flags[2] === 1;
+  this.isFinal = flags[2] === 2;
+  this.visibilitySet = setVis !== -1 ? VISIBILITY_MAP[setVis] : null;
+};
+module.exports = PropertyStatement;
+
+/***/ },
+
+/***/ 8276
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "reference";
+
+/**
+ * Defines a reference node
+ * @constructor Reference
+ * @memberOf module:php-parser
+ * @extends {Node}
+ */
+var Reference = Node["extends"](KIND, function Reference(kind, docs, location) {
+  Node.apply(this, [kind || KIND, docs, location]);
+});
+module.exports = Reference;
+
+/***/ },
+
+/***/ 1842
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "retif";
+
+/**
+ * Defines a short if statement that returns a value
+ * @constructor RetIf
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} test
+ * @property {Expression} trueExpr
+ * @property {Expression} falseExpr
+ */
+module.exports = Expression["extends"](KIND, function RetIf(test, trueExpr, falseExpr, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.test = test;
+  this.trueExpr = trueExpr;
+  this.falseExpr = falseExpr;
+});
+
+/***/ },
+
+/***/ 5739
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "return";
+
+/**
+ * A continue statement
+ * @constructor Return
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression|null} expr
+ */
+module.exports = Statement["extends"](KIND, function Return(expr, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.expr = expr;
+});
+
+/***/ },
+
+/***/ 1274
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Reference = __webpack_require__(8276);
+var KIND = "selfreference";
+
+/**
+ * Defines a class reference node
+ * @constructor SelfReference
+ * @memberOf module:php-parser
+ * @extends {Reference}
+ */
+var SelfReference = Reference["extends"](KIND, function SelfReference(raw, docs, location) {
+  Reference.apply(this, [KIND, docs, location]);
+  this.raw = raw;
+});
+module.exports = SelfReference;
+
+/***/ },
+
+/***/ 4352
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "silent";
+
+/**
+ * Avoids to show/log warnings & notices from the inner expression
+ * @constructor Silent
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} expr
+ */
+module.exports = Expression["extends"](KIND, function Silent(expr, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.expr = expr;
+});
+
+/***/ },
+
+/***/ 9672
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "statement";
+
+/**
+ * Any statement.
+ * @constructor Statement
+ * @memberOf module:php-parser
+ * @extends {Node}
+ */
+module.exports = Node["extends"](KIND, function Statement(kind, docs, location) {
+  Node.apply(this, [kind || KIND, docs, location]);
+});
+
+/***/ },
+
+/***/ 711
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "static";
+
+/**
+ * Declares a static variable into the current scope
+ * @constructor Static
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {StaticVariable[]} variables
+ */
+module.exports = Statement["extends"](KIND, function Static(variables, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.variables = variables;
+});
+
+/***/ },
+
+/***/ 1865
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Lookup = __webpack_require__(7427);
+var KIND = "staticlookup";
+
+/**
+ * Lookup to a static property
+ * @constructor StaticLookup
+ * @memberOf module:php-parser
+ * @extends {Lookup}
+ */
+module.exports = Lookup["extends"](KIND, function StaticLookup(what, offset, docs, location) {
+  Lookup.apply(this, [KIND, what, offset, docs, location]);
+});
+
+/***/ },
+
+/***/ 1102
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Reference = __webpack_require__(8276);
+var KIND = "staticreference";
+
+/**
+ * Defines a class reference node
+ * @constructor StaticReference
+ * @memberOf module:php-parser
+ * @extends {Reference}
+ */
+var StaticReference = Reference["extends"](KIND, function StaticReference(raw, docs, location) {
+  Reference.apply(this, [KIND, docs, location]);
+  this.raw = raw;
+});
+module.exports = StaticReference;
+
+/***/ },
+
+/***/ 1231
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "staticvariable";
+
+/**
+ * Defines a constant
+ * @constructor StaticVariable
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {Variable} variable
+ * @property {Node|string|number|boolean|null} defaultValue
+ */
+module.exports = Node["extends"](KIND, function StaticVariable(variable, defaultValue, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.variable = variable;
+  this.defaultValue = defaultValue;
+});
+
+/***/ },
+
+/***/ 7472
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Literal = __webpack_require__(5514);
+var KIND = "string";
+
+/**
+ * Defines a string (simple or double quoted) - chars are already escaped
+ * @constructor String
+ * @memberOf module:php-parser
+ * @extends {Literal}
+ * @property {boolean} unicode
+ * @property {boolean} isDoubleQuote
+ * @see {Encapsed}
+ * @property {string} value
+ */
+module.exports = Literal["extends"](KIND, function String(isDoubleQuote, value, unicode, raw, docs, location) {
+  Literal.apply(this, [KIND, value, raw, docs, location]);
+  this.unicode = unicode;
+  this.isDoubleQuote = isDoubleQuote;
+});
+
+/***/ },
+
+/***/ 6133
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "switch";
+
+/**
+ * Defines a switch statement
+ * @constructor Switch
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression} test
+ * @property {Block} body
+ * @property {boolean} shortForm
+ */
+module.exports = Statement["extends"](KIND, function Switch(test, body, shortForm, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.test = test;
+  this.body = body;
+  this.shortForm = shortForm;
+});
+
+/***/ },
+
+/***/ 1197
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "throw";
+
+/**
+ * Defines a throw statement
+ * @constructor Throw
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression} what
+ */
+module.exports = Statement["extends"](KIND, function Throw(what, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.what = what;
+});
+
+/***/ },
+
+/***/ 6649
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "trait";
+
+/**
+ * A trait definition
+ * @constructor Trait
+ * @memberOf module:php-parser
+ * @extends {Declaration}
+ * @property {Declaration[]} body
+ */
+module.exports = Declaration["extends"](KIND, function Trait(name, body, docs, location) {
+  Declaration.apply(this, [KIND, name, docs, location]);
+  this.body = body;
+});
+
+/***/ },
+
+/***/ 1837
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "traitalias";
+var IS_UNDEFINED = "";
+var IS_PUBLIC = "public";
+var IS_PROTECTED = "protected";
+var IS_PRIVATE = "private";
+
+/**
+ * Defines a trait alias
+ * @constructor TraitAlias
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {Identifier|null} trait
+ * @property {Identifier} method
+ * @property {Identifier|null} as
+ * @property {string|null} visibility
+ */
+module.exports = Node["extends"](KIND, function TraitAlias(trait, method, as, flags, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.trait = trait;
+  this.method = method;
+  this.as = as;
+  this.visibility = IS_UNDEFINED;
+  if (flags) {
+    var getVis = flags[0][0];
+    if (getVis === 0) {
+      this.visibility = IS_PUBLIC;
+    } else if (getVis === 1) {
+      this.visibility = IS_PROTECTED;
+    } else if (getVis === 2) {
+      this.visibility = IS_PRIVATE;
+    }
+  }
+});
+
+/***/ },
+
+/***/ 2277
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "traitprecedence";
+
+/**
+ * Defines a trait alias
+ * @constructor TraitPrecedence
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {Identifier|null} trait
+ * @property {Identifier} method
+ * @property {Identifier[]} instead
+ */
+module.exports = Node["extends"](KIND, function TraitPrecedence(trait, method, instead, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.trait = trait;
+  this.method = method;
+  this.instead = instead;
+});
+
+/***/ },
+
+/***/ 8010
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "traituse";
+
+/**
+ * Defines a trait usage
+ * @constructor TraitUse
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @property {Identifier[]} traits
+ * @property {Node[]|null} adaptations
+ */
+module.exports = Node["extends"](KIND, function TraitUse(traits, adaptations, docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+  this.traits = traits;
+  this.adaptations = adaptations;
+});
+
+/***/ },
+
+/***/ 7579
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "try";
+
+/**
+ * Defines a try statement
+ * @constructor Try
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Block} body
+ * @property {Catch[]} catches
+ * @property {Block} always
+ */
+module.exports = Statement["extends"](KIND, function Try(body, catches, always, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.body = body;
+  this.catches = catches;
+  this.always = always;
+});
+
+/***/ },
+
+/***/ 3460
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Reference = __webpack_require__(8276);
+var KIND = "typereference";
+
+/**
+ * Defines a class reference node
+ * @constructor TypeReference
+ * @memberOf module:php-parser
+ * @extends {Reference}
+ * @property {string} name
+ */
+var TypeReference = Reference["extends"](KIND, function TypeReference(name, raw, docs, location) {
+  Reference.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.raw = raw;
+});
+TypeReference.types = ["int", "float", "string", "bool", "object", "array", "callable", "iterable", "void", "static", "null", "never", "mixed", "true", "false"];
+module.exports = TypeReference;
+
+/***/ },
+
+/***/ 2702
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Operation = __webpack_require__(8268);
+var KIND = "unary";
+
+/**
+ * Unary operations
+ * @constructor Unary
+ * @memberOf module:php-parser
+ * @extends {Operation}
+ * @property {string} type
+ * @property {Expression} what
+ */
+module.exports = Operation["extends"](KIND, function Unary(type, what, docs, location) {
+  Operation.apply(this, [KIND, docs, location]);
+  this.type = type;
+  this.what = what;
+});
+
+/***/ },
+
+/***/ 514
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Declaration = __webpack_require__(8533);
+var KIND = "uniontype";
+
+/**
+ * A union of types
+ * @memberOf module:php-parser
+ * @constructor UnionType
+ * @extends {Declaration}
+ * @property {TypeReference[]} types
+ */
+module.exports = Declaration["extends"](KIND, function UnionType(types, docs, location) {
+  Declaration.apply(this, [KIND, null, docs, location]);
+  this.types = types;
+});
+
+/***/ },
+
+/***/ 5684
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "unset";
+
+/**
+ * Deletes references to a list of variables
+ * @constructor Unset
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ */
+module.exports = Statement["extends"](KIND, function Unset(variables, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.variables = variables;
+});
+
+/***/ },
+
+/***/ 8019
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "usegroup";
+
+/**
+ * Defines a use statement (with a list of use items)
+ * @constructor UseGroup
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {string|null} name
+ * @property {string|null} type - Possible value : function, const
+ * @property {UseItem[]} items
+ * @see {Namespace}
+ * @see http://php.net/manual/en/language.namespaces.importing.php
+ */
+module.exports = Statement["extends"](KIND, function UseGroup(name, type, items, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.type = type;
+  this.items = items;
+});
+
+/***/ },
+
+/***/ 7721
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "useitem";
+
+/**
+ * Defines a use statement (from namespace)
+ * @constructor UseItem
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {string} name
+ * @property {string|null} type - Possible value : function, const
+ * @property {Identifier|null} alias
+ * @see {Namespace}
+ * @see http://php.net/manual/en/language.namespaces.importing.php
+ */
+var UseItem = Statement["extends"](KIND, function UseItem(name, alias, type, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.alias = alias;
+  this.type = type;
+});
+
+/**
+ * Importing a constant
+ * @constant {string} UseItem#TYPE_CONST
+ * @memberOf module:php-parser
+ */
+UseItem.TYPE_CONST = "const";
+/**
+ * Importing a function
+ * @constant {string} UseItem#TYPE_FUNC
+ * @memberOf module:php-parser
+ */
+UseItem.TYPE_FUNCTION = "function";
+module.exports = UseItem;
+
+/***/ },
+
+/***/ 4369
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "variable";
+
+/**
+ * Any expression node. Since the left-hand side of an assignment may
+ * be any expression in general, an expression can also be a pattern.
+ * @constructor Variable
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @example
+ * // PHP code :
+ * $foo
+ * // AST output
+ * {
+ *  "kind": "variable",
+ *  "name": "foo",
+ *  "curly": false
+ * }
+ * @property {string|Node} name The variable name (can be a complex expression when the name is resolved dynamically)
+ * @property {boolean} curly Indicate if the name is defined between curlies, ex `${foo}`
+ */
+module.exports = Expression["extends"](KIND, function Variable(name, curly, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.name = name;
+  this.curly = curly || false;
+});
+
+/***/ },
+
+/***/ 40
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "variadic";
+
+/**
+ * Introduce a list of items into the arguments of the call
+ * @constructor Variadic
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Array|Expression} what
+ * @see https://wiki.php.net/rfc/argument_unpacking
+ */
+module.exports = Expression["extends"](KIND, function variadic(what, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.what = what;
+});
+
+/***/ },
+
+/***/ 4919
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Node = __webpack_require__(4065);
+var KIND = "variadicplaceholder";
+
+/**
+ * Defines a variadic placeholder (the ellipsis in PHP 8.1+'s first-class callable syntax)
+ * @constructor VariadicPlaceholder
+ * @memberOf module:php-parser
+ * @extends {Node}
+ * @see {Namespace}
+ * @see http://php.net/manual/en/language.namespaces.importing.php
+ */
+module.exports = Node["extends"](KIND, function VariadicPlaceholder(docs, location) {
+  Node.apply(this, [KIND, docs, location]);
+});
+
+/***/ },
+
+/***/ 7676
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Statement = __webpack_require__(9672);
+var KIND = "while";
+
+/**
+ * Defines a while statement
+ * @constructor While
+ * @memberOf module:php-parser
+ * @extends {Statement}
+ * @property {Expression} test
+ * @property {Block | null} body
+ * @property {boolean} shortForm
+ */
+module.exports = Statement["extends"](KIND, function While(test, body, shortForm, docs, location) {
+  Statement.apply(this, [KIND, docs, location]);
+  this.test = test;
+  this.body = body;
+  this.shortForm = shortForm;
+});
+
+/***/ },
+
+/***/ 2596
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "yield";
+
+/**
+ * Defines a yield generator statement
+ * @constructor Yield
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression|null} value
+ * @property {Expression|null} key
+ * @see http://php.net/manual/en/language.generators.syntax.php
+ */
+module.exports = Expression["extends"](KIND, function Yield(value, key, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.value = value;
+  this.key = key;
+});
+
+/***/ },
+
+/***/ 6744
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Expression = __webpack_require__(839);
+var KIND = "yieldfrom";
+
+/**
+ * Defines a yield from generator statement
+ * @constructor YieldFrom
+ * @memberOf module:php-parser
+ * @extends {Expression}
+ * @property {Expression} value
+ * @see http://php.net/manual/en/language.generators.syntax.php
+ */
+module.exports = Expression["extends"](KIND, function YieldFrom(value, docs, location) {
+  Expression.apply(this, [KIND, docs, location]);
+  this.value = value;
+});
+
+/***/ },
+
+/***/ 5362
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2020 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+var lexer = __webpack_require__(9108);
+var parser = __webpack_require__(7259);
+var tokens = __webpack_require__(1906);
+var AST = __webpack_require__(8938);
+
+/**
+ * @private
+ */
+function combine(src, to) {
+  var keys = Object.keys(src);
+  var i = keys.length;
+  while (i--) {
+    var k = keys[i];
+    if (k === "__proto__" || k === "constructor" || k === "prototype") {
+      continue;
+    }
+    var val = src[k];
+    if (val === null) {
+      delete to[k];
+    } else if (typeof val === "function") {
+      to[k] = val.bind(to);
+    } else if (Array.isArray(val)) {
+      to[k] = Array.isArray(to[k]) ? to[k].concat(val) : val;
+    } else if (_typeof(val) === "object") {
+      to[k] = _typeof(to[k]) === "object" ? combine(val, to[k]) : val;
+    } else {
+      to[k] = val;
+    }
+  }
+  return to;
+}
+
+/**
+ * Initialise a new parser instance with the specified options
+ *
+ * @class
+ * @memberOf module:php-parser
+ * @tutorial Engine
+ * @example
+ * var parser = require('php-parser');
+ * var instance = new parser({
+ *   parser: {
+ *     extractDoc: true,
+ *     suppressErrors: true,
+ *     version: 704 // or '7.4'
+ *   },
+ *   ast: {
+ *     withPositions: true
+ *   },
+ *   lexer: {
+ *     short_tags: true,
+ *     asp_tags: true
+ *   }
+ * });
+ *
+ * var evalAST = instance.parseEval('some php code');
+ * var codeAST = instance.parseCode('<?php some php code', 'foo.php');
+ * var tokens = instance.tokenGetAll('<?php some php code');
+ *
+ * @param {Object} options - List of options
+ * @property {Lexer} lexer
+ * @property {Parser} parser
+ * @property {AST} ast
+ * @property {Object} tokens
+ */
+var Engine = function Engine(options) {
+  if (typeof this === "function") {
+    return new this(options);
+  }
+  this.tokens = tokens;
+  this.lexer = new lexer(this);
+  this.ast = new AST();
+  this.parser = new parser(this.lexer, this.ast);
+  if (options && _typeof(options) === "object") {
+    // disable php7 from lexer if already disabled from parser
+    if (options.parser) {
+      if (!options.lexer) {
+        options.lexer = {};
+      }
+      if (options.parser.version) {
+        if (typeof options.parser.version === "string") {
+          var version = options.parser.version.split(".");
+          version = parseInt(version[0]) * 100 + parseInt(version[1]);
+          if (isNaN(version)) {
+            throw new Error("Bad version number : " + options.parser.version);
+          } else {
+            options.parser.version = version;
+          }
+        } else if (typeof options.parser.version !== "number") {
+          throw new Error("Expecting a number for version");
+        }
+        if (options.parser.version < 500 || options.parser.version > 900) {
+          throw new Error("Can only handle versions between 5.x to 8.x");
+        }
+      }
+    }
+    combine(options, this);
+
+    // same version flags based on parser options
+    this.lexer.version = this.parser.version;
+  }
+};
+
+/**
+ * Check if the inpyt is a buffer or a string
+ * @private
+ * @param  {Buffer|String} buffer Input value that can be either a buffer or a string
+ * @return {String}   Returns the string from input
+ */
+var getStringBuffer = function getStringBuffer(buffer) {
+  return typeof buffer.write === "function" ? buffer.toString() : buffer;
+};
+
+/**
+ * Creates a new instance (Helper)
+ * @param {Object} options
+ * @return {Engine}
+ * @private
+ */
+Engine.create = function (options) {
+  return new Engine(options);
+};
+
+/**
+ * Evaluate the buffer
+ * @private
+ */
+Engine.parseEval = function (buffer, options) {
+  var self = new Engine(options);
+  return self.parseEval(buffer);
+};
+
+/**
+ * Parse an evaluating mode string (no need to open php tags)
+ * @param {String} buffer
+ * @return {Program}
+ */
+Engine.prototype.parseEval = function (buffer) {
+  this.lexer.mode_eval = true;
+  this.lexer.all_tokens = false;
+  buffer = getStringBuffer(buffer);
+  return this.parser.parse(buffer, "eval");
+};
+
+/**
+ * Static function that parse a php code with open/close tags
+ * @private
+ */
+Engine.parseCode = function (buffer, filename, options) {
+  if (_typeof(filename) === "object" && !options) {
+    // retro-compatibility
+    options = filename;
+    filename = "unknown";
+  }
+  var self = new Engine(options);
+  return self.parseCode(buffer, filename);
+};
+
+/**
+ * Function that parse a php code with open/close tags
+ *
+ * Sample code :
+ * ```php
+ * <?php $x = 1;
+ * ```
+ *
+ * Usage :
+ * ```js
+ * var parser = require('php-parser');
+ * var phpParser = new parser({
+ *   // some options
+ * });
+ * var ast = phpParser.parseCode('...php code...', 'foo.php');
+ * ```
+ * @param {String} buffer - The code to be parsed
+ * @param {String} filename - Filename
+ * @return {Program}
+ */
+Engine.prototype.parseCode = function (buffer, filename) {
+  this.lexer.mode_eval = false;
+  this.lexer.all_tokens = false;
+  buffer = getStringBuffer(buffer);
+  return this.parser.parse(buffer, filename);
+};
+
+/**
+ * Split the buffer into tokens
+ * @private
+ */
+Engine.tokenGetAll = function (buffer, options) {
+  var self = new Engine(options);
+  return self.tokenGetAll(buffer);
+};
+
+/**
+ * Extract tokens from the specified buffer.
+ * > Note that the output tokens are *STRICLY* similar to PHP function `token_get_all`
+ * @param {string} buffer
+ * @return {Array<string|string[]>} - Each item can be a string or an array with following informations [token_name, text, line_number]
+ */
+Engine.prototype.tokenGetAll = function (buffer) {
+  this.lexer.mode_eval = false;
+  this.lexer.all_tokens = true;
+  buffer = getStringBuffer(buffer);
+  var EOF = this.lexer.EOF;
+  var names = this.tokens.values;
+  this.lexer.setInput(buffer);
+  var token = this.lexer.lex() || EOF;
+  var result = [];
+  while (token != EOF) {
+    var entry = this.lexer.yytext;
+    if (Object.prototype.hasOwnProperty.call(names, token)) {
+      entry = [names[token], entry, this.lexer.yylloc.first_line];
+    }
+    result.push(entry);
+    token = this.lexer.lex() || EOF;
+  }
+  return result;
+};
+
+/** @module php-parser */
+
+// exports the function
+module.exports = Engine;
+
+// makes libraries public
+module.exports.tokens = tokens;
+module.exports.lexer = lexer;
+module.exports.AST = AST;
+module.exports.parser = parser;
+module.exports.combine = combine;
+module.exports.Engine = Engine;
+
+// allow the default export in index.d.ts
+module.exports["default"] = Engine;
+
+/***/ },
+
+/***/ 9108
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+/**
+ * This is the php lexer. It will tokenize the string for helping the
+ * parser to build the AST from its grammar.
+ *
+ * @constructor Lexer
+ * @memberOf module:php-parser
+ * @property {number} EOF
+ * @property {boolean} all_tokens defines if all tokens must be retrieved (used by token_get_all only)
+ * @property {boolean} comment_tokens extracts comments tokens
+ * @property {boolean} mode_eval enables the evald mode (ignore opening tags)
+ * @property {boolean} asp_tags disables by default asp tags mode
+ * @property {boolean} short_tags enables by default short tags mode
+ * @property {object} keywords List of php keyword
+ * @property {object} castKeywords List of php keywords for type casting
+ */
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+var Lexer = function Lexer(engine) {
+  this.engine = engine;
+  this.tok = this.engine.tokens.names;
+  this.EOF = 1;
+  this.debug = false;
+  this.all_tokens = true;
+  this.comment_tokens = false;
+  this.mode_eval = false;
+  this.asp_tags = false;
+  this.short_tags = false;
+  this.version = 803;
+  this.yyprevcol = 0;
+  this.keywords = {
+    __class__: this.tok.T_CLASS_C,
+    __trait__: this.tok.T_TRAIT_C,
+    __function__: this.tok.T_FUNC_C,
+    __method__: this.tok.T_METHOD_C,
+    __line__: this.tok.T_LINE,
+    __file__: this.tok.T_FILE,
+    __dir__: this.tok.T_DIR,
+    __namespace__: this.tok.T_NS_C,
+    exit: this.tok.T_EXIT,
+    die: this.tok.T_EXIT,
+    "function": this.tok.T_FUNCTION,
+    "const": this.tok.T_CONST,
+    "return": this.tok.T_RETURN,
+    "try": this.tok.T_TRY,
+    "catch": this.tok.T_CATCH,
+    "finally": this.tok.T_FINALLY,
+    "throw": this.tok.T_THROW,
+    "if": this.tok.T_IF,
+    elseif: this.tok.T_ELSEIF,
+    endif: this.tok.T_ENDIF,
+    "else": this.tok.T_ELSE,
+    "while": this.tok.T_WHILE,
+    endwhile: this.tok.T_ENDWHILE,
+    "do": this.tok.T_DO,
+    "for": this.tok.T_FOR,
+    endfor: this.tok.T_ENDFOR,
+    foreach: this.tok.T_FOREACH,
+    endforeach: this.tok.T_ENDFOREACH,
+    declare: this.tok.T_DECLARE,
+    enddeclare: this.tok.T_ENDDECLARE,
+    "instanceof": this.tok.T_INSTANCEOF,
+    as: this.tok.T_AS,
+    "switch": this.tok.T_SWITCH,
+    endswitch: this.tok.T_ENDSWITCH,
+    "case": this.tok.T_CASE,
+    "default": this.tok.T_DEFAULT,
+    "break": this.tok.T_BREAK,
+    "continue": this.tok.T_CONTINUE,
+    "goto": this.tok.T_GOTO,
+    echo: this.tok.T_ECHO,
+    print: this.tok.T_PRINT,
+    "class": this.tok.T_CLASS,
+    "interface": this.tok.T_INTERFACE,
+    trait: this.tok.T_TRAIT,
+    "enum": this.tok.T_ENUM,
+    "extends": this.tok.T_EXTENDS,
+    "implements": this.tok.T_IMPLEMENTS,
+    "new": this.tok.T_NEW,
+    clone: this.tok.T_CLONE,
+    "var": this.tok.T_VAR,
+    eval: this.tok.T_EVAL,
+    include: this.tok.T_INCLUDE,
+    include_once: this.tok.T_INCLUDE_ONCE,
+    require: this.tok.T_REQUIRE,
+    require_once: this.tok.T_REQUIRE_ONCE,
+    namespace: this.tok.T_NAMESPACE,
+    use: this.tok.T_USE,
+    insteadof: this.tok.T_INSTEADOF,
+    global: this.tok.T_GLOBAL,
+    isset: this.tok.T_ISSET,
+    empty: this.tok.T_EMPTY,
+    __halt_compiler: this.tok.T_HALT_COMPILER,
+    "static": this.tok.T_STATIC,
+    "abstract": this.tok.T_ABSTRACT,
+    "final": this.tok.T_FINAL,
+    "private": this.tok.T_PRIVATE,
+    "protected": this.tok.T_PROTECTED,
+    "public": this.tok.T_PUBLIC,
+    unset: this.tok.T_UNSET,
+    list: this.tok.T_LIST,
+    array: this.tok.T_ARRAY,
+    callable: this.tok.T_CALLABLE,
+    or: this.tok.T_LOGICAL_OR,
+    and: this.tok.T_LOGICAL_AND,
+    xor: this.tok.T_LOGICAL_XOR,
+    match: this.tok.T_MATCH,
+    readonly: this.tok.T_READ_ONLY
+  };
+  this.castKeywords = {
+    "int": this.tok.T_INT_CAST,
+    integer: this.tok.T_INT_CAST,
+    real: this.tok.T_DOUBLE_CAST,
+    "double": this.tok.T_DOUBLE_CAST,
+    "float": this.tok.T_DOUBLE_CAST,
+    string: this.tok.T_STRING_CAST,
+    binary: this.tok.T_STRING_CAST,
+    array: this.tok.T_ARRAY_CAST,
+    object: this.tok.T_OBJECT_CAST,
+    bool: this.tok.T_BOOL_CAST,
+    "boolean": this.tok.T_BOOL_CAST,
+    unset: this.tok.T_UNSET_CAST
+  };
+};
+
+/**
+ * Initialize the lexer with the specified input
+ * @function Lexer#setInput
+ * @memberOf module:php-parser
+ */
+Lexer.prototype.setInput = function (input) {
+  this._input = input;
+  this.size = input.length;
+  this.yylineno = 1;
+  this.offset = 0;
+  this.yyprevcol = 0;
+  this.yytext = "";
+  this.yylloc = {
+    first_offset: 0,
+    first_line: 1,
+    first_column: 0,
+    prev_offset: 0,
+    prev_line: 1,
+    prev_column: 0,
+    last_line: 1,
+    last_column: 0
+  };
+  this.tokens = [];
+  if (this.version > 703) {
+    this.keywords.fn = this.tok.T_FN;
+  } else {
+    delete this.keywords.fn;
+  }
+  this.done = this.offset >= this.size;
+  if (!this.all_tokens && this.mode_eval) {
+    this.conditionStack = ["INITIAL"];
+    this.begin("ST_IN_SCRIPTING");
+  } else {
+    this.conditionStack = [];
+    this.begin("INITIAL");
+  }
+  // https://github.com/php/php-src/blob/999e32b65a8a4bb59e27e538fa68ffae4b99d863/Zend/zend_language_scanner.h#L59
+  // Used for heredoc and nowdoc
+  this.heredoc_label = {
+    label: "",
+    length: 0,
+    indentation: 0,
+    indentation_uses_spaces: false,
+    finished: false,
+    /*
+     * this used for parser to detemine the if current node segment is first encaps node.
+     * if ture, the indentation will remove from the begining. and if false, the prev node
+     * might be a variable '}' ,and the leading spaces should not be removed util meet the
+     * first \n
+     */
+    first_encaps_node: false,
+    // for backward compatible
+    /* istanbul ignore next */
+    toString: function toString() {
+      this.label;
+    }
+  };
+  return this;
+};
+
+/**
+ * consumes and returns one char from the input
+ * @function Lexer#input
+ * @memberOf module:php-parser
+ */
+Lexer.prototype.input = function () {
+  var ch = this._input[this.offset];
+  if (!ch) return "";
+  this.yytext += ch;
+  this.offset++;
+  if (ch === "\r" && this._input[this.offset] === "\n") {
+    this.yytext += "\n";
+    this.offset++;
+  }
+  if (ch === "\n" || ch === "\r") {
+    this.yylloc.last_line = ++this.yylineno;
+    this.yyprevcol = this.yylloc.last_column;
+    this.yylloc.last_column = 0;
+  } else {
+    this.yylloc.last_column++;
+  }
+  return ch;
+};
+
+/**
+ * revert eating specified size
+ * @function Lexer#unput
+ * @memberOf module:php-parser
+ */
+Lexer.prototype.unput = function (size) {
+  if (size === 1) {
+    // 1 char unput (most cases)
+    this.offset--;
+    if (this._input[this.offset] === "\n" && this._input[this.offset - 1] === "\r") {
+      this.offset--;
+      size++;
+    }
+    if (this._input[this.offset] === "\r" || this._input[this.offset] === "\n") {
+      this.yylloc.last_line--;
+      this.yylineno--;
+      this.yylloc.last_column = this.yyprevcol;
+    } else {
+      this.yylloc.last_column--;
+    }
+    this.yytext = this.yytext.substring(0, this.yytext.length - size);
+  } else if (size > 0) {
+    this.offset -= size;
+    if (size < this.yytext.length) {
+      this.yytext = this.yytext.substring(0, this.yytext.length - size);
+      // re-calculate position
+      this.yylloc.last_line = this.yylloc.first_line;
+      this.yylloc.last_column = this.yyprevcol = this.yylloc.first_column;
+      for (var i = 0; i < this.yytext.length; i++) {
+        var c = this.yytext[i];
+        if (c === "\r") {
+          c = this.yytext[++i];
+          this.yyprevcol = this.yylloc.last_column;
+          this.yylloc.last_line++;
+          this.yylloc.last_column = 0;
+          if (c !== "\n") {
+            if (c === "\r") {
+              this.yylloc.last_line++;
+            } else {
+              this.yylloc.last_column++;
+            }
+          }
+        } else if (c === "\n") {
+          this.yyprevcol = this.yylloc.last_column;
+          this.yylloc.last_line++;
+          this.yylloc.last_column = 0;
+        } else {
+          this.yylloc.last_column++;
+        }
+      }
+      this.yylineno = this.yylloc.last_line;
+    } else {
+      // reset full text
+      this.yytext = "";
+      this.yylloc.last_line = this.yylineno = this.yylloc.first_line;
+      this.yylloc.last_column = this.yylloc.first_column;
+    }
+  }
+  return this;
+};
+
+/**
+ * check if the text matches
+ * @function Lexer#tryMatch
+ * @memberOf module:php-parser
+ * @param {string} text
+ * @returns {boolean}
+ */
+Lexer.prototype.tryMatch = function (text) {
+  return text === this.ahead(text.length);
+};
+
+/**
+ * check if the text matches
+ * @function Lexer#tryMatchCaseless
+ * @memberOf module:php-parser
+ * @param {string} text
+ * @returns {boolean}
+ */
+Lexer.prototype.tryMatchCaseless = function (text) {
+  return text === this.ahead(text.length).toLowerCase();
+};
+
+/**
+ * look ahead
+ * @function Lexer#ahead
+ * @memberOf module:php-parser
+ * @param {number} size
+ * @returns {string}
+ */
+Lexer.prototype.ahead = function (size) {
+  var text = this._input.substring(this.offset, this.offset + size);
+  if (text[text.length - 1] === "\r" && this._input[this.offset + size + 1] === "\n") {
+    text += "\n";
+  }
+  return text;
+};
+
+/**
+ * consume the specified size
+ * @function Lexer#consume
+ * @memberOf module:php-parser
+ * @param {number} size
+ * @returns {Lexer}
+ */
+Lexer.prototype.consume = function (size) {
+  for (var i = 0; i < size; i++) {
+    var ch = this._input[this.offset];
+    if (!ch) break;
+    this.yytext += ch;
+    this.offset++;
+    if (ch === "\r" && this._input[this.offset] === "\n") {
+      this.yytext += "\n";
+      this.offset++;
+      i++;
+    }
+    if (ch === "\n" || ch === "\r") {
+      this.yylloc.last_line = ++this.yylineno;
+      this.yyprevcol = this.yylloc.last_column;
+      this.yylloc.last_column = 0;
+    } else {
+      this.yylloc.last_column++;
+    }
+  }
+  return this;
+};
+
+/**
+ * Gets the current state
+ * @function Lexer#getState
+ * @memberOf module:php-parser
+ */
+Lexer.prototype.getState = function () {
+  return {
+    yytext: this.yytext,
+    offset: this.offset,
+    yylineno: this.yylineno,
+    yyprevcol: this.yyprevcol,
+    yylloc: {
+      first_offset: this.yylloc.first_offset,
+      first_line: this.yylloc.first_line,
+      first_column: this.yylloc.first_column,
+      last_line: this.yylloc.last_line,
+      last_column: this.yylloc.last_column
+    },
+    heredoc_label: this.heredoc_label
+  };
+};
+
+/**
+ * Sets the current lexer state
+ * @function Lexer#setState
+ * @memberOf module:php-parser
+ */
+Lexer.prototype.setState = function (state) {
+  this.yytext = state.yytext;
+  this.offset = state.offset;
+  this.yylineno = state.yylineno;
+  this.yyprevcol = state.yyprevcol;
+  this.yylloc = state.yylloc;
+  if (state.heredoc_label) {
+    this.heredoc_label = state.heredoc_label;
+  }
+  return this;
+};
+
+/**
+ * prepend next token
+ * @function Lexer#appendToken
+ * @memberOf module:php-parser
+ * @param {*} value
+ * @param {*} ahead
+ * @returns {Lexer}
+ */
+Lexer.prototype.appendToken = function (value, ahead) {
+  this.tokens.push([value, ahead]);
+  return this;
+};
+
+/**
+ * return next match that has a token
+ * @function Lexer#lex
+ * @memberOf module:php-parser
+ * @returns {number|string}
+ */
+Lexer.prototype.lex = function () {
+  this.yylloc.prev_offset = this.offset;
+  this.yylloc.prev_line = this.yylloc.last_line;
+  this.yylloc.prev_column = this.yylloc.last_column;
+  var token = this.next() || this.lex();
+  if (!this.all_tokens) {
+    while (token === this.tok.T_WHITESPACE ||
+    // ignore white space
+    !this.comment_tokens && (token === this.tok.T_COMMENT ||
+    // ignore single lines comments
+    token === this.tok.T_DOC_COMMENT) ||
+    // ignore doc comments
+    // ignore open tags
+    token === this.tok.T_OPEN_TAG) {
+      token = this.next() || this.lex();
+    }
+    if (token == this.tok.T_OPEN_TAG_WITH_ECHO) {
+      // https://github.com/php/php-src/blob/7ff186434e82ee7be7c59d0db9a976641cf7b09c/Zend/zend_compile.c#L1683
+      // open tag with echo statement
+      return this.tok.T_ECHO;
+    } else if (token === this.tok.T_CLOSE_TAG) {
+      // https://github.com/php/php-src/blob/7ff186434e82ee7be7c59d0db9a976641cf7b09c/Zend/zend_compile.c#L1680
+      return ";"; /* implicit ; */
+    }
+  }
+  if (!this.yylloc.prev_offset) {
+    this.yylloc.prev_offset = this.yylloc.first_offset;
+    this.yylloc.prev_line = this.yylloc.first_line;
+    this.yylloc.prev_column = this.yylloc.first_column;
+  }
+  /*else if (this.yylloc.prev_offset === this.offset && this.offset !== this.size) {
+    throw new Error('Infinite loop @ ' + this.offset + ' / ' + this.size);
+  }*/
+  return token;
+};
+
+/**
+ * activates a new lexer condition state (pushes the new lexer condition state onto the condition stack)
+ * @function Lexer#begin
+ * @memberOf module:php-parser
+ * @param {*} condition
+ * @returns {Lexer}
+ */
+Lexer.prototype.begin = function (condition) {
+  this.conditionStack.push(condition);
+  this.curCondition = condition;
+  this.stateCb = this["match" + condition];
+  /* istanbul ignore next */
+  if (typeof this.stateCb !== "function") {
+    throw new Error('Undefined condition state "' + condition + '"');
+  }
+  return this;
+};
+
+/**
+ * pop the previously active lexer condition state off the condition stack
+ * @function Lexer#popState
+ * @memberOf module:php-parser
+ * @returns {string|*}
+ */
+Lexer.prototype.popState = function () {
+  var n = this.conditionStack.length - 1;
+  var condition = n > 0 ? this.conditionStack.pop() : this.conditionStack[0];
+  this.curCondition = this.conditionStack[this.conditionStack.length - 1];
+  this.stateCb = this["match" + this.curCondition];
+  /* istanbul ignore next */
+  if (typeof this.stateCb !== "function") {
+    throw new Error('Undefined condition state "' + this.curCondition + '"');
+  }
+  return condition;
+};
+
+/**
+ * return next match in input
+ * @function Lexer#next
+ * @memberOf module:php-parser
+ * @returns {number|*}
+ */
+Lexer.prototype.next = function () {
+  var token;
+  if (!this._input) {
+    this.done = true;
+  }
+  this.yylloc.first_offset = this.offset;
+  this.yylloc.first_line = this.yylloc.last_line;
+  this.yylloc.first_column = this.yylloc.last_column;
+  this.yytext = "";
+  if (this.done) {
+    this.yylloc.prev_offset = this.yylloc.first_offset;
+    this.yylloc.prev_line = this.yylloc.first_line;
+    this.yylloc.prev_column = this.yylloc.first_column;
+    return this.EOF;
+  }
+  if (this.tokens.length > 0) {
+    token = this.tokens.shift();
+    if (_typeof(token[1]) === "object") {
+      this.setState(token[1]);
+    } else {
+      this.consume(token[1]);
+    }
+    token = token[0];
+  } else {
+    token = this.stateCb.apply(this, []);
+  }
+  if (this.offset >= this.size && this.tokens.length === 0) {
+    this.done = true;
+  }
+  /* istanbul ignore next */
+  if (this.debug) {
+    var tName = token;
+    if (typeof tName === "number") {
+      tName = this.engine.tokens.values[tName];
+    } else {
+      tName = '"' + tName + '"';
+    }
+    var e = new Error(tName + "\tfrom " + this.yylloc.first_line + "," + this.yylloc.first_column + "\t - to " + this.yylloc.last_line + "," + this.yylloc.last_column + '\t"' + this.yytext + '"');
+    // eslint-disable-next-line no-console
+    console.error(e.stack);
+  }
+  return token;
+};
+
+// extends the lexer with states
+[__webpack_require__(9671), __webpack_require__(2429), __webpack_require__(3683), __webpack_require__(6545), __webpack_require__(3810), __webpack_require__(8510), __webpack_require__(4401), __webpack_require__(4349), __webpack_require__(8582)].forEach(function (ext) {
+  for (var k in ext) {
+    Lexer.prototype[k] = ext[k];
+  }
+});
+module.exports = Lexer;
+
+/***/ },
+
+/***/ 9671
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  attributeIndex: 0,
+  attributeListDepth: {},
+  matchST_ATTRIBUTE: function matchST_ATTRIBUTE() {
+    var ch = this.input();
+    if (this.is_WHITESPACE()) {
+      do {
+        this.input();
+      } while (this.is_WHITESPACE());
+      this.unput(1);
+      return null;
+    }
+    switch (ch) {
+      case "]":
+        if (this.attributeListDepth[this.attributeIndex] === 0) {
+          delete this.attributeListDepth[this.attributeIndex];
+          this.attributeIndex--;
+          this.popState();
+        } else {
+          /* istanbul ignore next */
+          this.attributeListDepth[this.attributeIndex]--;
+        }
+        return "]";
+      case "(":
+      case ")":
+      case ":":
+      case "=":
+      case ";":
+      case "|":
+      case "&":
+      case "^":
+      case "-":
+      case "+":
+      case "*":
+      case "%":
+      case "~":
+      case "<":
+      case ">":
+      case "!":
+      case ".":
+      case "{":
+      case "}":
+      case "$":
+        return this.consume_TOKEN();
+      case "[":
+        this.attributeListDepth[this.attributeIndex]++;
+        return "[";
+      case ",":
+        return ",";
+      case '"':
+        return this.ST_DOUBLE_QUOTES();
+      case "'":
+        return this.T_CONSTANT_ENCAPSED_STRING();
+      case "/":
+        if (this._input[this.offset] === "/") {
+          return this.T_COMMENT();
+        } else if (this._input[this.offset] === "*") {
+          this.input();
+          return this.T_DOC_COMMENT();
+        } else {
+          return this.consume_TOKEN();
+        }
+    }
+    if (this.is_LABEL_START() || ch === "\\") {
+      while (this.offset < this.size) {
+        var _ch = this.input();
+        if (!(this.is_LABEL() || _ch === "\\")) {
+          if (_ch) this.unput(1);
+          break;
+        }
+      }
+      return this.T_STRING();
+    } else if (this.is_NUM()) {
+      return this.consume_NUM();
+    }
+
+    /* istanbul ignore next */
+    throw new Error("Bad terminal sequence \"".concat(ch, "\" at line ").concat(this.yylineno, " (offset ").concat(this.offset, ")"));
+  }
+};
+
+/***/ },
+
+/***/ 2429
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Reads a single line comment
+   */
+  T_COMMENT: function T_COMMENT() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (ch === "\n" || ch === "\r") {
+        return this.tok.T_COMMENT;
+      } else if (ch === "?" && !this.aspTagMode && this._input[this.offset] === ">") {
+        this.unput(1);
+        return this.tok.T_COMMENT;
+      } else if (ch === "%" && this.aspTagMode && this._input[this.offset] === ">") {
+        this.unput(1);
+        return this.tok.T_COMMENT;
+      }
+    }
+    return this.tok.T_COMMENT;
+  },
+  /*
+   * Behaviour : https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l#L1927
+   */
+  T_DOC_COMMENT: function T_DOC_COMMENT() {
+    var ch = this.input();
+    var token = this.tok.T_COMMENT;
+    if (ch === "*") {
+      // started with '/*' , check is next is '*'
+      ch = this.input();
+      if (this.is_WHITESPACE()) {
+        // check if next is WHITESPACE
+        token = this.tok.T_DOC_COMMENT;
+      }
+      if (ch === "/") {
+        return token;
+      } else {
+        this.unput(1); // reset
+      }
+    }
+    while (this.offset < this.size) {
+      ch = this.input();
+      if (ch === "*" && this._input[this.offset] === "/") {
+        this.input();
+        break;
+      }
+    }
+    return token;
+  }
+};
+
+/***/ },
+
+/***/ 3683
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  nextINITIAL: function nextINITIAL() {
+    if (this.conditionStack.length > 1 && this.conditionStack[this.conditionStack.length - 1] === "INITIAL") {
+      // Return to HEREDOC/ST_DOUBLE_QUOTES mode
+      this.popState();
+    } else {
+      this.begin("ST_IN_SCRIPTING");
+    }
+    return this;
+  },
+  matchINITIAL: function matchINITIAL() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (ch == "<") {
+        ch = this.ahead(1);
+        if (ch == "?") {
+          if (this.tryMatch("?=")) {
+            this.unput(1).appendToken(this.tok.T_OPEN_TAG_WITH_ECHO, 3).nextINITIAL();
+            break;
+          } else if (this.tryMatchCaseless("?php")) {
+            ch = this._input[this.offset + 4];
+            if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") {
+              this.unput(1).appendToken(this.tok.T_OPEN_TAG, 6).nextINITIAL();
+              break;
+            }
+          }
+          if (this.short_tags) {
+            this.unput(1).appendToken(this.tok.T_OPEN_TAG, 2).nextINITIAL();
+            break;
+          }
+        } else if (this.asp_tags && ch == "%") {
+          if (this.tryMatch("%=")) {
+            this.aspTagMode = true;
+            this.unput(1).appendToken(this.tok.T_OPEN_TAG_WITH_ECHO, 3).nextINITIAL();
+            break;
+          } else {
+            this.aspTagMode = true;
+            this.unput(1).appendToken(this.tok.T_OPEN_TAG, 2).nextINITIAL();
+            break;
+          }
+        }
+      }
+    }
+    if (this.yytext.length > 0) {
+      return this.tok.T_INLINE_HTML;
+    } else {
+      return false;
+    }
+  }
+};
+
+/***/ },
+
+/***/ 6545
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+/* istanbul ignore else  */
+var MAX_LENGTH_OF_LONG = 10;
+var long_min_digits = "2147483648";
+if (process.arch == "x64") {
+  MAX_LENGTH_OF_LONG = 19;
+  long_min_digits = "9223372036854775808";
+}
+module.exports = {
+  consume_NUM: function consume_NUM() {
+    var ch = this.yytext[0];
+    var hasPoint = ch === ".";
+    if (ch === "0") {
+      ch = this.input();
+      // check if hexa
+      if (ch === "x" || ch === "X") {
+        ch = this.input();
+        if (ch !== "_" && this.is_HEX()) {
+          return this.consume_HNUM();
+        } else {
+          this.unput(ch ? 2 : 1);
+        }
+        // check binary notation
+      } else if (ch === "b" || ch === "B") {
+        ch = this.input();
+        if (ch !== "_" && ch === "0" || ch === "1") {
+          return this.consume_BNUM();
+        } else {
+          this.unput(ch ? 2 : 1);
+        }
+      } else if (ch === "o" || ch === "O") {
+        ch = this.input();
+        if (ch !== "_" && this.is_OCTAL()) {
+          return this.consume_ONUM();
+        } else {
+          this.unput(ch ? 2 : 1);
+        }
+      } else if (!this.is_NUM()) {
+        if (ch) this.unput(1);
+      }
+    }
+    while (this.offset < this.size) {
+      var prev = ch;
+      ch = this.input();
+      if (ch === "_") {
+        if (prev === "_") {
+          // restriction : next to underscore / 1__1;
+          this.unput(2); // keep 1
+          break;
+        }
+        if (prev === ".") {
+          // next to decimal point  "1._0"
+          this.unput(1); // keep 1.
+          break;
+        }
+        if (prev === "e" || prev === "E") {
+          // next to e "1e_10"
+          this.unput(2); // keep 1
+          break;
+        }
+      } else if (ch === ".") {
+        if (hasPoint) {
+          // no multiple points "1.0.5"
+          this.unput(1); // keep 1.0
+          break;
+        }
+        if (prev === "_") {
+          // next to decimal point  "1_.0"
+          this.unput(2); // keep 1
+          break;
+        }
+        hasPoint = true;
+        continue;
+      } else if (ch === "e" || ch === "E") {
+        if (prev === "_") {
+          // next to e "1_e10"
+          this.unput(1);
+          break;
+        }
+        var undo = 2;
+        ch = this.input();
+        if (ch === "+" || ch === "-") {
+          // 1e-5
+          undo = 3;
+          ch = this.input();
+        }
+        if (this.is_NUM_START()) {
+          this.consume_LNUM();
+          return this.tok.T_DNUMBER;
+        }
+        this.unput(ch ? undo : undo - 1); // keep only 1
+        break;
+      }
+      if (!this.is_NUM()) {
+        // example : 10.0a
+        if (ch) this.unput(1); // keep 10.0
+        break;
+      }
+    }
+    if (hasPoint) {
+      return this.tok.T_DNUMBER;
+    } else if (this.yytext.length < MAX_LENGTH_OF_LONG - 1) {
+      return this.tok.T_LNUMBER;
+    } else {
+      if (this.yytext.length < MAX_LENGTH_OF_LONG || this.yytext.length == MAX_LENGTH_OF_LONG && this.yytext < long_min_digits) {
+        return this.tok.T_LNUMBER;
+      }
+      return this.tok.T_DNUMBER;
+    }
+  },
+  // read hexa
+  consume_HNUM: function consume_HNUM() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (!this.is_HEX()) {
+        if (ch) this.unput(1);
+        break;
+      }
+    }
+    return this.tok.T_LNUMBER;
+  },
+  // read a generic number
+  consume_LNUM: function consume_LNUM() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (!this.is_NUM()) {
+        if (ch) this.unput(1);
+        break;
+      }
+    }
+    return this.tok.T_LNUMBER;
+  },
+  // read binary
+  consume_BNUM: function consume_BNUM() {
+    var ch;
+    while (this.offset < this.size) {
+      ch = this.input();
+      if (ch !== "0" && ch !== "1" && ch !== "_") {
+        if (ch) this.unput(1);
+        break;
+      }
+    }
+    return this.tok.T_LNUMBER;
+  },
+  // read an octal number
+  consume_ONUM: function consume_ONUM() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (!this.is_OCTAL()) {
+        if (ch) this.unput(1);
+        break;
+      }
+    }
+    return this.tok.T_LNUMBER;
+  }
+};
+
+/***/ },
+
+/***/ 3810
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  matchST_LOOKING_FOR_PROPERTY: function matchST_LOOKING_FOR_PROPERTY() {
+    var ch = this.input();
+    if (ch === "-") {
+      ch = this.input();
+      if (ch === ">") {
+        // https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l#L1296
+        return this.tok.T_OBJECT_OPERATOR;
+      }
+      if (ch) this.unput(1);
+    } else if (this.is_WHITESPACE()) {
+      return this.tok.T_WHITESPACE;
+    } else if (this.is_LABEL_START()) {
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l#L1300
+      this.consume_LABEL();
+      this.popState();
+      return this.tok.T_STRING;
+    }
+    // https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l#L1306
+    this.popState();
+    if (ch) this.unput(1);
+    return false;
+  },
+  matchST_LOOKING_FOR_VARNAME: function matchST_LOOKING_FOR_VARNAME() {
+    var ch = this.input();
+
+    // SHIFT STATE
+    this.popState();
+    this.begin("ST_IN_SCRIPTING");
+    if (this.is_LABEL_START()) {
+      this.consume_LABEL();
+      ch = this.input();
+      if (ch === "[" || ch === "}") {
+        this.unput(1);
+        return this.tok.T_STRING_VARNAME;
+      } else {
+        // any char (that's started with a label sequence)
+        this.unput(this.yytext.length);
+      }
+    } else {
+      // any char (thats not a label start sequence)
+      if (ch) this.unput(1);
+    }
+    // stops looking for a varname and starts the scripting mode
+    return false;
+  },
+  matchST_VAR_OFFSET: function matchST_VAR_OFFSET() {
+    var ch = this.input();
+    if (this.is_NUM_START()) {
+      this.consume_NUM();
+      return this.tok.T_NUM_STRING;
+    } else if (ch === "]") {
+      this.popState();
+      return "]";
+    } else if (ch === "$") {
+      this.input();
+      if (this.is_LABEL_START()) {
+        this.consume_LABEL();
+        return this.tok.T_VARIABLE;
+      } else {
+        /* istanbul ignore next */
+        throw new Error("Unexpected terminal");
+      }
+    } else if (this.is_LABEL_START()) {
+      this.consume_LABEL();
+      return this.tok.T_STRING;
+    } else if (this.is_WHITESPACE() || ch === "\\" || ch === "'" || ch === "#") {
+      return this.tok.T_ENCAPSED_AND_WHITESPACE;
+    } else if (ch === "[" || ch === "{" || ch === "}" || ch === '"' || ch === "`" || this.is_TOKEN()) {
+      return ch;
+    } else {
+      /* istanbul ignore next */
+      throw new Error("Unexpected terminal");
+    }
+  }
+};
+
+/***/ },
+
+/***/ 8510
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  matchST_IN_SCRIPTING: function matchST_IN_SCRIPTING() {
+    var ch = this.input();
+    switch (ch) {
+      case " ":
+      case "\t":
+      case "\n":
+      case "\r":
+      case "\r\n":
+        return this.T_WHITESPACE();
+      case "#":
+        if (this.version >= 800 && this._input[this.offset] === "[") {
+          this.input();
+          this.attributeListDepth[++this.attributeIndex] = 0;
+          this.begin("ST_ATTRIBUTE");
+          return this.tok.T_ATTRIBUTE;
+        }
+        return this.T_COMMENT();
+      case "/":
+        if (this._input[this.offset] === "/") {
+          return this.T_COMMENT();
+        } else if (this._input[this.offset] === "*") {
+          this.input();
+          return this.T_DOC_COMMENT();
+        }
+        return this.consume_TOKEN();
+      case "'":
+        return this.T_CONSTANT_ENCAPSED_STRING();
+      case '"':
+        return this.ST_DOUBLE_QUOTES();
+      case "`":
+        this.begin("ST_BACKQUOTE");
+        return "`";
+      case "?":
+        if (!this.aspTagMode && this.tryMatch(">")) {
+          this.input();
+          var nextCH = this._input[this.offset];
+          if (nextCH === "\n" || nextCH === "\r") this.input();
+          if (this.conditionStack.length > 1) {
+            this.begin("INITIAL");
+          }
+          return this.tok.T_CLOSE_TAG;
+        }
+        return this.consume_TOKEN();
+      case "%":
+        if (this.aspTagMode && this._input[this.offset] === ">") {
+          this.input(); // consume the '>'
+          ch = this._input[this.offset]; // read next
+          if (ch === "\n" || ch === "\r") {
+            this.input(); // consume the newline
+          }
+          this.aspTagMode = false;
+          if (this.conditionStack.length > 1) {
+            this.begin("INITIAL");
+          }
+          return this.tok.T_CLOSE_TAG;
+        }
+        return this.consume_TOKEN();
+      case "{":
+        this.begin("ST_IN_SCRIPTING");
+        return "{";
+      case "}":
+        if (this.conditionStack.length > 2) {
+          // Return to HEREDOC/ST_DOUBLE_QUOTES mode
+          this.popState();
+        }
+        return "}";
+      default:
+        if (ch === ".") {
+          ch = this.input();
+          if (this.is_NUM_START()) {
+            return this.consume_NUM();
+          } else {
+            if (ch) this.unput(1);
+          }
+        }
+        if (this.is_NUM_START()) {
+          return this.consume_NUM();
+        } else if (this.is_LABEL_START()) {
+          return this.consume_LABEL().T_STRING();
+        } else if (this.is_TOKEN()) {
+          return this.consume_TOKEN();
+        }
+    }
+    throw new Error('Bad terminal sequence "' + ch + '" at line ' + this.yylineno + " (offset " + this.offset + ")");
+  },
+  T_WHITESPACE: function T_WHITESPACE() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") {
+        continue;
+      }
+      if (ch) this.unput(1);
+      break;
+    }
+    return this.tok.T_WHITESPACE;
+  }
+};
+
+/***/ },
+
+/***/ 4401
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var newline = ["\n", "\r"];
+var valid_after_heredoc = ["\n", "\r", ";"];
+var valid_after_heredoc_73 = valid_after_heredoc.concat(["\t", " ", ",", "]", ")", "/", "=", "!", "."]);
+module.exports = {
+  T_CONSTANT_ENCAPSED_STRING: function T_CONSTANT_ENCAPSED_STRING() {
+    var ch;
+    while (this.offset < this.size) {
+      ch = this.input();
+      if (ch == "\\") {
+        this.input();
+      } else if (ch == "'") {
+        break;
+      }
+    }
+    return this.tok.T_CONSTANT_ENCAPSED_STRING;
+  },
+  // check if matching a HEREDOC state
+  is_HEREDOC: function is_HEREDOC() {
+    var revert = this.offset;
+    if (this._input[this.offset - 1] === "<" && this._input[this.offset] === "<" && this._input[this.offset + 1] === "<") {
+      this.offset += 3;
+
+      // optional tabs / spaces
+      if (this.is_TABSPACE()) {
+        while (this.offset < this.size) {
+          this.offset++;
+          if (!this.is_TABSPACE()) {
+            break;
+          }
+        }
+      }
+
+      // optional quotes
+      var tChar = this._input[this.offset - 1];
+      if (tChar === "'" || tChar === '"') {
+        this.offset++;
+      } else {
+        tChar = null;
+      }
+
+      // required label
+      if (this.is_LABEL_START()) {
+        var yyoffset = this.offset - 1;
+        while (this.offset < this.size) {
+          this.offset++;
+          if (!this.is_LABEL()) {
+            break;
+          }
+        }
+        var yylabel = this._input.substring(yyoffset, this.offset - 1);
+        if (!tChar || tChar === this._input[this.offset - 1]) {
+          // required ending quote
+          if (tChar) this.offset++;
+          // require newline
+          if (newline.includes(this._input[this.offset - 1])) {
+            // go go go
+            this.heredoc_label.label = yylabel;
+            this.heredoc_label.length = yylabel.length;
+            this.heredoc_label.finished = false;
+            yyoffset = this.offset - revert;
+            this.offset = revert;
+            this.consume(yyoffset);
+            if (tChar === "'") {
+              this.begin("ST_NOWDOC");
+            } else {
+              this.begin("ST_HEREDOC");
+            }
+            // prematch to get the indentation information from end of doc
+            this.prematch_ENDOFDOC();
+            return this.tok.T_START_HEREDOC;
+          }
+        }
+      }
+    }
+    this.offset = revert;
+    return false;
+  },
+  ST_DOUBLE_QUOTES: function ST_DOUBLE_QUOTES() {
+    var ch;
+    while (this.offset < this.size) {
+      ch = this.input();
+      if (ch == "\\") {
+        this.input();
+      } else if (ch == '"') {
+        break;
+      } else if (ch == "$") {
+        ch = this.input();
+        if (ch == "{" || this.is_LABEL_START()) {
+          this.unput(2);
+          break;
+        }
+        if (ch) this.unput(1);
+      } else if (ch == "{") {
+        ch = this.input();
+        if (ch == "$") {
+          this.unput(2);
+          break;
+        }
+        if (ch) this.unput(1);
+      }
+    }
+    if (ch == '"') {
+      return this.tok.T_CONSTANT_ENCAPSED_STRING;
+    } else {
+      var prefix = 1;
+      if (this.yytext[0] === "b" || this.yytext[0] === "B") {
+        prefix = 2;
+      }
+      if (this.yytext.length > 2) {
+        this.appendToken(this.tok.T_ENCAPSED_AND_WHITESPACE, this.yytext.length - prefix);
+      }
+      this.unput(this.yytext.length - prefix);
+      this.begin("ST_DOUBLE_QUOTES");
+      return this.yytext;
+    }
+  },
+  // check if its a DOC end sequence
+  isDOC_MATCH: function isDOC_MATCH(offset, consumeLeadingSpaces) {
+    // @fixme : check if out of text limits
+
+    // consumeLeadingSpaces is false happen DOC prematch END HEREDOC stage.
+
+    // Ensure current state is really after a new line break, not after a such as ${variables}
+    var prev_ch = this._input[offset - 2];
+    if (!newline.includes(prev_ch)) {
+      return false;
+    }
+
+    // skip leading spaces or tabs
+    var indentation_uses_spaces = false;
+    var indentation_uses_tabs = false;
+    // reset heredoc_label structure
+    var indentation = 0;
+    var leading_ch = this._input[offset - 1];
+    if (this.version >= 703) {
+      while (leading_ch === "\t" || leading_ch === " ") {
+        if (leading_ch === " ") {
+          indentation_uses_spaces = true;
+        } else if (leading_ch === "\t") {
+          indentation_uses_tabs = true;
+        }
+        leading_ch = this._input[offset + indentation];
+        indentation++;
+      }
+
+      // Move offset to skip leading whitespace
+      offset = offset + indentation;
+
+      // return out if there was only whitespace on this line
+      if (newline.includes(this._input[offset - 1])) {
+        return false;
+      }
+    }
+    if (this._input.substring(offset - 1, offset - 1 + this.heredoc_label.length) === this.heredoc_label.label) {
+      var ch = this._input[offset - 1 + this.heredoc_label.length];
+      if ((this.version >= 703 ? valid_after_heredoc_73 : valid_after_heredoc).includes(ch)) {
+        if (consumeLeadingSpaces) {
+          this.consume(indentation);
+          // https://wiki.php.net/rfc/flexible_heredoc_nowdoc_syntaxes
+          if (indentation_uses_spaces && indentation_uses_tabs) {
+            throw new Error("Parse error:  mixing spaces and tabs in ending marker at line " + this.yylineno + " (offset " + this.offset + ")");
+          }
+        } else {
+          // Called in prematch_ENDOFDOC
+          this.heredoc_label.indentation = indentation;
+          this.heredoc_label.indentation_uses_spaces = indentation_uses_spaces;
+          this.heredoc_label.first_encaps_node = true;
+        }
+        return true;
+      }
+    }
+    return false;
+  },
+  /*
+   * Prematch the end of HEREDOC/NOWDOC end tag to preset the
+   * context of this.heredoc_label
+   */
+  prematch_ENDOFDOC: function prematch_ENDOFDOC() {
+    // reset heredoc
+    this.heredoc_label.indentation_uses_spaces = false;
+    this.heredoc_label.indentation = 0;
+    this.heredoc_label.first_encaps_node = true;
+    var offset = this.offset + 1;
+    while (offset < this._input.length) {
+      // if match heredoc_label structrue will be set
+      if (this.isDOC_MATCH(offset, false)) {
+        return;
+      }
+      if (!newline.includes(this._input[offset - 1])) {
+        // skip one line
+        while (!newline.includes(this._input[offset++]) && offset < this._input.length) {
+          // skip
+        }
+      }
+      offset++;
+    }
+  },
+  matchST_NOWDOC: function matchST_NOWDOC() {
+    // edge case : empty now doc
+    if (this.isDOC_MATCH(this.offset, true)) {
+      // @fixme : never reached (may be caused by quotes)
+      this.consume(this.heredoc_label.length);
+      this.popState();
+      return this.tok.T_END_HEREDOC;
+    }
+    // SCANNING CONTENTS
+    var ch = this._input[this.offset - 1];
+    while (this.offset < this.size) {
+      if (newline.includes(ch)) {
+        ch = this.input();
+        if (this.isDOC_MATCH(this.offset, true)) {
+          this.unput(1).popState();
+          this.appendToken(this.tok.T_END_HEREDOC, this.heredoc_label.length);
+          return this.tok.T_ENCAPSED_AND_WHITESPACE;
+        }
+      } else {
+        ch = this.input();
+      }
+    }
+    // too bad ! reached end of document (will get a parse error)
+    return this.tok.T_ENCAPSED_AND_WHITESPACE;
+  },
+  matchST_HEREDOC: function matchST_HEREDOC() {
+    // edge case : empty here doc
+    var ch = this.input();
+    if (this.isDOC_MATCH(this.offset, true)) {
+      this.consume(this.heredoc_label.length - 1);
+      this.popState();
+      return this.tok.T_END_HEREDOC;
+    }
+    // SCANNING CONTENTS
+    while (this.offset < this.size) {
+      if (ch === "\\") {
+        ch = this.input(); // ignore next
+        if (!newline.includes(ch)) {
+          ch = this.input();
+        }
+      }
+      if (newline.includes(ch)) {
+        ch = this.input();
+        if (this.isDOC_MATCH(this.offset, true)) {
+          this.unput(1).popState();
+          this.appendToken(this.tok.T_END_HEREDOC, this.heredoc_label.length);
+          return this.tok.T_ENCAPSED_AND_WHITESPACE;
+        }
+      } else if (ch === "$") {
+        ch = this.input();
+        if (ch === "{") {
+          // start of ${
+          this.begin("ST_LOOKING_FOR_VARNAME");
+          if (this.yytext.length > 2) {
+            this.appendToken(this.tok.T_DOLLAR_OPEN_CURLY_BRACES, 2);
+            this.unput(2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
+          }
+        } else if (this.is_LABEL_START()) {
+          // start of $var...
+          var yyoffset = this.offset;
+          var next = this.consume_VARIABLE();
+          if (this.yytext.length > this.offset - yyoffset + 2) {
+            this.appendToken(next, this.offset - yyoffset + 2);
+            this.unput(this.offset - yyoffset + 2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            return next;
+          }
+          //console.log(this.yytext);
+        }
+      } else if (ch === "{") {
+        ch = this.input();
+        if (ch === "$") {
+          // start of {$...
+          this.begin("ST_IN_SCRIPTING");
+          if (this.yytext.length > 2) {
+            this.appendToken(this.tok.T_CURLY_OPEN, 1);
+            this.unput(2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            this.unput(1);
+            return this.tok.T_CURLY_OPEN;
+          }
+        }
+      } else {
+        ch = this.input();
+      }
+    }
+
+    // too bad ! reached end of document (will get a parse error)
+    return this.tok.T_ENCAPSED_AND_WHITESPACE;
+  },
+  consume_VARIABLE: function consume_VARIABLE() {
+    this.consume_LABEL();
+    var ch = this.input();
+    if (ch == "[") {
+      this.unput(1);
+      this.begin("ST_VAR_OFFSET");
+      return this.tok.T_VARIABLE;
+    } else if (ch === "-") {
+      if (this.input() === ">") {
+        this.input();
+        if (this.is_LABEL_START()) {
+          this.begin("ST_LOOKING_FOR_PROPERTY");
+        }
+        this.unput(3);
+        return this.tok.T_VARIABLE;
+      } else {
+        this.unput(2);
+      }
+    } else {
+      if (ch) this.unput(1);
+    }
+    return this.tok.T_VARIABLE;
+  },
+  // HANDLES BACKQUOTES
+  matchST_BACKQUOTE: function matchST_BACKQUOTE() {
+    var ch = this.input();
+    if (ch === "$") {
+      ch = this.input();
+      if (ch === "{") {
+        this.begin("ST_LOOKING_FOR_VARNAME");
+        return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
+      } else if (this.is_LABEL_START()) {
+        var tok = this.consume_VARIABLE();
+        return tok;
+      }
+    } else if (ch === "{") {
+      if (this._input[this.offset] === "$") {
+        this.begin("ST_IN_SCRIPTING");
+        return this.tok.T_CURLY_OPEN;
+      }
+    } else if (ch === "`") {
+      this.popState();
+      return "`";
+    }
+
+    // any char
+    while (this.offset < this.size) {
+      if (ch === "\\") {
+        this.input();
+      } else if (ch === "`") {
+        this.unput(1);
+        this.popState();
+        this.appendToken("`", 1);
+        break;
+      } else if (ch === "$") {
+        ch = this.input();
+        if (ch === "{") {
+          this.begin("ST_LOOKING_FOR_VARNAME");
+          if (this.yytext.length > 2) {
+            this.appendToken(this.tok.T_DOLLAR_OPEN_CURLY_BRACES, 2);
+            this.unput(2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
+          }
+        } else if (this.is_LABEL_START()) {
+          // start of $var...
+          var yyoffset = this.offset;
+          var next = this.consume_VARIABLE();
+          if (this.yytext.length > this.offset - yyoffset + 2) {
+            this.appendToken(next, this.offset - yyoffset + 2);
+            this.unput(this.offset - yyoffset + 2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            return next;
+          }
+        }
+        continue;
+      } else if (ch === "{") {
+        ch = this.input();
+        if (ch === "$") {
+          // start of {$...
+          this.begin("ST_IN_SCRIPTING");
+          if (this.yytext.length > 2) {
+            this.appendToken(this.tok.T_CURLY_OPEN, 1);
+            this.unput(2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            this.unput(1);
+            return this.tok.T_CURLY_OPEN;
+          }
+        }
+        continue;
+      }
+      ch = this.input();
+    }
+    return this.tok.T_ENCAPSED_AND_WHITESPACE;
+  },
+  matchST_DOUBLE_QUOTES: function matchST_DOUBLE_QUOTES() {
+    var ch = this.input();
+    if (ch === "$") {
+      ch = this.input();
+      if (ch === "{") {
+        this.begin("ST_LOOKING_FOR_VARNAME");
+        return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
+      } else if (this.is_LABEL_START()) {
+        var tok = this.consume_VARIABLE();
+        return tok;
+      }
+    } else if (ch === "{") {
+      if (this._input[this.offset] === "$") {
+        this.begin("ST_IN_SCRIPTING");
+        return this.tok.T_CURLY_OPEN;
+      }
+    } else if (ch === '"') {
+      this.popState();
+      return '"';
+    }
+
+    // any char
+    while (this.offset < this.size) {
+      if (ch === "\\") {
+        this.input();
+      } else if (ch === '"') {
+        this.unput(1);
+        this.popState();
+        this.appendToken('"', 1);
+        break;
+      } else if (ch === "$") {
+        ch = this.input();
+        if (ch === "{") {
+          this.begin("ST_LOOKING_FOR_VARNAME");
+          if (this.yytext.length > 2) {
+            this.appendToken(this.tok.T_DOLLAR_OPEN_CURLY_BRACES, 2);
+            this.unput(2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
+          }
+        } else if (this.is_LABEL_START()) {
+          // start of $var...
+          var yyoffset = this.offset;
+          var next = this.consume_VARIABLE();
+          if (this.yytext.length > this.offset - yyoffset + 2) {
+            this.appendToken(next, this.offset - yyoffset + 2);
+            this.unput(this.offset - yyoffset + 2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            return next;
+          }
+        }
+        if (ch) this.unput(1);
+      } else if (ch === "{") {
+        ch = this.input();
+        if (ch === "$") {
+          // start of {$...
+          this.begin("ST_IN_SCRIPTING");
+          if (this.yytext.length > 2) {
+            this.appendToken(this.tok.T_CURLY_OPEN, 1);
+            this.unput(2);
+            return this.tok.T_ENCAPSED_AND_WHITESPACE;
+          } else {
+            // @fixme : yytext = '"{$' (this.yytext.length > 3)
+            this.unput(1);
+            return this.tok.T_CURLY_OPEN;
+          }
+        }
+        if (ch) this.unput(1);
+      }
+      ch = this.input();
+    }
+    return this.tok.T_ENCAPSED_AND_WHITESPACE;
+  }
+};
+
+/***/ },
+
+/***/ 4349
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  T_STRING: function T_STRING() {
+    var token = this.yytext.toLowerCase();
+    var id = this.keywords[token];
+    if (typeof id !== "number") {
+      if (token === "yield") {
+        if (this.version >= 700 && this.tryMatch(" from")) {
+          this.consume(5);
+          id = this.tok.T_YIELD_FROM;
+        } else {
+          id = this.tok.T_YIELD;
+        }
+      } else {
+        id = this.tok.T_STRING;
+        if (token === "b" || token === "B") {
+          var ch = this.input();
+          if (ch === '"') {
+            return this.ST_DOUBLE_QUOTES();
+          } else if (ch === "'") {
+            return this.T_CONSTANT_ENCAPSED_STRING();
+          } else if (ch) {
+            this.unput(1);
+          }
+        }
+      }
+    }
+
+    // https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l#L1546
+    if (id === this.tok.T_ENUM) {
+      if (this.version < 801) {
+        return this.tok.T_STRING;
+      }
+      var initial = this.offset;
+      var _ch = this.input();
+      while (_ch == " ") {
+        _ch = this.input();
+      }
+      var isEnum = false;
+      if (this.is_LABEL_START()) {
+        while (this.is_LABEL()) {
+          _ch += this.input();
+        }
+        var label = _ch.slice(0, -1).toLowerCase();
+        isEnum = label !== "extends" && label !== "implements";
+      }
+      this.unput(this.offset - initial);
+      return isEnum ? this.tok.T_ENUM : this.tok.T_STRING;
+    }
+    if (this.offset < this.size && id !== this.tok.T_YIELD_FROM) {
+      // If immediately followed by a backslash, this is a T_NAME_RELATIVE or T_NAME_QUALIFIED.
+      var _ch2 = this.input();
+      if (_ch2 === "\\") {
+        id = token === "namespace" ? this.tok.T_NAME_RELATIVE : this.tok.T_NAME_QUALIFIED;
+        do {
+          if (this._input[this.offset] === "{") {
+            // e.g. when using group use statements, the last '\\' is followed by a '{'
+            this.input();
+            break;
+          }
+          this.consume_LABEL();
+          _ch2 = this.input();
+        } while (_ch2 === "\\");
+      }
+      if (_ch2) {
+        this.unput(1);
+      }
+    }
+    return id;
+  },
+  // reads a custom token
+  consume_TOKEN: function consume_TOKEN() {
+    var ch = this._input[this.offset - 1];
+    var fn = this.tokenTerminals[ch];
+    if (fn) {
+      return fn.apply(this, []);
+    } else {
+      return this.yytext;
+    }
+  },
+  // list of special char tokens
+  tokenTerminals: {
+    $: function $() {
+      this.offset++;
+      if (this.is_LABEL_START()) {
+        this.offset--;
+        this.consume_LABEL();
+        return this.tok.T_VARIABLE;
+      } else {
+        this.offset--;
+        return "$";
+      }
+    },
+    "-": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === ">") {
+        this.begin("ST_LOOKING_FOR_PROPERTY").input();
+        return this.tok.T_OBJECT_OPERATOR;
+      } else if (nchar === "-") {
+        this.input();
+        return this.tok.T_DEC;
+      } else if (nchar === "=") {
+        this.input();
+        return this.tok.T_MINUS_EQUAL;
+      }
+      return "-";
+    },
+    "\\": function _() {
+      if (this.offset < this.size) {
+        this.input();
+        if (this.is_LABEL_START()) {
+          var ch;
+          do {
+            if (this._input[this.offset] === "{") {
+              // e.g. when using group use statements, the last '\\' is followed by a '{'
+              this.input();
+              break;
+            }
+            this.consume_LABEL();
+            ch = this.input();
+          } while (ch === "\\");
+          this.unput(1);
+          return this.tok.T_NAME_FULLY_QUALIFIED;
+        } else {
+          this.unput(1);
+        }
+      }
+      return this.tok.T_NS_SEPARATOR;
+    },
+    "/": function _() {
+      if (this._input[this.offset] === "=") {
+        this.input();
+        return this.tok.T_DIV_EQUAL;
+      }
+      return "/";
+    },
+    ":": function _() {
+      if (this._input[this.offset] === ":") {
+        this.input();
+        return this.tok.T_DOUBLE_COLON;
+      } else {
+        return ":";
+      }
+    },
+    "(": function _() {
+      var initial = this.offset;
+      this.input();
+      if (this.is_TABSPACE()) {
+        this.consume_TABSPACE().input();
+      }
+      if (this.is_LABEL_START()) {
+        var yylen = this.yytext.length;
+        this.consume_LABEL();
+        var castToken = this.yytext.substring(yylen - 1).toLowerCase();
+        var castId = this.castKeywords[castToken];
+        if (typeof castId === "number") {
+          this.input();
+          if (this.is_TABSPACE()) {
+            this.consume_TABSPACE().input();
+          }
+          if (this._input[this.offset - 1] === ")") {
+            return castId;
+          }
+        }
+      }
+      // revert the check
+      this.unput(this.offset - initial);
+      return "(";
+    },
+    "=": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === ">") {
+        this.input();
+        return this.tok.T_DOUBLE_ARROW;
+      } else if (nchar === "=") {
+        if (this._input[this.offset + 1] === "=") {
+          this.consume(2);
+          return this.tok.T_IS_IDENTICAL;
+        } else {
+          this.input();
+          return this.tok.T_IS_EQUAL;
+        }
+      }
+      return "=";
+    },
+    "+": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === "+") {
+        this.input();
+        return this.tok.T_INC;
+      } else if (nchar === "=") {
+        this.input();
+        return this.tok.T_PLUS_EQUAL;
+      }
+      return "+";
+    },
+    "!": function _() {
+      if (this._input[this.offset] === "=") {
+        if (this._input[this.offset + 1] === "=") {
+          this.consume(2);
+          return this.tok.T_IS_NOT_IDENTICAL;
+        } else {
+          this.input();
+          return this.tok.T_IS_NOT_EQUAL;
+        }
+      }
+      return "!";
+    },
+    "?": function _() {
+      if (this.version >= 700 && this._input[this.offset] === "?") {
+        if (this.version >= 704 && this._input[this.offset + 1] === "=") {
+          this.consume(2);
+          return this.tok.T_COALESCE_EQUAL;
+        } else {
+          this.input();
+          return this.tok.T_COALESCE;
+        }
+      }
+      if (this.version >= 800 && this._input[this.offset] === "-" && this._input[this.offset + 1] === ">") {
+        this.consume(1);
+        this.begin("ST_LOOKING_FOR_PROPERTY").input();
+        return this.tok.T_NULLSAFE_OBJECT_OPERATOR;
+      }
+      return "?";
+    },
+    "<": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === "<") {
+        nchar = this._input[this.offset + 1];
+        if (nchar === "=") {
+          this.consume(2);
+          return this.tok.T_SL_EQUAL;
+        } else if (nchar === "<") {
+          if (this.is_HEREDOC()) {
+            return this.tok.T_START_HEREDOC;
+          }
+        }
+        this.input();
+        return this.tok.T_SL;
+      } else if (nchar === "=") {
+        this.input();
+        if (this.version >= 700 && this._input[this.offset] === ">") {
+          this.input();
+          return this.tok.T_SPACESHIP;
+        } else {
+          return this.tok.T_IS_SMALLER_OR_EQUAL;
+        }
+      } else if (nchar === ">") {
+        this.input();
+        return this.tok.T_IS_NOT_EQUAL;
+      }
+      return "<";
+    },
+    ">": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === "=") {
+        this.input();
+        return this.tok.T_IS_GREATER_OR_EQUAL;
+      } else if (nchar === ">") {
+        nchar = this._input[this.offset + 1];
+        if (nchar === "=") {
+          this.consume(2);
+          return this.tok.T_SR_EQUAL;
+        } else {
+          this.input();
+          return this.tok.T_SR;
+        }
+      }
+      return ">";
+    },
+    "*": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === "=") {
+        this.input();
+        return this.tok.T_MUL_EQUAL;
+      } else if (nchar === "*") {
+        this.input();
+        if (this._input[this.offset] === "=") {
+          this.input();
+          return this.tok.T_POW_EQUAL;
+        } else {
+          return this.tok.T_POW;
+        }
+      }
+      return "*";
+    },
+    ".": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === "=") {
+        this.input();
+        return this.tok.T_CONCAT_EQUAL;
+      } else if (nchar === "." && this._input[this.offset + 1] === ".") {
+        this.consume(2);
+        return this.tok.T_ELLIPSIS;
+      }
+      return ".";
+    },
+    "%": function _() {
+      if (this._input[this.offset] === "=") {
+        this.input();
+        return this.tok.T_MOD_EQUAL;
+      }
+      return "%";
+    },
+    "&": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === "=") {
+        this.input();
+        return this.tok.T_AND_EQUAL;
+      } else if (nchar === "&") {
+        this.input();
+        return this.tok.T_BOOLEAN_AND;
+      }
+      return "&";
+    },
+    "|": function _() {
+      var nchar = this._input[this.offset];
+      if (nchar === "=") {
+        this.input();
+        return this.tok.T_OR_EQUAL;
+      } else if (nchar === "|") {
+        this.input();
+        return this.tok.T_BOOLEAN_OR;
+      } else if (nchar === ">") {
+        this.input();
+        return this.tok.T_PIPE;
+      }
+      return "|";
+    },
+    "^": function _() {
+      if (this._input[this.offset] === "=") {
+        this.input();
+        return this.tok.T_XOR_EQUAL;
+      }
+      return "^";
+    }
+  }
+};
+
+/***/ },
+
+/***/ 8582
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var tokens = ";:,.\\[]()|^&+-/*=%!~$<>?@";
+module.exports = {
+  // check if the char can be a numeric
+  is_NUM: function is_NUM() {
+    var ch = this._input.charCodeAt(this.offset - 1);
+    return ch > 47 && ch < 58 || ch === 95;
+  },
+  // check if the char can be a numeric
+  is_NUM_START: function is_NUM_START() {
+    var ch = this._input.charCodeAt(this.offset - 1);
+    return ch > 47 && ch < 58;
+  },
+  // check if current char can be a label
+  is_LABEL: function is_LABEL() {
+    var ch = this._input.charCodeAt(this.offset - 1);
+    return ch > 96 && ch < 123 || ch > 64 && ch < 91 || ch === 95 || ch > 47 && ch < 58 || ch > 126;
+  },
+  // check if current char can be a label
+  is_LABEL_START: function is_LABEL_START() {
+    var ch = this._input.charCodeAt(this.offset - 1);
+    // A - Z
+    if (ch > 64 && ch < 91) return true;
+    // a - z
+    if (ch > 96 && ch < 123) return true;
+    // _ (95)
+    if (ch === 95) return true;
+    // utf8 / extended
+    if (ch > 126) return true;
+    // else
+    return false;
+  },
+  // reads each char of the label
+  consume_LABEL: function consume_LABEL() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (!this.is_LABEL()) {
+        if (ch) this.unput(1);
+        break;
+      }
+    }
+    return this;
+  },
+  // check if current char is a token char
+  is_TOKEN: function is_TOKEN() {
+    var ch = this._input[this.offset - 1];
+    return tokens.indexOf(ch) !== -1;
+  },
+  // check if current char is a whitespace
+  is_WHITESPACE: function is_WHITESPACE() {
+    var ch = this._input[this.offset - 1];
+    return ch === " " || ch === "\t" || ch === "\n" || ch === "\r";
+  },
+  // check if current char is a whitespace (without newlines)
+  is_TABSPACE: function is_TABSPACE() {
+    var ch = this._input[this.offset - 1];
+    return ch === " " || ch === "\t";
+  },
+  // consume all whitespaces (excluding newlines)
+  consume_TABSPACE: function consume_TABSPACE() {
+    while (this.offset < this.size) {
+      var ch = this.input();
+      if (!this.is_TABSPACE()) {
+        if (ch) this.unput(1);
+        break;
+      }
+    }
+    return this;
+  },
+  // check if current char can be a hexadecimal number
+  is_HEX: function is_HEX() {
+    var ch = this._input.charCodeAt(this.offset - 1);
+    // 0 - 9
+    if (ch > 47 && ch < 58) return true;
+    // A - F
+    if (ch > 64 && ch < 71) return true;
+    // a - f
+    if (ch > 96 && ch < 103) return true;
+    // _ (code 95)
+    if (ch === 95) return true;
+    // else
+    return false;
+  },
+  // check if current char can be an octal number
+  is_OCTAL: function is_OCTAL() {
+    var ch = this._input.charCodeAt(this.offset - 1);
+    // 0 - 7
+    if (ch > 47 && ch < 56) return true;
+    // _ (code 95)
+    if (ch === 95) return true;
+    // else
+    return false;
+  }
+};
+
+/***/ },
+
+/***/ 7259
+(module, __unused_webpack_exports, __webpack_require__) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var Position = __webpack_require__(8822);
+
+/**
+ * @private
+ */
+function isNumber(n) {
+  return n != "." && n != "," && !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+/**
+ * The PHP Parser class that build the AST tree from the lexer
+ *
+ * @constructor Parser
+ * @memberOf module:php-parser
+ * @tutorial Parser
+ * @property {Lexer} lexer - current lexer instance
+ * @property {AST} ast - the AST factory instance
+ * @property {number|string} token - current token
+ * @property {boolean} extractDoc - should extract documentation as AST node
+ * @property {boolean} extractTokens - should extract each token
+ * @property {boolean} suppressErrors - should ignore parsing errors and continue
+ * @property {boolean} debug - should output debug informations
+ */
+var Parser = function Parser(lexer, ast) {
+  this.lexer = lexer;
+  this.ast = ast;
+  this.tok = lexer.tok;
+  this.EOF = lexer.EOF;
+  this.token = null;
+  this.prev = null;
+  this.debug = false;
+  this.version = 803;
+  this.extractDoc = false;
+  this.extractTokens = false;
+  this.suppressErrors = false;
+  var mapIt = function mapIt(item) {
+    return [item, null];
+  };
+  this.entries = {
+    // reserved_non_modifiers
+    IDENTIFIER: new Map([this.tok.T_ABSTRACT, this.tok.T_ARRAY, this.tok.T_AS, this.tok.T_BREAK, this.tok.T_CALLABLE, this.tok.T_CASE, this.tok.T_CATCH, this.tok.T_CLASS, this.tok.T_CLASS_C, this.tok.T_CLONE, this.tok.T_CONST, this.tok.T_CONTINUE, this.tok.T_DECLARE, this.tok.T_DEFAULT, this.tok.T_DIR, this.tok.T_DO, this.tok.T_ECHO, this.tok.T_ELSE, this.tok.T_ELSEIF, this.tok.T_EMPTY, this.tok.T_ENDDECLARE, this.tok.T_ENDFOR, this.tok.T_ENDFOREACH, this.tok.T_ENDIF, this.tok.T_ENDSWITCH, this.tok.T_ENDWHILE, this.tok.T_ENUM, this.tok.T_EVAL, this.tok.T_EXIT, this.tok.T_EXTENDS, this.tok.T_FILE, this.tok.T_FINAL, this.tok.T_FINALLY, this.tok.T_FN, this.tok.T_FOR, this.tok.T_FOREACH, this.tok.T_FUNC_C, this.tok.T_FUNCTION, this.tok.T_GLOBAL, this.tok.T_GOTO, this.tok.T_IF, this.tok.T_IMPLEMENTS, this.tok.T_INCLUDE, this.tok.T_INCLUDE_ONCE, this.tok.T_INSTANCEOF, this.tok.T_INSTEADOF, this.tok.T_INTERFACE, this.tok.T_ISSET, this.tok.T_LINE, this.tok.T_LIST, this.tok.T_LOGICAL_AND, this.tok.T_LOGICAL_OR, this.tok.T_LOGICAL_XOR, this.tok.T_MATCH, this.tok.T_METHOD_C, this.tok.T_NAMESPACE, this.tok.T_NEW, this.tok.T_NS_C, this.tok.T_PRINT, this.tok.T_PRIVATE, this.tok.T_PROTECTED, this.tok.T_PUBLIC, this.tok.T_READ_ONLY, this.tok.T_REQUIRE, this.tok.T_REQUIRE_ONCE, this.tok.T_RETURN, this.tok.T_STATIC, this.tok.T_SWITCH, this.tok.T_THROW, this.tok.T_TRAIT, this.tok.T_TRY, this.tok.T_UNSET, this.tok.T_USE, this.tok.T_VAR, this.tok.T_WHILE, this.tok.T_YIELD].map(mapIt)),
+    VARIABLE: new Map([this.tok.T_VARIABLE, "$", "&", this.tok.T_STRING, this.tok.T_NAME_RELATIVE, this.tok.T_NAME_QUALIFIED, this.tok.T_NAME_FULLY_QUALIFIED, this.tok.T_NAMESPACE, this.tok.T_STATIC].map(mapIt)),
+    SCALAR: new Map([this.tok.T_CONSTANT_ENCAPSED_STRING, this.tok.T_START_HEREDOC, this.tok.T_LNUMBER, this.tok.T_DNUMBER, this.tok.T_ARRAY, "[", this.tok.T_CLASS_C, this.tok.T_TRAIT_C, this.tok.T_FUNC_C, this.tok.T_METHOD_C, this.tok.T_LINE, this.tok.T_FILE, this.tok.T_DIR, this.tok.T_NS_C, '"', 'b"', 'B"', "-", this.tok.T_NS_SEPARATOR].map(mapIt)),
+    T_MAGIC_CONST: new Map([this.tok.T_CLASS_C, this.tok.T_TRAIT_C, this.tok.T_FUNC_C, this.tok.T_METHOD_C, this.tok.T_LINE, this.tok.T_FILE, this.tok.T_DIR, this.tok.T_NS_C].map(mapIt)),
+    T_MEMBER_FLAGS: new Map([this.tok.T_PUBLIC, this.tok.T_PRIVATE, this.tok.T_PROTECTED, this.tok.T_STATIC, this.tok.T_ABSTRACT, this.tok.T_FINAL, this.tok.T_READ_ONLY].map(mapIt)),
+    EOS: new Map([";", this.EOF, this.tok.T_INLINE_HTML].map(mapIt)),
+    EXPR: new Map(["@", "-", "+", "!", "~", "(", "`", this.tok.T_LIST, this.tok.T_CLONE, this.tok.T_INC, this.tok.T_DEC, this.tok.T_NEW, this.tok.T_ISSET, this.tok.T_EMPTY, this.tok.T_MATCH, this.tok.T_INCLUDE, this.tok.T_INCLUDE_ONCE, this.tok.T_REQUIRE, this.tok.T_REQUIRE_ONCE, this.tok.T_EVAL, this.tok.T_INT_CAST, this.tok.T_DOUBLE_CAST, this.tok.T_STRING_CAST, this.tok.T_ARRAY_CAST, this.tok.T_OBJECT_CAST, this.tok.T_BOOL_CAST, this.tok.T_UNSET_CAST, this.tok.T_EXIT, this.tok.T_PRINT, this.tok.T_YIELD, this.tok.T_STATIC, this.tok.T_FUNCTION, this.tok.T_FN,
+    // using VARIABLES :
+    this.tok.T_VARIABLE, "$", this.tok.T_NS_SEPARATOR, this.tok.T_STRING, this.tok.T_NAME_RELATIVE, this.tok.T_NAME_QUALIFIED, this.tok.T_NAME_FULLY_QUALIFIED,
+    // using SCALAR :
+    this.tok.T_STRING,
+    // @see variable.js line 45 > conflict with variable = shift/reduce :)
+    this.tok.T_CONSTANT_ENCAPSED_STRING, this.tok.T_START_HEREDOC, this.tok.T_LNUMBER, this.tok.T_DNUMBER, this.tok.T_ARRAY, "[", this.tok.T_CLASS_C, this.tok.T_TRAIT_C, this.tok.T_FUNC_C, this.tok.T_METHOD_C, this.tok.T_LINE, this.tok.T_FILE, this.tok.T_DIR, this.tok.T_NS_C, '"', 'b"', 'B"', "-", this.tok.T_NS_SEPARATOR].map(mapIt))
+  };
+};
+
+/**
+ * helper : gets a token name
+ * @function Parser#getTokenName
+ * @memberOf module:php-parser
+ */
+Parser.prototype.getTokenName = function (token) {
+  if (!isNumber(token)) {
+    return "'" + token + "'";
+  } else {
+    if (token == this.EOF) return "the end of file (EOF)";
+    return this.lexer.engine.tokens.values[token];
+  }
+};
+
+/**
+ * main entry point : converts a source code to AST
+ * @function Parser#parse
+ * @memberOf module:php-parser
+ */
+Parser.prototype.parse = function (code, filename) {
+  this._errors = [];
+  this.filename = filename || "eval";
+  this.currentNamespace = [""];
+  if (this.extractDoc) {
+    this._docs = [];
+  } else {
+    this._docs = null;
+  }
+  if (this.extractTokens) {
+    this._tokens = [];
+  } else {
+    this._tokens = null;
+  }
+  this._docIndex = 0;
+  this._lastNode = null;
+  this.lexer.setInput(code);
+  this.lexer.all_tokens = this.extractTokens;
+  this.lexer.comment_tokens = this.extractDoc;
+  this.length = this.lexer._input.length;
+  this.innerList = false;
+  this.innerListForm = false;
+  var program = this.node("program");
+  var childs = [];
+  this.next();
+  while (this.token != this.EOF) {
+    childs.push(this.read_start());
+  }
+  // append last comment
+  if (childs.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+    childs.push(this.node("noop")());
+  }
+  // #176 : register latest position
+  this.prev = [this.lexer.yylloc.last_line, this.lexer.yylloc.last_column, this.lexer.offset];
+  var result = program(childs, this._errors, this._docs, this._tokens);
+  if (this.debug) {
+    var errors = this.ast.checkNodes();
+    /* istanbul ignore next */
+    if (errors.length > 0) {
+      errors.forEach(function (error) {
+        if (error.position) {
+          // eslint-disable-next-line no-console
+          console.log("Node at line " + error.position.line + ", column " + error.position.column);
+        }
+        // eslint-disable-next-line no-console
+        console.log(error.stack.join("\n"));
+      });
+      throw new Error("Some nodes are not closed");
+    }
+  }
+  return result;
+};
+
+/**
+ * Raise an error
+ * @function Parser#raiseError
+ * @memberOf module:php-parser
+ */
+Parser.prototype.raiseError = function (message, msgExpect, expect, token) {
+  message += " on line " + this.lexer.yylloc.first_line;
+  if (!this.suppressErrors) {
+    var err = new SyntaxError(message, this.filename, this.lexer.yylloc.first_line);
+    err.lineNumber = this.lexer.yylloc.first_line;
+    err.fileName = this.filename;
+    err.columnNumber = this.lexer.yylloc.first_column;
+    throw err;
+  }
+  // Error node :
+  // Temporarily set prev to the current token's end so the error node
+  // spans from the current token's start to its end (not the previous token's end).
+  var savedPrev = this.prev;
+  this.prev = [this.lexer.yylloc.last_line, this.lexer.yylloc.last_column, this.lexer.offset];
+  var node = this.ast.prepare("error", null, this)(message, token, this.lexer.yylloc.first_line, expect);
+  this.prev = savedPrev;
+  this._errors.push(node);
+  return node;
+};
+
+/**
+ * handling errors
+ * @function Parser#error
+ * @memberOf module:php-parser
+ */
+Parser.prototype.error = function (expect) {
+  var msg = "Parse Error : syntax error";
+  var token = this.getTokenName(this.token);
+  var msgExpect = "";
+  if (this.token !== this.EOF) {
+    if (isNumber(this.token)) {
+      var symbol = this.text();
+      /* istanbul ignore next */
+      if (symbol.length > 10) {
+        symbol = symbol.substring(0, 7) + "...";
+      }
+      token = "'" + symbol + "' (" + token + ")";
+    }
+    msg += ", unexpected " + token;
+  }
+  if (expect && !Array.isArray(expect)) {
+    if (isNumber(expect) || expect.length === 1) {
+      msgExpect = ", expecting " + this.getTokenName(expect);
+    }
+    msg += msgExpect;
+  }
+  return this.raiseError(msg, msgExpect, expect, token);
+};
+
+/**
+ * Create a position node from the lexers position
+ *
+ * @function Parser#position
+ * @memberOf module:php-parser
+ * @return {Position}
+ */
+Parser.prototype.position = function () {
+  return new Position(this.lexer.yylloc.first_line, this.lexer.yylloc.first_column, this.lexer.yylloc.first_offset);
+};
+
+/**
+ * Creates a new AST node
+ * @function Parser#node
+ * @memberOf module:php-parser
+ */
+Parser.prototype.node = function (name) {
+  if (this.extractDoc) {
+    var docs = null;
+    if (this._docIndex < this._docs.length) {
+      docs = this._docs.slice(this._docIndex);
+      this._docIndex = this._docs.length;
+      /* istanbul ignore next */
+      if (this.debug) {
+        // eslint-disable-next-line no-console
+        console.log(new Error("Append docs on " + name));
+        // eslint-disable-next-line no-console
+        console.log(docs);
+      }
+    }
+    var node = this.ast.prepare(name, docs, this);
+    /*
+     * TOKENS :
+     * node1 commentA token commmentB node2 commentC token commentD node3 commentE token
+     *
+     * AST :
+     * structure:S1 [
+     *    left: node1 ( trail: commentA ),
+     *    right: structure:S2 [
+     *       node2 (lead: commentB, trail: commentC),
+     *       node3 (lead: commentD)
+     *    ],
+     *    trail: commentE
+     * ]
+     *
+     * Algorithm :
+     *
+     * Attach the last comments on parent of current node
+     * If a new node is started and the parent has a trailing comment
+     * the move it on previous node
+     *
+     * start S2
+     * start node1
+     * consume node1 & set commentA as trailingComment on S2
+     * start S2
+     * S1 has a trailingComment, attach it on node1
+     * ...
+     * NOTE : As the trailingComment Behavior depends on AST, it will be build on
+     * the AST layer - last child node will keep it's trailingComment nodes
+     */
+    node.postBuild = function (self) {
+      if (this._docIndex < this._docs.length) {
+        if (this._lastNode) {
+          var offset = this.prev[2];
+          var max = this._docIndex;
+          for (; max < this._docs.length; max++) {
+            if (this._docs[max].offset > offset) {
+              break;
+            }
+          }
+          if (max > this._docIndex) {
+            // inject trailing comment on child node
+            this._lastNode.setTrailingComments(this._docs.slice(this._docIndex, max));
+            this._docIndex = max;
+          }
+        } else if (this.token === this.EOF) {
+          // end of content
+          self.setTrailingComments(this._docs.slice(this._docIndex));
+          this._docIndex = this._docs.length;
+        }
+      }
+      this._lastNode = self;
+    }.bind(this);
+    return node;
+  }
+  return this.ast.prepare(name, null, this);
+};
+
+/**
+ * expects an end of statement or end of file
+ * @function Parser#expectEndOfStatement
+ * @memberOf module:php-parser
+ * @return {boolean}
+ */
+Parser.prototype.expectEndOfStatement = function (node) {
+  if (this.token === ";") {
+    // include only real ';' statements
+    // https://github.com/glayzzle/php-parser/issues/164
+    if (node && this.lexer.yytext === ";") {
+      node.includeToken(this);
+    }
+  } else if (this.token !== this.tok.T_INLINE_HTML && this.token !== this.EOF) {
+    this.error(";");
+    return false;
+  }
+  this.next();
+  return true;
+};
+var ignoreStack = ["parser.next", "parser.node", "parser.showlog"];
+/**
+ * outputs some debug information on current token
+ * @private
+ * @function Parser#showlog
+ * @memberOf module:php-parser
+ */
+Parser.prototype.showlog = function () {
+  var stack = new Error().stack.split("\n");
+  var line;
+  for (var offset = 2; offset < stack.length; offset++) {
+    line = stack[offset].trim();
+    var found = false;
+    for (var i = 0; i < ignoreStack.length; i++) {
+      /* istanbul ignore next */
+      if (line.substring(3, 3 + ignoreStack[i].length) === ignoreStack[i]) {
+        found = true;
+        break;
+      }
+    }
+    /* istanbul ignore next */
+    if (!found) {
+      break;
+    }
+  }
+  // eslint-disable-next-line no-console
+  console.log("Line " + this.lexer.yylloc.first_line + " : " + this.getTokenName(this.token) + ">" + this.lexer.yytext + "<" + " @-->" + line);
+  return this;
+};
+
+/**
+ * Force the parser to check the current token.
+ *
+ * If the current token does not match to expected token,
+ * the an error will be raised.
+ *
+ * If the suppressError mode is activated, then the error will
+ * be added to the program error stack and this function will return `false`.
+ *
+ * @function Parser#expect
+ * @memberOf module:php-parser
+ * @param {String|Number} token
+ * @return {boolean}
+ * @throws Error
+ */
+Parser.prototype.expect = function (token) {
+  if (Array.isArray(token)) {
+    if (token.indexOf(this.token) === -1) {
+      this.error(token);
+      return false;
+    }
+  } else if (this.token != token) {
+    this.error(token);
+    return false;
+  }
+  return true;
+};
+
+/**
+ * Returns the current token contents
+ * @function Parser#text
+ * @memberOf module:php-parser
+ * @return {String}
+ */
+Parser.prototype.text = function () {
+  return this.lexer.yytext;
+};
+
+/**
+ * consume the next token
+ * @function Parser#next
+ * @memberOf module:php-parser
+ */
+Parser.prototype.next = function () {
+  // prepare the back command
+  if (this.token !== ";" || this.lexer.yytext === ";") {
+    // ignore '?>' from automated resolution
+    // https://github.com/glayzzle/php-parser/issues/168
+    this.prev = [this.lexer.yylloc.last_line, this.lexer.yylloc.last_column, this.lexer.offset];
+  }
+
+  // eating the token
+  this.lex();
+
+  // showing the debug
+  if (this.debug) {
+    this.showlog();
+  }
+
+  // handling comments
+  if (this.extractDoc) {
+    while (this.token === this.tok.T_COMMENT || this.token === this.tok.T_DOC_COMMENT) {
+      // APPEND COMMENTS
+      if (this.token === this.tok.T_COMMENT) {
+        this._docs.push(this.read_comment());
+      } else {
+        this._docs.push(this.read_doc_comment());
+      }
+    }
+  }
+  return this;
+};
+
+/**
+ * Peek at the next token.
+ * @function Parser#peek
+ * @memberOf module:php-parser
+ * @returns {string|number} Next Token
+ */
+Parser.prototype.peek = function () {
+  var lexerState = this.lexer.getState();
+  var nextToken = this.lexer.lex();
+  this.lexer.setState(lexerState);
+  return nextToken;
+};
+
+/**
+ * Eating a token
+ * @function Parser#lex
+ * @memberOf module:php-parser
+ */
+Parser.prototype.lex = function () {
+  // append on token stack
+  if (this.extractTokens) {
+    do {
+      // the token
+      this.token = this.lexer.lex() || /* istanbul ignore next */this.EOF;
+      if (this.token === this.EOF) return this;
+      var entry = this.lexer.yytext;
+      if (Object.prototype.hasOwnProperty.call(this.lexer.engine.tokens.values, this.token)) {
+        entry = [this.lexer.engine.tokens.values[this.token], entry, this.lexer.yylloc.first_line, this.lexer.yylloc.first_offset, this.lexer.offset];
+      } else {
+        entry = [null, entry, this.lexer.yylloc.first_line, this.lexer.yylloc.first_offset, this.lexer.offset];
+      }
+      this._tokens.push(entry);
+      if (this.token === this.tok.T_CLOSE_TAG) {
+        // https://github.com/php/php-src/blob/7ff186434e82ee7be7c59d0db9a976641cf7b09c/Zend/zend_compile.c#L1680
+        this.token = ";";
+        return this;
+      } else if (this.token === this.tok.T_OPEN_TAG_WITH_ECHO) {
+        this.token = this.tok.T_ECHO;
+        return this;
+      }
+    } while (this.token === this.tok.T_WHITESPACE ||
+    // ignore white space
+    !this.extractDoc && (this.token === this.tok.T_COMMENT ||
+    // ignore single lines comments
+    this.token === this.tok.T_DOC_COMMENT) ||
+    // ignore doc comments
+    // ignore open tags
+    this.token === this.tok.T_OPEN_TAG);
+  } else {
+    this.token = this.lexer.lex() || /* istanbul ignore next */this.EOF;
+  }
+  return this;
+};
+
+/**
+ * Check if token is of specified type
+ * @function Parser#is
+ * @memberOf module:php-parser
+ */
+Parser.prototype.is = function (type) {
+  if (Array.isArray(type)) {
+    return type.indexOf(this.token) !== -1;
+  }
+  return this.entries[type].has(this.token);
+};
+
+// extends the parser with syntax files
+[__webpack_require__(5525), __webpack_require__(7072), __webpack_require__(3997), __webpack_require__(6477), __webpack_require__(979), __webpack_require__(8214), __webpack_require__(9461), __webpack_require__(5931), __webpack_require__(9147), __webpack_require__(9219), __webpack_require__(7170), __webpack_require__(6261), __webpack_require__(2478), __webpack_require__(77), __webpack_require__(6077), __webpack_require__(1130)].forEach(function (ext) {
+  for (var k in ext) {
+    /* istanbul ignore next */
+    if (Object.prototype.hasOwnProperty.call(Parser.prototype, k)) {
+      // @see https://github.com/glayzzle/php-parser/issues/234
+      throw new Error("Function " + k + " is already defined - collision");
+    }
+    Parser.prototype[k] = ext[k];
+  }
+});
+module.exports = Parser;
+
+/***/ },
+
+/***/ 5525
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Parse an array
+   * ```ebnf
+   * array ::= T_ARRAY '(' array_pair_list ')' |
+   *   '[' array_pair_list ']'
+   * ```
+   */
+  read_array: function read_array() {
+    var expect;
+    var shortForm = false;
+    var result = this.node("array");
+    if (this.token === this.tok.T_ARRAY) {
+      this.next().expect("(");
+      expect = ")";
+    } else {
+      shortForm = true;
+      expect = "]";
+    }
+    var items = [];
+    if (this.next().token !== expect) {
+      items = this.read_array_pair_list(shortForm);
+    }
+    this.expect(expect);
+    this.next();
+    return result(shortForm, items);
+  },
+  /*
+   * Reads an array of items
+   * ```ebnf
+   * array_pair_list ::= array_pair (',' array_pair?)*
+   * ```
+   */
+  read_array_pair_list: function read_array_pair_list(shortForm) {
+    var self = this;
+    return this.read_list(function () {
+      return self.read_array_pair(shortForm);
+    }, ",", true);
+  },
+  /*
+   * Reads an entry
+   * array_pair:
+   *  expr T_DOUBLE_ARROW expr
+   *  | expr
+   *  | expr T_DOUBLE_ARROW '&' variable
+   *  | '&' variable
+   *  | expr T_DOUBLE_ARROW T_LIST '(' array_pair_list ')'
+   *  | T_LIST '(' array_pair_list ')'
+   */
+  read_array_pair: function read_array_pair(shortForm) {
+    if (!shortForm && this.token === ")" || shortForm && this.token === "]") {
+      return;
+    }
+    if (this.token === ",") {
+      return this.node("noop")();
+    }
+    var entry = this.node("entry");
+    var key = null;
+    var value;
+    var byRef = false;
+    var unpack = false;
+    if (this.token === "&") {
+      this.next();
+      byRef = true;
+      value = this.read_variable(true, false);
+    } else if (this.token === this.tok.T_ELLIPSIS && this.version >= 704) {
+      this.next();
+      if (this.token === "&") {
+        this.error();
+      }
+      unpack = true;
+      value = this.read_expr();
+    } else {
+      var expr = this.read_expr();
+      if (this.token === this.tok.T_DOUBLE_ARROW) {
+        this.next();
+        key = expr;
+        if (this.token === "&") {
+          this.next();
+          byRef = true;
+          value = this.read_variable(true, false);
+        } else {
+          value = this.read_expr();
+        }
+      } else {
+        value = expr;
+      }
+    }
+    return entry(key, value, byRef, unpack);
+  }
+};
+
+/***/ },
+
+/***/ 7072
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+module.exports = {
+  /*
+   * reading a class
+   * ```ebnf
+   * class ::= class_scope? T_CLASS T_STRING (T_EXTENDS NAMESPACE_NAME)? (T_IMPLEMENTS (NAMESPACE_NAME ',')* NAMESPACE_NAME)? '{' CLASS_BODY '}'
+   * ```
+   */
+  read_class_declaration_statement: function read_class_declaration_statement(attrs) {
+    var result = this.node("class");
+    var flag = this.read_class_modifiers();
+    // graceful mode : ignore token & go next
+    if (this.token !== this.tok.T_CLASS) {
+      this.error(this.tok.T_CLASS);
+      this.next();
+      return null;
+    }
+    this.next().expect(this.tok.T_STRING);
+    var propName = this.node("identifier");
+    var name = this.text();
+    this.next();
+    propName = propName(name);
+    var propExtends = this.read_extends_from();
+    var propImplements = this.read_implements_list();
+    this.expect("{");
+    var body = this.next().read_class_body(true, false);
+    var node = result(propName, propExtends, propImplements, body, flag);
+    if (attrs) node.attrGroups = attrs;
+    return node;
+  },
+  read_class_modifiers: function read_class_modifiers() {
+    var modifier = this.read_class_modifier({
+      readonly: 0,
+      final_or_abstract: 0
+    });
+    return [0, 0, modifier.final_or_abstract, modifier.readonly];
+  },
+  read_class_modifier: function read_class_modifier(memo) {
+    if (this.token === this.tok.T_READ_ONLY) {
+      this.next();
+      memo.readonly = 1;
+      memo = this.read_class_modifier(memo);
+    } else if (memo.final_or_abstract === 0 && this.token === this.tok.T_ABSTRACT) {
+      this.next();
+      memo.final_or_abstract = 1;
+      memo = this.read_class_modifier(memo);
+    } else if (memo.final_or_abstract === 0 && this.token === this.tok.T_FINAL) {
+      this.next();
+      memo.final_or_abstract = 2;
+      memo = this.read_class_modifier(memo);
+    }
+    return memo;
+  },
+  /*
+   * Reads a class body
+   * ```ebnf
+   *   class_body ::= (member_flags? (T_VAR | T_STRING | T_FUNCTION))*
+   * ```
+   */
+  read_class_body: function read_class_body(allow_variables, allow_enum_cases) {
+    var result = [];
+    var attrs = [];
+    while (this.token !== this.EOF && this.token !== "}") {
+      if (this.token === this.tok.T_COMMENT) {
+        result.push(this.read_comment());
+        continue;
+      }
+      if (this.token === this.tok.T_DOC_COMMENT) {
+        result.push(this.read_doc_comment());
+        continue;
+      }
+
+      // check T_USE trait
+      if (this.token === this.tok.T_USE) {
+        result = result.concat(this.read_trait_use_statement());
+        continue;
+      }
+      var locStart = this.position();
+      if (this.token === this.tok.T_ATTRIBUTE) {
+        attrs = this.read_attr_list();
+      }
+
+      // check enum cases
+      if (allow_enum_cases && this.token === this.tok.T_CASE) {
+        var enumcase = this.read_enum_case(attrs);
+        attrs = [];
+        if (this.expect(";")) {
+          this.next();
+        }
+        result = result.concat(enumcase);
+        continue;
+      }
+
+      // read member flags
+      var flags = this.read_member_flags(false);
+
+      // check constant
+      if (this.token === this.tok.T_CONST) {
+        if (flags[0][1] !== -1) {
+          this.raiseError("Cannot use asymmetric visibility on constants");
+        }
+        var constants = this.read_constant_list(flags, attrs, locStart);
+        if (this.expect(";")) {
+          this.next();
+        }
+        result = result.concat(constants);
+        continue;
+      }
+
+      // jump over T_VAR then land on T_VARIABLE
+      if (allow_variables && this.token === this.tok.T_VAR) {
+        this.next().expect(this.tok.T_VARIABLE);
+        flags[0][0] = null; // public (as null)
+        flags[1] = 0; // non static var
+      }
+      if (this.token === this.tok.T_FUNCTION) {
+        // reads a function
+        result.push(this.read_function(false, flags, attrs, locStart));
+        attrs = [];
+      } else if (allow_variables && (this.token === this.tok.T_VARIABLE || this.version >= 801 && this.token === this.tok.T_READ_ONLY ||
+      // support https://wiki.php.net/rfc/typed_properties_v2
+      this.version >= 704 && (this.token === "?" || this.token === this.tok.T_ARRAY || this.token === this.tok.T_CALLABLE || this.token === this.tok.T_NAMESPACE || this.token === this.tok.T_NAME_FULLY_QUALIFIED || this.token === this.tok.T_NAME_QUALIFIED || this.token === this.tok.T_NAME_RELATIVE || this.token === this.tok.T_NS_SEPARATOR || this.token === this.tok.T_STRING))) {
+        // reads a variable
+        var variables = this.read_variable_list(flags, attrs, locStart);
+        attrs = [];
+        result = result.concat(variables);
+      } else {
+        // raise an error
+        this.error([this.tok.T_CONST].concat(_toConsumableArray(allow_variables ? [this.tok.T_VARIABLE] : []), _toConsumableArray(allow_enum_cases ? [this.tok.T_CASE] : []), [this.tok.T_FUNCTION]));
+        // ignore token
+        this.next();
+      }
+    }
+    this.expect("}");
+    this.next();
+    return result;
+  },
+  /*
+   * Reads variable list
+   * ```ebnf
+   *  variable_list ::= (variable_declaration ',')* variable_declaration
+   * ```
+   */
+  read_variable_list: function read_variable_list(flags, attrs, locStart) {
+    var property_statement = this.node("propertystatement");
+    var properties = this.read_list(
+    /*
+     * Reads a variable declaration
+     *
+     * ```ebnf
+     *  variable_declaration ::= T_VARIABLE '=' scalar
+     * ```
+     */
+    function read_variable_declaration() {
+      var result = this.node("property");
+      var readonly = flags[3] === 1;
+      if (!readonly && this.token === this.tok.T_READ_ONLY) {
+        readonly = true;
+        this.next();
+      }
+      var _this$read_optional_t = this.read_optional_type(),
+        _this$read_optional_t2 = _slicedToArray(_this$read_optional_t, 2),
+        nullable = _this$read_optional_t2[0],
+        type = _this$read_optional_t2[1];
+      this.expect(this.tok.T_VARIABLE);
+      var propName = this.node("identifier");
+      var name = this.text().substring(1); // ignore $
+      this.next();
+      propName = propName(name);
+      var value = null;
+      var property_hooks = [];
+      this.expect([",", ";", "=", "{"]);
+
+      // Property has a value
+      if (this.token === "=") {
+        // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L815
+        value = this.next().read_expr();
+      }
+
+      // Property is using a hook to define getter/setters
+      if (this.token === "{") {
+        property_hooks = this.read_property_hooks();
+      } else {
+        this.expect([";", ","]);
+      }
+      return result(propName, value, readonly, nullable, type, attrs || [], property_hooks);
+    }, ",");
+    property_statement = property_statement(null, properties, flags);
+    if (locStart && property_statement.loc) {
+      property_statement.loc.start = locStart;
+      if (property_statement.loc.source) {
+        property_statement.loc.source = this.lexer._input.substr(property_statement.loc.start.offset, property_statement.loc.end.offset - property_statement.loc.start.offset);
+      }
+    }
+
+    // semicolons are found only for regular properties definitions.
+    // Property hooks are terminated by a closing curly brace, }.
+    // property_statement is instanciated before this check to avoid including the semicolon in the AST end location of the property.
+    if (this.token === ";") {
+      this.next();
+    }
+    return property_statement;
+  },
+  /*
+   * Reads property hooks
+   */
+  read_property_hooks: function read_property_hooks() {
+    if (this.version < 804) {
+      this.raiseError("Parse Error: Property hooks require PHP 8.4+");
+    }
+    this.expect("{");
+    this.next();
+    var hooks = [];
+    while (this.token !== this.EOF && this.token !== "}") {
+      hooks.push(this.read_property_hook());
+    }
+    this.expect("}");
+    this.next();
+    return hooks;
+  },
+  read_property_hook: function read_property_hook() {
+    var property_hooks = this.node("propertyhook");
+    var attrs = [];
+    if (this.token === this.tok.T_ATTRIBUTE) {
+      attrs = this.read_attr_list();
+    }
+    var is_final = this.token === this.tok.T_FINAL;
+    if (is_final) this.next();
+    var is_reference = this.token === "&";
+    if (is_reference) this.next();
+    var method_name = this.text();
+    if (method_name !== "get" && method_name !== "set") {
+      this.raiseError("Parse Error: Property hooks must be either 'get' or 'set'");
+    }
+    this.next();
+    var parameter = null;
+    var body = null;
+    this.expect([this.tok.T_DOUBLE_ARROW, "{", "(", ";"]);
+
+    // interface or abstract definition
+    if (this.token === ";") {
+      this.next();
+      return property_hooks(method_name, is_final, is_reference, parameter, body, attrs);
+    }
+    if (this.token === "(") {
+      this.next();
+      parameter = this.read_parameter(false);
+      this.expect(")");
+      this.next();
+    }
+    if (this.token === this.tok.T_DOUBLE_ARROW) {
+      this.next();
+      body = this.read_expr();
+      this.next();
+    } else if (this.token === "{") {
+      body = this.read_code_block();
+    }
+    return property_hooks(method_name, is_final, is_reference, parameter, body, attrs);
+  },
+  /*
+   * Reads constant list
+   * ```ebnf
+   *  constant_list ::= T_CONST [type] (constant_declaration ',')* constant_declaration
+   * ```
+   */
+  read_constant_list: function read_constant_list(flags, attrs, locStart) {
+    var result = this.node("classconstant");
+    if (this.expect(this.tok.T_CONST)) {
+      this.next();
+    }
+    // static, abstract, and readonly are never valid on class constants
+    if (flags[1] === 1 || flags[2] === 1 || flags[3] === 1) {
+      this.error();
+    }
+    // final class constants require PHP 8.1+
+    if (flags[2] === 2 && this.version < 801) {
+      this.raiseError("Final class constants are not allowed before PHP 8.1");
+    }
+    var _ref = this.version >= 803 ? this.read_optional_type() : [false, null],
+      _ref2 = _slicedToArray(_ref, 2),
+      nullable = _ref2[0],
+      type = _ref2[1];
+    var items = this.read_list(
+    /*
+     * Reads a constant declaration
+     *
+     * ```ebnf
+     *  constant_declaration ::= (T_STRING | IDENTIFIER) '=' expr
+     * ```
+     * @return {Constant} [:link:](AST.md#constant)
+     */
+    function read_constant_declaration() {
+      var result = this.node("constant");
+      var constName = null;
+      var value = null;
+      if (this.token === this.tok.T_STRING || this.version >= 700 && this.is("IDENTIFIER")) {
+        constName = this.node("identifier");
+        var name = this.text();
+        this.next();
+        constName = constName(name);
+      } else {
+        this.expect("IDENTIFIER");
+      }
+      if (this.expect("=")) {
+        value = this.next().read_expr();
+      }
+      return result(constName, value);
+    }, ",");
+    var node = result(null, items, flags, nullable, type, attrs || []);
+    if (locStart && node.loc) {
+      node.loc.start = locStart;
+      if (node.loc.source) {
+        node.loc.source = this.lexer._input.substr(node.loc.start.offset, node.loc.end.offset - node.loc.start.offset);
+      }
+    }
+    return node;
+  },
+  /*
+   * Read member flags
+   * @return array
+   *  1st index : [get, set] visibility tuple
+   *    get/set: -1 => no visibility, 0 => public, 1 => protected, 2 => private
+   *  2nd index : 0 => instance member, 1 => static member
+   *  3rd index : 0 => normal, 1 => abstract member, 2 => final member
+   *  4th index : 0 => no readonly, 1 => readonly
+   */
+  read_member_flags: function read_member_flags(asInterface) {
+    var result = [[-1, -1], 0, 0, 0];
+    var seen = new Set();
+    while (this.is("T_MEMBER_FLAGS")) {
+      var idx = -1,
+        val = -1;
+      switch (this.token) {
+        case this.tok.T_PUBLIC:
+        case this.tok.T_PROTECTED:
+        case this.tok.T_PRIVATE:
+          {
+            idx = 0;
+            val = this.token === this.tok.T_PUBLIC ? 0 : this.token === this.tok.T_PROTECTED ? 1 : 2;
+            if (asInterface && val === 2) {
+              // an interface can't be private
+              this.expect([this.tok.T_PUBLIC, this.tok.T_PROTECTED]);
+              val = -1;
+            }
+            this.next(); // consume the visibility keyword
+            if (this.version >= 804 && this.token === "(") {
+              // visibility(set) modifier: e.g. private(set)
+              // For shorthand, default get visibility to public if not already set
+              if (result[0][0] === -1) {
+                result[0][0] = 0;
+              }
+              this.next(); // consume '('
+              if (this.token !== this.tok.T_STRING || this.text() !== "set") {
+                this.error("set");
+              } else {
+                this.next(); // consume 'set'
+              }
+              if (this.expect(")")) {
+                this.next(); // consume ')'
+              }
+              if (seen.has("set")) {
+                this.error(); // set modifier already defined
+              } else if (val !== -1) {
+                seen.add("set");
+                result[0][1] = val;
+              }
+              continue;
+            }
+            if (seen.has(idx)) {
+              this.error();
+            } else if (val !== -1) {
+              seen.add(idx);
+              result[0][0] = val;
+            }
+            continue;
+          }
+        case this.tok.T_STATIC:
+          idx = 1;
+          val = 1;
+          break;
+        case this.tok.T_ABSTRACT:
+          idx = 2;
+          val = 1;
+          break;
+        case this.tok.T_FINAL:
+          idx = 2;
+          val = 2;
+          break;
+        case this.tok.T_READ_ONLY:
+          idx = 3;
+          val = 1;
+          break;
+      }
+      if (asInterface && idx === 2 && val === 1) {
+        // an interface can't be abstract
+        this.error();
+        val = -1;
+      }
+      if (seen.has(idx)) {
+        // already defined flag
+        this.error();
+      } else if (val !== -1) {
+        seen.add(idx);
+        result[idx] = val;
+      }
+      this.next();
+    }
+    return result;
+  },
+  /*
+   * optional_type:
+   *	  /- empty -/	{ $$ = NULL; }
+   *   |	type_expr	{ $$ = $1; }
+   * ;
+   *
+   * type_expr:
+   *		type		{ $$ = $1; }
+   *	|	'?' type	{ $$ = $2; $$->attr |= ZEND_TYPE_NULLABLE; }
+   *	|	union_type	{ $$ = $1; }
+   * ;
+   *
+   * type:
+   * 		T_ARRAY		{ $$ = zend_ast_create_ex(ZEND_AST_TYPE, IS_ARRAY); }
+   * 	|	T_CALLABLE	{ $$ = zend_ast_create_ex(ZEND_AST_TYPE, IS_CALLABLE); }
+   * 	|	name		{ $$ = $1; }
+   * ;
+   *
+   * union_type:
+   * 		type '|' type       { $$ = zend_ast_create_list(2, ZEND_AST_TYPE_UNION, $1, $3); }
+   * 	|	union_type '|' type { $$ = zend_ast_list_add($1, $3); }
+   * ;
+   */
+  read_optional_type: function read_optional_type() {
+    var nullable = this.token === "?";
+    if (nullable) {
+      this.next();
+    }
+    if (this.peekSkipComments() === "=") {
+      return [false, null];
+    }
+    var type = this.read_types();
+    if (nullable && !type) {
+      this.raiseError("Expecting a type definition combined with nullable operator");
+    }
+    if (!nullable && !type) {
+      return [false, null];
+    }
+    if (this.token === "|") {
+      type = [type];
+      do {
+        this.next();
+        var variant = this.read_type();
+        if (!variant) {
+          this.raiseError("Expecting a type definition");
+          break;
+        }
+        type.push(variant);
+      } while (this.token === "|");
+    }
+    return [nullable, type];
+  },
+  peekSkipComments: function peekSkipComments() {
+    var lexerState = this.lexer.getState();
+    var nextToken;
+    do {
+      nextToken = this.lexer.lex();
+    } while (nextToken === this.tok.T_COMMENT || nextToken === this.tok.T_WHITESPACE);
+    this.lexer.setState(lexerState);
+    return nextToken;
+  },
+  /*
+   * reading an interface
+   * ```ebnf
+   * interface ::= T_INTERFACE T_STRING (T_EXTENDS (NAMESPACE_NAME ',')* NAMESPACE_NAME)? '{' INTERFACE_BODY '}'
+   * ```
+   */
+  read_interface_declaration_statement: function read_interface_declaration_statement(attrs) {
+    var result = this.node("interface");
+    if (this.token !== this.tok.T_INTERFACE) {
+      this.error(this.tok.T_INTERFACE);
+      this.next();
+      return null;
+    }
+    this.next().expect(this.tok.T_STRING);
+    var propName = this.node("identifier");
+    var name = this.text();
+    this.next();
+    propName = propName(name);
+    var propExtends = this.read_interface_extends_list();
+    this.expect("{");
+    var body = this.next().read_interface_body();
+    return result(propName, propExtends, body, attrs || []);
+  },
+  /*
+   * Reads an interface body
+   * ```ebnf
+   *   interface_body ::= (member_flags? (T_CONST | T_FUNCTION))*
+   * ```
+   */
+  read_interface_body: function read_interface_body() {
+    var result = [];
+    var attrs;
+    while (this.token !== this.EOF && this.token !== "}") {
+      if (this.token === this.tok.T_COMMENT) {
+        result.push(this.read_comment());
+        continue;
+      }
+      if (this.token === this.tok.T_DOC_COMMENT) {
+        result.push(this.read_doc_comment());
+        continue;
+      }
+      var locStart = this.position();
+      attrs = [];
+      if (this.token === this.tok.T_ATTRIBUTE) {
+        attrs = this.read_attr_list();
+      }
+      // read member flags
+      var flags = this.read_member_flags(true);
+
+      // check constant
+      if (this.token === this.tok.T_CONST) {
+        if (flags[0][1] !== -1) {
+          this.raiseError("Cannot use asymmetric visibility on constants");
+        }
+        var constants = this.read_constant_list(flags, attrs, locStart);
+        if (this.expect(";")) {
+          this.next();
+        }
+        result = result.concat(constants);
+      } else if (this.token === this.tok.T_FUNCTION) {
+        // reads a function
+        var method = this.read_function_declaration(2, flags, attrs, locStart);
+        method.parseFlags(flags);
+        result.push(method);
+        if (this.expect(";")) {
+          this.next();
+        }
+      } else if (this.token === this.tok.T_STRING) {
+        result.push(this.read_variable_list(flags, attrs, locStart));
+      } else {
+        // raise an error
+        this.error([this.tok.T_CONST, this.tok.T_FUNCTION, this.tok.T_STRING]);
+        this.next();
+      }
+    }
+    if (this.expect("}")) {
+      this.next();
+    }
+    return result;
+  },
+  /*
+   * reading a trait
+   * ```ebnf
+   * trait ::= T_TRAIT T_STRING (T_EXTENDS (NAMESPACE_NAME ',')* NAMESPACE_NAME)? '{' FUNCTION* '}'
+   * ```
+   */
+  read_trait_declaration_statement: function read_trait_declaration_statement(attrs) {
+    var result = this.node("trait");
+    // graceful mode : ignore token & go next
+    if (this.token !== this.tok.T_TRAIT) {
+      this.error(this.tok.T_TRAIT);
+      this.next();
+      return null;
+    }
+    this.next().expect(this.tok.T_STRING);
+    var propName = this.node("identifier");
+    var name = this.text();
+    this.next();
+    propName = propName(name);
+    this.expect("{");
+    var body = this.next().read_class_body(true, false);
+    var node = result(propName, body);
+    if (attrs) node.attrGroups = attrs;
+    return node;
+  },
+  /*
+   * reading a use statement
+   * ```ebnf
+   * trait_use_statement ::= namespace_name (',' namespace_name)* ('{' trait_use_alias '}')?
+   * ```
+   */
+  read_trait_use_statement: function read_trait_use_statement() {
+    // defines use statements
+    var node = this.node("traituse");
+    this.expect(this.tok.T_USE) && this.next();
+    var traits = [this.read_namespace_name()];
+    var adaptations = null;
+    while (this.token === ",") {
+      traits.push(this.next().read_namespace_name());
+    }
+    if (this.token === "{") {
+      adaptations = [];
+      // defines alias statements
+      while (this.next().token !== this.EOF) {
+        if (this.token === "}") break;
+        adaptations.push(this.read_trait_use_alias());
+        this.expect(";");
+      }
+      if (this.expect("}")) {
+        this.next();
+      }
+    } else {
+      if (this.expect(";")) {
+        this.next();
+      }
+    }
+    return node(traits, adaptations);
+  },
+  /*
+   * Reading trait alias
+   * ```ebnf
+   * trait_use_alias ::= namespace_name ( T_DOUBLE_COLON T_STRING )? (T_INSTEADOF namespace_name) | (T_AS member_flags? T_STRING)
+   * ```
+   * name list : https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L303
+   * trait adaptation : https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L742
+   */
+  read_trait_use_alias: function read_trait_use_alias() {
+    var node = this.node();
+    var trait = null;
+    var method;
+    if (this.is("IDENTIFIER")) {
+      method = this.node("identifier");
+      var methodName = this.text();
+      this.next();
+      method = method(methodName);
+    } else {
+      method = this.read_namespace_name();
+      if (this.token === this.tok.T_DOUBLE_COLON) {
+        this.next();
+        if (this.token === this.tok.T_STRING || this.version >= 700 && this.is("IDENTIFIER")) {
+          trait = method;
+          method = this.node("identifier");
+          var _methodName = this.text();
+          this.next();
+          method = method(_methodName);
+        } else {
+          this.expect(this.tok.T_STRING);
+        }
+      } else {
+        // convert identifier as string
+        method = method.name;
+      }
+    }
+
+    // handle trait precedence
+    if (this.token === this.tok.T_INSTEADOF) {
+      return node("traitprecedence", trait, method, this.next().read_name_list());
+    } else if (this.token === this.tok.T_AS) {
+      // handle trait alias
+      var flags = null;
+      var alias = null;
+      if (this.next().is("T_MEMBER_FLAGS")) {
+        flags = this.read_member_flags();
+      }
+      if (this.token === this.tok.T_STRING || this.version >= 700 && this.is("IDENTIFIER")) {
+        alias = this.node("identifier");
+        var name = this.text();
+        this.next();
+        alias = alias(name);
+      } else if (flags === null) {
+        // no visibility flags and no name => too bad
+        this.expect(this.tok.T_STRING);
+      }
+      return node("traitalias", trait, method, alias, flags);
+    }
+
+    // handle errors
+    this.expect([this.tok.T_AS, this.tok.T_INSTEADOF]);
+    return node("traitalias", trait, method, null, null);
+  }
+};
+
+/***/ },
+
+/***/ 3997
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   *  Comments with // or # or / * ... * /
+   */
+  read_comment: function read_comment() {
+    var text = this.text();
+    var result = this.ast.prepare(text.substring(0, 2) === "/*" ? "commentblock" : "commentline", null, this);
+    var offset = this.lexer.yylloc.first_offset;
+    // handle location on comment
+    var prev = this.prev;
+    this.prev = [this.lexer.yylloc.last_line, this.lexer.yylloc.last_column, this.lexer.offset];
+    this.lex();
+    result = result(text);
+    result.offset = offset;
+    this.prev = prev;
+    return result;
+  },
+  /*
+   * Comments with / ** ... * /
+   */
+  read_doc_comment: function read_doc_comment() {
+    var result = this.ast.prepare("commentblock", null, this);
+    var offset = this.lexer.yylloc.first_offset;
+    var text = this.text();
+    var prev = this.prev;
+    this.prev = [this.lexer.yylloc.last_line, this.lexer.yylloc.last_column, this.lexer.offset];
+    this.lex();
+    result = result(text);
+    result.offset = offset;
+    this.prev = prev;
+    return result;
+  }
+};
+
+/***/ },
+
+/***/ 979
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * reading an enum
+   * ```ebnf
+   * enum ::= enum_scope? T_ENUM T_STRING (':' NAMESPACE_NAME)? (T_IMPLEMENTS (NAMESPACE_NAME ',')* NAMESPACE_NAME)? '{' ENUM_BODY '}'
+   * ```
+   */
+  read_enum_declaration_statement: function read_enum_declaration_statement(attrs) {
+    var result = this.node("enum");
+    // graceful mode : ignore token & go next
+    if (!this.expect(this.tok.T_ENUM)) {
+      return null;
+    }
+    this.next().expect(this.tok.T_STRING);
+    var propName = this.node("identifier");
+    var name = this.text();
+    this.next();
+    propName = propName(name);
+    var valueType = this.read_enum_value_type();
+    var propImplements = this.read_implements_list();
+    this.expect("{");
+    var body = this.next().read_class_body(false, true);
+    var node = result(propName, valueType, propImplements, body);
+    if (attrs) node.attrGroups = attrs;
+    return node;
+  },
+  read_enum_value_type: function read_enum_value_type() {
+    if (this.token === ":") {
+      return this.next().read_namespace_name();
+    }
+    return null;
+  },
+  read_enum_case: function read_enum_case(attrs) {
+    this.expect(this.tok.T_CASE);
+    var result = this.node("enumcase");
+    var caseName = this.node("identifier");
+    var name = this.next().text();
+    this.next();
+    caseName = caseName(name);
+    var value = this.token === "=" ? this.next().read_expr() : null;
+    this.expect(";");
+    var node = result(caseName, value);
+    if (attrs && attrs.length > 0) node.attrGroups = attrs;
+    return node;
+  }
+};
+
+/***/ },
+
+/***/ 6477
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  read_expr: function read_expr(expr) {
+    var result = this.node();
+    if (this.token === "@") {
+      if (!expr) {
+        expr = this.next().read_expr();
+      }
+      return result("silent", expr);
+    }
+    if (!expr) {
+      expr = this.read_expr_item();
+    }
+    // binary operations
+    if (this.token === "|") {
+      return result("bin", "|", expr, this.next().read_expr());
+    }
+    if (this.token === "&") {
+      return result("bin", "&", expr, this.next().read_expr());
+    }
+    if (this.token === "^") {
+      return result("bin", "^", expr, this.next().read_expr());
+    }
+    if (this.token === ".") {
+      return result("bin", ".", expr, this.next().read_expr());
+    }
+    if (this.token === "+") {
+      return result("bin", "+", expr, this.next().read_expr());
+    }
+    if (this.token === "-") {
+      return result("bin", "-", expr, this.next().read_expr());
+    }
+    if (this.token === "*") {
+      return result("bin", "*", expr, this.next().read_expr());
+    }
+    if (this.token === "/") {
+      return result("bin", "/", expr, this.next().read_expr());
+    }
+    if (this.token === "%") {
+      return result("bin", "%", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_POW) {
+      return result("bin", "**", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_SL) {
+      return result("bin", "<<", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_SR) {
+      return result("bin", ">>", expr, this.next().read_expr());
+    }
+    // more binary operations (formerly bool)
+    if (this.token === this.tok.T_BOOLEAN_OR) {
+      return result("bin", "||", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_LOGICAL_OR) {
+      return result("bin", "or", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_BOOLEAN_AND) {
+      return result("bin", "&&", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_LOGICAL_AND) {
+      return result("bin", "and", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_LOGICAL_XOR) {
+      return result("bin", "xor", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_IS_IDENTICAL) {
+      return result("bin", "===", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_IS_NOT_IDENTICAL) {
+      return result("bin", "!==", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_IS_EQUAL) {
+      return result("bin", "==", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_IS_NOT_EQUAL) {
+      return result("bin", "!=", expr, this.next().read_expr());
+    }
+    if (this.token === "<") {
+      return result("bin", "<", expr, this.next().read_expr());
+    }
+    if (this.token === ">") {
+      return result("bin", ">", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_IS_SMALLER_OR_EQUAL) {
+      return result("bin", "<=", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_IS_GREATER_OR_EQUAL) {
+      return result("bin", ">=", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_SPACESHIP) {
+      return result("bin", "<=>", expr, this.next().read_expr());
+    }
+    if (this.token === this.tok.T_INSTANCEOF) {
+      expr = result("bin", "instanceof", expr, this.next().read_class_name_reference());
+      if (this.token !== ";" && this.token !== this.tok.T_INLINE_HTML && this.token !== this.EOF) {
+        expr = this.read_expr(expr);
+      }
+    }
+    if (this.token === this.tok.T_NULLSAFE_OBJECT_OPERATOR) {
+      expr = result("nullsafepropertylookup", expr, this.read_what());
+      expr = this.recursive_variable_chain_scan(expr, false, true);
+    }
+
+    // extra operations :
+    // $username = $_GET['user'] ?? 'nobody';
+    if (this.token === this.tok.T_COALESCE) {
+      return result("bin", "??", expr, this.next().read_expr());
+    }
+    // extra operations :
+    // $a = "Hi" |> strtoupper(...);
+    if (this.token === this.tok.T_PIPE) {
+      if (this.version < 805) {
+        this.raiseError("PHP 8.5+ is required to use pipe operator");
+      }
+      var right = this.next().read_expr();
+      if (right.kind === "arrowfunc" && !right.parenthesizedExpression) {
+        this.raiseError("Arrow functions in a pipe chain must be wrapped in parentheses");
+      }
+      return result("bin", "|>", expr, right);
+    }
+
+    // extra operations :
+    // $username = $_GET['user'] ? true : false;
+    if (this.token === "?") {
+      var trueArg = null;
+      if (this.next().token !== ":") {
+        trueArg = this.read_expr();
+      }
+      this.expect(":") && this.next();
+      return result("retif", expr, trueArg, this.read_expr());
+    } else {
+      // see #193
+      result.destroy(expr);
+    }
+    return expr;
+  },
+  /*
+   * Reads a cast expression
+   */
+  read_expr_cast: function read_expr_cast(type) {
+    return this.node("cast")(type, this.text(), this.next().read_expr());
+  },
+  /*
+   * Read a isset variable
+   */
+  read_isset_variable: function read_isset_variable() {
+    return this.read_expr();
+  },
+  /*
+   * Reads isset variables
+   */
+  read_isset_variables: function read_isset_variables() {
+    return this.read_function_list(this.read_isset_variable, ",");
+  },
+  /*
+   * Reads internal PHP functions
+   */
+  read_internal_functions_in_yacc: function read_internal_functions_in_yacc() {
+    var result = null;
+    switch (this.token) {
+      case this.tok.T_ISSET:
+        {
+          result = this.node("isset");
+          if (this.next().expect("(")) {
+            this.next();
+          }
+          var variables = this.read_isset_variables();
+          if (this.expect(")")) {
+            this.next();
+          }
+          result = result(variables);
+        }
+        break;
+      case this.tok.T_EMPTY:
+        {
+          result = this.node("empty");
+          if (this.next().expect("(")) {
+            this.next();
+          }
+          var expression = this.read_expr();
+          if (this.expect(")")) {
+            this.next();
+          }
+          result = result(expression);
+        }
+        break;
+      case this.tok.T_INCLUDE:
+        result = this.node("include")(false, false, this.next().read_expr());
+        break;
+      case this.tok.T_INCLUDE_ONCE:
+        result = this.node("include")(true, false, this.next().read_expr());
+        break;
+      case this.tok.T_EVAL:
+        {
+          result = this.node("eval");
+          if (this.next().expect("(")) {
+            this.next();
+          }
+          var expr = this.read_expr();
+          if (this.expect(")")) {
+            this.next();
+          }
+          result = result(expr);
+        }
+        break;
+      case this.tok.T_REQUIRE:
+        result = this.node("include")(false, true, this.next().read_expr());
+        break;
+      case this.tok.T_REQUIRE_ONCE:
+        result = this.node("include")(true, true, this.next().read_expr());
+        break;
+    }
+    return result;
+  },
+  /*
+   * Reads optional expression
+   */
+  read_optional_expr: function read_optional_expr(stopToken) {
+    if (this.token !== stopToken) {
+      return this.read_expr();
+    }
+    return null;
+  },
+  /*
+   * Reads exit expression
+   */
+  read_exit_expr: function read_exit_expr() {
+    var expression = null;
+    if (this.token === "(") {
+      this.next();
+      expression = this.read_optional_expr(")");
+      this.expect(")") && this.next();
+    }
+    return expression;
+  },
+  /*
+   * ```ebnf
+   * Reads an expression
+   *  expr ::= @todo
+   * ```
+   */
+  read_expr_item: function read_expr_item() {
+    var result,
+      expr,
+      attrs = [];
+    if (this.token === "+") {
+      return this.node("unary")("+", this.next().read_expr());
+    }
+    if (this.token === "-") {
+      return this.node("unary")("-", this.next().read_expr());
+    }
+    if (this.token === "!") {
+      return this.node("unary")("!", this.next().read_expr());
+    }
+    if (this.token === "~") {
+      return this.node("unary")("~", this.next().read_expr());
+    }
+    if (this.token === "(") {
+      expr = this.next().read_expr();
+      expr.parenthesizedExpression = true;
+      this.expect(")") && this.next();
+      return this.handleDereferencable(expr);
+    }
+    if (this.token === "`") {
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1048
+      return this.read_encapsed_string("`");
+    }
+    if (this.token === this.tok.T_LIST) {
+      var assign = null;
+      var isInner = this.innerList;
+      result = this.node("list");
+      if (!isInner) {
+        assign = this.node("assign");
+      }
+      if (this.next().expect("(")) {
+        this.next();
+      }
+      if (!this.innerList) this.innerList = true;
+
+      // reads inner items
+      var assignList = this.read_array_pair_list(false);
+      if (this.expect(")")) {
+        this.next();
+      }
+
+      // check if contains at least one assignment statement
+      var hasItem = false;
+      for (var i = 0; i < assignList.length; i++) {
+        if (assignList[i] !== null && assignList[i].kind !== "noop") {
+          hasItem = true;
+          break;
+        }
+      }
+      if (!hasItem) {
+        /* istanbul ignore next */
+        this.raiseError("Fatal Error :  Cannot use empty list on line " + this.lexer.yylloc.first_line);
+      }
+
+      // handles the node resolution
+      if (!isInner) {
+        this.innerList = false;
+        if (this.expect("=")) {
+          return assign(result(assignList, false), this.next().read_expr(), "=");
+        } else {
+          // error fallback : list($a, $b);
+          /* istanbul ignore next */
+          return result(assignList, false);
+        }
+      } else {
+        return result(assignList, false);
+      }
+    }
+    if (this.token === this.tok.T_ATTRIBUTE) {
+      attrs = this.read_attr_list();
+    }
+    if (this.token === this.tok.T_CLONE) {
+      var node = this.node("clone");
+      this.next();
+      if (this.version >= 805 && this.token === "(") {
+        this.next();
+        var _what = this.read_variable(false, false);
+        _what = this.handleDereferencable(_what);
+        var properties = null;
+        if (this.token === ",") {
+          properties = this.next().read_expr();
+        }
+        this.expect(")") && this.next();
+        return node(_what, properties);
+      }
+      var what = this.read_variable(false, false);
+      what = this.handleDereferencable(what);
+      return node(what, null);
+    }
+    switch (this.token) {
+      case this.tok.T_INC:
+        return this.node("pre")("+", this.next().read_variable(false, false));
+      case this.tok.T_DEC:
+        return this.node("pre")("-", this.next().read_variable(false, false));
+      case this.tok.T_NEW:
+        expr = this.read_new_expr();
+        if (this.token === this.tok.T_OBJECT_OPERATOR && this.version < 804) {
+          this.raiseError("New without parenthesis is not allowed before PHP 8.4");
+        }
+        return this.handleDereferencable(expr);
+      case this.tok.T_ISSET:
+      case this.tok.T_EMPTY:
+      case this.tok.T_INCLUDE:
+      case this.tok.T_INCLUDE_ONCE:
+      case this.tok.T_EVAL:
+      case this.tok.T_REQUIRE:
+      case this.tok.T_REQUIRE_ONCE:
+        return this.read_internal_functions_in_yacc();
+      case this.tok.T_MATCH:
+        return this.read_match_expression();
+      case this.tok.T_INT_CAST:
+        return this.read_expr_cast("int");
+      case this.tok.T_DOUBLE_CAST:
+        return this.read_expr_cast("float");
+      case this.tok.T_STRING_CAST:
+        return this.read_expr_cast(this.text().indexOf("binary") !== -1 ? "binary" : "string");
+      case this.tok.T_ARRAY_CAST:
+        return this.read_expr_cast("array");
+      case this.tok.T_OBJECT_CAST:
+        return this.read_expr_cast("object");
+      case this.tok.T_BOOL_CAST:
+        return this.read_expr_cast("bool");
+      case this.tok.T_UNSET_CAST:
+        return this.read_expr_cast("unset");
+      case this.tok.T_THROW:
+        {
+          if (this.version < 800) {
+            this.raiseError("PHP 8+ is required to use throw as an expression");
+          }
+          var _result = this.node("throw");
+          var _expr = this.next().read_expr();
+          return _result(_expr);
+        }
+      case this.tok.T_EXIT:
+        {
+          var useDie = this.lexer.yytext.toLowerCase() === "die";
+          result = this.node("exit");
+          this.next();
+          var expression = this.read_exit_expr();
+          return result(expression, useDie);
+        }
+      case this.tok.T_PRINT:
+        return this.node("print")(this.next().read_expr());
+
+      // T_YIELD (expr (T_DOUBLE_ARROW expr)?)?
+      case this.tok.T_YIELD:
+        {
+          var value = null;
+          var key = null;
+          result = this.node("yield");
+          if (this.next().is("EXPR")) {
+            // reads the yield return value
+            value = this.read_expr();
+            if (this.token === this.tok.T_DOUBLE_ARROW) {
+              // reads the yield returned key
+              key = value;
+              value = this.next().read_expr();
+            }
+          }
+          return result(value, key);
+        }
+
+      // T_YIELD_FROM expr
+      case this.tok.T_YIELD_FROM:
+        result = this.node("yieldfrom");
+        expr = this.next().read_expr();
+        return result(expr);
+      case this.tok.T_FN:
+      case this.tok.T_FUNCTION:
+        return this.read_inline_function(undefined, attrs);
+      case this.tok.T_STATIC:
+        {
+          var backup = [this.token, this.lexer.getState()];
+          this.next();
+          if (this.token === this.tok.T_FUNCTION || this.version >= 704 && this.token === this.tok.T_FN) {
+            // handles static function
+            return this.read_inline_function([0, 1, 0], attrs);
+          } else {
+            // rollback
+            this.lexer.tokens.push(backup);
+            this.next();
+          }
+        }
+    }
+
+    // SCALAR | VARIABLE
+    if (this.is("VARIABLE")) {
+      result = this.node();
+      expr = this.read_variable(false, false);
+
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L877
+      // should accept only a variable
+      var isConst = expr.kind === "identifier" || expr.kind === "staticlookup" && expr.offset.kind === "identifier";
+
+      // VARIABLES SPECIFIC OPERATIONS
+      switch (this.token) {
+        case "=":
+          {
+            if (isConst) this.error("VARIABLE");
+            if (this.next().token == "&") {
+              return this.read_assignref(result, expr);
+            }
+            return result("assign", expr, this.read_expr(), "=");
+          }
+
+        // operations :
+        case this.tok.T_PLUS_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "+=");
+        case this.tok.T_MINUS_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "-=");
+        case this.tok.T_MUL_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "*=");
+        case this.tok.T_POW_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "**=");
+        case this.tok.T_DIV_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "/=");
+        case this.tok.T_CONCAT_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), ".=");
+        case this.tok.T_MOD_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "%=");
+        case this.tok.T_AND_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "&=");
+        case this.tok.T_OR_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "|=");
+        case this.tok.T_XOR_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "^=");
+        case this.tok.T_SL_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "<<=");
+        case this.tok.T_SR_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), ">>=");
+        case this.tok.T_COALESCE_EQUAL:
+          if (isConst) this.error("VARIABLE");
+          return result("assign", expr, this.next().read_expr(), "??=");
+        case this.tok.T_INC:
+          if (isConst) this.error("VARIABLE");
+          this.next();
+          return result("post", "+", expr);
+        case this.tok.T_DEC:
+          if (isConst) this.error("VARIABLE");
+          this.next();
+          return result("post", "-", expr);
+        default:
+          // see #193
+          result.destroy(expr);
+      }
+    } else if (this.is("SCALAR")) {
+      result = this.node();
+      expr = this.read_scalar();
+      if (expr.kind === "array" && expr.shortForm && this.token === "=") {
+        // list assign
+        var list = this.convertToList(expr);
+        if (expr.loc) list.loc = expr.loc;
+        var right = this.next().read_expr();
+        return result("assign", list, right, "=");
+      } else {
+        // see #189 - swap docs on nodes
+        result.destroy(expr);
+      }
+      // classic array
+      return this.handleDereferencable(expr);
+    } else {
+      this.error("EXPR");
+      this.next();
+    }
+
+    // returns variable | scalar
+    return expr;
+  },
+  /*
+   * Recursively convert nested array to nested list.
+   */
+  convertToList: function convertToList(array) {
+    var _this = this;
+    var convertedItems = array.items.map(function (entry) {
+      if (entry.value && entry.value.kind === "array" && entry.value.shortForm) {
+        entry.value = _this.convertToList(entry.value);
+      }
+      return entry;
+    });
+    var node = this.node("list")(convertedItems, true);
+    if (array.loc) node.loc = array.loc;
+    if (array.leadingComments) node.leadingComments = array.leadingComments;
+    if (array.trailingComments) node.trailingComments = array.trailingComments;
+    return node;
+  },
+  /*
+   * Reads assignment
+   * @param {*} left
+   */
+  read_assignref: function read_assignref(result, left) {
+    this.next();
+    var right;
+    if (this.token === this.tok.T_NEW) {
+      if (this.version >= 700) {
+        this.error();
+      }
+      right = this.read_new_expr();
+    } else if (this.token === "(") {
+      right = this.next().read_expr();
+      this.expect(")") && this.next();
+      right = this.recursive_variable_chain_scan(right, false, false);
+    } else {
+      right = this.read_variable(false, false);
+    }
+    return result("assignref", left, right);
+  },
+  /*
+   *
+   * inline_function:
+   * 		function returns_ref backup_doc_comment '(' parameter_list ')' lexical_vars return_type
+   * 		backup_fn_flags '{' inner_statement_list '}' backup_fn_flags
+   * 			{ $$ = zend_ast_create_decl(ZEND_AST_CLOSURE, $2 | $13, $1, $3,
+   * 				  zend_string_init("{closure}", sizeof("{closure}") - 1, 0),
+   * 				  $5, $7, $11, $8); CG(extra_fn_flags) = $9; }
+   * 	|	fn returns_ref '(' parameter_list ')' return_type backup_doc_comment T_DOUBLE_ARROW backup_fn_flags backup_lex_pos expr backup_fn_flags
+   * 			{ $$ = zend_ast_create_decl(ZEND_AST_ARROW_FUNC, $2 | $12, $1, $7,
+   * 				  zend_string_init("{closure}", sizeof("{closure}") - 1, 0), $4, NULL,
+   * 				  zend_ast_create(ZEND_AST_RETURN, $11), $6);
+   * 				  ((zend_ast_decl *) $$)->lex_pos = $10;
+   * 				  CG(extra_fn_flags) = $9; }   *
+   */
+  read_inline_function: function read_inline_function(flags, attrs) {
+    if (this.token === this.tok.T_FUNCTION) {
+      var _result2 = this.read_function(true, flags, attrs);
+      _result2.attrGroups = attrs;
+      return _result2;
+    }
+    // introduced in PHP 7.4
+    if (this.version < 704) {
+      this.raiseError("Arrow Functions are not allowed");
+    }
+    // as an arrowfunc
+    var node = this.node("arrowfunc");
+    // eat T_FN
+    if (this.expect(this.tok.T_FN)) this.next();
+    // check the &
+    var isRef = this.is_reference();
+    // ...
+    if (this.expect("(")) this.next();
+    var params = this.read_parameter_list();
+    if (this.expect(")")) this.next();
+    var nullable = false;
+    var returnType = null;
+    if (this.token === ":") {
+      if (this.next().token === "?") {
+        nullable = true;
+        this.next();
+      }
+      returnType = this.read_types();
+    }
+    if (this.expect(this.tok.T_DOUBLE_ARROW)) this.next();
+    var body = this.read_expr();
+    var result = node(params, isRef, body, returnType, nullable, flags ? true : false);
+    result.attrGroups = attrs;
+    return result;
+  },
+  read_match_expression: function read_match_expression() {
+    var node = this.node("match");
+    this.expect(this.tok.T_MATCH) && this.next();
+    if (this.version < 800) {
+      this.raiseError("Match statements are not allowed before PHP 8");
+    }
+    if (this.expect("(")) this.next();
+    var cond = this.read_expr();
+    if (this.expect(")")) this.next();
+    if (this.expect("{")) this.next();
+    var arms = this.read_match_arms();
+    if (this.expect("}")) this.next();
+    return node(cond, arms);
+  },
+  read_match_arms: function read_match_arms() {
+    var _this2 = this;
+    return this.read_list(function () {
+      return _this2.read_match_arm();
+    }, ",", true);
+  },
+  read_match_arm: function read_match_arm() {
+    if (this.token === "}") {
+      return;
+    }
+    return this.node("matcharm")(this.read_match_arm_conds(), this.read_expr());
+  },
+  read_match_arm_conds: function read_match_arm_conds() {
+    var conds = [];
+    if (this.token === this.tok.T_DEFAULT) {
+      conds = null;
+      this.next();
+    } else {
+      conds.push(this.read_expr());
+      while (this.token === ",") {
+        this.next();
+        if (this.token === this.tok.T_DOUBLE_ARROW) {
+          this.next();
+          return conds;
+        }
+        conds.push(this.read_expr());
+      }
+    }
+    if (this.expect(this.tok.T_DOUBLE_ARROW)) {
+      this.next();
+    }
+    return conds;
+  },
+  read_attribute: function read_attribute() {
+    var node = this.node("attribute");
+    var name = this.text();
+    var args = [];
+    this.next();
+    if (this.token === "(") {
+      args = this.read_argument_list();
+    }
+    return node(name, args);
+  },
+  read_attr_list: function read_attr_list() {
+    var list = [];
+    if (this.token === this.tok.T_ATTRIBUTE) {
+      do {
+        var node = this.node("attrgroup");
+        this.next();
+        var attrs = [this.read_attribute()];
+        while (this.token === ",") {
+          this.next();
+          if (this.token !== "]") attrs.push(this.read_attribute());
+        }
+        this.expect("]");
+        this.next();
+        list.push(node(attrs));
+      } while (this.token === this.tok.T_ATTRIBUTE);
+    }
+    return list;
+  },
+  /*
+   * ```ebnf
+   *    new_expr ::= T_NEW (namespace_name function_argument_list) | (T_CLASS ... class declaration)
+   * ```
+   * https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L850
+   */
+  read_new_expr: function read_new_expr() {
+    var result = this.node("new");
+    this.expect(this.tok.T_NEW) && this.next();
+    var args = [];
+    if (this.token === "(") {
+      this.next();
+      var newExp = this.read_expr();
+      this.expect(")");
+      this.next();
+      if (this.token === "(") {
+        args = this.read_argument_list();
+      }
+      return result(newExp, args);
+    }
+    var attrs = this.read_attr_list();
+    var isReadonly = this.token === this.tok.T_READ_ONLY;
+    if (isReadonly) {
+      if (this.version < 803) {
+        this.raiseError("Anonymous readonly classes are not allowed before PHP 8.3");
+      }
+      this.next();
+    }
+    if (this.token === this.tok.T_CLASS) {
+      var what = this.node("class");
+      // Annonymous class declaration
+      if (this.next().token === "(") {
+        args = this.read_argument_list();
+      }
+      var propExtends = this.read_extends_from();
+      var propImplements = this.read_implements_list();
+      var body = null;
+      if (this.expect("{")) {
+        body = this.next().read_class_body(true, false);
+      }
+      var whatNode = what(null, propExtends, propImplements, body, [0, 0, 0, isReadonly ? 1 : 0]);
+      whatNode.attrGroups = attrs;
+      return result(whatNode, args);
+    }
+    // Already existing class
+    var name = this.read_new_class_name();
+    while (this.token === "[") {
+      var offsetNode = this.node("offsetlookup");
+      var offset = this.next().read_encaps_var_offset();
+      this.expect("]") && this.next();
+      name = offsetNode(name, offset);
+    }
+    if (this.token === "(") {
+      args = this.read_argument_list();
+    }
+    return result(name, args);
+  },
+  /*
+   * Reads a class name
+   * ```ebnf
+   * read_new_class_name ::= namespace_name | variable
+   * ```
+   */
+  read_new_class_name: function read_new_class_name() {
+    if (this.token === this.tok.T_NS_SEPARATOR || this.token === this.tok.T_NAME_RELATIVE || this.token === this.tok.T_NAME_QUALIFIED || this.token === this.tok.T_NAME_FULLY_QUALIFIED || this.token === this.tok.T_STRING || this.token === this.tok.T_NAMESPACE) {
+      var result = this.read_namespace_name(true);
+      if (this.token === this.tok.T_DOUBLE_COLON) {
+        result = this.read_static_getter(result);
+        return this.recursive_variable_chain_scan(result, true, false);
+      }
+      return result;
+    } else if (this.is("VARIABLE")) {
+      return this.read_variable(true, false);
+    } else {
+      this.expect([this.tok.T_STRING, "VARIABLE"]);
+    }
+  },
+  handleDereferencable: function handleDereferencable(expr) {
+    while (this.token !== this.EOF) {
+      if (this.token === this.tok.T_OBJECT_OPERATOR || this.token === this.tok.T_DOUBLE_COLON || this.token === this.tok.T_NULLSAFE_OBJECT_OPERATOR) {
+        expr = this.recursive_variable_chain_scan(expr, false, false, true);
+      } else if (this.token === this.tok.T_CURLY_OPEN || this.token === "[") {
+        expr = this.read_dereferencable(expr);
+      } else if (this.token === "(") {
+        // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1118
+        expr = this.node("call")(expr, this.read_argument_list());
+      } else {
+        return expr;
+      }
+    }
+    return expr;
+  }
+};
+
+/***/ },
+
+/***/ 8214
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+module.exports = {
+  /*
+   * checks if current token is a reference keyword
+   */
+  is_reference: function is_reference() {
+    if (this.token === "&") {
+      this.next();
+      return true;
+    }
+    return false;
+  },
+  /*
+   * checks if current token is a variadic keyword
+   */
+  is_variadic: function is_variadic() {
+    if (this.token === this.tok.T_ELLIPSIS) {
+      this.next();
+      return true;
+    }
+    return false;
+  },
+  /*
+   * reading a function
+   * ```ebnf
+   * function ::= function_declaration code_block
+   * ```
+   */
+  read_function: function read_function(closure, flag, attrs, locStart) {
+    var result = this.read_function_declaration(closure ? 1 : flag ? 2 : 0, flag && flag[1] === 1, attrs || [], locStart);
+    if (flag && flag[2] == 1) {
+      // abstract function :
+      result.parseFlags(flag);
+      if (this.expect(";")) {
+        this.next();
+      }
+    } else {
+      if (this.expect("{")) {
+        result.body = this.read_code_block(false);
+        if (result.loc && result.body.loc) {
+          result.loc.end = result.body.loc.end;
+        }
+      }
+      if (!closure && flag) {
+        result.parseFlags(flag);
+      }
+    }
+    return result;
+  },
+  /*
+   * reads a function declaration (without his body)
+   * ```ebnf
+   * function_declaration ::= T_FUNCTION '&'?  T_STRING '(' parameter_list ')'
+   * ```
+   */
+  read_function_declaration: function read_function_declaration(type, isStatic, attrs, locStart) {
+    var _this = this;
+    var nodeName = "function";
+    if (type === 1) {
+      nodeName = "closure";
+    } else if (type === 2) {
+      nodeName = "method";
+    }
+    var result = this.node(nodeName);
+    if (this.expect(this.tok.T_FUNCTION)) {
+      this.next();
+    }
+    var isRef = this.is_reference();
+    var name = false,
+      use = [],
+      returnType = null,
+      nullable = false;
+    if (type !== 1) {
+      var nameNode = this.node("identifier");
+      if (type === 2) {
+        if (this.version >= 700) {
+          if (this.token === this.tok.T_STRING || this.is("IDENTIFIER")) {
+            name = this.text();
+            this.next();
+          } else if (this.version < 704) {
+            this.error("IDENTIFIER");
+          }
+        } else if (this.token === this.tok.T_STRING) {
+          name = this.text();
+          this.next();
+        } else {
+          this.error("IDENTIFIER");
+        }
+      } else {
+        if (this.version >= 700) {
+          if (this.token === this.tok.T_STRING) {
+            name = this.text();
+            this.next();
+          } else if (this.version >= 704) {
+            if (!this.expect("(")) {
+              this.next();
+            }
+          } else {
+            this.error(this.tok.T_STRING);
+            this.next();
+          }
+        } else {
+          if (this.expect(this.tok.T_STRING)) {
+            name = this.text();
+          }
+          this.next();
+        }
+      }
+      name = nameNode(name);
+    }
+    if (this.expect("(")) this.next();
+    var params = this.read_parameter_list(name.name === "__construct");
+    if (this.expect(")")) this.next();
+    if (type === 1) {
+      use = this.read_lexical_vars();
+    }
+    if (this.token === ":") {
+      if (this.next().token === "?") {
+        nullable = true;
+        this.next();
+      }
+      returnType = this.read_types();
+    }
+    var apply_attrgroup_location = function apply_attrgroup_location(node) {
+      node.attrGroups = attrs || [];
+      if (locStart && node.loc) {
+        node.loc.start = locStart;
+        if (node.loc.source) {
+          node.loc.source = _this.lexer._input.substr(node.loc.start.offset, node.loc.end.offset - node.loc.start.offset);
+        }
+      }
+      return node;
+    };
+    if (type === 1) {
+      // closure
+      return apply_attrgroup_location(result(params, isRef, use, returnType, nullable, isStatic));
+    }
+    return apply_attrgroup_location(result(name, params, isRef, returnType, nullable));
+  },
+  read_lexical_vars: function read_lexical_vars() {
+    var result = [];
+    if (this.token === this.tok.T_USE) {
+      this.next();
+      this.expect("(") && this.next();
+      result = this.read_lexical_var_list();
+      this.expect(")") && this.next();
+    }
+    return result;
+  },
+  read_list_with_dangling_comma: function read_list_with_dangling_comma(item) {
+    var result = [];
+    while (this.token != this.EOF) {
+      result.push(item());
+      if (this.token == ",") {
+        this.next();
+        if (this.version >= 800 && this.token === ")") {
+          return result;
+        }
+      } else if (this.token == ")") {
+        break;
+      } else {
+        this.error([",", ")"]);
+        break;
+      }
+    }
+    return result;
+  },
+  read_lexical_var_list: function read_lexical_var_list() {
+    return this.read_list_with_dangling_comma(this.read_lexical_var.bind(this));
+  },
+  /*
+   * ```ebnf
+   * lexical_var ::= '&'? T_VARIABLE
+   * ```
+   */
+  read_lexical_var: function read_lexical_var() {
+    if (this.token === "&") {
+      return this.read_byref(this.read_lexical_var.bind(this));
+    }
+    var result = this.node("variable");
+    this.expect(this.tok.T_VARIABLE);
+    var name = this.text().substring(1);
+    this.next();
+    return result(name, false);
+  },
+  /*
+   * reads a list of parameters
+   * ```ebnf
+   *  parameter_list ::= (parameter ',')* parameter?
+   * ```
+   */
+  read_parameter_list: function read_parameter_list(is_class_constructor) {
+    if (this.token !== ")") {
+      var wasVariadic = false;
+      return this.read_list_with_dangling_comma(function () {
+        var parameter = this.read_parameter(is_class_constructor);
+        if (parameter) {
+          // variadic parameters can only be defined at the end of the parameter list
+          if (wasVariadic) {
+            this.raiseError("Unexpected parameter after a variadic parameter");
+          }
+          if (parameter.variadic) {
+            wasVariadic = true;
+          }
+        }
+        return parameter;
+      }.bind(this), ",");
+    }
+    return [];
+  },
+  /*
+   * ```ebnf
+   *  parameter ::= type? '&'? T_ELLIPSIS? T_VARIABLE ('=' expr)?
+   * ```
+   * @see https://github.com/php/php-src/blob/493524454d66adde84e00d249d607ecd540de99f/Zend/zend_language_parser.y#L640
+   */
+  read_parameter: function read_parameter(is_class_constructor) {
+    var node = this.node("parameter");
+    var parameterName = null;
+    var value = null;
+    var nullable = false;
+    var readonly = false;
+    var attrs = [];
+    if (this.token === this.tok.T_ATTRIBUTE) attrs = this.read_attr_list();
+    if (this.version >= 801 && this.token === this.tok.T_READ_ONLY) {
+      if (is_class_constructor) {
+        this.next();
+        readonly = true;
+      } else {
+        this.raiseError("readonly properties can be used only on class constructor");
+      }
+    }
+    var _this$read_promoted = this.read_promoted(),
+      _this$read_promoted2 = _slicedToArray(_this$read_promoted, 2),
+      flags = _this$read_promoted2[0],
+      flagsSet = _this$read_promoted2[1];
+    if (!readonly && this.version >= 801 && this.token === this.tok.T_READ_ONLY) {
+      if (is_class_constructor) {
+        this.next();
+        readonly = true;
+      } else {
+        this.raiseError("readonly properties can be used only on class constructor");
+      }
+    }
+    if (this.token === "?") {
+      this.next();
+      nullable = true;
+    }
+    var types = this.read_types();
+    if (nullable && !types) {
+      this.raiseError("Expecting a type definition combined with nullable operator");
+    }
+    var isRef = this.is_reference();
+    var isVariadic = this.is_variadic();
+    if (this.expect(this.tok.T_VARIABLE)) {
+      parameterName = this.node("identifier");
+      var name = this.text().substring(1);
+      this.next();
+      parameterName = parameterName(name);
+    }
+    if (this.token == "=") {
+      value = this.next().read_expr();
+    }
+    var hooks = [];
+    if (this.version >= 804 && flags && this.token === "{") {
+      hooks = this.read_property_hooks();
+    }
+    var result = node(parameterName, types, value, isRef, isVariadic, readonly, nullable, flags, hooks, flagsSet);
+    if (attrs) result.attrGroups = attrs;
+    return result;
+  },
+  read_types: function read_types() {
+    var MODE_UNSET = "unset";
+    var MODE_UNION = "union";
+    var MODE_INTERSECTION = "intersection";
+    var types = [];
+    var mode = MODE_UNSET;
+    var node = this.node();
+    var type = this.read_type();
+    if (!type) {
+      node.destroy();
+      return null;
+    }
+
+    // we have matched a single type
+    types.push(type);
+
+    // is the current token a:
+    // - | for union type
+    // - & for intersection type (> php 8.1)
+    while (this.token === "|" || this.version >= 801 && this.token === "&") {
+      var nextToken = this.peek();
+      if (nextToken === this.tok.T_ELLIPSIS || nextToken === this.tok.T_VARIABLE) {
+        // the next token is part of the variable (or the variable itself),
+        // we're not gonna match anymore types
+        break;
+      }
+      if (mode === MODE_UNSET) {
+        // are we in union or intersection "mode"
+        mode = this.token === "|" ? MODE_UNION : MODE_INTERSECTION;
+      } else {
+        // it is not possible to mix "modes"
+        if (mode === MODE_UNION && this.token !== "|" || mode === MODE_INTERSECTION && this.token !== "&") {
+          this.raiseError('Unexpect token "' + this.token + '", "|" and "&" can not be mixed');
+        }
+      }
+      this.next();
+      types.push(this.read_type());
+    }
+    if (types.length === 1) {
+      node.destroy();
+      return types[0];
+    } else {
+      return mode === MODE_INTERSECTION ? node("intersectiontype", types) : node("uniontype", types);
+    }
+  },
+  read_promoted: function read_promoted() {
+    var MODIFIER_PUBLIC = 1;
+    var MODIFIER_PROTECTED = 2;
+    var MODIFIER_PRIVATE = 4;
+    var firstModifier;
+    if (this.token === this.tok.T_PUBLIC) {
+      this.next();
+      firstModifier = MODIFIER_PUBLIC;
+    } else if (this.token === this.tok.T_PROTECTED) {
+      this.next();
+      firstModifier = MODIFIER_PROTECTED;
+    } else if (this.token === this.tok.T_PRIVATE) {
+      this.next();
+      firstModifier = MODIFIER_PRIVATE;
+    } else {
+      return [0, 0];
+    }
+
+    // PHP 8.4+ asymmetric visibility
+    if (this.version >= 804) {
+      if (this.token === "(") {
+        // shorthand: visibility(set) — firstModifier is the set modifier, read visibility is implicit
+        this.next(); // consume '('
+        if (this.token !== this.tok.T_STRING || this.text() !== "set") {
+          this.error("set");
+        } else {
+          this.next(); // consume 'set'
+        }
+        if (this.expect(")")) {
+          this.next(); // consume ')'
+        }
+        return [0, firstModifier]; // no explicit read visibility, set = firstModifier
+      }
+
+      // Check for explicit form: readVisibility setVisibility(set)
+      var setModifier = 0;
+      if (this.token === this.tok.T_PUBLIC) {
+        this.next();
+        setModifier = MODIFIER_PUBLIC;
+      } else if (this.token === this.tok.T_PROTECTED) {
+        this.next();
+        setModifier = MODIFIER_PROTECTED;
+      } else if (this.token === this.tok.T_PRIVATE) {
+        this.next();
+        setModifier = MODIFIER_PRIVATE;
+      }
+      if (setModifier > 0) {
+        if (this.expect("(")) {
+          this.next(); // consume '('
+        }
+        if (this.token !== this.tok.T_STRING || this.text() !== "set") {
+          this.error("set");
+        } else {
+          this.next(); // consume 'set'
+        }
+        if (this.expect(")")) {
+          this.next(); // consume ')'
+        }
+        return [firstModifier, setModifier];
+      }
+    }
+    return [firstModifier, 0];
+  },
+  /*
+   * Reads a list of arguments
+   * ```ebnf
+   *  function_argument_list ::= '(' (argument_list (',' argument_list)*)? ')'
+   * ```
+   */
+  read_argument_list: function read_argument_list() {
+    var result = [];
+    this.expect("(") && this.next();
+    if (this.version >= 801 && this.token === this.tok.T_ELLIPSIS && this.peek() === ")") {
+      var variadicNode = this.node("variadicplaceholder");
+      this.next();
+      result.push(variadicNode());
+    } else if (this.token !== ")") {
+      result = this.read_non_empty_argument_list();
+    }
+    this.expect(")") && this.next();
+    return result;
+  },
+  /*
+   * Reads non empty argument list
+   */
+  read_non_empty_argument_list: function read_non_empty_argument_list() {
+    var wasVariadic = false;
+    return this.read_function_list(function () {
+      var argument = this.read_argument();
+      if (argument) {
+        var isVariadic = argument.kind === "variadic";
+        // variadic arguments can only be followed by other variadic arguments
+        if (wasVariadic && !isVariadic) {
+          this.raiseError("Unexpected non-variadic argument after a variadic argument");
+        }
+        if (isVariadic) {
+          wasVariadic = true;
+        }
+      }
+      return argument;
+    }.bind(this), ",");
+  },
+  /*
+   * ```ebnf
+   *    argument_list ::= T_STRING ':' expr | T_ELLIPSIS? expr
+   * ```
+   */
+  read_argument: function read_argument() {
+    if (this.token === this.tok.T_ELLIPSIS) {
+      return this.node("variadic")(this.next().read_expr());
+    }
+    if (this.token === this.tok.T_STRING || Object.values(this.lexer.keywords).includes(this.token)) {
+      var nextToken = this.peek();
+      if (nextToken === ":") {
+        if (this.version < 800) {
+          this.raiseError("PHP 8+ is required to use named arguments");
+        }
+        return this.node("namedargument")(this.text(), this.next().next().read_expr());
+      }
+    }
+    return this.read_expr();
+  },
+  /*
+   * read type hinting
+   * ```ebnf
+   *  type ::= T_ARRAY | T_CALLABLE | namespace_name
+   * ```
+   */
+  read_type: function read_type() {
+    var result = this.node();
+    if (this.token === this.tok.T_ARRAY || this.token === this.tok.T_CALLABLE) {
+      var type = this.text();
+      this.next();
+      return result("typereference", type.toLowerCase(), type);
+    } else if (this.token === this.tok.T_NAME_RELATIVE || this.token === this.tok.T_NAME_QUALIFIED || this.token === this.tok.T_NAME_FULLY_QUALIFIED || this.token === this.tok.T_STRING || this.token === this.tok.T_STATIC) {
+      var _type = this.text();
+      var backup = [this.token, this.lexer.getState()];
+      this.next();
+      if (this.token !== this.tok.T_NS_SEPARATOR && this.ast.typereference.types.indexOf(_type.toLowerCase()) > -1) {
+        return result("typereference", _type.toLowerCase(), _type);
+      } else {
+        // rollback a classic namespace
+        this.lexer.tokens.push(backup);
+        this.next();
+        // fix : destroy not consumed node (release comments)
+        result.destroy();
+        return this.read_namespace_name();
+      }
+    } else if (this.version >= 802 && this.token === "(") {
+      // DNF type (PHP 8.2+): parenthesized intersection type, e.g. (A&B)|null
+      this.next(); // consume (
+      var innerTypes = [];
+      innerTypes.push(this.read_type());
+      while (this.token === "&") {
+        var nextToken = this.peek();
+        if (nextToken === this.tok.T_ELLIPSIS || nextToken === this.tok.T_VARIABLE) {
+          break;
+        }
+        this.next();
+        innerTypes.push(this.read_type());
+      }
+      this.expect(")") && this.next(); // consume )
+      return result("intersectiontype", innerTypes);
+    }
+    // fix : destroy not consumed node (release comments)
+    result.destroy();
+    return null;
+  }
+};
+
+/***/ },
+
+/***/ 9461
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Reads an IF statement
+   *
+   * ```ebnf
+   *  if ::= T_IF '(' expr ')' ':' ...
+   * ```
+   */
+  read_if: function read_if() {
+    var result = this.node("if");
+    var test = this.next().read_if_expr();
+    var body;
+    var alternate = null;
+    var shortForm = false;
+    if (this.token === ":") {
+      shortForm = true;
+      body = this.node("block");
+      this.next();
+      var items = [];
+      while (this.token !== this.EOF && this.token !== this.tok.T_ENDIF) {
+        if (this.token === this.tok.T_ELSEIF) {
+          alternate = this.read_elseif_short();
+          break;
+        } else if (this.token === this.tok.T_ELSE) {
+          alternate = this.read_else_short();
+          break;
+        }
+        items.push(this.read_inner_statement());
+      }
+      if (items.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+        items.push(this.node("noop")());
+      }
+      body = body(null, items);
+      this.expect(this.tok.T_ENDIF) && this.next();
+      this.expectEndOfStatement();
+    } else {
+      body = this.read_statement();
+      if (this.token === this.tok.T_ELSEIF) {
+        alternate = this.read_if();
+      } else if (this.token === this.tok.T_ELSE) {
+        alternate = this.next().read_statement();
+      }
+    }
+    return result(test, body, alternate, shortForm);
+  },
+  /*
+   * reads an if expression : '(' expr ')'
+   */
+  read_if_expr: function read_if_expr() {
+    this.expect("(") && this.next();
+    var result = this.read_expr();
+    this.expect(")") && this.next();
+    return result;
+  },
+  /*
+   * reads an elseif (expr): statements
+   */
+  read_elseif_short: function read_elseif_short() {
+    var alternate = null;
+    var result = this.node("if");
+    var test = this.next().read_if_expr();
+    var body = this.node("block");
+    if (this.expect(":")) this.next();
+    var items = [];
+    while (this.token != this.EOF && this.token !== this.tok.T_ENDIF) {
+      if (this.token === this.tok.T_ELSEIF) {
+        alternate = this.read_elseif_short();
+        break;
+      } else if (this.token === this.tok.T_ELSE) {
+        alternate = this.read_else_short();
+        break;
+      }
+      items.push(this.read_inner_statement());
+    }
+    if (items.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+      items.push(this.node("noop")());
+    }
+    return result(test, body(null, items), alternate, true);
+  },
+  /*
+   *
+   */
+  read_else_short: function read_else_short() {
+    this.next();
+    var body = this.node("block");
+    if (this.expect(":")) this.next();
+    var items = [];
+    while (this.token != this.EOF && this.token !== this.tok.T_ENDIF) {
+      items.push(this.read_inner_statement());
+    }
+    if (items.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+      items.push(this.node("noop")());
+    }
+    return body(null, items);
+  }
+};
+
+/***/ },
+
+/***/ 5931
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Reads a while statement
+   * ```ebnf
+   * while ::= T_WHILE (statement | ':' inner_statement_list T_ENDWHILE ';')
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L587
+   * @return {While}
+   */
+  read_while: function read_while() {
+    var result = this.node("while");
+    this.expect(this.tok.T_WHILE) && this.next();
+    var body;
+    var shortForm = false;
+    if (this.expect("(")) this.next();
+    var test = this.read_expr();
+    if (this.expect(")")) this.next();
+    if (this.token === ":") {
+      shortForm = true;
+      body = this.read_short_form(this.tok.T_ENDWHILE);
+    } else {
+      body = this.read_statement();
+    }
+    return result(test, body, shortForm);
+  },
+  /*
+   * Reads a do / while loop
+   * ```ebnf
+   * do ::= T_DO statement T_WHILE '(' expr ')' ';'
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L423
+   * @return {Do}
+   */
+  read_do: function read_do() {
+    var result = this.node("do");
+    this.expect(this.tok.T_DO) && this.next();
+    var test = null;
+    var body = this.read_statement();
+    if (this.expect(this.tok.T_WHILE)) {
+      if (this.next().expect("(")) this.next();
+      test = this.read_expr();
+      if (this.expect(")")) this.next();
+      if (this.expect(";")) this.next();
+    }
+    return result(test, body);
+  },
+  /*
+   * Read a for incremental loop
+   * ```ebnf
+   * for ::= T_FOR '(' for_exprs ';' for_exprs ';' for_exprs ')' for_statement
+   * for_statement ::= statement | ':' inner_statement_list T_ENDFOR ';'
+   * for_exprs ::= expr? (',' expr)*
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L425
+   * @return {For}
+   */
+  read_for: function read_for() {
+    var result = this.node("for");
+    this.expect(this.tok.T_FOR) && this.next();
+    var init = [];
+    var test = [];
+    var increment = [];
+    var body;
+    var shortForm = false;
+    if (this.expect("(")) this.next();
+    if (this.token !== ";") {
+      init = this.read_list(this.read_expr, ",");
+      if (this.expect(";")) this.next();
+    } else {
+      this.next();
+    }
+    if (this.token !== ";") {
+      test = this.read_list(this.read_expr, ",");
+      if (this.expect(";")) this.next();
+    } else {
+      this.next();
+    }
+    if (this.token !== ")") {
+      increment = this.read_list(this.read_expr, ",");
+      if (this.expect(")")) this.next();
+    } else {
+      this.next();
+    }
+    if (this.token === ":") {
+      shortForm = true;
+      body = this.read_short_form(this.tok.T_ENDFOR);
+    } else {
+      body = this.read_statement();
+    }
+    return result(init, test, increment, body, shortForm);
+  },
+  /*
+   * Reads a foreach loop
+   * ```ebnf
+   * foreach ::= '(' expr T_AS foreach_variable (T_DOUBLE_ARROW foreach_variable)? ')' statement
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L438
+   * @return {Foreach}
+   */
+  read_foreach: function read_foreach() {
+    var result = this.node("foreach");
+    this.expect(this.tok.T_FOREACH) && this.next();
+    var key = null;
+    var value = null;
+    var body;
+    var shortForm = false;
+    if (this.expect("(")) this.next();
+    var source = this.read_expr();
+    if (this.expect(this.tok.T_AS)) {
+      this.next();
+      value = this.read_foreach_variable();
+      if (this.token === this.tok.T_DOUBLE_ARROW) {
+        key = value;
+        value = this.next().read_foreach_variable();
+      }
+    }
+
+    // grammatically correct but not supported by PHP
+    if (key && key.kind === "list") {
+      this.raiseError("Fatal Error : Cannot use list as key element");
+    }
+    if (this.expect(")")) this.next();
+    if (this.token === ":") {
+      shortForm = true;
+      body = this.read_short_form(this.tok.T_ENDFOREACH);
+    } else {
+      body = this.read_statement();
+    }
+    return result(source, key, value, body, shortForm);
+  },
+  /*
+   * Reads a foreach variable statement
+   * ```ebnf
+   * foreach_variable =
+   *    variable |
+   *    '&' variable |
+   *    T_LIST '(' assignment_list ')' |
+   *    '[' assignment_list ']'
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L544
+   * @return {Expression}
+   */
+  read_foreach_variable: function read_foreach_variable() {
+    if (this.token === this.tok.T_LIST || this.token === "[") {
+      var isShort = this.token === "[";
+      var result = this.node("list");
+      this.next();
+      if (!isShort && this.expect("(")) this.next();
+      var assignList = this.read_array_pair_list(isShort);
+      if (this.expect(isShort ? "]" : ")")) this.next();
+      return result(assignList, isShort);
+    } else {
+      return this.read_variable(false, false);
+    }
+  }
+};
+
+/***/ },
+
+/***/ 9147
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * ```ebnf
+   * start ::= (namespace | top_statement)*
+   * ```
+   */
+  read_start: function read_start() {
+    if (this.token == this.tok.T_NAMESPACE) {
+      return this.read_namespace();
+    } else {
+      return this.read_top_statement();
+    }
+  }
+};
+
+/***/ },
+
+/***/ 9219
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Reads a namespace declaration block
+   * ```ebnf
+   * namespace ::= T_NAMESPACE namespace_name? '{'
+   *    top_statements
+   * '}'
+   * | T_NAMESPACE namespace_name ';' top_statements
+   * ```
+   * @see http://php.net/manual/en/language.namespaces.php
+   * @return {Namespace}
+   */
+  read_namespace: function read_namespace() {
+    var result = this.node("namespace");
+    var body;
+    this.expect(this.tok.T_NAMESPACE) && this.next();
+    var name;
+    if (this.token === "{") {
+      name = {
+        name: [""]
+      };
+    } else {
+      name = this.read_namespace_name();
+    }
+    this.currentNamespace = name;
+    if (this.token === ";") {
+      this.currentNamespace = name;
+      body = this.next().read_top_statements(true);
+      return result(name.name, body, false);
+    } else if (this.token === "{") {
+      this.currentNamespace = name;
+      body = this.next().read_top_statements();
+      this.expect("}") && this.next();
+      if (body.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+        body.push(this.node("noop")());
+      }
+      return result(name.name, body, true);
+    } else {
+      this.error(["{", ";"]);
+      // graceful mode :
+      this.currentNamespace = name;
+      body = this.read_top_statements();
+      this.expect(this.EOF);
+      return result(name, body, false);
+    }
+  },
+  /*
+   * Reads a namespace name
+   * ```ebnf
+   *  namespace_name ::= T_NS_SEPARATOR? (T_STRING T_NS_SEPARATOR)* T_STRING
+   * ```
+   * @see http://php.net/manual/en/language.namespaces.rules.php
+   * @return {Reference}
+   */
+  read_namespace_name: function read_namespace_name(resolveReference) {
+    var result = this.node();
+    var resolution;
+    var name = this.text();
+    switch (this.token) {
+      case this.tok.T_NAME_RELATIVE:
+        resolution = this.ast.name.RELATIVE_NAME;
+        name = name.replace(/^namespace\\/, "");
+        break;
+      case this.tok.T_NAME_QUALIFIED:
+        resolution = this.ast.name.QUALIFIED_NAME;
+        break;
+      case this.tok.T_NAME_FULLY_QUALIFIED:
+        resolution = this.ast.name.FULL_QUALIFIED_NAME;
+        break;
+      default:
+        resolution = this.ast.name.UNQUALIFIED_NAME;
+        if (!this.expect(this.tok.T_STRING)) {
+          // graceful mode
+          return result("name", "", this.ast.name.FULL_QUALIFIED_NAME);
+        }
+    }
+    this.next();
+    if (resolveReference || this.token !== "(") {
+      if (name.toLowerCase() === "parent") {
+        return result("parentreference", name);
+      } else if (name.toLowerCase() === "self") {
+        return result("selfreference", name);
+      }
+    }
+    return result("name", name, resolution);
+  },
+  /*
+   * Reads a use statement
+   * ```ebnf
+   * use_statement ::= T_USE
+   *   use_type? use_declarations |
+   *   use_type use_statement '{' use_declarations '}' |
+   *   use_statement '{' use_declarations(=>typed) '}'
+   * ';'
+   * ```
+   * @see http://php.net/manual/en/language.namespaces.importing.php
+   * @return {UseGroup}
+   */
+  read_use_statement: function read_use_statement() {
+    var result = this.node("usegroup");
+    var items = [];
+    var name = null;
+    this.expect(this.tok.T_USE) && this.next();
+    var type = this.read_use_type();
+    items.push(this.read_use_declaration(false));
+    if (this.token === ",") {
+      items = items.concat(this.next().read_use_declarations(false));
+    } else if (this.token === "{") {
+      name = items[0].name;
+      items = this.next().read_use_declarations(type === null);
+      this.expect("}") && this.next();
+    }
+    result = result(name, type, items);
+    this.expect(";") && this.next();
+    return result;
+  },
+  /*
+   *
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1045
+   */
+  read_class_name_reference: function read_class_name_reference() {
+    // resolved as the same
+    return this.read_variable(true, false);
+  },
+  /*
+   * Reads a use declaration
+   * ```ebnf
+   * use_declaration ::= use_type? namespace_name use_alias
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L380
+   * @return {UseItem}
+   */
+  read_use_declaration: function read_use_declaration(typed) {
+    var result = this.node("useitem");
+    var type = null;
+    if (typed) type = this.read_use_type();
+    var name = this.read_namespace_name();
+    var alias = this.read_use_alias();
+    return result(name.name, alias, type);
+  },
+  /*
+   * Reads a list of use declarations
+   * ```ebnf
+   * use_declarations ::= use_declaration (',' use_declaration)*
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L380
+   * @return {UseItem[]}
+   */
+  read_use_declarations: function read_use_declarations(typed) {
+    var result = [this.read_use_declaration(typed)];
+    while (this.token === ",") {
+      this.next();
+      if (typed) {
+        if (this.token !== this.tok.T_NAME_RELATIVE && this.token !== this.tok.T_NAME_QUALIFIED && this.token !== this.tok.T_NAME_FULLY_QUALIFIED && this.token !== this.tok.T_FUNCTION && this.token !== this.tok.T_CONST && this.token !== this.tok.T_STRING) {
+          break;
+        }
+      } else if (this.token !== this.tok.T_NAME_RELATIVE && this.token !== this.tok.T_NAME_QUALIFIED && this.token !== this.tok.T_NAME_FULLY_QUALIFIED && this.token !== this.tok.T_STRING && this.token !== this.tok.T_NS_SEPARATOR) {
+        break;
+      }
+      result.push(this.read_use_declaration(typed));
+    }
+    return result;
+  },
+  /*
+   * Reads a use statement
+   * ```ebnf
+   * use_alias ::= (T_AS T_STRING)?
+   * ```
+   * @return {String|null}
+   */
+  read_use_alias: function read_use_alias() {
+    var result = null;
+    if (this.token === this.tok.T_AS) {
+      if (this.next().expect(this.tok.T_STRING)) {
+        var aliasName = this.node("identifier");
+        var name = this.text();
+        this.next();
+        result = aliasName(name);
+      }
+    }
+    return result;
+  },
+  /*
+   * Reads the namespace type declaration
+   * ```ebnf
+   * use_type ::= (T_FUNCTION | T_CONST)?
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L335
+   * @return {String|null} Possible values : function, const
+   */
+  read_use_type: function read_use_type() {
+    if (this.token === this.tok.T_FUNCTION) {
+      this.next();
+      return this.ast.useitem.TYPE_FUNCTION;
+    } else if (this.token === this.tok.T_CONST) {
+      this.next();
+      return this.ast.useitem.TYPE_CONST;
+    }
+    return null;
+  }
+};
+
+/***/ },
+
+/***/ 7170
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+var specialChar = {
+  "\\": "\\",
+  $: "$",
+  n: "\n",
+  r: "\r",
+  t: "\t",
+  f: String.fromCharCode(12),
+  v: String.fromCharCode(11),
+  e: String.fromCharCode(27)
+};
+module.exports = {
+  /*
+   * Unescape special chars
+   */
+  resolve_special_chars: function resolve_special_chars(text, doubleQuote) {
+    if (!doubleQuote) {
+      // single quote fix
+      return text.replace(/\\\\/g, "\\").replace(/\\'/g, "'");
+    }
+    return text.replace(/\\"/g, '"').replace(/\\([\\$nrtfve]|[xX][0-9a-fA-F]{1,2}|[0-7]{1,3}|u{([0-9a-fA-F]+)})/g, function ($match, p1, p2) {
+      if (specialChar[p1]) {
+        return specialChar[p1];
+      } else if ("x" === p1[0] || "X" === p1[0]) {
+        return String.fromCodePoint(parseInt(p1.substr(1), 16));
+      } else if ("u" === p1[0]) {
+        return String.fromCodePoint(parseInt(p2, 16));
+      } else {
+        return String.fromCodePoint(parseInt(p1, 8));
+      }
+    });
+  },
+  /*
+   * Remove all leading spaces each line for heredoc text if there is a indentation
+   * @param {string} text
+   * @param {number} indentation
+   * @param {boolean} indentation_uses_spaces
+   * @param {boolean} first_encaps_node if it is behind a variable, the first N spaces should not be removed
+   */
+  remove_heredoc_leading_whitespace_chars: function remove_heredoc_leading_whitespace_chars(text, indentation, indentation_uses_spaces, first_encaps_node) {
+    if (indentation === 0) {
+      return text;
+    }
+    this.check_heredoc_indentation_level(text, indentation, indentation_uses_spaces, first_encaps_node);
+    var matchedChar = indentation_uses_spaces ? " " : "\t";
+    var removementRegExp = new RegExp("\\n".concat(matchedChar, "{").concat(indentation, "}"), "g");
+    var removementFirstEncapsNodeRegExp = new RegExp("^".concat(matchedChar, "{").concat(indentation, "}"));
+
+    // Rough replace, need more check
+    if (first_encaps_node) {
+      // Remove text leading whitespace
+      text = text.replace(removementFirstEncapsNodeRegExp, "");
+    }
+
+    // Remove leading whitespace after \n
+    return text.replace(removementRegExp, "\n");
+  },
+  /*
+   * Check indentation level of heredoc in text, if mismatch, raiseError
+   * @param {string} text
+   * @param {number} indentation
+   * @param {boolean} indentation_uses_spaces
+   * @param {boolean} first_encaps_node if it is behind a variable, the first N spaces should not be removed
+   */
+  check_heredoc_indentation_level: function check_heredoc_indentation_level(text, indentation, indentation_uses_spaces, first_encaps_node) {
+    var textSize = text.length;
+    var offset = 0;
+    var leadingWhitespaceCharCount = 0;
+    /*
+     * @var inCountingState {boolean} reset to true after a new line
+     * @private
+     */
+    var inCountingState = true;
+    var chToCheck = indentation_uses_spaces ? " " : "\t";
+    var inCheckState = false;
+    if (!first_encaps_node) {
+      // start from first \n
+      offset = text.indexOf("\n");
+      // if no \n, just return
+      if (offset === -1) {
+        return;
+      }
+      offset++;
+    }
+    while (offset < textSize) {
+      if (inCountingState) {
+        if (text[offset] === chToCheck) {
+          leadingWhitespaceCharCount++;
+        } else {
+          inCheckState = true;
+        }
+      }
+      if (text[offset] !== "\n" && inCheckState && leadingWhitespaceCharCount < indentation) {
+        this.raiseError("Invalid body indentation level (expecting an indentation at least ".concat(indentation, ")"));
+      } else {
+        inCheckState = false;
+      }
+      if (text[offset] === "\n") {
+        // Reset counting state
+        inCountingState = true;
+        leadingWhitespaceCharCount = 0;
+      }
+      offset++;
+    }
+  },
+  /*
+   * Reads dereferencable scalar
+   */
+  read_dereferencable_scalar: function read_dereferencable_scalar() {
+    var result = null;
+    switch (this.token) {
+      case this.tok.T_CONSTANT_ENCAPSED_STRING:
+        {
+          var value = this.node("string");
+          var text = this.text();
+          var offset = 0;
+          if (text[0] === "b" || text[0] === "B") {
+            offset = 1;
+          }
+          var isDoubleQuote = text[offset] === '"';
+          this.next();
+          var textValue = this.resolve_special_chars(text.substring(offset + 1, text.length - 1), isDoubleQuote);
+          value = value(isDoubleQuote, textValue, offset === 1,
+          // unicode flag
+          text);
+          if (this.token === this.tok.T_DOUBLE_COLON) {
+            // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1151
+            result = this.read_static_getter(value);
+          } else {
+            // dirrect string
+            result = value;
+          }
+        }
+        break;
+      case this.tok.T_ARRAY:
+        // array parser
+        result = this.read_array();
+        break;
+      case "[":
+        // short array format
+        result = this.read_array();
+        break;
+    }
+    return result;
+  },
+  /*
+   * ```ebnf
+   *  scalar ::= T_MAGIC_CONST
+   *       | T_LNUMBER | T_DNUMBER
+   *       | T_START_HEREDOC T_ENCAPSED_AND_WHITESPACE? T_END_HEREDOC
+   *       | '"' encaps_list '"'
+   *       | T_START_HEREDOC encaps_list T_END_HEREDOC
+   *       | namespace_name (T_DOUBLE_COLON T_STRING)?
+   * ```
+   */
+  read_scalar: function read_scalar() {
+    if (this.is("T_MAGIC_CONST")) {
+      return this.get_magic_constant();
+    } else {
+      var value, node;
+      switch (this.token) {
+        // NUMERIC
+        case this.tok.T_LNUMBER: // long
+        case this.tok.T_DNUMBER:
+          {
+            // double
+            var result = this.node("number");
+            value = this.text();
+            this.next();
+            return result(value, null);
+          }
+        case this.tok.T_START_HEREDOC:
+          if (this.lexer.curCondition === "ST_NOWDOC") {
+            var start = this.lexer.yylloc.first_offset;
+            node = this.node("nowdoc");
+            value = this.next().text();
+            // strip the last line return char
+            if (this.lexer.heredoc_label.indentation > 0) {
+              value = value.substring(0, value.length - this.lexer.heredoc_label.indentation);
+            }
+            var lastCh = value[value.length - 1];
+            if (lastCh === "\n") {
+              if (value[value.length - 2] === "\r") {
+                // windows style
+                value = value.substring(0, value.length - 2);
+              } else {
+                // linux style
+                value = value.substring(0, value.length - 1);
+              }
+            } else if (lastCh === "\r") {
+              // mac style
+              value = value.substring(0, value.length - 1);
+            }
+            this.expect(this.tok.T_ENCAPSED_AND_WHITESPACE) && this.next();
+            this.expect(this.tok.T_END_HEREDOC) && this.next();
+            var raw = this.lexer._input.substring(start, this.lexer.yylloc.first_offset);
+            node = node(this.remove_heredoc_leading_whitespace_chars(value, this.lexer.heredoc_label.indentation, this.lexer.heredoc_label.indentation_uses_spaces, this.lexer.heredoc_label.first_encaps_node), raw, this.lexer.heredoc_label.label);
+            this.lexer.heredoc_label.finished = true;
+            return node;
+          } else {
+            return this.read_encapsed_string(this.tok.T_END_HEREDOC);
+          }
+        case '"':
+          return this.read_encapsed_string('"');
+        case 'b"':
+        case 'B"':
+          {
+            return this.read_encapsed_string('"', true);
+          }
+
+        // TEXTS
+        case this.tok.T_CONSTANT_ENCAPSED_STRING:
+        case this.tok.T_ARRAY: // array parser
+        case "[":
+          // short array format
+          return this.read_dereferencable_scalar();
+        default:
+          {
+            var err = this.error("SCALAR");
+            // graceful mode : ignore token & return error node
+            this.next();
+            return err;
+          }
+      }
+    }
+  },
+  /*
+   * Handles the dereferencing
+   */
+  read_dereferencable: function read_dereferencable(expr) {
+    var result, offset;
+    var node = this.node("offsetlookup");
+    if (this.token === "[") {
+      offset = this.next().read_expr();
+      if (this.expect("]")) this.next();
+      result = node(expr, offset);
+    } else if (this.token === this.tok.T_DOLLAR_OPEN_CURLY_BRACES) {
+      offset = this.read_encapsed_string_item(false);
+      result = node(expr, offset);
+    }
+    return result;
+  },
+  /*
+   * Reads and extracts an encapsed item
+   * ```ebnf
+   * encapsed_string_item ::= T_ENCAPSED_AND_WHITESPACE
+   *  | T_DOLLAR_OPEN_CURLY_BRACES expr '}'
+   *  | T_DOLLAR_OPEN_CURLY_BRACES T_STRING_VARNAME '}'
+   *  | T_DOLLAR_OPEN_CURLY_BRACES T_STRING_VARNAME '[' expr ']' '}'
+   *  | T_CURLY_OPEN variable '}'
+   *  | variable
+   *  | variable '[' expr ']'
+   *  | variable T_OBJECT_OPERATOR T_STRING
+   * ```
+   * @return {String|Variable|Expr|Lookup}
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1219
+   */
+  read_encapsed_string_item: function read_encapsed_string_item(isDoubleQuote) {
+    var encapsedPart = this.node("encapsedpart");
+    var syntax = null;
+    var curly = false;
+    var result = this.node(),
+      offset,
+      node,
+      name;
+
+    // plain text
+    // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1222
+    if (this.token === this.tok.T_ENCAPSED_AND_WHITESPACE) {
+      var text = this.text();
+      this.next();
+
+      // if this.lexer.heredoc_label.first_encaps_node -> remove first indents
+      result = result("string", false, this.version >= 703 && !this.lexer.heredoc_label.finished ? this.resolve_special_chars(this.remove_heredoc_leading_whitespace_chars(text, this.lexer.heredoc_label.indentation, this.lexer.heredoc_label.indentation_uses_spaces, this.lexer.heredoc_label.first_encaps_node), isDoubleQuote) : this.resolve_special_chars(text, isDoubleQuote), false, text);
+    } else if (this.token === this.tok.T_DOLLAR_OPEN_CURLY_BRACES) {
+      syntax = "simple";
+      curly = true;
+      // dynamic variable name
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1239
+      if (this.next().token === this.tok.T_STRING_VARNAME) {
+        name = this.node("variable");
+        var varName = this.text();
+        this.next();
+        // check if lookup an offset
+        // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1243
+        result.destroy();
+        if (this.token === "[") {
+          name = name(varName, false);
+          node = this.node("offsetlookup");
+          offset = this.next().read_expr();
+          this.expect("]") && this.next();
+          result = node(name, offset);
+        } else {
+          result = name(varName, false);
+        }
+      } else {
+        result = result("variable", this.read_expr(), false);
+      }
+      this.expect("}") && this.next();
+    } else if (this.token === this.tok.T_CURLY_OPEN) {
+      // expression
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1246
+      syntax = "complex";
+      result.destroy();
+      result = this.next().read_variable(false, false);
+      this.expect("}") && this.next();
+    } else if (this.token === this.tok.T_VARIABLE) {
+      syntax = "simple";
+      // plain variable
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1231
+      result.destroy();
+      result = this.read_simple_variable();
+
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1233
+      if (this.token === "[") {
+        node = this.node("offsetlookup");
+        offset = this.next().read_encaps_var_offset();
+        this.expect("]") && this.next();
+        result = node(result, offset);
+      }
+
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1236
+      if (this.token === this.tok.T_OBJECT_OPERATOR) {
+        node = this.node("propertylookup");
+        this.next().expect(this.tok.T_STRING);
+        var what = this.node("identifier");
+        name = this.text();
+        this.next();
+        result = node(result, what(name));
+      }
+
+      // error / fallback
+    } else {
+      this.expect(this.tok.T_ENCAPSED_AND_WHITESPACE);
+      var value = this.text();
+      this.next();
+      // consider it as string
+      result.destroy();
+      result = result("string", false, value, false, value);
+    }
+
+    // reset first_encaps_node to false after access any node
+    this.lexer.heredoc_label.first_encaps_node = false;
+    return encapsedPart(result, syntax, curly);
+  },
+  /*
+   * Reads an encapsed string
+   */
+  read_encapsed_string: function read_encapsed_string(expect) {
+    var isBinary = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    var labelStart = this.lexer.yylloc.first_offset;
+    var node = this.node("encapsed");
+    this.next();
+    var start = this.lexer.yylloc.prev_offset - (isBinary ? 1 : 0);
+    var value = [];
+    var type;
+    if (expect === "`") {
+      type = this.ast.encapsed.TYPE_SHELL;
+    } else if (expect === '"') {
+      type = this.ast.encapsed.TYPE_STRING;
+    } else {
+      type = this.ast.encapsed.TYPE_HEREDOC;
+    }
+
+    // reading encapsed parts
+    while (this.token !== expect && this.token !== this.EOF) {
+      value.push(this.read_encapsed_string_item(true));
+    }
+    if (type === this.ast.encapsed.TYPE_HEREDOC && value.length > 0 && value[value.length - 1].kind === "encapsedpart" && value[value.length - 1].expression.kind === "string") {
+      var _node = value[value.length - 1].expression;
+      var lastCh = _node.value[_node.value.length - 1];
+      if (lastCh === "\n") {
+        if (_node.value[_node.value.length - 2] === "\r") {
+          // windows style
+          _node.value = _node.value.substring(0, _node.value.length - 2);
+        } else {
+          // linux style
+          _node.value = _node.value.substring(0, _node.value.length - 1);
+        }
+      } else if (lastCh === "\r") {
+        // mac style
+        _node.value = _node.value.substring(0, _node.value.length - 1);
+      }
+    }
+    this.expect(expect) && this.next();
+    var raw = this.lexer._input.substring(type === "heredoc" ? labelStart : start - 1, this.lexer.yylloc.first_offset);
+    node = node(value, raw, type);
+    if (expect === this.tok.T_END_HEREDOC) {
+      node.label = this.lexer.heredoc_label.label;
+      this.lexer.heredoc_label.finished = true;
+    }
+    return node;
+  },
+  /*
+   * Constant token
+   */
+  get_magic_constant: function get_magic_constant() {
+    var result = this.node("magic");
+    var name = this.text();
+    this.next();
+    return result(name.toUpperCase(), name);
+  }
+};
+
+/***/ },
+
+/***/ 6261
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * reading a list of top statements (helper for top_statement*)
+   * ```ebnf
+   *  top_statements ::= top_statement*
+   * ```
+   */
+  read_top_statements: function read_top_statements(stopAtNamespace) {
+    var result = [];
+    while (this.token !== this.EOF && this.token !== "}") {
+      if (stopAtNamespace && this.token === this.tok.T_NAMESPACE) break;
+      var statement = this.read_top_statement();
+      if (statement) {
+        if (Array.isArray(statement)) {
+          result = result.concat(statement);
+        } else {
+          result.push(statement);
+        }
+      }
+    }
+    return result;
+  },
+  /*
+   * reading a top statement
+   * ```ebnf
+   *  top_statement ::=
+   *       namespace | function | class
+   *       | interface | trait
+   *       | use_statements | const_list
+   *       | statement
+   * ```
+   */
+  read_top_statement: function read_top_statement() {
+    var attrs = [];
+    if (this.token === this.tok.T_ATTRIBUTE) {
+      attrs = this.read_attr_list();
+    }
+    switch (this.token) {
+      case this.tok.T_FUNCTION:
+        return this.read_function(false, false, attrs);
+      // optional flags
+      case this.tok.T_ABSTRACT:
+      case this.tok.T_FINAL:
+      case this.tok.T_READ_ONLY:
+      case this.tok.T_CLASS:
+        return this.read_class_declaration_statement(attrs);
+      case this.tok.T_INTERFACE:
+        return this.read_interface_declaration_statement(attrs);
+      case this.tok.T_TRAIT:
+        return this.read_trait_declaration_statement(attrs);
+      case this.tok.T_ENUM:
+        return this.read_enum_declaration_statement(attrs);
+      case this.tok.T_USE:
+        return this.read_use_statement();
+      case this.tok.T_CONST:
+        {
+          var result = this.node("constantstatement");
+          var items = this.next().read_const_list();
+          this.expectEndOfStatement();
+          return result(null, items);
+        }
+      case this.tok.T_NAMESPACE:
+        return this.read_namespace();
+      case this.tok.T_HALT_COMPILER:
+        {
+          var _result = this.node("halt");
+          if (this.next().expect("(")) this.next();
+          if (this.expect(")")) this.next();
+          this.expect(";");
+          this.lexer.done = true;
+          return _result(this.lexer._input.substring(this.lexer.offset));
+        }
+      default:
+        return this.read_statement();
+    }
+  },
+  /*
+   * reads a list of simple inner statements (helper for inner_statement*)
+   * ```ebnf
+   *  inner_statements ::= inner_statement*
+   * ```
+   */
+  read_inner_statements: function read_inner_statements() {
+    var result = [];
+    while (this.token != this.EOF && this.token !== "}") {
+      var statement = this.read_inner_statement();
+      if (statement) {
+        if (Array.isArray(statement)) {
+          result = result.concat(statement);
+        } else {
+          result.push(statement);
+        }
+      }
+    }
+    return result;
+  },
+  /*
+   * Reads a list of constants declaration
+   * ```ebnf
+   *   const_list ::= T_CONST T_STRING '=' expr (',' T_STRING '=' expr)* ';'
+   * ```
+   */
+  read_const_list: function read_const_list() {
+    return this.read_list(function () {
+      this.expect(this.tok.T_STRING);
+      var result = this.node("constant");
+      var constName = this.node("identifier");
+      var name = this.text();
+      this.next();
+      constName = constName(name);
+      if (this.expect("=")) {
+        return result(constName, this.next().read_expr());
+      } else {
+        // fallback
+        return result(constName, null);
+      }
+    }, ",", false);
+  },
+  /*
+   * Reads a list of constants declaration
+   * ```ebnf
+   *   declare_list ::= IDENTIFIER '=' expr (',' IDENTIFIER '=' expr)*
+   * ```
+   * @retrurn {Array}
+   */
+  read_declare_list: function read_declare_list() {
+    var result = [];
+    while (this.token != this.EOF && this.token !== ")") {
+      this.expect(this.tok.T_STRING);
+      var directive = this.node("declaredirective");
+      var key = this.node("identifier");
+      var name = this.text();
+      this.next();
+      key = key(name);
+      var value = null;
+      if (this.expect("=")) {
+        value = this.next().read_expr();
+      }
+      result.push(directive(key, value));
+      if (this.token !== ",") break;
+      this.next();
+    }
+    return result;
+  },
+  /*
+   * reads a simple inner statement
+   * ```ebnf
+   *  inner_statement ::= '{' inner_statements '}' | token
+   * ```
+   */
+  read_inner_statement: function read_inner_statement() {
+    var attrs = [];
+    if (this.token === this.tok.T_ATTRIBUTE) {
+      attrs = this.read_attr_list();
+    }
+    switch (this.token) {
+      case this.tok.T_FUNCTION:
+        {
+          var result = this.read_function(false, false);
+          result.attrGroups = attrs;
+          return result;
+        }
+      // optional flags
+      case this.tok.T_ABSTRACT:
+      case this.tok.T_FINAL:
+      case this.tok.T_CLASS:
+        return this.read_class_declaration_statement();
+      case this.tok.T_INTERFACE:
+        return this.read_interface_declaration_statement();
+      case this.tok.T_TRAIT:
+        return this.read_trait_declaration_statement(attrs);
+      case this.tok.T_ENUM:
+        return this.read_enum_declaration_statement(attrs);
+      case this.tok.T_HALT_COMPILER:
+        {
+          this.raiseError("__HALT_COMPILER() can only be used from the outermost scope");
+          // fallback : returns a node but does not stop the parsing
+          var node = this.node("halt");
+          this.next().expect("(") && this.next();
+          this.expect(")") && this.next();
+          node = node(this.lexer._input.substring(this.lexer.offset));
+          this.expect(";") && this.next();
+          return node;
+        }
+      default:
+        return this.read_statement();
+    }
+  },
+  /*
+   * Reads statements
+   */
+  read_statement: function read_statement() {
+    switch (this.token) {
+      case "{":
+        return this.read_code_block(false);
+      case this.tok.T_IF:
+        return this.read_if();
+      case this.tok.T_SWITCH:
+        return this.read_switch();
+      case this.tok.T_FOR:
+        return this.read_for();
+      case this.tok.T_FOREACH:
+        return this.read_foreach();
+      case this.tok.T_WHILE:
+        return this.read_while();
+      case this.tok.T_DO:
+        return this.read_do();
+      case this.tok.T_COMMENT:
+        return this.read_comment();
+      case this.tok.T_DOC_COMMENT:
+        return this.read_doc_comment();
+      case this.tok.T_RETURN:
+        {
+          var result = this.node("return");
+          this.next();
+          var expr = this.read_optional_expr(";");
+          this.expectEndOfStatement();
+          return result(expr);
+        }
+
+      // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L429
+      case this.tok.T_BREAK:
+      case this.tok.T_CONTINUE:
+        {
+          var _result2 = this.node(this.token === this.tok.T_CONTINUE ? "continue" : "break");
+          this.next();
+          var level = this.read_optional_expr(";");
+          this.expectEndOfStatement();
+          return _result2(level);
+        }
+      case this.tok.T_GLOBAL:
+        {
+          var _result3 = this.node("global");
+          var items = this.next().read_list(this.read_simple_variable, ",");
+          this.expectEndOfStatement();
+          return _result3(items);
+        }
+      case this.tok.T_STATIC:
+        {
+          var current = [this.token, this.lexer.getState()];
+          var _result4 = this.node();
+          if (this.next().token === this.tok.T_DOUBLE_COLON) {
+            // static keyword for a class
+            this.lexer.tokens.push(current);
+            var _expr = this.next().read_expr();
+            this.expectEndOfStatement(_expr);
+            return _result4("expressionstatement", _expr);
+          }
+          if (this.token === this.tok.T_FUNCTION) {
+            return this.read_function(true, [0, 1, 0]);
+          }
+          var _items = this.read_variable_declarations();
+          this.expectEndOfStatement();
+          return _result4("static", _items);
+        }
+      case this.tok.T_ECHO:
+        {
+          var _result5 = this.node("echo");
+          var text = this.text();
+          var shortForm = text === "<?=" || text === "<%=";
+          var expressions = this.next().read_function_list(this.read_expr, ",");
+          this.expectEndOfStatement();
+          return _result5(expressions, shortForm);
+        }
+      case this.tok.T_INLINE_HTML:
+        {
+          var value = this.text();
+          var prevChar = this.lexer.yylloc.first_offset > 0 ? this.lexer._input[this.lexer.yylloc.first_offset - 1] : null;
+          var fixFirstLine = prevChar === "\r" || prevChar === "\n";
+          // revert back the first stripped line
+          if (fixFirstLine) {
+            if (prevChar === "\n" && this.lexer.yylloc.first_offset > 1 && this.lexer._input[this.lexer.yylloc.first_offset - 2] === "\r") {
+              prevChar = "\r\n";
+            }
+          }
+          var _result6 = this.node("inline");
+          this.next();
+          return _result6(value, fixFirstLine ? prevChar + value : value);
+        }
+      case this.tok.T_UNSET:
+        {
+          var _result7 = this.node("unset");
+          this.next().expect("(") && this.next();
+          var variables = this.read_function_list(this.read_variable, ",");
+          this.expect(")") && this.next();
+          this.expect(";") && this.next();
+          return _result7(variables);
+        }
+      case this.tok.T_DECLARE:
+        {
+          var _result8 = this.node("declare");
+          var body = [];
+          var mode;
+          this.next().expect("(") && this.next();
+          var directives = this.read_declare_list();
+          this.expect(")") && this.next();
+          if (this.token === ":") {
+            this.next();
+            while (this.token != this.EOF && this.token !== this.tok.T_ENDDECLARE) {
+              // @todo : check declare_statement from php / not valid
+              body.push(this.read_top_statement());
+            }
+            if (body.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+              body.push(this.node("noop")());
+            }
+            this.expect(this.tok.T_ENDDECLARE) && this.next();
+            this.expectEndOfStatement();
+            mode = this.ast.declare.MODE_SHORT;
+          } else if (this.token === "{") {
+            this.next();
+            while (this.token != this.EOF && this.token !== "}") {
+              // @todo : check declare_statement from php / not valid
+              body.push(this.read_top_statement());
+            }
+            if (body.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+              body.push(this.node("noop")());
+            }
+            this.expect("}") && this.next();
+            mode = this.ast.declare.MODE_BLOCK;
+          } else {
+            this.expect(";") && this.next();
+            mode = this.ast.declare.MODE_NONE;
+          }
+          return _result8(directives, body, mode);
+        }
+      case this.tok.T_TRY:
+        return this.read_try();
+      case this.tok.T_THROW:
+        {
+          var _result9 = this.node("throw");
+          var _expr2 = this.next().read_expr();
+          this.expectEndOfStatement();
+          return _result9(_expr2);
+        }
+
+      // ignore this (extra ponctuation)
+      case ";":
+        {
+          this.next();
+          return null;
+        }
+      case this.tok.T_STRING:
+        {
+          var _result0 = this.node();
+          var _current = [this.token, this.lexer.getState()];
+          var labelNameText = this.text();
+          var labelName = this.node("identifier");
+          // AST : https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L457
+          if (this.next().token === ":") {
+            labelName = labelName(labelNameText);
+            this.next();
+            return _result0("label", labelName);
+          } else {
+            labelName.destroy();
+          }
+
+          // default fallback expr / T_STRING '::' (etc...)
+          _result0.destroy();
+          this.lexer.tokens.push(_current);
+          var statement = this.node("expressionstatement");
+          var _expr3 = this.next().read_expr();
+          this.expectEndOfStatement(_expr3);
+          return statement(_expr3);
+        }
+      case this.tok.T_GOTO:
+        {
+          var _result1 = this.node("goto");
+          var _labelName = null;
+          if (this.next().expect(this.tok.T_STRING)) {
+            _labelName = this.node("identifier");
+            var name = this.text();
+            this.next();
+            _labelName = _labelName(name);
+            this.expectEndOfStatement();
+          }
+          return _result1(_labelName);
+        }
+      default:
+        {
+          // default fallback expr
+          var _statement = this.node("expressionstatement");
+          var _expr4 = this.read_expr();
+          this.expectEndOfStatement(_expr4);
+          return _statement(_expr4);
+        }
+    }
+  },
+  /*
+   * ```ebnf
+   *  code_block ::= '{' (inner_statements | top_statements) '}'
+   * ```
+   */
+  read_code_block: function read_code_block(top) {
+    var result = this.node("block");
+    this.expect("{") && this.next();
+    var body = top ? this.read_top_statements() : this.read_inner_statements();
+    if (body.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+      body.push(this.node("noop")());
+    }
+    this.expect("}") && this.next();
+    return result(null, body);
+  }
+};
+
+/***/ },
+
+/***/ 2478
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Reads a switch statement
+   * ```ebnf
+   *  switch ::= T_SWITCH '(' expr ')' switch_case_list
+   * ```
+   * @return {Switch}
+   * @see http://php.net/manual/en/control-structures.switch.php
+   */
+  read_switch: function read_switch() {
+    var result = this.node("switch");
+    this.expect(this.tok.T_SWITCH) && this.next();
+    this.expect("(") && this.next();
+    var test = this.read_expr();
+    this.expect(")") && this.next();
+    var shortForm = this.token === ":";
+    var body = this.read_switch_case_list();
+    return result(test, body, shortForm);
+  },
+  /*
+   * ```ebnf
+   *  switch_case_list ::= '{' ';'? case_list* '}' | ':' ';'? case_list* T_ENDSWITCH ';'
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L566
+   */
+  read_switch_case_list: function read_switch_case_list() {
+    // DETECT SWITCH MODE
+    var expect = null;
+    var result = this.node("block");
+    var items = [];
+    if (this.token === "{") {
+      expect = "}";
+    } else if (this.token === ":") {
+      expect = this.tok.T_ENDSWITCH;
+    } else {
+      this.expect(["{", ":"]);
+    }
+    this.next();
+    // OPTIONNAL ';'
+    // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L570
+    if (this.token === ";") {
+      this.next();
+    }
+    // EXTRACTING CASES
+    while (this.token !== this.EOF && this.token !== expect) {
+      items.push(this.read_case_list(expect));
+    }
+    if (items.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+      items.push(this.node("noop")());
+    }
+    // CHECK END TOKEN
+    this.expect(expect) && this.next();
+    if (expect === this.tok.T_ENDSWITCH) {
+      this.expectEndOfStatement();
+    }
+    return result(null, items);
+  },
+  /*
+   * ```ebnf
+   *   case_list ::= ((T_CASE expr) | T_DEFAULT) (':' | ';') inner_statement*
+   * ```
+   */
+  read_case_list: function read_case_list(stopToken) {
+    var result = this.node("case");
+    var test = null;
+    if (this.token === this.tok.T_CASE) {
+      test = this.next().read_expr();
+    } else if (this.token === this.tok.T_DEFAULT) {
+      // the default entry - no condition
+      this.next();
+    } else {
+      this.expect([this.tok.T_CASE, this.tok.T_DEFAULT]);
+    }
+    // case_separator
+    this.expect([":", ";"]) && this.next();
+    var body = this.node("block");
+    var items = [];
+    while (this.token !== this.EOF && this.token !== stopToken && this.token !== this.tok.T_CASE && this.token !== this.tok.T_DEFAULT) {
+      items.push(this.read_inner_statement());
+    }
+    return result(test, body(null, items));
+  }
+};
+
+/***/ },
+
+/***/ 77
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * ```ebnf
+   *  try ::= T_TRY '{' inner_statement* '}'
+   *          (
+   *              T_CATCH '(' namespace_name (variable)? ')' '{'  inner_statement* '}'
+   *          )*
+   *          (T_FINALLY '{' inner_statement* '}')?
+   * ```
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L448
+   * @return {Try}
+   */
+  read_try: function read_try() {
+    this.expect(this.tok.T_TRY);
+    var result = this.node("try");
+    var always = null;
+    var catches = [];
+    var body = this.next().read_statement();
+    // https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L455
+    while (this.token === this.tok.T_CATCH) {
+      var item = this.node("catch");
+      this.next().expect("(") && this.next();
+      var what = this.read_list(this.read_namespace_name, "|", false);
+      var variable = null;
+      if (this.version < 800 || this.token === this.tok.T_VARIABLE) {
+        variable = this.read_variable(true, false);
+      }
+      this.expect(")");
+      catches.push(item(this.next().read_statement(), what, variable));
+    }
+    if (this.token === this.tok.T_FINALLY) {
+      always = this.next().read_statement();
+    }
+    return result(body, catches, always);
+  }
+};
+
+/***/ },
+
+/***/ 6077
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Reads a short form of tokens
+   * @param {Number} token - The ending token
+   * @return {Block}
+   */
+  read_short_form: function read_short_form(token) {
+    var body = this.node("block");
+    var items = [];
+    /* istanbul ignore next */
+    if (this.expect(":")) this.next();
+    while (this.token != this.EOF && this.token !== token) {
+      items.push(this.read_inner_statement());
+    }
+    if (items.length === 0 && this.extractDoc && this._docs.length > this._docIndex) {
+      items.push(this.node("noop")());
+    }
+    /* istanbul ignore next */
+    if (this.expect(token)) this.next();
+    this.expectEndOfStatement();
+    return body(null, items);
+  },
+  /*
+   * https://wiki.php.net/rfc/trailing-comma-function-calls
+   * @param {*} item
+   * @param {*} separator
+   */
+  read_function_list: function read_function_list(item, separator) {
+    var result = [];
+    do {
+      if (this.token == separator && this.version >= 703 && result.length > 0) {
+        result.push(this.node("noop")());
+        break;
+      }
+      result.push(item.apply(this, []));
+      if (this.token != separator) {
+        break;
+      }
+      if (this.next().token == ")" && this.version >= 703) {
+        break;
+      }
+    } while (this.token != this.EOF);
+    return result;
+  },
+  /*
+   * Helper : reads a list of tokens / sample : T_STRING ',' T_STRING ...
+   * ```ebnf
+   * list ::= separator? ( item separator )* item
+   * ```
+   */
+  read_list: function read_list(item, separator, preserveFirstSeparator) {
+    var result = [];
+    if (this.token == separator) {
+      if (preserveFirstSeparator) {
+        result.push(typeof item === "function" ? this.node("noop")() : null);
+        this.next();
+      } else {
+        this.error();
+        return result;
+      }
+    }
+    if (typeof item === "function") {
+      do {
+        var itemResult = item.apply(this, []);
+        if (itemResult) {
+          result.push(itemResult);
+        }
+        if (this.token != separator) {
+          break;
+        }
+      } while (this.next().token != this.EOF);
+    } else {
+      if (this.expect(item)) {
+        result.push(this.text());
+      } else {
+        return [];
+      }
+      while (this.next().token != this.EOF) {
+        if (this.token != separator) break;
+        // trim current separator & check item
+        if (this.next().token != item) break;
+        result.push(this.text());
+      }
+    }
+    return result;
+  },
+  /*
+   * Reads a list of names separated by a comma
+   *
+   * ```ebnf
+   * name_list ::= namespace (',' namespace)*
+   * ```
+   *
+   * Sample code :
+   * ```php
+   * <?php class foo extends bar, baz { }
+   * ```
+   *
+   * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L726
+   * @return {Reference[]}
+   */
+  read_name_list: function read_name_list() {
+    return this.read_list(this.read_namespace_name, ",", false);
+  },
+  /*
+   * Reads the byref token and assign it to the specified node
+   * @param {*} cb
+   */
+  read_byref: function read_byref(cb) {
+    var byref = this.node("byref");
+    this.next();
+    byref = byref(null);
+    var result = cb();
+    if (result) {
+      this.ast.swapLocations(result, byref, result, this);
+      result.byref = true;
+    }
+    return result;
+  },
+  /*
+   * Reads a list of variables declarations
+   *
+   * ```ebnf
+   * variable_declaration ::= T_VARIABLE ('=' expr)?*
+   * variable_declarations ::= variable_declaration (',' variable_declaration)*
+   * ```
+   *
+   * Sample code :
+   * ```php
+   * <?php static $a = 'hello', $b = 'world';
+   * ```
+   * @return {StaticVariable[]} Returns an array composed by a list of variables, or
+   * assign values
+   */
+  read_variable_declarations: function read_variable_declarations() {
+    return this.read_list(function () {
+      var node = this.node("staticvariable");
+      var variable = this.node("variable");
+      // plain variable name
+      /* istanbul ignore else */
+      if (this.expect(this.tok.T_VARIABLE)) {
+        var name = this.text().substring(1);
+        this.next();
+        variable = variable(name, false);
+      } else {
+        variable = variable("#ERR", false);
+      }
+      if (this.token === "=") {
+        return node(variable, this.next().read_expr());
+      } else {
+        return variable;
+      }
+    }, ",");
+  },
+  /*
+   * Reads class extends
+   */
+  read_extends_from: function read_extends_from() {
+    if (this.token === this.tok.T_EXTENDS) {
+      return this.next().read_namespace_name();
+    }
+    return null;
+  },
+  /*
+   * Reads interface extends list
+   */
+  read_interface_extends_list: function read_interface_extends_list() {
+    if (this.token === this.tok.T_EXTENDS) {
+      return this.next().read_name_list();
+    }
+    return null;
+  },
+  /*
+   * Reads implements list
+   */
+  read_implements_list: function read_implements_list() {
+    if (this.token === this.tok.T_IMPLEMENTS) {
+      return this.next().read_name_list();
+    }
+    return null;
+  }
+};
+
+/***/ },
+
+/***/ 1130
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+module.exports = {
+  /*
+   * Reads a variable
+   *
+   * ```ebnf
+   *   variable ::= &? ...complex @todo
+   * ```
+   *
+   * Some samples of parsed code :
+   * ```php
+   *  &$var                      // simple var
+   *  $var                      // simple var
+   *  classname::CONST_NAME     // dynamic class name with const retrieval
+   *  foo()                     // function call
+   *  $var->func()->property    // chained calls
+   * ```
+   */
+  read_variable: function read_variable(read_only, encapsed) {
+    var result;
+    // check the byref flag
+    if (this.token === "&") {
+      return this.read_byref(this.read_variable.bind(this, read_only, encapsed));
+    }
+
+    // reads the entry point
+    if (this.is([this.tok.T_VARIABLE, "$"])) {
+      result = this.read_reference_variable(encapsed);
+    } else if (this.is([this.tok.T_NS_SEPARATOR, this.tok.T_STRING, this.tok.T_NAME_RELATIVE, this.tok.T_NAME_QUALIFIED, this.tok.T_NAME_FULLY_QUALIFIED, this.tok.T_NAMESPACE])) {
+      result = this.node();
+      var name = this.read_namespace_name();
+      if (this.token != this.tok.T_DOUBLE_COLON && this.token != "(" && ["parentreference", "selfreference"].indexOf(name.kind) === -1) {
+        // @see parser.js line 130 : resolves a conflict with scalar
+        var literal = name.name.toLowerCase();
+        if (literal === "true") {
+          result = name.destroy(result("boolean", true, name.name));
+        } else if (literal === "false") {
+          result = name.destroy(result("boolean", false, name.name));
+        } else if (literal === "null") {
+          result = name.destroy(result("nullkeyword", name.name));
+        } else {
+          result.destroy(name);
+          result = name;
+        }
+      } else {
+        // @fixme possible #193 bug
+        result.destroy(name);
+        result = name;
+      }
+    } else if (this.token === this.tok.T_STATIC) {
+      result = this.node("staticreference");
+      var raw = this.text();
+      this.next();
+      result = result(raw);
+    } else {
+      this.expect("VARIABLE");
+    }
+
+    // static mode
+    if (this.token === this.tok.T_DOUBLE_COLON) {
+      result = this.read_static_getter(result, encapsed);
+    }
+    return this.recursive_variable_chain_scan(result, read_only, encapsed);
+  },
+  // resolves a static call
+  read_static_getter: function read_static_getter(what, encapsed) {
+    var result = this.node("staticlookup");
+    var offset, name;
+    if (this.next().is([this.tok.T_VARIABLE, "$"])) {
+      offset = this.read_reference_variable(encapsed);
+    } else if (this.token === this.tok.T_STRING || this.token === this.tok.T_CLASS || this.version >= 700 && this.is("IDENTIFIER")) {
+      offset = this.node("identifier");
+      name = this.text();
+      this.next();
+      offset = offset(name);
+    } else if (this.token === "{") {
+      offset = this.node("literal");
+      name = this.next().read_expr();
+      this.expect("}") && this.next();
+      offset = offset("literal", name, null);
+    } else {
+      this.error([this.tok.T_VARIABLE, this.tok.T_STRING]);
+      // graceful mode : set getter as error node and continue
+      offset = this.node("identifier");
+      name = this.text();
+      this.next();
+      offset = offset(name);
+    }
+    return result(what, offset);
+  },
+  read_what: function read_what() {
+    var is_static_lookup = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    var what;
+    var name;
+    switch (this.next().token) {
+      case this.tok.T_STRING:
+        what = this.node("identifier");
+        name = this.text();
+        this.next();
+        what = what(name);
+        if (is_static_lookup && this.token === this.tok.T_OBJECT_OPERATOR) {
+          this.error();
+        }
+        break;
+      case this.tok.T_VARIABLE:
+        what = this.node("variable");
+        name = this.text().substring(1);
+        this.next();
+        what = what(name, false);
+        break;
+      case this.tok.T_CLASS:
+        if (!is_static_lookup) {
+          this.error();
+        }
+        what = this.node("identifier");
+        name = this.text();
+        this.next();
+        what = what(name, false);
+        break;
+      case "$":
+        what = this.node();
+        this.next().expect(["$", "{", this.tok.T_VARIABLE]);
+        if (this.token === "{") {
+          // $obj->${$varname}
+          name = this.next().read_expr();
+          this.expect("}") && this.next();
+          what = what("variable", name, true);
+        } else {
+          // $obj->$$varname
+          name = this.read_expr();
+          what = what("variable", name, false);
+        }
+        break;
+      case "{":
+        what = this.node("encapsedpart");
+        name = this.next().read_expr();
+        this.expect("}") && this.next();
+        what = what(name, "complex", false);
+        break;
+      default:
+        this.error([this.tok.T_STRING, this.tok.T_VARIABLE, "$", "{"]);
+        // graceful mode : set what as error mode & continue
+        what = this.node("identifier");
+        name = this.text();
+        this.next();
+        what = what(name);
+        break;
+    }
+    return what;
+  },
+  recursive_variable_chain_scan: function recursive_variable_chain_scan(result, read_only, encapsed) {
+    var node, offset;
+    recursive_scan_loop: while (this.token != this.EOF) {
+      switch (this.token) {
+        case "(":
+          if (read_only) {
+            // @fixme : add more informations & test
+            return result;
+          } else {
+            result = this.node("call")(result, this.read_argument_list());
+          }
+          break;
+        case "[":
+        case "{":
+          {
+            var backet = this.token;
+            var isSquareBracket = backet === "[";
+            node = this.node("offsetlookup");
+            this.next();
+            offset = false;
+            if (encapsed) {
+              offset = this.read_encaps_var_offset();
+              this.expect(isSquareBracket ? "]" : "}") && this.next();
+            } else {
+              var isCallableVariable = isSquareBracket ? this.token !== "]" : this.token !== "}";
+              // callable_variable : https://github.com/php/php-src/blob/493524454d66adde84e00d249d607ecd540de99f/Zend/zend_language_parser.y#L1122
+              if (isCallableVariable) {
+                offset = this.read_expr();
+                this.expect(isSquareBracket ? "]" : "}") && this.next();
+              } else {
+                this.next();
+              }
+            }
+            result = node(result, offset);
+            break;
+          }
+        case this.tok.T_DOUBLE_COLON:
+          node = this.node("staticlookup");
+          result = node(result, this.read_what(true));
+
+          // fix 185
+          // static lookup dereferencables are limited to staticlookup over functions
+          /*if (dereferencable && this.token !== "(") {
+            this.error("(");
+          }*/
+          break;
+        case this.tok.T_OBJECT_OPERATOR:
+          {
+            node = this.node("propertylookup");
+            result = node(result, this.read_what());
+            break;
+          }
+        case this.tok.T_NULLSAFE_OBJECT_OPERATOR:
+          {
+            node = this.node("nullsafepropertylookup");
+            result = node(result, this.read_what());
+            break;
+          }
+        default:
+          break recursive_scan_loop;
+      }
+    }
+    return result;
+  },
+  /*
+   * https://github.com/php/php-src/blob/493524454d66adde84e00d249d607ecd540de99f/Zend/zend_language_parser.y#L1231
+   */
+  read_encaps_var_offset: function read_encaps_var_offset() {
+    var offset = this.node();
+    if (this.token === this.tok.T_STRING) {
+      var text = this.text();
+      this.next();
+      offset = offset("identifier", text);
+    } else if (this.token === this.tok.T_NUM_STRING) {
+      var num = this.text();
+      this.next();
+      offset = offset("number", num, null);
+    } else if (this.token === "-") {
+      this.next();
+      var _num = -1 * this.text();
+      this.expect(this.tok.T_NUM_STRING) && this.next();
+      offset = offset("number", _num, null);
+    } else if (this.token === this.tok.T_VARIABLE) {
+      var name = this.text().substring(1);
+      this.next();
+      offset = offset("variable", name, false);
+    } else {
+      this.expect([this.tok.T_STRING, this.tok.T_NUM_STRING, "-", this.tok.T_VARIABLE]);
+      // fallback : consider as identifier
+      var _text = this.text();
+      this.next();
+      offset = offset("identifier", _text);
+    }
+    return offset;
+  },
+  /*
+   * ```ebnf
+   *  reference_variable ::=  simple_variable ('[' OFFSET ']')* | '{' EXPR '}'
+   * ```
+   * <code>
+   *  $foo[123];      // foo is an array ==> gets its entry
+   *  $foo{1};        // foo is a string ==> get the 2nd char offset
+   *  ${'foo'}[123];  // get the dynamic var $foo
+   *  $foo[123]{1};   // gets the 2nd char from the 123 array entry
+   * </code>
+   */
+  read_reference_variable: function read_reference_variable(encapsed) {
+    var result = this.read_simple_variable();
+    var offset;
+    while (this.token != this.EOF) {
+      var node = this.node();
+      if (this.token == "{" && !encapsed) {
+        // @fixme check coverage, not sure thats working
+        offset = this.next().read_expr();
+        this.expect("}") && this.next();
+        result = node("offsetlookup", result, offset);
+      } else {
+        node.destroy();
+        break;
+      }
+    }
+    return result;
+  },
+  /*
+   * ```ebnf
+   *  simple_variable ::= T_VARIABLE | '$' '{' expr '}' | '$' simple_variable
+   * ```
+   */
+  read_simple_variable: function read_simple_variable() {
+    var result = this.node("variable");
+    var name;
+    if (this.expect([this.tok.T_VARIABLE, "$"]) && this.token === this.tok.T_VARIABLE) {
+      // plain variable name
+      name = this.text().substring(1);
+      this.next();
+      result = result(name, false);
+    } else {
+      if (this.token === "$") this.next();
+      // dynamic variable name
+      switch (this.token) {
+        case "{":
+          {
+            var expr = this.next().read_expr();
+            this.expect("}") && this.next();
+            result = result(expr, true);
+            break;
+          }
+        case "$":
+          // $$$var
+          result = result(this.read_simple_variable(), false);
+          break;
+        case this.tok.T_VARIABLE:
+          {
+            // $$var
+            name = this.text().substring(1);
+            var node = this.node("variable");
+            this.next();
+            result = result(node(name, false), false);
+            break;
+          }
+        default:
+          this.error(["{", "$", this.tok.T_VARIABLE]);
+          // graceful mode
+          name = this.text();
+          this.next();
+          result = result(name, false);
+      }
+    }
+    return result;
+  }
+};
+
+/***/ },
+
+/***/ 1906
+(module) {
+
+/**
+ * Copyright (C) 2018 Glayzzle (BSD3 License)
+ * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+ * @url http://glayzzle.com
+ */
+
+
+/**
+ * @readonly
+ * @memberOf module:php-parser
+ *
+ * @enum {number}
+ **/
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var TokenNames = {
+  T_HALT_COMPILER: 101,
+  T_USE: 102,
+  T_ENCAPSED_AND_WHITESPACE: 103,
+  T_OBJECT_OPERATOR: 104,
+  T_STRING: 105,
+  T_DOLLAR_OPEN_CURLY_BRACES: 106,
+  T_STRING_VARNAME: 107,
+  T_CURLY_OPEN: 108,
+  T_NUM_STRING: 109,
+  T_ISSET: 110,
+  T_EMPTY: 111,
+  T_INCLUDE: 112,
+  T_INCLUDE_ONCE: 113,
+  T_EVAL: 114,
+  T_REQUIRE: 115,
+  T_REQUIRE_ONCE: 116,
+  T_NAMESPACE: 117,
+  T_NS_SEPARATOR: 118,
+  T_AS: 119,
+  T_IF: 120,
+  T_ENDIF: 121,
+  T_WHILE: 122,
+  T_DO: 123,
+  T_FOR: 124,
+  T_SWITCH: 125,
+  T_BREAK: 126,
+  T_CONTINUE: 127,
+  T_RETURN: 128,
+  T_GLOBAL: 129,
+  T_STATIC: 130,
+  T_ECHO: 131,
+  T_INLINE_HTML: 132,
+  T_UNSET: 133,
+  T_FOREACH: 134,
+  T_DECLARE: 135,
+  T_TRY: 136,
+  T_THROW: 137,
+  T_GOTO: 138,
+  T_FINALLY: 139,
+  T_CATCH: 140,
+  T_ENDDECLARE: 141,
+  T_LIST: 142,
+  T_CLONE: 143,
+  T_PLUS_EQUAL: 144,
+  T_MINUS_EQUAL: 145,
+  T_MUL_EQUAL: 146,
+  T_DIV_EQUAL: 147,
+  T_CONCAT_EQUAL: 148,
+  T_MOD_EQUAL: 149,
+  T_AND_EQUAL: 150,
+  T_OR_EQUAL: 151,
+  T_XOR_EQUAL: 152,
+  T_SL_EQUAL: 153,
+  T_SR_EQUAL: 154,
+  T_INC: 155,
+  T_DEC: 156,
+  T_BOOLEAN_OR: 157,
+  T_BOOLEAN_AND: 158,
+  T_LOGICAL_OR: 159,
+  T_LOGICAL_AND: 160,
+  T_LOGICAL_XOR: 161,
+  T_SL: 162,
+  T_SR: 163,
+  T_IS_IDENTICAL: 164,
+  T_IS_NOT_IDENTICAL: 165,
+  T_IS_EQUAL: 166,
+  T_IS_NOT_EQUAL: 167,
+  T_IS_SMALLER_OR_EQUAL: 168,
+  T_IS_GREATER_OR_EQUAL: 169,
+  T_INSTANCEOF: 170,
+  T_INT_CAST: 171,
+  T_DOUBLE_CAST: 172,
+  T_STRING_CAST: 173,
+  T_ARRAY_CAST: 174,
+  T_OBJECT_CAST: 175,
+  T_BOOL_CAST: 176,
+  T_UNSET_CAST: 177,
+  T_EXIT: 178,
+  T_PRINT: 179,
+  T_YIELD: 180,
+  T_YIELD_FROM: 181,
+  T_FUNCTION: 182,
+  T_DOUBLE_ARROW: 183,
+  T_DOUBLE_COLON: 184,
+  T_ARRAY: 185,
+  T_CALLABLE: 186,
+  T_CLASS: 187,
+  T_ABSTRACT: 188,
+  T_TRAIT: 189,
+  T_FINAL: 190,
+  T_EXTENDS: 191,
+  T_INTERFACE: 192,
+  T_IMPLEMENTS: 193,
+  T_VAR: 194,
+  T_PUBLIC: 195,
+  T_PROTECTED: 196,
+  T_PRIVATE: 197,
+  T_CONST: 198,
+  T_NEW: 199,
+  T_INSTEADOF: 200,
+  T_ELSEIF: 201,
+  T_ELSE: 202,
+  T_ENDSWITCH: 203,
+  T_CASE: 204,
+  T_DEFAULT: 205,
+  T_ENDFOR: 206,
+  T_ENDFOREACH: 207,
+  T_ENDWHILE: 208,
+  T_CONSTANT_ENCAPSED_STRING: 209,
+  T_LNUMBER: 210,
+  T_DNUMBER: 211,
+  T_LINE: 212,
+  T_FILE: 213,
+  T_DIR: 214,
+  T_TRAIT_C: 215,
+  T_METHOD_C: 216,
+  T_FUNC_C: 217,
+  T_NS_C: 218,
+  T_START_HEREDOC: 219,
+  T_END_HEREDOC: 220,
+  T_CLASS_C: 221,
+  T_VARIABLE: 222,
+  T_OPEN_TAG: 223,
+  T_OPEN_TAG_WITH_ECHO: 224,
+  T_CLOSE_TAG: 225,
+  T_WHITESPACE: 226,
+  T_COMMENT: 227,
+  T_DOC_COMMENT: 228,
+  T_ELLIPSIS: 229,
+  T_COALESCE: 230,
+  T_POW: 231,
+  T_POW_EQUAL: 232,
+  T_SPACESHIP: 233,
+  T_COALESCE_EQUAL: 234,
+  T_FN: 235,
+  T_NULLSAFE_OBJECT_OPERATOR: 236,
+  T_MATCH: 237,
+  T_ATTRIBUTE: 238,
+  T_ENUM: 239,
+  T_READ_ONLY: 240,
+  T_NAME_RELATIVE: 241,
+  T_NAME_QUALIFIED: 242,
+  T_NAME_FULLY_QUALIFIED: 243,
+  T_PIPE: 244
+};
+
+/**
+ * PHP AST Tokens
+ * @readonly
+ * @memberOf module:php-parser
+ *
+ * @type {object}
+ * @property {Object.<number, string>} values
+ * @property {TokenNames} names
+ */
+var tokens = {
+  values: Object.entries(TokenNames).reduce(function (result, _ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+      key = _ref2[0],
+      value = _ref2[1];
+    return _objectSpread(_objectSpread({}, result), {}, _defineProperty({}, value, key));
+  }, {}),
+  names: TokenNames
+};
+module.exports = Object.freeze(tokens);
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__(5362);
+/******/ 	__webpack_exports__ = __webpack_exports__["default"];
+/******/
+/******/ 	return __webpack_exports__;
+/******/ })()
+;
+});
+});
+// END vendored php-parser
+
+ace.define("ace/mode/php/pinp",["require","exports","module","ace/mode/php/parser"], function(require, exports, module) {
+"use strict";
+
+var Engine = require("./parser");
+
+exports.createParser = function(inline) {
+    var engine = new Engine({parser: {version: 805}});
+    // php-parser 3.7.0 rejects named arguments after unpacking, although PHP
+    // 8.1+ accepts them. Keep positional/unpacking ordering errors intact.
+    // Adapted from php-parser's read_non_empty_argument_list (BSD-3-Clause).
+    engine.parser.read_non_empty_argument_list = function() {
+        var unpacked = false;
+        var named = false;
+        return this.read_function_list(function() {
+            var argument = this.read_argument();
+            if (argument) {
+                if (argument.kind === "namedargument") {
+                    named = true;
+                } else if (argument.kind === "variadic") {
+                    if (named) this.raiseError("Cannot unpack after a named argument");
+                    unpacked = true;
+                } else if (unpacked || named) {
+                    this.raiseError("Cannot use a positional argument after unpacking or a named argument");
+                }
+            }
+            return argument;
+        }.bind(this), ",");
+    };
+    if (inline) return engine;
+
+    var lexer = engine.lexer;
+    var scripting = lexer.matchST_IN_SCRIPTING;
+
+    // PINP only interprets <pinp> blocks. PHP/XML tags and external compiler
+    // blocks are template output, not PHP. Consume original bytes so error
+    // locations still refer to the editor, including CRLF and mixed content.
+    lexer.matchINITIAL = function() {
+        var tags = /<pinp>|<compile:[^>]+>/ig;
+        tags.lastIndex = this.offset;
+        var tag;
+        while ((tag = tags.exec(this._input))) {
+            if (tag[0].toLowerCase() === "<pinp>") {
+                if (tag.index > this.offset) {
+                    this.consume(tag.index - this.offset);
+                    return this.tok.T_INLINE_HTML;
+                }
+                this.consume(tag[0].length).nextINITIAL();
+                return this.tok.T_OPEN_TAG;
+            }
+            // External compilers (e.g. LESS) have their own language grammar.
+            var end = /<\/ *compile:[a-z]+[^>]*>/ig;
+            end.lastIndex = tags.lastIndex;
+            var close = end.exec(this._input);
+            tags.lastIndex = close ? end.lastIndex : this.size;
+        }
+        this.consume(this.size - this.offset);
+        return this.tok.T_INLINE_HTML;
+    };
+
+    lexer.matchST_IN_SCRIPTING = function() {
+        var close = /^<\/ *pinp(?: +[^>]*)?>/.exec(this._input.slice(this.offset));
+        if (close) {
+            this.consume(close[0].length).begin("INITIAL");
+            return this.tok.T_CLOSE_TAG;
+        }
+        return scripting.call(this);
+    };
+
+    // Unlike PHP, ?> does not end a PINP line comment. Neither does </pinp>.
+    lexer.T_COMMENT = function() {
+        while (this.offset < this.size) {
+            var ch = this.input();
+            if (ch === "\r" || ch === "\n") break;
+        }
+        return this.tok.T_COMMENT;
+    };
+    return engine;
+};
+
+});
+
+ace.define("ace/mode/php_worker",["require","exports","module","ace/lib/oop","ace/worker/mirror","ace/mode/php/pinp"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var Mirror = require("../worker/mirror").Mirror;
-var PHP = require("./php/php").PHP;
+var createParser = require("./php/pinp").createParser;
 
 var PhpWorker = exports.PhpWorker = function(sender) {
     Mirror.call(this, sender);
@@ -6209,20 +12918,20 @@ oop.inherits(PhpWorker, Mirror);
     this.setOptions = function(opts) {
         this.inlinePhp = opts && opts.inline;
     };
-    
-    this.onUpdate = function() {
-        var value = this.doc.getValue();
-        var errors = [];
-        if (this.inlinePhp)
-            value = "<?" + value + "?>";
 
-        var tokens = PHP.Lexer(value, {short_open_tag: 1});
+    this.onUpdate = function() {
+        var parser = createParser(this.inlinePhp);
+        var errors = [];
         try {
-            new PHP.Parser(tokens);
+            if (this.inlinePhp)
+                parser.parseEval(this.doc.getValue());
+            else
+                parser.parseCode(this.doc.getValue());
         } catch(e) {
+            var location = parser.lexer.yylloc;
             errors.push({
-                row: e.line - 1,
-                column: null,
+                row: Math.max(0, (e.lineNumber || location.first_line) - 1),
+                column: e.columnNumber == null ? location.first_column : e.columnNumber,
                 text: e.message.charAt(0).toUpperCase() + e.message.substring(1),
                 type: "error"
             });
