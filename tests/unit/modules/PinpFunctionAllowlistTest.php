@@ -204,12 +204,15 @@ class PinpFunctionAllowlistTest extends TestCase {
 	public function testExecutionTimeLimitCanBeChanged() {
 		$previous = (int)ini_get('max_execution_time');
 		try {
-			$object = $this->runTemplate('$limited = set_time_limit(30);');
-			$this->assertTrue($object->limited);
-			$this->assertSame('30', ini_get('max_execution_time'));
-			$object = $this->runTemplate('$unlimited = set_time_limit(0);');
-			$this->assertTrue($object->unlimited);
-			$this->assertSame('0', ini_get('max_execution_time'));
+			foreach (array(30, 0) as $limit) {
+				// Xdebug can return false even when it applies the limit (issue #2439).
+				$expected = set_time_limit($limit);
+				// Start from a different limit so the template must actually change it.
+				set_time_limit($limit === 0 ? 30 : 0);
+				$object = $this->runTemplate('$result = set_time_limit($limit);', array('limit' => $limit));
+				$this->assertSame($expected, $object->result);
+				$this->assertSame((string)$limit, ini_get('max_execution_time'));
+			}
 		} finally { set_time_limit($previous); }
 	}
 
