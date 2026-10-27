@@ -28,6 +28,13 @@ secrets, or access to compiler-local variables and privileged callbacks.
 Using built-in timezone, locale, Unicode, or random-number facilities is not
 treated as permission to access caller-selected files.
 
+Explicitly permitted exceptions are OpenSSL key loading, signing and signature
+verification, and set_time_limit. Templates may load private/public keys from
+PEM strings or file:// paths using openssl_pkey_get_private and
+openssl_pkey_get_public (including openssl_get_privatekey and
+openssl_get_publickey aliases), then use openssl_sign and openssl_verify.
+set_time_limit may extend or remove the execution time limit.
+
 Use explicit names. A function introduced by a future PHP/extension release
 is NOT implicitly allowed. The former gmp_[a-z_]+ entry was a literal key,
 not a working wildcard; GMP functions now have individual entries. New
@@ -79,13 +86,11 @@ These formerly native operations are now excluded or guarded:
   - mail: now guarded as described above, preserving ordinary mail calls.
   - mb_send_mail, get_headers, DNS lookups, IMAP connection/mailbox operations:
     perform external I/O; some also invoke processes or files.
-  - OpenSSL key loading and signing: key arguments can be file:// paths.
-    Symmetric encryption, hashing and operations accepting only existing
-    key objects remain available. Export-to-file and certificate/key APIs
-    with path-capable inputs remain excluded.
+  - OpenSSL export-to-file and certificate/key APIs other than the explicitly
+    permitted key loaders, signing and verification calls remain excluded.
+    Symmetric encryption and hashing remain available.
   - Pspell construction/personal dictionaries/save operations: dictionary
     and replacement file paths require a separate, restricted API.
-  - set_time_limit: changes execution limits outside ordinary computation.
   - functions removed from PHP and obsolete regex-like whitelist entries.
     each is retained solely for PINP's legacy while/list/each rewrite.
 
@@ -104,7 +109,8 @@ $AR->PINP_Functions remains an explicit TRUSTED ADMINISTRATOR override.
 It can opt into otherwise excluded native functions and bypass the guards;
 it must not be populated from template/user input. Existing site overrides
 were not rewritten. For example, historical site configuration may explicitly
-allow set_time_limit or LDAP operations. Review those separately.
+allow LDAP operations. Review those separately. OpenSSL key loading/signing
+and set_time_limit now work without site overrides.
 
 Resave/recompile existing PINP templates after deploying this change. Already
 compiled PHP retains its previous native calls; changing the list alone
@@ -119,7 +125,8 @@ Validation
 
 Tests execute compiled templates for recent functions, reject named
 callbacks, verify no class autoloading or deserialization hooks run, check
-reference outputs for regex/OpenSSL/sodium operations, and assert that
+reference outputs for regex/OpenSSL/sodium operations, load PEM and file-backed
+keys, sign and verify messages, change execution time limits, and assert that
 dangerous functions are not emitted as native calls. The existing reflection
 test checks by-reference arguments for every installed allowed function;
 reference signatures were also checked against the PHP source declarations

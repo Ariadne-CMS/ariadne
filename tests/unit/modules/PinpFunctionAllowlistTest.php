@@ -157,6 +157,62 @@ class PinpFunctionAllowlistTest extends TestCase {
 		$this->assertSame(sodium_crypto_generichash('message'), $object->hash);
 	}
 
+	/** @dataProvider keyLoadingFunctions */
+	public function testOpenSslKeyLoadingAndSigning($privateLoader, $publicLoader, $fromFile) {
+		if (!extension_loaded('openssl')) { $this->markTestSkipped('Requires OpenSSL'); }
+		$key = openssl_pkey_new(array('private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA));
+		$this->assertNotFalse($key);
+		$this->assertTrue(openssl_pkey_export($key, $privatePem, 'test passphrase'));
+		$publicPem = openssl_pkey_get_details($key)['key'];
+		$files = array();
+		try {
+			if ($fromFile) {
+				foreach (array($privatePem, $publicPem) as $pem) {
+					$file = tempnam(sys_get_temp_dir(), 'pinp-key-');
+					$files[] = $file;
+					file_put_contents($file, $pem);
+				}
+				$privatePem = 'file://'.$files[0];
+				$publicPem = 'file://'.$files[1];
+			}
+			$object = $this->runTemplate(
+				'$privateKey = '.$privateLoader.'($privatePem, "test passphrase");'
+				.'$publicKey = '.$publicLoader.'($publicPem);'
+				.'$signed = openssl_sign("message", $signature, $privateKey, OPENSSL_ALGO_SHA256);'
+				.'$verified = openssl_verify("message", $signature, $publicKey, OPENSSL_ALGO_SHA256);'
+				.'$tampered = openssl_verify("changed message", $signature, $publicKey, OPENSSL_ALGO_SHA256);',
+				array('privatePem' => $privatePem, 'publicPem' => $publicPem)
+			);
+			$this->assertTrue($object->signed);
+			$this->assertNotEmpty($object->signature);
+			$this->assertSame(1, $object->verified);
+			$this->assertSame(0, $object->tampered);
+		} finally {
+			foreach ($files as $file) { unlink($file); }
+		}
+	}
+
+	public static function keyLoadingFunctions() {
+		return array(
+			'pem keys' => array('openssl_pkey_get_private', 'openssl_pkey_get_public', false),
+			'pem aliases' => array('openssl_get_privatekey', 'openssl_get_publickey', false),
+			'file keys' => array('openssl_pkey_get_private', 'openssl_pkey_get_public', true),
+			'file aliases' => array('openssl_get_privatekey', 'openssl_get_publickey', true)
+		);
+	}
+
+	public function testExecutionTimeLimitCanBeChanged() {
+		$previous = (int)ini_get('max_execution_time');
+		try {
+			$object = $this->runTemplate('$limited = set_time_limit(30);');
+			$this->assertTrue($object->limited);
+			$this->assertSame('30', ini_get('max_execution_time'));
+			$object = $this->runTemplate('$unlimited = set_time_limit(0);');
+			$this->assertTrue($object->unlimited);
+			$this->assertSame('0', ini_get('max_execution_time'));
+		} finally { set_time_limit($previous); }
+	}
+
 	public function testDangerousFunctionsAreNotNativeCalls() {
 		$compiler = new pinp('', 'object->', '$object->_');
 		$blocked = array(
@@ -166,7 +222,7 @@ class PinpFunctionAllowlistTest extends TestCase {
 			'get_error_handler', 'get_exception_handler', 'get_defined_vars', 'get_resources',
 			'extract', 'compact', 'func_get_args', 'debug_backtrace', 'class_alias', 'spl_autoload_call',
 			'get_headers', 'curl_exec', 'mail', 'mb_send_mail', 'imap_open', 'imap_savebody',
-			'openssl_pkey_get_private', 'openssl_pkey_get_public', 'openssl_sign', 'openssl_x509_read',
+			'openssl_pkey_export_to_file', 'openssl_csr_sign', 'openssl_x509_read',
 			'hash_file', 'hash_update_file', 'hash_update_stream', 'parse_ini_string', 'parse_ini_file',
 			'simplexml_load_string', 'simplexml_load_file', 'libxml_set_external_entity_loader',
 			'xml_set_element_handler', 'resourcebundle_create', 'resourcebundle_locales',

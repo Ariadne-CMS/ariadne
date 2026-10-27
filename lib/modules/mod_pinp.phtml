@@ -833,7 +833,7 @@ class pinp {
 		  "usleep|random_int|random_bytes|function_exists|extension_loaded|get_extension_funcs|get_loaded_extensions|".
 		  "get_declared_classes|get_declared_interfaces|get_declared_traits|phpversion|php_sapi_name|zend_version|".
 		  "memory_get_usage|memory_get_peak_usage|memory_reset_peak_usage|gc_enabled|gc_enable|gc_disable|gc_status|".
-		  "gc_collect_cycles|gc_mem_caches|hrtime|time_nanosleep|time_sleep_until|connection_aborted|".
+		  "gc_collect_cycles|gc_mem_caches|hrtime|time_nanosleep|time_sleep_until|set_time_limit|connection_aborted|".
 		  "connection_status|error_get_last|error_clear_last|version_compare|ini_parse_quantity|func_num_args|".
 		  "get_defined_functions|get_called_class|is_soap_fault|sys_getloadavg|getrusage|gethostname|php_uname|sys_get_temp_dir";
 		$zlib_funcs="gzinflate|gzcompress|gzdecode|gzdeflate|gzencode|gzuncompress|zlib_encode|zlib_decode|".
@@ -884,6 +884,7 @@ class pinp {
 		  "mb_internal_encoding|mb_output_handler|mb_str_split|mb_ucfirst|mb_lcfirst|mb_trim|mb_ltrim|mb_rtrim|".
 		  "mb_scrub|mb_ord|mb_chr|mb_str_pad";
 		$openssl_funcs="openssl_dh_compute_key|openssl_spki_new|openssl_password_hash|openssl_password_verify|".
+		  "openssl_pkey_get_private|openssl_pkey_get_public|openssl_get_privatekey|openssl_get_publickey|openssl_sign|openssl_verify|".
 		  "openssl_pkey_get_details|openssl_random_pseudo_bytes|openssl_pbkdf2|openssl_pkcs12_read|".
 		  "openssl_pkcs7_read|openssl_error_string|openssl_get_md_methods|openssl_get_cipher_methods|".
 		  "openssl_get_curve_names|openssl_digest|openssl_encrypt|openssl_decrypt|openssl_cipher_iv_length|".
