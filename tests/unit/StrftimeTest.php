@@ -2,8 +2,38 @@
 
 use PHPUnit\Framework\TestCase;
 
+require_once dirname(__DIR__, 2).'/lib/ar.php';
+require_once dirname(__DIR__, 2).'/lib/modules/mod_pinp.phtml';
+
 class StrftimeTest extends TestCase
 {
+	private function runCompiledCall($function, $arguments, $variables)
+	{
+		$scope = $this->getMockForAbstractClass(ariadne_object::class);
+		$object = new ar_core_pinpSandbox($scope);
+		foreach ($variables as $name => $value) {
+			$object->$name = $value;
+		}
+		$compiler = new pinp('', 'object->', '$object->_');
+		$compiled = $compiler->compile('<pinp>$result = '.$function.'('.$arguments.');</pinp>');
+		$this->assertNull($compiler->error);
+		$this->assertStringContainsString('$object->strftime(', strtolower($compiled));
+		eval('?>'.$compiled);
+		return $object->result;
+	}
+
+	/** @dataProvider descriptionFormats */
+	public function testCompiledCallsUseCompatibilityWrapper($format, $expected)
+	{
+		foreach (array('strftime', 'STRFTIME') as $function) {
+			$result = $this->runCompiledCall($function, '$format, $timestamp', array(
+				'format' => $format,
+				'timestamp' => gmmktime(14, 35, 42, 10, 27, 2026)
+			));
+			$this->assertSame($expected, $result);
+		}
+	}
+
 	/** @dataProvider descriptionFormats */
 	public function testLiteralTextIsNotInterpretedAsDateCodes($format, $expected)
 	{
@@ -29,9 +59,10 @@ class StrftimeTest extends TestCase
 
 	public function testOmittedTimestampUsesCurrentTime()
 	{
-		$object = $this->getMockForAbstractClass(ariadne_object::class);
 		$before = gmdate('Y-m-d H:i');
-		$description = $object->_strftime('Created by Example: %Y-%m-%d %H:%M');
+		$description = $this->runCompiledCall('strftime', '$format', array(
+			'format' => 'Created by Example: %Y-%m-%d %H:%M'
+		));
 		$after = gmdate('Y-m-d H:i');
 		$this->assertContains($description, array('Created by Example: '.$before, 'Created by Example: '.$after));
 	}

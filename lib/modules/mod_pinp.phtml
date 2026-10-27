@@ -801,6 +801,8 @@ class pinp {
 		// Files, databases, arbitrary callbacks and process controls require sandbox wrappers
 		// or explicit administrator configuration. See docs/pinp-functions-php85.txt.
 		// Keep each for the legacy while/list/each-to-foreach rewrite.
+		// Keep implode out: _implode supports the legacy array-first argument order.
+		// Keep strftime out: _strftime replaces the deprecated native function.
 		// Keep the leading |: array_flip index zero is treated as not allowed.
 		$array_funcs="|array|array_change_key_case|array_chunk|array_column|array_combine|array_count_values|array_diff_assoc|".
 		  "array_diff_key|array_diff|array_fill|array_fill_keys|array_flip|array_intersect|array_intersect_assoc|".
@@ -824,7 +826,7 @@ class pinp {
 		  "date_timestamp_get|date_timestamp_set|date_timezone_get|date_timezone_set|idate|strptime|".
 		  "timezone_abbreviations_list|timezone_identifiers_list|timezone_location_get|timezone_name_from_abbr|".
 		  "timezone_name_get|timezone_offset_get|timezone_open|timezone_transitions_get|timezone_version_get|".
-		  "strftime|date_create_immutable|date_create_immutable_from_format";
+		  "date_create_immutable|date_create_immutable_from_format";
 		$math_funcs="abs|acos|acosh|asin|asinh|atan|atanh|atan2|base_convert|bindec|ceil|cos|cosh|decbin|dechex|decoct|deg2rad|".
 		  "exp|expm1|floor|fmod|getrandmax|is_finite|is_infinite|hexdec|hypot|lcg_value|log|log10|log1p|max|min|".
 		  "mt_rand|mt_srand|mt_getrandmax|octdec|pi|pow|rad2deg|rand|round|sin|sinh|sqrt|srand|tan|tanh|bcadd|bccomp|".
@@ -856,7 +858,7 @@ class pinp {
 		  "strrpos|strripos|strspn|strstr|strtok|strtolower|strtoupper|str_replace|strtr|substr|stripos|".
 		  "substr_compare|substr_count|substr_replace|trim|ucfirst|ucwords|vprintf|vsprintf|wordwrap|base64_decode|".
 		  "base64_encode|urldecode|urlencode|parse_url|basename|dirname|pathinfo|mb_convert_encoding|utf8_encode|".
-		  "utf8_decode|number_format|lcfirst|nl_langinfo|implode|str_contains|str_starts_with|str_ends_with|".
+		  "utf8_decode|number_format|lcfirst|nl_langinfo|str_contains|str_starts_with|str_ends_with|".
 		  "str_increment|str_decrement|hebrev|fnmatch|escapeshellarg|escapeshellcmd";
 		$var_funcs="boolval|doubleval|empty|floatval|gettype|intval|is_array|is_bool|is_double|is_float|is_int|is_integer|".
 		  "is_long|is_null|is_numeric|is_object|is_resource|is_scalar|is_string|isset|settype|serialize|strval|unset|".

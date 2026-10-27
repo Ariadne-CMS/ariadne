@@ -299,7 +299,6 @@
         "idate",
         "localtime",
         "mktime",
-        "strftime",
         "strtotime",
         "time",
         "timezone_abbreviations_list",
@@ -312,7 +311,9 @@
         "timezone_transitions_get",
         "timezone_version_get"
       ],
-      "guarded": [],
+      "guarded": [
+        "strftime"
+      ],
       "excluded": []
     },
     "dba": {
@@ -1973,7 +1974,6 @@
         "hypot",
         "image_type_to_extension",
         "image_type_to_mime_type",
-        "implode",
         "in_array",
         "inet_ntop",
         "inet_pton",
@@ -2182,6 +2182,7 @@
         "array_uintersect_uassoc",
         "array_walk",
         "array_walk_recursive",
+        "implode",
         "is_callable",
         "mail",
         "ob_start",

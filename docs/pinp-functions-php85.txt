@@ -49,6 +49,19 @@ from the default native list. ldap_free_result remains allowed.
 
 Guarded calls
 
+implode() uses Ariadne's existing compatibility wrapper so both the legacy
+implode($array, $separator) and current implode($separator, $array) forms
+continue to work, along with implode($array). It must stay out of the default
+native list. Templates compiled while implode was native must be resaved or
+recompiled after deploying this correction; existing compiled calls are not
+changed by updating the compiler alone.
+
+strftime() also stays out of the native list. PINP calls Ariadne's _strftime()
+replacement to avoid the deprecated PHP function and preserve the wrapper's
+formatting behavior. Templates compiled while strftime was native must also
+be resaved or recompiled after deployment. Regression tests compile and
+execute both lowercase and uppercase calls through the sandbox.
+
 Callback functions stay out of the native list and run through
 ar_core_pinpSandbox. Array callbacks and regex callbacks accept closures,
 not arbitrary function strings, class-method arrays, or invokable objects.
