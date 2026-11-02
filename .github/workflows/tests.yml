@@ -87,16 +87,18 @@ jobs:
           echo '<?php $ariadne="${{ github.workspace }}/lib"; ?>' > '${{ github.workspace }}/www/ariadne.inc'
           # ProtectHome=read-only applies inside Apache even with matching UIDs.
           # Allow writes only to the checkout paths used for installed state.
+          # GNU tar needs openat2, which RestrictSUIDSGID blocks with ENOSYS.
           sudo mkdir -p /etc/systemd/system/apache2.service.d
           printf '%s\n' '[Service]' \
             'ReadWritePaths="${{ github.workspace }}/files" "${{ github.workspace }}/sessions" "${{ github.workspace }}/lib/configs"' \
+            'RestrictSUIDSGID=no' \
             | sudo tee /etc/systemd/system/apache2.service.d/ariadne-ci.conf
           sudo systemctl daemon-reload
           sudo apache2ctl configtest
           # Apply the changed user/modules even if setup-php already started Apache.
           sudo systemctl restart apache2
           sudo systemctl status apache2.service
-          sudo systemctl show apache2 -p ProtectHome -p ProtectSystem -p ReadWritePaths
+          sudo systemctl show apache2 -p ProtectHome -p ProtectSystem -p ReadWritePaths -p RestrictSUIDSGID
 
       - name: Setup SVN
         run: |
@@ -173,6 +175,9 @@ jobs:
             $store = new $storeClass($root ?? null, $store_config);
             $installed = $store->exists("/system/ariadne/version/");
             $store->close();
+            if (!$installed) {
+              fwrite(STDERR, "Base package marker /system/ariadne/version/ is missing; check archive extraction errors.\n");
+            }
             exit($installed ? 0 : 1);
           '; then
             echo "::error::Ariadne bootstrap or base-package verification failed"
