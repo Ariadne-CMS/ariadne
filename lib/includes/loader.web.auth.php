@@ -1,5 +1,17 @@
 <?php
 
+	function ldIsUserCookieName($name) {
+		if (!is_string($name) || $name === '' || str_starts_with($name, 'ARSessionCookie')) {
+			return false;
+		}
+		foreach (array('ARCurrentSession', 'ARCookie') as $protected) {
+			if ($name === $protected || str_starts_with($name, $protected.'[')) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	function ldGetCurrentTemplate( $function ) {
 		if ( isset($function) ) {
 			return $function;
@@ -43,7 +55,7 @@
 		/* now save our session */
 		$ARCurrent->session->save();
 
-		$cookies = (array)( $_COOKIE["ARSessionCookie"] ?? [] );
+		$cookies = ldGetCredentials();
 		$https = ( ($_SERVER['HTTPS'] ?? null) =='on');
 
 		$currentCookies = array();
@@ -52,7 +64,7 @@
 			if(!$AR->hideSessionIDfromURL){
 				if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")) {
 					$data = ldDecodeCookie($cookie);
-					if(is_array($data)) {
+					if(is_array($data) && is_int($data['timestamp'] ?? null)) {
 						// don't just kill it, it may be from another ariadne installation
 						if ($data['timestamp']<(time()-86400)) {
 							// but do kill it if it's older than one day
@@ -213,7 +225,7 @@
 	function ldGetCredentials() {
 		debug("ldGetCredentials()","object");
 		$ARSessionCookie = $_COOKIE["ARSessionCookie"] ?? null;
-		return $ARSessionCookie;
+		return is_array($ARSessionCookie) ? $ARSessionCookie : array();
 	}
 
 	function ldCheckCredentials($login) {
@@ -249,16 +261,20 @@
 
 	function ldDecodeCookie($cookie) {
 		global $AR;
-		$data = json_decode($cookie??'',true);
-		if(is_null($data)){
+		if (!is_string($cookie) || $cookie === '') {
+			return null;
+		}
+		$data = json_decode($cookie,true);
+		if (json_last_error() !== JSON_ERROR_NONE) {
 			if(isset($AR->sessionCryptoKey) && function_exists('mcrypt_encrypt') ) {
 				$key = base64_decode($AR->sessionCryptoKey);
 				$crypto = new ar_crypt($key,MCRYPT_RIJNDAEL_256,1);
-				$data = json_decode($crypto->decrypt($cookie),true);
+				$decoded = $crypto->decrypt($cookie);
+				$data = is_string($decoded) ? json_decode($decoded,true) : null;
 			}
 		}
 
-		return $data;
+		return is_array($data) ? $data : null;
 	}
 
 	function ldEncodeCookie($cookie) {

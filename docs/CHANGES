@@ -17,6 +17,20 @@ Changes
   when it was opened from an independent browser tab.
 
 Bug fixes
+- Hardened generic cookie handling in the web, ITF, and WebDAV loaders. Generic
+  readers/writers block Ariadne session-cookie names and bracketed variants;
+  JSON encoding failures prevent writes. Consent-gated writes and embedded
+  content require JSON boolean true, rather than truthy strings or arrays.
+  Valid scalar user cookies remain supported. Authentication cookie parsing
+  and login cleanup ignore malformed input, including array-shaped selectors
+  and invalid timestamps, while retaining JSON and encrypted-cookie support.
+- Hardened ar('http/cookie') as a JSON key/value store. Missing, malformed,
+  non-string, and scalar cookie values now produce an empty store; JSON objects
+  decode to associative arrays. Protected Ariadne session cookies cannot be
+  read or overwritten through this helper. Saving without a name retains the
+  current cookie name, and JSON encoding or cookie-write failures are returned
+  without renaming the store. Callers relying on raw/scalar values must migrate
+  to JSON objects or arrays.
 - Removed PHP deserialization from user-cookie readers and WebDAV session-cookie
   selection. Cookies written by Ariadne use JSON; old PHP-serialized cookies
   are now ignored. Old cookie-based preferences or consent may need to be set

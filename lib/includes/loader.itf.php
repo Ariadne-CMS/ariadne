@@ -305,7 +305,8 @@
 	}
 
 	function ldGetCookieSession() {
-		return $_COOKIE['ARCurrentSession'] ?? null;
+		$current = $_COOKIE['ARCurrentSession'] ?? null;
+		return is_string($current) ? $current : null;
 	}
 
 	function ldSetCache($file, $time, $image, $headers) {
@@ -376,7 +377,7 @@
 	function ldGetUserCookie($cookiename="ARUserCookie") {
 		$cookie = false;
 
-		if( is_string($_COOKIE[$cookiename] ?? null) && !($cookiename == "ARSessionCookie") && !($cookiename == 'ARCurrentSession') ) {
+		if( ldIsUserCookieName($cookiename) && is_string($_COOKIE[$cookiename] ?? null) ) {
 			$ARUserCookie = $_COOKIE[$cookiename];
 			debug("ldGetUserCookie() = $ARUserCookie","object");
 			$cookie = json_decode($ARUserCookie,true);
@@ -396,18 +397,19 @@
 	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=0, $path="/", $domain="", $secure=0, $consentneeded=false) {
 		$result = false;
 
-		if (substr($cookiename, 0, strlen('ARSessionCookie'))=='ARSessionCookie' || $cookiename=='ARCurrentSession' ) {
+		if (!ldIsUserCookieName($cookiename)) {
 			return false;
 		}
 
 		$cookieconsent = ldGetUserCookie("ARCookieConsent");
-		if (!$consentneeded || ($cookieconsent == true)) { // Only set cookies when consent has been given, or no consent is needed for this cookie.
-			if( $cookiename != "ARSessionCookie" && $cookiename != "ARCurrentSession" ) {
-				$ARUserCookie=json_encode($cookie);
-				debug("ldSetUserCookie(".$ARUserCookie.")","object");
-				header('P3P: CP="NOI CUR OUR"');
-				$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
+		if (!$consentneeded || $cookieconsent === true) { // Only set cookies when consent has been given, or no consent is needed for this cookie.
+			$ARUserCookie=json_encode($cookie);
+			if ($ARUserCookie === false) {
+				return false;
 			}
+			debug("ldSetUserCookie(".$ARUserCookie.")","object");
+			header('P3P: CP="NOI CUR OUR"');
+			$result = setcookie($cookiename,$ARUserCookie, $expire ?? 0, $path, $domain, $secure);
 		} else {
 			debug("ldSetUserCookie: no consent.","object");
 		}
