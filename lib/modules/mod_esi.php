@@ -16,7 +16,7 @@ class ESI {
 				[v] QUERY_STRING
 
 				HTTP_USER_AGENT
-			FIXME: ariadne cookies are serialized by default, which would break HTTP_COOKIE usage in other ESI processors
+			NOTE: ariadne cookies use JSON, which other ESI processors may expose as raw text
 		*/
 
 		$result = preg_replace_callback('!\$\(([^)|{]*)(\{(([^}]*))\})?(\|([^)]*))?\)!', function($matches) {

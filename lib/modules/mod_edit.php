@@ -226,7 +226,7 @@
 
 			if (
 				preg_match('/<(span|div)[^>]*vd:cookieconsentrequired="true"[^>]*>.*<span.*vd:endsource="true".*>.*<\/span>.*<\/(span|div)>/isU', $var) &&
-				ldGetUserCookie("ARCookieConsent") != true
+				ldGetUserCookie("ARCookieConsent") !== true
 			) {
 				$var = preg_replace_callback(
 					'/<(span|div)[^>]*vd:source="([^"]*)"[^>]*>.*<span.*vd:endsource="true".*>.*<\/span>.*<\/(span|div)>/isU',

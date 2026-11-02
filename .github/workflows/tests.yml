@@ -47,14 +47,17 @@ jobs:
 
       - name: Wait for MySQL to be ready
         run: |
+          mysql_ready=false
           for i in {1..30}; do
             if mysqladmin ping -h127.0.0.1 -uroot -proot --silent; then
               echo "MySQL is up!"
+              mysql_ready=true
               break
             fi
             echo "Waiting for MySQL..."
             sleep 2
           done
+          test "$mysql_ready" = true
 
       - name: Set SQL Mode
         run: |
@@ -70,14 +73,32 @@ jobs:
       - name: Configure Apache2
         run: |
           sudo sed -i "s/www-data/runner/" /etc/apache2/envvars
+          # Use the configured Apache user rather than a separate FPM pool user.
+          for fpm_config in /etc/apache2/conf-enabled/php*-fpm.conf; do
+            if [ -e "$fpm_config" ]; then
+              sudo a2disconf "$(basename "$fpm_config" .conf)"
+            fi
+          done
           sudo a2dismod mpm_event
           sudo a2enmod mpm_prefork php8.4 rewrite
           sudo sed -i "s/AllowOverride None/AllowOverride All/" /etc/apache2/apache2.conf
           sudo rm -rf /var/www/html
-          sudo cp -r '${{ github.workspace }}/www/' '/var/www/html'
-          echo '<?php $ariadne="${{ github.workspace }}/lib"; ?>' | sudo tee '/var/www/html/ariadne.inc'
-          sudo systemctl start apache2
+          sudo ln -s '${{ github.workspace }}/www' /var/www/html
+          echo '<?php $ariadne="${{ github.workspace }}/lib"; ?>' > '${{ github.workspace }}/www/ariadne.inc'
+          # ProtectHome=read-only applies inside Apache even with matching UIDs.
+          # Allow writes only to the checkout paths used for installed state.
+          # GNU tar needs openat2, which RestrictSUIDSGID blocks with ENOSYS.
+          sudo mkdir -p /etc/systemd/system/apache2.service.d
+          printf '%s\n' '[Service]' \
+            'ReadWritePaths="${{ github.workspace }}/files" "${{ github.workspace }}/sessions" "${{ github.workspace }}/lib/configs"' \
+            'RestrictSUIDSGID=no' \
+            | sudo tee /etc/systemd/system/apache2.service.d/ariadne-ci.conf
+          sudo systemctl daemon-reload
+          sudo apache2ctl configtest
+          # Apply the changed user/modules even if setup-php already started Apache.
+          sudo systemctl restart apache2
           sudo systemctl status apache2.service
+          sudo systemctl show apache2 -p ProtectHome -p ProtectSystem -p ReadWritePaths -p RestrictSUIDSGID
 
       - name: Setup SVN
         run: |
@@ -102,8 +123,67 @@ jobs:
       
       - name: Install Ariadne
         run: |
+          # Apache and PHPUnit both run as the runner; prepare only runtime paths.
+          sudo chown -R "$(id -u):$(id -g)" files sessions lib/configs
+          chmod -R u+rwX files sessions lib/configs
           rm '${{ github.workspace }}/www/install/.htaccess'
-          curl --no-progress-meter --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=ariadne&database_pass=secret&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" http://localhost/install/index.php
+          # Check permissions through the real HTTP PHP handler, not just the CLI.
+          trap 'rm -f www/install/ci-permissions.php' EXIT
+          cat > www/install/ci-permissions.php <<'PHP'
+          <?php
+          require __DIR__.'/../ariadne.inc';
+          $root = dirname($ariadne);
+          $checks = array(
+            'apache_module' => PHP_SAPI === 'apache2handler',
+            'files_writable' => is_writable($root.'/files'),
+            'sessions_writable' => is_writable($root.'/sessions'),
+            'config_writable' => is_writable($ariadne.'/configs'),
+            'svn_config_writable' => is_writable($ariadne.'/configs/svn')
+          );
+          header('Content-Type: application/json');
+          http_response_code(in_array(false, $checks, true) ? 500 : 200);
+          echo json_encode(array('sapi' => PHP_SAPI,
+            'uid' => function_exists('posix_geteuid') ? posix_geteuid() : null,
+            'checks' => $checks));
+          PHP
+          curl --fail-with-body --silent --show-error http://127.0.0.1/install/ci-permissions.php
+          install_log="$RUNNER_TEMP/ariadne-install.html"
+          if ! curl --fail-with-body --silent --show-error --max-time 300 \
+            --output "$install_log" \
+            --data "language=en&step=step6&database=mysql&database_host=127.0.0.1&database_user=ariadne&database_pass=secret&database_name=ariadne&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=1&enable_workspaces=0&install_demo=1" \
+            http://127.0.0.1/install/index.php; then
+            cat "$install_log"
+            exit 1
+          fi
+          # Installer preflight failures can return HTTP 200 without installing.
+          if ! test -s lib/configs/ariadne.phtml; then
+            echo "::error::Ariadne installation did not create lib/configs/ariadne.phtml"
+            cat "$install_log"
+            exit 1
+          fi
+          php -l lib/configs/ariadne.phtml
+          if ! grep -Fq 'Ariadne is installed!' "$install_log"; then
+            echo "::error::Ariadne installer did not report successful completion"
+            cat "$install_log"
+            exit 1
+          fi
+          if ! php -r '
+            $ariadne = getcwd()."/lib/";
+            $ARLoader = "cmd";
+            require $ariadne."bootstrap.php";
+            $storeClass = $store_config["dbms"]."store";
+            $store = new $storeClass($root ?? null, $store_config);
+            $installed = $store->exists("/system/ariadne/version/");
+            $store->close();
+            if (!$installed) {
+              fwrite(STDERR, "Base package marker /system/ariadne/version/ is missing; check archive extraction errors.\n");
+            }
+            exit($installed ? 0 : 1);
+          '; then
+            echo "::error::Ariadne bootstrap or base-package verification failed"
+            cat "$install_log"
+            exit 1
+          fi
 
       - name: List files/templates
         run: |
@@ -141,5 +221,6 @@ jobs:
           bash test-demosite.sh
 
       - name: Cat error log
+        if: always()
         run: |
           sudo cat /var/log/apache2/error.log

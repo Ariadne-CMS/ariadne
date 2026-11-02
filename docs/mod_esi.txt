@@ -39,9 +39,9 @@ HTTP_ACCEPT_LANGUAGE, HTTP_COOKIE, HTTP_HOST, HTTP_REFERER, HTTP_USER_AGENT,
 QUERY_STRING
 
 * Note: Ariadne handles the HTTP_COOKIE variable differently, because
-Ariadne uses serialized objects in the cookies it sets. Ariadne uses it's
-own ldGetUserCookie method to fetch the cookie, which deserializes the
-cookie.
+Ariadne encodes its cookie values as JSON. Ariadne uses its own
+ldGetUserCookie method to fetch and JSON-decode the cookie. Legacy
+PHP-serialized cookie values are ignored.
 
 Why is this cool?
 

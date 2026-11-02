@@ -57,9 +57,11 @@
 	$root=$AR->root;
 	$session_id=0;
 
-	$ARCookie=stripslashes($_COOKIE["ARCookie"]);
-	$cookie=@unserialize($ARCookie);
-	if (is_array($cookie)) {
+	// ldSetSession writes JSON. Discard old serialized cookies without decoding
+	// PHP objects; stripslashes would corrupt valid JSON escapes.
+	$ARCookie = $_COOKIE["ARCookie"] ?? null;
+	$cookie = is_string($ARCookie) ? json_decode($ARCookie, true) : null;
+	if (is_array($cookie) && $cookie) {
 		$session_id=current(array_keys($cookie));
 	}
 

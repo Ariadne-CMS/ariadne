@@ -259,13 +259,14 @@
 
 		$cookie = false;
 
-		if( ($_COOKIE[$cookiename] ?? null) && !($cookiename == "ARCookie")) {
+		if( ldIsUserCookieName($cookiename) && is_string($_COOKIE[$cookiename] ?? null) ) {
 			$ARUserCookie = $_COOKIE[$cookiename];
 
 			debug("ldGetUserCookie() = $ARUserCookie","object");
 			$cookie=json_decode($ARUserCookie,true);
-			if ($cookie === null) {
-				$cookie=unserialize($ARUserCookie);
+			// Cookie writers use JSON; never deserialize legacy PHP objects.
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				$cookie = false;
 			}
 		}
 		return $cookie;
@@ -275,8 +276,11 @@
 
 		$result = false;
 
-		if( $cookiename != "ARCookie") {
+		if( ldIsUserCookieName($cookiename) ) {
 			$ARUserCookie=json_encode($cookie);
+			if ($ARUserCookie === false) {
+				return false;
+			}
 			debug("ldSetUserCookie(".$ARUserCookie.")","object");
 			$result = setcookie($cookiename,$ARUserCookie, $expire ?? 0, $path, $domain, $secure);
 		}
