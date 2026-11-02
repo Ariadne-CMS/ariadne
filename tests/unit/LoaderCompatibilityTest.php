@@ -4,6 +4,12 @@ use PHPUnit\Framework\TestCase;
 
 class LoaderRequestParsed extends RuntimeException {}
 
+class LoaderCookieCanary
+{
+	public static $wakeups = 0;
+	public function __wakeup() { self::$wakeups++; }
+}
+
 class LoaderCompatibilityTest extends TestCase
 {
 	public static $headers = array();
@@ -54,6 +60,24 @@ PHP
 				}
 			}
 		}
+		// Exercise the real WebDAV entry-point cookie selection without starting
+		// the server, bootstrapping a database, or authenticating a request.
+		$nodes = $parser->parse(file_get_contents(dirname(__DIR__, 2).'/webdav/loader.php'));
+		$selection = array();
+		$collect = false;
+		foreach ($nodes as $node) {
+			if ($node instanceof PhpParser\Node\Stmt\Expression
+				&& $node->expr instanceof PhpParser\Node\Expr\Assign
+				&& $node->expr->var instanceof PhpParser\Node\Expr\Variable) {
+				$name = $node->expr->var->name;
+				if ($name === 'session_id') $collect = true;
+				if ($collect && $name === 'args') break;
+			}
+			if ($collect) $selection[] = $node;
+		}
+		if (!$selection) throw new RuntimeException('WebDAV cookie selection not found');
+		eval('namespace LoaderCompatibility\\webdav; function selectCookieSession() {'
+			.$printer->prettyPrint($selection).' return $session_id; }');
 	}
 
 	protected function setUp(): void
@@ -66,6 +90,7 @@ PHP
 		$_COOKIE = array();
 		$_SERVER = array();
 		self::$headers = self::$cookies = self::$sessionLookups = array();
+		LoaderCookieCanary::$wakeups = 0;
 	}
 
 	protected function tearDown(): void
@@ -115,6 +140,69 @@ PHP
 	public static function webLoaders()
 	{
 		return array(array('web'), array('itf'));
+	}
+
+	public static function userCookieValues()
+	{
+		$values = array(
+			array(null, false),
+			array('', false),
+			array('invalid JSON', false),
+			array(array('nested' => 'cookie'), false),
+			array(serialize(new LoaderCookieCanary()), false),
+			array(serialize(array('nested' => new LoaderCookieCanary())), false),
+			array(serialize(array('searchname' => 'legacy')), false),
+			array('true', true),
+			array('false', false),
+			array('null', null),
+			array('0', 0),
+			array('"value"', 'value'),
+			array('{"searchname":"test","advanced":true}', array('searchname' => 'test', 'advanced' => true)),
+			array('["one","two"]', array('one', 'two')),
+		);
+		foreach (array('web', 'itf', 'webdav') as $loader) {
+			foreach ($values as [$cookie, $expected]) yield array($loader, $cookie, $expected);
+		}
+	}
+
+	/** @dataProvider userCookieValues */
+	public function testUserCookiesAcceptOnlyJsonWithoutObjectHooks($loader, $cookie, $expected)
+	{
+		if ($cookie !== null) $_COOKIE['ARUserCookie'] = $cookie;
+		$this->assertSame($expected, $this->callLoader($loader, 'ldGetUserCookie'));
+		$this->assertSame(0, LoaderCookieCanary::$wakeups);
+	}
+
+	/** @dataProvider webLoaders */
+	public function testWritingCookiesDoesNotDeserializeConsentCookie($loader)
+	{
+		$_COOKIE['ARCookieConsent'] = serialize(new LoaderCookieCanary());
+		$this->assertFalse($this->callLoader($loader, 'ldSetUserCookie', 'value', 'test', 0, '/', '', false, true));
+		$this->assertSame(array(), self::$cookies);
+		$this->assertSame(0, LoaderCookieCanary::$wakeups);
+		$this->assertTrue($this->callLoader($loader, 'ldSetUserCookie', 'value', 'test'));
+		$this->assertSame(0, LoaderCookieCanary::$wakeups);
+	}
+
+	public static function webdavSessionCookies()
+	{
+		foreach (array(null, '', 'invalid JSON', true, array('abcd' => 'value'),
+			serialize(new LoaderCookieCanary()),
+			serialize(array('abcd' => new LoaderCookieCanary())),
+			serialize(array('abcd' => array('timestamp' => 123))),
+			'null', 'true', '42', '"abcd"', '[]', '{}') as $cookie) {
+			yield array($cookie, 0);
+		}
+		yield array(json_encode(array('abcd' => array('timestamp' => 123))), 'abcd');
+		yield array(json_encode(array('abcd' => array('note' => 'quoted "value" and backslash \\'))), 'abcd');
+	}
+
+	/** @dataProvider webdavSessionCookies */
+	public function testWebdavEntryPointAcceptsOnlyJsonSessionCookies($cookie, $expected)
+	{
+		if ($cookie !== null) $_COOKIE['ARCookie'] = $cookie;
+		$this->assertSame($expected, $this->callLoader('webdav', 'selectCookieSession'));
+		$this->assertSame(0, LoaderCookieCanary::$wakeups);
 	}
 
 	/** @dataProvider webLoaders */

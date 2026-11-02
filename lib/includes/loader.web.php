@@ -381,12 +381,13 @@
 	function ldGetUserCookie($cookiename="ARUserCookie") {
 		$cookie = false;
 
-		if( ($_COOKIE[$cookiename] ?? null) && !($cookiename == "ARSessionCookie") && !($cookiename == 'ARCurrentSession') ) {
+		if( is_string($_COOKIE[$cookiename] ?? null) && !($cookiename == "ARSessionCookie") && !($cookiename == 'ARCurrentSession') ) {
 			$ARUserCookie = $_COOKIE[$cookiename];
 			debug("ldGetUserCookie() = $ARUserCookie","object");
 			$cookie = json_decode($ARUserCookie,true);
-			if ($cookie === null) {
-				$cookie = unserialize($ARUserCookie);
+			// Cookie writers use JSON; never deserialize legacy PHP objects.
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				$cookie = false;
 			}
 		}
 		return $cookie;

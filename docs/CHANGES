@@ -17,6 +17,11 @@ Changes
   when it was opened from an independent browser tab.
 
 Bug fixes
+- Removed PHP deserialization from user-cookie readers and WebDAV session-cookie
+  selection. Cookies written by Ariadne use JSON; old PHP-serialized cookies
+  are now ignored. Old cookie-based preferences or consent may need to be set
+  again, and old WebDAV sessions may need to authenticate again. Custom cookie
+  writers must use JSON rather than PHP serialization.
 - Fixed bug when locking passwords, now correctly stores '!' as the hashed
   password. This means that user cannot login anymore.
 - Fixed bug when importing files from older Ariadne versions, which had
