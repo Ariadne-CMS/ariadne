@@ -21,6 +21,17 @@
 
 		$userConfig = $this->loadUserConfig();
 		$authconfig = $userConfig['authentication'];
+		$environment = null;
+		$environmentNames = array(
+			'prod' => 'Production',
+			'dev' => 'Development',
+			'test' => 'Test',
+			'accept' => 'Acceptation'
+		);
+		$dtap = $userConfig['env']['dtap'] ?? null;
+		if (is_string($dtap) && isset($environmentNames[$dtap])) {
+			$environment = $dtap;
+		}
 
 		$mod_user = $this->data->muser ?? null;
 
@@ -54,7 +65,12 @@
 <?php
 	}
 ?>
-<div class="sectionhead yuimenubar iconsection"><?php echo htmlspecialchars($name??''); ?></div>
+<div class="sectionhead yuimenubar iconsection">
+<?php if ($environment !== null) { ?>
+	<span id="explore_environment" data-environment="<?php echo $environment; ?>"><?php echo $environmentNames[$environment]; ?></span>
+<?php } ?>
+	<?php echo htmlspecialchars($name??''); ?>
+</div>
 <div id="browseheaderbody" class="sectionbody">
 	<div id="browseheaderleft">
 		<ul>

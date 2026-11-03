@@ -16,6 +16,14 @@
 		$loader = $this->store->get_config('root');
 		$wwwroot = $AR->dir->www;
 		$interface = $data->interface ?? null;
+		$environment = $this->loadUserConfig()['env']['dtap'] ?? null;
+		if (!in_array($environment, array('prod', 'dev', 'test', 'accept'), true)) {
+			$environment = '';
+		}
+		$exploreVersion = max(
+			filemtime($AR->dir->root . 'styles/explore.css'),
+			filemtime($AR->dir->root . 'js/muze/ariadne/explore.js')
+		);
 
 		$yui_base = $wwwroot . "js/yui/";
 
@@ -78,11 +86,11 @@
 <script type="text/javascript" src="<?php echo $yui_base;?>container/container-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>autocomplete/autocomplete-min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css?v=<?php echo $exploreVersion; ?>">
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>login.css">
 
-<script type="text/javascript" src="<?php echo $this->make_local_url('',false,false) . 'ariadne.load.js?' . implode('+', $loadJS ); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->make_local_url('',false,false) . 'ariadne.load.js?' . implode('+', $loadJS ); ?>&amp;v=<?php echo $exploreVersion; ?>"></script>
 
 <script type="text/javascript">
 	// Backwards compatibility hooks - these should be removed in the end.
@@ -106,6 +114,7 @@
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.tree.init, muze.ariadne.explore.tree, true);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.splitpane.init);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.searchbar.init);
+	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.browseheader.updateEnvironment);
 
 	YAHOO.util.Event.onDOMReady(function() {selectable.init("archildren", {filterClass:["explore_item","yui-dt-rec"]})});
 </script>
@@ -151,7 +160,7 @@
 		<div id="splitpane_thumb"></div>
 	</div>
 
-	<div id="explore_managediv" class="managediv">
+	<div id="explore_managediv" class="managediv" data-environment="<?php echo $environment; ?>">
 		<div id="sidebar" class="sidebar">
 		<?php
 			$this->call("explore.sidebar.php", $arCallArgs);
