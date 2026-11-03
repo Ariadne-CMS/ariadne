@@ -160,6 +160,10 @@
 		}
 
 		public function send( $type, $url, $request = null, $options = array() ) {
+			$url = (string) $url;
+			if (!preg_match('~\Ahttps?://~i', $url)) {
+				return false;
+			}
 			if ( is_array( $request ) ) {
 				$request = $this->compileRequest( $request );
 			}
