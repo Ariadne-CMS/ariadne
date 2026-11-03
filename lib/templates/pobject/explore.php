@@ -17,7 +17,7 @@
 		$wwwroot = $AR->dir->www;
 		$interface = $data->interface ?? null;
 		$environment = $this->loadUserConfig()['env']['dtap'] ?? null;
-		if (strpos($this->path, '/projects/') !== 0 || !in_array($environment, array('prod', 'dev', 'test', 'accept'), true)) {
+		if (!in_array($environment, array('prod', 'dev', 'test', 'accept'), true)) {
 			$environment = '';
 		}
 		$exploreVersion = max(

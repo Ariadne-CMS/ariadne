@@ -28,11 +28,9 @@
 			'test' => 'Test',
 			'accept' => 'Acceptation'
 		);
-		if (strpos($this->path, '/projects/') === 0) {
-			$dtap = $userConfig['env']['dtap'] ?? null;
-			if (is_string($dtap) && isset($environmentNames[$dtap])) {
-				$environment = $dtap;
-			}
+		$dtap = $userConfig['env']['dtap'] ?? null;
+		if (is_string($dtap) && isset($environmentNames[$dtap])) {
+			$environment = $dtap;
 		}
 
 		$mod_user = $this->data->muser ?? null;
