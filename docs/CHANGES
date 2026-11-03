@@ -6,6 +6,7 @@ Changes
 - Restricted ar('http') to HTTP/HTTPS URLs, preventing local-file reads and
   access through other stream wrappers. Localhost and private-network HTTP
   connections remain supported through the existing PHP stream client.
+- Removed the obsolete rcas 'rpx' provider (mod_rcas/rpx.php), the RPX service has been discontinued.
 - Removed server-side LESS compilation, including ar('formats/less'),
   <compile:lessc> blocks, and the mishal/iless and leafo/lessphp dependencies.
   Existing LESS compile blocks now report an unsupported compiler error.
