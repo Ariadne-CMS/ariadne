@@ -197,6 +197,26 @@ TH,TD,LI,P,BODY,DIV {
 	background-color: #91E29A;
 }
 
+/* Keep the environment visible even when the workspace class changes. */
+#explore_managediv[data-environment="prod"] {
+	background-color: #BEDDC5;
+}
+#explore_managediv[data-environment="dev"] {
+	background-color: #B9DCF5;
+}
+#explore_managediv[data-environment="test"] {
+	background-color: #F5D98B;
+}
+#explore_managediv[data-environment="accept"] {
+	background-color: #D4BFF0;
+}
+
+#explore_environment {
+	float: right;
+	padding-right: 10px;
+	text-indent: 0;
+}
+
 /*
  * Menubar
  */

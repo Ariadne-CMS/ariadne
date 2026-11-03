@@ -1206,6 +1206,17 @@ muze.namespace( 'muze.ariadne.explore.viewpane', function() {
 muze.namespace( 'muze.ariadne.explore.browseheader', function() {
 	return {
 		currentpath : null,
+		updateEnvironment : function() {
+			var panel = document.getElementById('explore_managediv');
+			var environment = document.getElementById('explore_environment');
+			if (panel) {
+				if (environment) {
+					panel.setAttribute('data-environment', environment.getAttribute('data-environment'));
+				} else {
+					panel.removeAttribute('data-environment');
+				}
+			}
+		},
 		exists : function() {
 			if (document.getElementById("browseheader")) {
 				return true;
@@ -1225,6 +1236,7 @@ muze.namespace( 'muze.ariadne.explore.browseheader', function() {
 			var fadeOut = new YAHOO.util.Anim("browseheader", { opacity: {to: 0.3}}, 0.1);
 			fadeOut.animate();
 			var fadeIn = function() {
+				muze.ariadne.explore.browseheader.updateEnvironment();
 				var fadeIn = new YAHOO.util.Anim("browseheader", { opacity: {to: 1}}, 0.1);
 				fadeIn.animate();
 
