@@ -1565,14 +1565,13 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
-	global $AR, $ARTemplateCache;;
+	global $AR, $ARConfig, $ARTemplateCache;;
 		$templateCacheName = $path.":".$arCallFunction.":".$arType.":".$reqnls;
 		if ((!isset($arSuperContext) || !count($arSuperContext)) && isset($ARTemplateCache[$templateCacheName])) {
 			return $ARTemplateCache[$templateCacheName];
 		}
 
 		$originalArType = $arType;
-		$ob = false; // cache
 		while ($arType!='ariadne_object' ) {
 			list($arMatchType,$arMatchSubType) = array_pad(explode('.',$arType,2),2,'');
 			$local = ($path === $this->path);
@@ -1619,12 +1618,16 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		}
 		// template is not found on the current object
 		// only search for templates on shortcut target if it isn't overridden on the shortcut itself
-		if ($ob===false) {
-	                $ob = current(ar::get($path)->call('system.get.phtml'));
+		$cachedType = $ARConfig->cache[$path]->type ?? null;
+		if (isset($cachedType) && $cachedType !== 'pshortcut') {
+			return null;
 		}
-                if ($ob && $ob->type==='pshortcut' && ($ob->data->path??null) && $ob->data->path!==$path && ar::exists($ob->data->path)) {
-                        return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
-                }
+    $ob = current(ar::get($path)->call('system.get.phtml'));
+    if ($ob && $ob->type==='pshortcut' && ($ob->data->path??null) 
+    		&& $ob->data->path!==$path && ar::exists($ob->data->path))
+    {
+      return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
+  	}
 		return null;
 	}
 
