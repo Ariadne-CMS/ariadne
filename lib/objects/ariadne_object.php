@@ -1565,7 +1565,7 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 	}
 
 	protected function findTemplateOnPath($path, $arCallFunction, $arType, $reqnls, &$arSuperContext){
-	global $AR, $ARConfig, $ARTemplateCache;;
+	global $AR, $ARConfig, $ARTemplateCache;
 		$templateCacheName = $path.":".$arCallFunction.":".$arType.":".$reqnls;
 		if ((!isset($arSuperContext) || !count($arSuperContext)) && isset($ARTemplateCache[$templateCacheName])) {
 			return $ARTemplateCache[$templateCacheName];
@@ -1622,12 +1622,12 @@ abstract class ariadne_object extends baseObject { // ariadne_object class defin
 		if (isset($cachedType) && $cachedType !== 'pshortcut') {
 			return null;
 		}
-    $ob = current(ar::get($path)->call('system.get.phtml'));
-    if ($ob && $ob->type==='pshortcut' && ($ob->data->path??null) 
-    		&& $ob->data->path!==$path && ar::exists($ob->data->path))
-    {
-      return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
-  	}
+		$ob = current(ar::get($path)->call('system.get.phtml'));
+		if ($ob && $ob->type==='pshortcut' && ($ob->data->path??null) 
+				&& $ob->data->path!==$path && ar::exists($ob->data->path))
+		{
+			return $this->findTemplateOnPath($ob->data->path, $arCallFunction, $originalArType, $reqnls, $arSuperContext);
+		}
 		return null;
 	}
 
