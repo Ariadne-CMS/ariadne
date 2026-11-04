@@ -7,6 +7,8 @@
 		private $iv;
 		private $api;
 		private $mode = MCRYPT_MODE_CBC;
+		private const MAX_CIPHERS = 8;
+		private static $ciphers = [];
 
 		public function __construct( $key = null, $encoding = MCRYPT_RIJNDAEL_256, $api=0) {
 			global $AR;
@@ -58,16 +60,64 @@
 			}
 		}
 
+		/*
+			mcrypt_encrypt() and mcrypt_decrypt() create a new cipher on every call. With mcrypt_compat
+			each cipher compiles its own code, and only the cycle collector can free that memory.
+			So keep one cipher per key, shared by all instances, and only change its iv. The iv is set
+			on every call, so nothing carries over between calls. The cache is emptied when it is full,
+			so code that uses many keys can't grow it without limit.
+			Keys mcrypt_encrypt() would refuse get no cipher, the callers then use the original
+			functions, which report the error.
+		*/
+		private function getCipher($iv) {
+			$id = $this->encoding . ':' . $this->mode . ':' . $this->key;
+			if (isset(self::$ciphers[$id])) {
+				self::$ciphers[$id]->setIV($iv);
+				return self::$ciphers[$id];
+			}
+			$keysizes = mcrypt_module_get_supported_key_sizes($this->encoding);
+			if (!in_array(strlen($this->key ?? ''), $keysizes)) {
+				return false;
+			}
+			$cipher = mcrypt_module_open($this->encoding, '', $this->mode, '');
+			if ($cipher) {
+				mcrypt_generic_init($cipher, $this->key, $iv);
+				if (is_object($cipher)) {
+					if (count(self::$ciphers) >= self::MAX_CIPHERS) {
+						self::$ciphers = [];
+					}
+					self::$ciphers[$id] = $cipher;
+				}
+			}
+			return $cipher;
+		}
+
+		private function encryptValue($value, $iv) {
+			$cipher = $this->getCipher($iv);
+			if ($cipher) {
+				return mcrypt_generic($cipher, $value);
+			}
+			return mcrypt_encrypt($this->encoding, $this->key, $value, $this->mode, $iv);
+		}
+
+		private function decryptValue($value, $iv) {
+			$cipher = $this->getCipher($iv);
+			if ($cipher) {
+				return mdecrypt_generic($cipher, $value);
+			}
+			return mcrypt_decrypt($this->encoding, $this->key, $value, $this->mode, $iv);
+		}
+
 		public function crypt( $value ) {
 			if ($this->api === 0 ) {
 				$iv = str_pad('',mcrypt_get_iv_size ( $this->encoding, $this->mode),"\0");
-				return base64_encode(mcrypt_encrypt($this->encoding, $this->key, $value, $this->mode,$iv));
+				return base64_encode($this->encryptValue($value, $iv));
 
 			} else {
 				$ivsize = mcrypt_get_iv_size ( $this->encoding, $this->mode);
 				$iv = mcrypt_create_iv ( $ivsize , MCRYPT_DEV_URANDOM);
 
-				$encrypted = mcrypt_encrypt($this->encoding, $this->key, $value, $this->mode,$iv);
+				$encrypted = $this->encryptValue($value, $iv);
 				if($encrypted !== false) {
 					return base64_encode($iv . $encrypted);
 				} else {
@@ -79,7 +129,7 @@
 		public function decrypt( $value ) {
 			if ($this->api === 0 ) {
 				$iv = str_pad('',mcrypt_get_iv_size ( $this->encoding, $this->mode),"\0");
-				return trim(mcrypt_decrypt($this->encoding, $this->key, base64_decode($value), $this->mode,$iv), "\0");
+				return trim($this->decryptValue(base64_decode($value), $iv), "\0");
 
 			} else {
 				$decoded = base64_decode($value??'');
@@ -90,7 +140,7 @@
 				}
 
 				$encrypted = substr($decoded, $ivsize);
-				return trim(mcrypt_decrypt($this->encoding, $this->key, $encrypted, $this->mode,$iv), "\0");
+				return trim($this->decryptValue($encrypted, $iv), "\0");
 			}
 		}
 
