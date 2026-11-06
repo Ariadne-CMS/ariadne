@@ -93,6 +93,19 @@
 			return $cipher;
 		}
 
+		private function canUseAes() {
+			return function_exists('openssl_encrypt') && function_exists('openssl_decrypt')
+				&& function_exists('openssl_cipher_iv_length');
+		}
+
+		private function encryptValue($value, $iv) {
+			$cipher = $this->getCipher($iv);
+			if ($cipher) {
+				return mcrypt_generic($cipher, $value);
+			}
+			return mcrypt_encrypt($this->encoding, $this->key, $value, $this->mode, $iv);
+		}
+
 		private function decryptValue($value, $iv) {
 			$cipher = $this->getCipher($iv);
 			if ($cipher) {
@@ -101,9 +114,18 @@
 			return mcrypt_decrypt($this->encoding, $this->key, $value, $this->mode, $iv);
 		}
 
-		// New values use the same versioned AES format as recrypt.php. The encoding
-		// and api constructor arguments select how unversioned legacy values are read.
+		// Prefer the versioned AES format used by recrypt.php. Without OpenSSL,
+		// preserve the legacy encoding and API for both reading and writing.
 		public function crypt( $value ) {
+			if (!$this->canUseAes()) {
+				$ivsize = mcrypt_get_iv_size($this->encoding, $this->mode);
+				$iv = $this->api === 0 ? str_repeat("\0", $ivsize) : mcrypt_create_iv($ivsize, MCRYPT_DEV_URANDOM);
+				$encrypted = $this->encryptValue($value, $iv);
+				if ($encrypted === false) {
+					return false;
+				}
+				return base64_encode(($this->api === 0 ? '' : $iv) . $encrypted);
+			}
 			$iv = random_bytes(openssl_cipher_iv_length(self::AES_ENCODING));
 			$encrypted = openssl_encrypt($value, self::AES_ENCODING, substr($this->key ?? '', 0, 32), 0, $iv);
 			if ($encrypted === false) {
@@ -115,6 +137,9 @@
 		public function decrypt( $value ) {
 			// A versioned value must never fall back to legacy decryption.
 			if (str_starts_with($value ?? '', '(')) {
+				if (!$this->canUseAes()) {
+					return false;
+				}
 				if (!preg_match('/\A\(2\.0,([A-Za-z0-9+\/=]+)\)([A-Za-z0-9+\/=]+)\z/', $value, $matches)) {
 					return false;
 				}

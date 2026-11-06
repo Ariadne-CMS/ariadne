@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aab34c712229c97a5aab763aa0f45bbe",
+    "content-hash": "03dad46f6daf4c493907e04ab9bf7552",
     "packages": [
         {
             "name": "arc/arc",
@@ -3236,6 +3236,7 @@
     "prefer-lowest": false,
     "platform": {
         "ext-zip": "*",
+        "ext-openssl": "*",
         "php": ">=8.3"
     },
     "platform-dev": {},
