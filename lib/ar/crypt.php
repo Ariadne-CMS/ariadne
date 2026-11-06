@@ -7,6 +7,7 @@
 		private $iv;
 		private $api;
 		private $mode = MCRYPT_MODE_CBC;
+		private const AES_ENCODING = 'aes-256-cbc';
 		private const MAX_CIPHERS = 8;
 		private static $ciphers = [];
 
@@ -92,6 +93,11 @@
 			return $cipher;
 		}
 
+		private function canUseAes() {
+			return function_exists('openssl_encrypt') && function_exists('openssl_decrypt')
+				&& function_exists('openssl_cipher_iv_length');
+		}
+
 		private function encryptValue($value, $iv) {
 			$cipher = $this->getCipher($iv);
 			if ($cipher) {
@@ -108,25 +114,44 @@
 			return mcrypt_decrypt($this->encoding, $this->key, $value, $this->mode, $iv);
 		}
 
+		// Prefer the versioned AES format used by recrypt.php. Without OpenSSL,
+		// preserve the legacy encoding and API for both reading and writing.
 		public function crypt( $value ) {
-			if ($this->api === 0 ) {
-				$iv = str_pad('',mcrypt_get_iv_size ( $this->encoding, $this->mode),"\0");
-				return base64_encode($this->encryptValue($value, $iv));
-
-			} else {
-				$ivsize = mcrypt_get_iv_size ( $this->encoding, $this->mode);
-				$iv = mcrypt_create_iv ( $ivsize , MCRYPT_DEV_URANDOM);
-
+			if (!$this->canUseAes()) {
+				$ivsize = mcrypt_get_iv_size($this->encoding, $this->mode);
+				$iv = $this->api === 0 ? str_repeat("\0", $ivsize) : mcrypt_create_iv($ivsize, MCRYPT_DEV_URANDOM);
 				$encrypted = $this->encryptValue($value, $iv);
-				if($encrypted !== false) {
-					return base64_encode($iv . $encrypted);
-				} else {
+				if ($encrypted === false) {
 					return false;
 				}
+				return base64_encode(($this->api === 0 ? '' : $iv) . $encrypted);
 			}
+			$iv = random_bytes(openssl_cipher_iv_length(self::AES_ENCODING));
+			$encrypted = openssl_encrypt($value, self::AES_ENCODING, substr($this->key ?? '', 0, 32), 0, $iv);
+			if ($encrypted === false) {
+				return false;
+			}
+			return '(2.0,' . base64_encode($iv) . ')' . $encrypted;
 		}
 
 		public function decrypt( $value ) {
+			// A versioned value must never fall back to legacy decryption.
+			if (str_starts_with($value ?? '', '(')) {
+				if (!$this->canUseAes()) {
+					return false;
+				}
+				if (!preg_match('/\A\(2\.0,([A-Za-z0-9+\/=]+)\)([A-Za-z0-9+\/=]+)\z/', $value, $matches)) {
+					return false;
+				}
+				$iv = base64_decode($matches[1], true);
+				$encrypted = base64_decode($matches[2], true);
+				if ($iv === false || strlen($iv) !== openssl_cipher_iv_length(self::AES_ENCODING)
+					|| $encrypted === false || strlen($encrypted) === 0 || strlen($encrypted) % 16 !== 0) {
+					return false;
+				}
+				return openssl_decrypt($encrypted, self::AES_ENCODING, substr($this->key ?? '', 0, 32), OPENSSL_RAW_DATA, $iv);
+			}
+
 			if ($this->api === 0 ) {
 				$iv = str_pad('',mcrypt_get_iv_size ( $this->encoding, $this->mode),"\0");
 				return trim($this->decryptValue(base64_decode($value), $iv), "\0");
