@@ -97,23 +97,20 @@
 
 		$filestore = $this->store->get_filestore_svn("templates");
 		$svn_object = $filestore->connect($this->id);
-		$svn_status = $this->getdatacache(sprintf("svn-status-%s", $this->id));
+		// Read current status, just like the template list. A persistent cache
+		// can outlive commits, reverts, updates and external working-copy edits.
+		$svn_status = $filestore->svn_status($svn_object);
 
-		if ( !(isset($svn_status) && is_array($svn_status)) ) {
-			$svn_status = $filestore->svn_status($svn_object);
-			if (isset($svn_status) && is_array($svn_status)) {
-				$this->savedatacache(sprintf("svn-status-%s",$this->id), $svn_status, 999);
-			}
-		}
-
-		if ($svn_status) {
+		if (is_array($svn_status) && $svn_status) {
 			$svn['status'] = 'insubversion';
 			$svn_icon = $AR->dir->images . 'svn/InSubVersionIcon.png';
 			foreach ($svn_status as $key => $value) {
-				if ( ( substr($key, -5) == ".pinp"  || $key === '/' ) && (
-					$value['wc-status']['item']  != 'normal'  ||
-					$value['wc-status']['props'] != 'normal'
-				) ){
+				// Match the template list's file changes. Property-only changes,
+				// directory metadata and compiled files do not mark templates dirty.
+				if (substr($key, -5) === '.pinp' && in_array(
+					$value['wc-status']['item'] ?? null,
+					array('modified', 'added', 'deleted', 'missing', 'conflicted'), true
+				)) {
 					$svn['status'] = 'modified';
 					$svn_icon = $AR->dir->images . 'svn/ModifiedIcon.png';
 					break;
