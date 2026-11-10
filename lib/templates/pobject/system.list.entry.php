@@ -97,9 +97,13 @@
 
 		$filestore = $this->store->get_filestore_svn("templates");
 		$svn_object = $filestore->connect($this->id);
-		// Read current status, just like the template list. A persistent cache
-		// can outlive commits, reverts, updates and external working-copy edits.
-		$svn_status = $filestore->svn_status($svn_object);
+		$svn_status = $this->getdatacache(sprintf("svn-status-%s", $this->id));
+		if (!is_array($svn_status)) {
+			$svn_status = $filestore->svn_status($svn_object);
+			if (is_array($svn_status)) {
+				$this->savedatacache(sprintf("svn-status-%s", $this->id), $svn_status, 999);
+			}
+		}
 
 		if (is_array($svn_status) && $svn_status) {
 			$svn['status'] = 'insubversion';

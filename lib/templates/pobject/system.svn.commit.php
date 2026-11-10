@@ -135,6 +135,21 @@
 			$this->save();
 			echo $result;
 		}
+		// Refresh after cleanup/save, for single-template and whole-folder commits.
+		// Read actual status: a partial or failed commit may leave changes behind.
+		$cache_name = sprintf('svn-status-%s', $this->id);
+		$pcache = $this->store->get_filestore('privatecache');
+		$pcache->remove($this->id, $cache_name);
+		$svn_status = $fstore->svn_status($svn);
+		if (is_array($svn_status)) {
+			// savedatacache skips writes after database changes. SVN status is
+			// independent of those changes, so store this snapshot explicitly.
+			if ($pcache->write(serialize($svn_status), $this->id, $cache_name)) {
+				if (!$pcache->touch($this->id, $cache_name, time() + 999 * 3600)) {
+					$pcache->remove($this->id, $cache_name);
+				}
+			}
+		}
 		flush();
 	}
 ?>
