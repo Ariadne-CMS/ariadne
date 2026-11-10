@@ -142,12 +142,10 @@
 		$pcache->remove($this->id, $cache_name);
 		$svn_status = $fstore->svn_status($svn);
 		if (is_array($svn_status)) {
-			// savedatacache skips writes after database changes. SVN status is
-			// independent of those changes, so store this snapshot explicitly.
-			if ($pcache->write(serialize($svn_status), $this->id, $cache_name)) {
-				if (!$pcache->touch($this->id, $cache_name, time() + 999 * 3600)) {
-					$pcache->remove($this->id, $cache_name);
-				}
+			// With debugging enabled savedatacache may skip the write; the old
+			// entry is already removed, so the next overview will read fresh status.
+			if (!$this->savedatacache($cache_name, $svn_status, 999)) {
+				$pcache->remove($this->id, $cache_name);
 			}
 		}
 		flush();
