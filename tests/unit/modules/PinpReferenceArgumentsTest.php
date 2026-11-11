@@ -7,13 +7,13 @@ require_once dirname(__DIR__, 3).'/lib/modules/mod_pinp.phtml';
 
 class PinpReferenceArgumentsTest extends TestCase
 {
-	private function runTemplate($source, $variables = array())
+	private function runTemplate($source, $variables = array(), $allowedFunctions = '')
 	{
 		$object = new ar_core_pinpSandbox(new stdClass());
 		foreach ($variables as $name => $value) {
 			$object->$name = $value;
 		}
-		$compiler = new pinp('', 'object->', '$object->');
+		$compiler = new pinp($allowedFunctions, 'object->', '$object->');
 		$compiled = $compiler->compile('<pinp>'.$source.'</pinp>');
 		$this->assertNull($compiler->error);
 		eval('?>'.$compiled);
@@ -109,6 +109,61 @@ class PinpReferenceArgumentsTest extends TestCase
 		$this->assertSame(1, $object->result);
 		$this->assertSame('value', $object->values[0]['value']);
 		$this->assertSame(array('ROOT' => array(0)), $object->index);
+	}
+
+	public function testCurlReferencePositionsAreKnownWithoutRuntimeDiscovery()
+	{
+		$compiler = new pinp('', 'object->', '$object->');
+		foreach (array('curl_multi_exec', 'curl_multi_info_read') as $name) {
+			$this->assertFalse($compiler->is_reference_argument($name, 0));
+			$this->assertTrue($compiler->is_reference_argument($name, 1));
+		}
+	}
+
+	public function testAllCurlParametersMatchNativeReferenceSignatures()
+	{
+		if (!extension_loaded('curl')) $this->markTestSkipped('cURL extension required.');
+		$compiler = new pinp(get_extension_funcs('curl'), 'object->', '$object->');
+		foreach (get_extension_funcs('curl') as $name) {
+			$parameters = (new ReflectionFunction($name))->getParameters();
+			$args = array();
+			foreach ($parameters as $position => $parameter) $args[] = '$arg'.$position;
+			$compiled = $compiler->compile('<pinp>'.$name.'('.implode(', ', $args).');</pinp>');
+			$this->assertNull($compiler->error, $name);
+			foreach ($parameters as $position => $parameter) {
+				$this->assertSame($parameter->isPassedByReference(),
+					$compiler->is_reference_argument($name, $position), $name.' argument '.$position);
+				$guard = '($object->arg'.$position.' ?? null)';
+				if ($parameter->isPassedByReference()) {
+					$this->assertStringNotContainsString($guard, $compiled, $name);
+				} else {
+					$this->assertStringContainsString($guard, $compiled, $name);
+				}
+			}
+		}
+	}
+
+	/** @dataProvider outputTargets */
+	public function testCurlMultiOutputParametersWriteBack($initial, $target)
+	{
+		if (!extension_loaded('curl')) $this->markTestSkipped('cURL extension required.');
+		$multi = curl_multi_init();
+		$handle = curl_init('file://'.__FILE__);
+		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+		curl_multi_add_handle($multi, $handle);
+		try {
+			$object = $this->runTemplate($initial
+				.'do { $result = curl_multi_exec($multi, '.$target.'); } while ('.$target.');'
+				.'$running = '.$target.'; $message = curl_multi_info_read($multi, '.$target.'); $queued = '.$target.';',
+				array('multi' => $multi), array('curl_multi_exec', 'curl_multi_info_read'));
+			$this->assertSame(CURLM_OK, $object->result);
+			$this->assertSame(0, $object->running);
+			$this->assertSame(CURLMSG_DONE, $object->message['msg']);
+			$this->assertSame(CURLE_OK, $object->message['result']);
+			$this->assertSame(0, $object->queued);
+		} finally {
+			curl_multi_remove_handle($multi, $handle);
+		}
 	}
 
 	public function testInputAndIndexGuardsArePreserved()

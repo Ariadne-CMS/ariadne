@@ -1615,6 +1615,14 @@ class pinp {
 	}
 
 
+	function wrap_null_default($result, $inDQString) {
+		// In interpolated strings, trailing scanner whitespace is literal text.
+		// Keep it outside the wrapper so parse_multipart_string can restore it.
+		$expression = $inDQString ? rtrim($result) : $result;
+		return "($expression ?? null)!!!!".substr($result, strlen($expression));
+	}
+
+
 	function parse_variable_reference($inDQString = false) {
 		$skipNullDefaulter = ( trim( $this->token_value??'' ) === '&' );
 		$this->next_token(); // eat $ sign;
@@ -1623,7 +1631,7 @@ class pinp {
 			return false;
 		}
 		if ( !$skipNullDefaulter ) {
-			$result = "($result ?? null)!!!!";
+			$result = $this->wrap_null_default($result, $inDQString);
 		}
 		return $result;
 	}
@@ -1702,7 +1710,7 @@ class pinp {
 					$result = preg_replace( "/\\((.+?)[ ][?][?][ ]null[)][!][!][!][!][ \r\n\t]*\$/", "\\1", $result );
 //echo "AFTER: |$result|\n";
 					$result .= $this->parse_object_operator($inDQString);
-					$result = "($result ?? null)!!!!";
+					$result = $this->wrap_null_default($result, $inDQString);
 				}
 				if ($this->token == PT_PAR_CLOSE) {
 					$parseReturnValues = true;
@@ -1825,7 +1833,7 @@ class pinp {
 				//	echo "hier:\n";
 				//	echo $result . "\n";
 				//	echo "----\n";
-					$result = "($result ?? null)!!!!";
+					$result = $this->wrap_null_default($result, $inDQString);
 				}
 
 		}
