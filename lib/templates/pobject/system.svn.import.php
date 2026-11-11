@@ -60,12 +60,12 @@
 							$compiled_filename = $type . "." . $function . "." . $language;
 
 							$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
-							if ($this->data->config->templates[$type][$function]) {
+							if (!empty($this->data->config->templates[$type][$function])) {
 								$default = 1;
 							} else {
 								$default = 0;
 							}
-							if ($this->data->config->privatetemplates[$type][$function]) {
+							if (!empty($this->data->config->privatetemplates[$type][$function])) {
 								$private = 1;
 							} else {
 								$private = 0;
